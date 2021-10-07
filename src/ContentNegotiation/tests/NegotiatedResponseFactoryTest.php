@@ -22,7 +22,7 @@ use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
@@ -211,7 +211,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
             $response = $ex->response;
-            $this->assertSame(HttpStatusCodes::NOT_ACCEPTABLE, $response->getStatusCode());
+            $this->assertSame(HttpStatusCode::NOT_ACCEPTABLE, $response->getStatusCode());
             $this->assertSame('application/json', $response->getHeaders()->getFirst('Content-Type'));
             $this->assertSame('["foo\/bar"]', (string)$response->getBody());
         }
@@ -236,7 +236,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::INTERNAL_SERVER_ERROR, $ex->response->getStatusCode());
+            $this->assertSame(HttpStatusCode::INTERNAL_SERVER_ERROR, $ex->response->getStatusCode());
         }
     }
 

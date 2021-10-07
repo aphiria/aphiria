@@ -17,7 +17,7 @@ use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -58,7 +58,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $body = $this->createBody($request, $rawBody, $contentNegotiationResult);
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
-                HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                HttpStatusCode::INTERNAL_SERVER_ERROR,
                 'Failed to create response body',
                 0,
                 $ex
@@ -135,7 +135,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                HttpStatusCode::INTERNAL_SERVER_ERROR,
                 'Failed to serialize response body',
                 0,
                 $ex
@@ -165,7 +165,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             // @codeCoverageIgnoreEnd
         }
 
-        $response = new Response(HttpStatusCodes::NOT_ACCEPTABLE, $headers, $body);
+        $response = new Response(HttpStatusCode::NOT_ACCEPTABLE, $headers, $body);
 
         return new HttpException($response);
     }

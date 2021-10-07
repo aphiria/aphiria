@@ -17,7 +17,7 @@ use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
@@ -67,7 +67,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                HttpStatusCode::INTERNAL_SERVER_ERROR,
                 'Failed to reflect controller',
                 0,
                 $ex
@@ -98,21 +98,21 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::BAD_REQUEST,
+                HttpStatusCode::BAD_REQUEST,
                 'Failed to invoke controller',
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCode::UNSUPPORTED_MEDIA_TYPE,
                 'Failed to invoke controller',
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::UNPROCESSABLE_ENTITY,
+                HttpStatusCode::UNPROCESSABLE_ENTITY,
                 'Failed to invoke controller',
                 0,
                 $ex
@@ -128,13 +128,13 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         // Handle void return types
         if ($actionResult === null) {
-            return new Response(HttpStatusCodes::NO_CONTENT);
+            return new Response(HttpStatusCode::NO_CONTENT);
         }
 
         // Attempt to create an OK response from the return value
         return $this->responseFactory->createResponse(
             $request,
-            HttpStatusCodes::OK,
+            HttpStatusCode::OK,
             null,
             $actionResult
         );

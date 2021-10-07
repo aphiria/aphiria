@@ -23,7 +23,7 @@ use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Uri;
@@ -189,7 +189,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::NOT_FOUND, $ex->response->getStatusCode());
+            $this->assertSame(HttpStatusCode::NOT_FOUND, $ex->response->getStatusCode());
         }
     }
 

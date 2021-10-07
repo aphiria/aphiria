@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\Headers;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
@@ -24,7 +24,7 @@ class ResponseTest extends TestCase
     public function testDefaultReasonPhraseIsSet(): void
     {
         $response = new Response(200);
-        $this->assertEquals(HttpStatusCodes::getDefaultReasonPhrase(200), $response->getReasonPhrase());
+        $this->assertEquals(HttpStatusCode::getDefaultReasonPhrase(200), $response->getReasonPhrase());
     }
 
     public function testGettingAndSettingBody(): void

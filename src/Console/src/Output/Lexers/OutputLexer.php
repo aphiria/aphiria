@@ -60,7 +60,7 @@ final class OutputLexer implements IOutputLexer
                         // Flush the word buffer
                         if ($wordBuffer !== '') {
                             $tokens[] = new OutputToken(
-                                OutputTokenTypes::T_WORD,
+                                OutputTokenType::Word,
                                 $wordBuffer,
                                 $charIter - \mb_strlen($wordBuffer)
                             );
@@ -73,14 +73,14 @@ final class OutputLexer implements IOutputLexer
                     if ($inOpenTag || $inCloseTag) {
                         if ($inOpenTag) {
                             $tokens[] = new OutputToken(
-                                OutputTokenTypes::T_TAG_OPEN,
+                                OutputTokenType::TagOpen,
                                 $elementNameBuffer,
                                 // Need to get the position of the beginning of the open tag
                                 $charIter - \mb_strlen($elementNameBuffer) - 1
                             );
                         } else {
                             $tokens[] = new OutputToken(
-                                OutputTokenTypes::T_TAG_CLOSE,
+                                OutputTokenType::TagClose,
                                 $elementNameBuffer,
                                 // Need to get the position of the beginning of the close tag
                                 $charIter - \mb_strlen($elementNameBuffer) - 2
@@ -113,13 +113,13 @@ final class OutputLexer implements IOutputLexer
         // Finish flushing the word buffer
         if ($wordBuffer !== '') {
             $tokens[] = new OutputToken(
-                OutputTokenTypes::T_WORD,
+                OutputTokenType::Word,
                 $wordBuffer,
                 $textLength - \mb_strlen($wordBuffer)
             );
         }
 
-        $tokens[] = new OutputToken(OutputTokenTypes::T_EOF, null, $textLength);
+        $tokens[] = new OutputToken(OutputTokenType::Eof, null, $textLength);
 
         return $tokens;
     }

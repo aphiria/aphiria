@@ -15,7 +15,7 @@ namespace Aphiria\Net\Http;
 /**
  * Defines the various HTTP status codes
  */
-final class HttpStatusCodes
+final class HttpStatusCode
 {
     /** @const Continue */
     public const CONTINUE = 100;

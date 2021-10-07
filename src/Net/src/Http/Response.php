@@ -27,12 +27,12 @@ class Response implements IResponse
      * @param string $protocolVersion The HTTP protocol version
      */
     public function __construct(
-        protected int $statusCode = HttpStatusCodes::OK,
+        protected int $statusCode = HttpStatusCode::OK,
         protected readonly Headers $headers = new Headers(),
         protected ?IBody $body = null,
         protected readonly string $protocolVersion = '1.1'
     ) {
-        $this->reasonPhrase = HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
+        $this->reasonPhrase = HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
     }
 
     /**
@@ -115,6 +115,6 @@ class Response implements IResponse
     public function setStatusCode(int $statusCode, ?string $reasonPhrase = null): void
     {
         $this->statusCode = $statusCode;
-        $this->reasonPhrase = $reasonPhrase ?? HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
+        $this->reasonPhrase = $reasonPhrase ?? HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
     }
 }

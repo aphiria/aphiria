@@ -24,7 +24,7 @@ use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
@@ -152,10 +152,10 @@ class Router implements IRequestHandler
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {
-                throw new HttpException(HttpStatusCodes::NOT_FOUND, "No route found for {$request->getUri()}");
+                throw new HttpException(HttpStatusCode::NOT_FOUND, "No route found for {$request->getUri()}");
             }
 
-            $response = new Response(HttpStatusCodes::METHOD_NOT_ALLOWED);
+            $response = new Response(HttpStatusCode::METHOD_NOT_ALLOWED);
             $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');

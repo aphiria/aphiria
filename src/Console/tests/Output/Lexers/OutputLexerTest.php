@@ -14,7 +14,7 @@ namespace Aphiria\Console\Tests\Output\Lexers;
 
 use Aphiria\Console\Output\Lexers\OutputLexer;
 use Aphiria\Console\Output\Lexers\OutputToken;
-use Aphiria\Console\Output\Lexers\OutputTokenTypes;
+use Aphiria\Console\Output\Lexers\OutputTokenType;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -30,13 +30,13 @@ class OutputLexerTest extends TestCase
     public function testLexingAdjacentElements(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_WORD, 'baz', 5),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 8),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 14),
-            new OutputToken(OutputTokenTypes::T_WORD, 'blah', 19),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 23),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 29)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::Word, 'baz', 5),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 8),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 14),
+            new OutputToken(OutputTokenType::Word, 'blah', 19),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 23),
+            new OutputToken(OutputTokenType::Eof, null, 29)
         ];
         $this->assertEquals(
             $expectedOutput,
@@ -47,9 +47,9 @@ class OutputLexerTest extends TestCase
     public function testLexingElementWithNoChildren(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 5),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 11)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 5),
+            new OutputToken(OutputTokenType::Eof, null, 11)
         ];
         $this->assertEquals(
             $expectedOutput,
@@ -60,8 +60,8 @@ class OutputLexerTest extends TestCase
     public function testLexingEscapedTagAtBeginning(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_WORD, '<bar>', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 6)
+            new OutputToken(OutputTokenType::Word, '<bar>', 1),
+            new OutputToken(OutputTokenType::Eof, null, 6)
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('\\<bar>'));
     }
@@ -69,10 +69,10 @@ class OutputLexerTest extends TestCase
     public function testLexingEscapedTagInBetweenTags(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_WORD, '<bar>', 6),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 11),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 17)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::Word, '<bar>', 6),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 11),
+            new OutputToken(OutputTokenType::Eof, null, 17)
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('<foo>\\<bar></foo>'));
     }
@@ -83,11 +83,11 @@ class OutputLexerTest extends TestCase
         $eolLength = \strlen(PHP_EOL);
         $text = '<foo>' . PHP_EOL . 'bar' . PHP_EOL . '</foo>' . PHP_EOL . 'baz';
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_WORD, PHP_EOL . 'bar' . PHP_EOL, 5),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 5 + 3 + (2 * $eolLength)),
-            new OutputToken(OutputTokenTypes::T_WORD, PHP_EOL . 'baz', 5 + 3 + (2 * $eolLength) + 6),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 5 + 3 + (3 * $eolLength) + 6 + 3)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::Word, PHP_EOL . 'bar' . PHP_EOL, 5),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 5 + 3 + (2 * $eolLength)),
+            new OutputToken(OutputTokenType::Word, PHP_EOL . 'baz', 5 + 3 + (2 * $eolLength) + 6),
+            new OutputToken(OutputTokenType::Eof, null, 5 + 3 + (3 * $eolLength) + 6 + 3)
         ];
         $this->assertEquals(
             $expectedOutput,
@@ -98,14 +98,14 @@ class OutputLexerTest extends TestCase
     public function testLexingNestedElements(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_WORD, 'bar', 5),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 8),
-            new OutputToken(OutputTokenTypes::T_WORD, 'blah', 13),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 17),
-            new OutputToken(OutputTokenTypes::T_WORD, 'baz', 23),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 26),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 32)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::Word, 'bar', 5),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 8),
+            new OutputToken(OutputTokenType::Word, 'blah', 13),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 17),
+            new OutputToken(OutputTokenType::Word, 'baz', 23),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 26),
+            new OutputToken(OutputTokenType::Eof, null, 32)
         ];
         $this->assertEquals(
             $expectedOutput,
@@ -116,11 +116,11 @@ class OutputLexerTest extends TestCase
     public function testLexingNestedElementsWithNoChildren(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 5),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 10),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 16),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 22)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 5),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 10),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 16),
+            new OutputToken(OutputTokenType::Eof, null, 22)
         ];
         $this->assertEquals(
             $expectedOutput,
@@ -150,7 +150,7 @@ class OutputLexerTest extends TestCase
     public function testLexingOpenTagAtEndOfInputIsIgnored(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('<'));
     }
@@ -172,8 +172,8 @@ class OutputLexerTest extends TestCase
     public function testLexingPlainText(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_WORD, 'foobar', 0),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 6)
+            new OutputToken(OutputTokenType::Word, 'foobar', 0),
+            new OutputToken(OutputTokenType::Eof, null, 6)
         ];
         $this->assertEquals(
             $expectedOutput,
@@ -184,10 +184,10 @@ class OutputLexerTest extends TestCase
     public function testLexingSingleElement(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_WORD, 'bar', 5),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 8),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 14)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
+            new OutputToken(OutputTokenType::Word, 'bar', 5),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 8),
+            new OutputToken(OutputTokenType::Eof, null, 14)
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('<foo>bar</foo>'));
     }
@@ -195,9 +195,9 @@ class OutputLexerTest extends TestCase
     public function testLexingUnopenedTag(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenTypes::T_WORD, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 3),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 9)
+            new OutputToken(OutputTokenType::Word, 'foo', 0),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 3),
+            new OutputToken(OutputTokenType::Eof, null, 9)
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('foo</bar>'));
     }

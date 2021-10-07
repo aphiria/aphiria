@@ -12,18 +12,18 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use PHPUnit\Framework\TestCase;
 
 class HttpStatusCodesTest extends TestCase
 {
     public function testExistingStatusCodeReturnsDefaultStatusText(): void
     {
-        $this->assertSame('OK', HttpStatusCodes::getDefaultReasonPhrase(200));
+        $this->assertSame('OK', HttpStatusCode::getDefaultReasonPhrase(200));
     }
 
     public function testNonExistentStatusCodeReturnsNullStatusText(): void
     {
-        $this->assertNull(HttpStatusCodes::getDefaultReasonPhrase(-1));
+        $this->assertNull(HttpStatusCode::getDefaultReasonPhrase(-1));
     }
 }

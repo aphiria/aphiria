@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Output\Parsers;
 
 use Aphiria\Console\Output\Lexers\OutputToken;
-use Aphiria\Console\Output\Lexers\OutputTokenTypes;
+use Aphiria\Console\Output\Lexers\OutputTokenType;
 use Aphiria\Console\Output\Parsers\OutputParser;
 use Aphiria\Console\Output\Parsers\RootAstNode;
 use Aphiria\Console\Output\Parsers\TagAstNode;
@@ -34,12 +34,12 @@ class OutputParserTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'blah', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
+            new OutputToken(OutputTokenType::Word, 'blah', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $this->parser->parse($tokens);
     }
@@ -47,13 +47,13 @@ class OutputParserTest extends TestCase
     public function testParsingAdjacentElements(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'baz', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'blah', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, 'baz', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
+            new OutputToken(OutputTokenType::Word, 'blah', 1),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -71,9 +71,9 @@ class OutputParserTest extends TestCase
     public function testParsingElementWithNoChildren(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -87,8 +87,8 @@ class OutputParserTest extends TestCase
     public function testParsingEscapedTagAtBeginning(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_WORD, '<bar>', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::Word, '<bar>', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new WordAstNode('<bar>');
@@ -99,10 +99,10 @@ class OutputParserTest extends TestCase
     public function testParsingEscapedTagInBetweenTags(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, '<bar>', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, '<bar>', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -114,14 +114,14 @@ class OutputParserTest extends TestCase
     public function testParsingNestedElements(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'blah', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'baz', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, 'bar', 1),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
+            new OutputToken(OutputTokenType::Word, 'blah', 1),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 1),
+            new OutputToken(OutputTokenType::Word, 'baz', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -140,16 +140,16 @@ class OutputParserTest extends TestCase
     public function testParsingNestedElementsSurroundedByWords(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_WORD, 'dave', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'blah', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'baz', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'young', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::Word, 'dave', 1),
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, 'bar', 1),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
+            new OutputToken(OutputTokenType::Word, 'blah', 1),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 1),
+            new OutputToken(OutputTokenType::Word, 'baz', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, 'young', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $expectedOutput->addChild(new WordAstNode('dave'));
@@ -170,11 +170,11 @@ class OutputParserTest extends TestCase
     public function testParsingNestedElementsWithNoChildren(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -186,18 +186,11 @@ class OutputParserTest extends TestCase
         );
     }
 
-    public function testParsingInvalidOutputTokenTypeThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unknown token type "foo" with value "bar" near character #0');
-        $this->parser->parse([new OutputToken('foo', 'bar', 0)]);
-    }
-
     public function testParsingPlainText(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_WORD, 'foobar', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::Word, 'foobar', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $node = new WordAstNode('foobar');
@@ -211,10 +204,10 @@ class OutputParserTest extends TestCase
     public function testParsingSingleElement(): void
     {
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, 'bar', 1),
+            new OutputToken(OutputTokenType::TagClose, 'foo', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -227,9 +220,9 @@ class OutputParserTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_TAG_OPEN, 'foo', 1),
-            new OutputToken(OutputTokenTypes::T_WORD, 'bar', 1),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 1)
+            new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
+            new OutputToken(OutputTokenType::Word, 'bar', 1),
+            new OutputToken(OutputTokenType::Eof, null, 1)
         ];
         $this->parser->parse($tokens);
     }
@@ -238,9 +231,9 @@ class OutputParserTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $tokens = [
-            new OutputToken(OutputTokenTypes::T_WORD, 'foo', 0),
-            new OutputToken(OutputTokenTypes::T_TAG_CLOSE, 'bar', 3),
-            new OutputToken(OutputTokenTypes::T_EOF, null, 9)
+            new OutputToken(OutputTokenType::Word, 'foo', 0),
+            new OutputToken(OutputTokenType::TagClose, 'bar', 3),
+            new OutputToken(OutputTokenType::Eof, null, 9)
         ];
         $this->parser->parse($tokens);
     }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Controllers\Mocks;
 
 use Aphiria\Api\Controllers\Controller as BaseController;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
@@ -221,7 +221,7 @@ class ControllerWithEndpoints extends BaseController
      */
     private function createResponseWithBody(string $body): Response
     {
-        return new Response(HttpStatusCodes::OK, body: new StringBody($body));
+        return new Response(HttpStatusCode::OK, body: new StringBody($body));
     }
 
     /**

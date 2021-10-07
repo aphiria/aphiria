@@ -18,7 +18,7 @@ use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
@@ -114,7 +114,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::ACCEPTED,
+            HttpStatusCode::ACCEPTED,
             $headers,
             $body
         );
@@ -137,7 +137,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::BAD_REQUEST,
+            HttpStatusCode::BAD_REQUEST,
             $headers,
             $body
         );
@@ -160,7 +160,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::CONFLICT,
+            HttpStatusCode::CONFLICT,
             $headers,
             $body
         );
@@ -188,7 +188,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::CREATED,
+            HttpStatusCode::CREATED,
             $headers,
             $body
         );
@@ -211,7 +211,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::FORBIDDEN,
+            HttpStatusCode::FORBIDDEN,
             $headers,
             $body
         );
@@ -231,7 +231,7 @@ class Controller
      */
     protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::FOUND, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCode::FOUND, $uri, $body, $headers);
     }
 
     /**
@@ -251,7 +251,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::INTERNAL_SERVER_ERROR,
+            HttpStatusCode::INTERNAL_SERVER_ERROR,
             $headers,
             $body
         );
@@ -270,7 +270,7 @@ class Controller
      */
     protected function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::MOVED_PERMANENTLY, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCode::MOVED_PERMANENTLY, $uri, $body, $headers);
     }
 
     /**
@@ -289,7 +289,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::NO_CONTENT,
+            HttpStatusCode::NO_CONTENT,
             $headers
         );
     }
@@ -311,7 +311,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::NOT_FOUND,
+            HttpStatusCode::NOT_FOUND,
             $headers,
             $body
         );
@@ -334,7 +334,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::OK,
+            HttpStatusCode::OK,
             $headers,
             $body
         );
@@ -367,7 +367,7 @@ class Controller
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
-                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCode::UNSUPPORTED_MEDIA_TYPE,
                 "Failed to negotiate request content with type $type"
             );
         }
@@ -376,7 +376,7 @@ class Controller
             return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::UNPROCESSABLE_ENTITY,
+                HttpStatusCode::UNPROCESSABLE_ENTITY,
                 "Failed to deserialize request body when resolving body as type $type",
                 0,
                 $ex
@@ -401,7 +401,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::UNAUTHORIZED,
+            HttpStatusCode::UNAUTHORIZED,
             $headers,
             $body
         );

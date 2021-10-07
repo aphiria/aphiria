@@ -18,12 +18,12 @@ namespace Aphiria\Console\Output\Lexers;
 final class OutputToken
 {
     /**
-     * @param string $type The token type
+     * @param OutputTokenType $type The token type
      * @param mixed $value The value of the token
      * @param int $position The position of the token in the original text
      */
     public function __construct(
-        public readonly string $type,
+        public readonly OutputTokenType $type,
         public readonly mixed $value,
         public readonly int $position
     ) {

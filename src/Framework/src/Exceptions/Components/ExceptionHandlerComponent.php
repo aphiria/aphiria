@@ -20,7 +20,7 @@ use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Closure;
 use Exception;
 
@@ -112,7 +112,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+        int|Closure $status = HttpStatusCode::INTERNAL_SERVER_ERROR,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {

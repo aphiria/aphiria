@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Errors;
 
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 
 /**
  * Defines standard problem details that conform to RFC 7807
@@ -34,7 +34,7 @@ class ProblemDetails
         public ?string $type = null,
         public ?string $title = null,
         public ?string $detail = null,
-        public int $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+        public int $status = HttpStatusCode::INTERNAL_SERVER_ERROR,
         public ?string $instance = null,
         public ?array $extensions = null
     ) {

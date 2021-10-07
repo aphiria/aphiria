@@ -26,7 +26,7 @@ use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use InvalidArgumentException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
@@ -93,7 +93,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 );
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     InvalidRequestBodyException::class,
-                    status: HttpStatusCodes::BAD_REQUEST
+                    status: HttpStatusCode::BAD_REQUEST
                 );
                 break;
             default:
