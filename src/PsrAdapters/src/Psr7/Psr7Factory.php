@@ -224,7 +224,7 @@ class Psr7Factory implements IPsr7Factory
     public function createPsr7Response(IResponse $aphiriaResponse): ResponseInterface
     {
         $psr7Response = $this->psr7ResponseFactory->createResponse(
-            $aphiriaResponse->getStatusCode(),
+            $aphiriaResponse->getStatusCode()->value,
             $aphiriaResponse->getReasonPhrase() ?? ''
         )
             ->withProtocolVersion($aphiriaResponse->getProtocolVersion());

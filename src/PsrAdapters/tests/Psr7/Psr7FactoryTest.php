@@ -16,6 +16,7 @@ use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
@@ -161,7 +162,7 @@ class Psr7FactoryTest extends TestCase
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame(200, $aphiriaResponse->getStatusCode());
+        $this->assertSame(HttpStatusCode::Ok, $aphiriaResponse->getStatusCode());
     }
 
     public function testCreateAphiriaStreamCreatesStreamWithSameContents(): void

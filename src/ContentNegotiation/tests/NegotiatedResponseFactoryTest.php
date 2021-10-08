@@ -141,10 +141,22 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->assertSame('en-US', $response->getHeaders()->getFirst('Content-Language'));
     }
 
+    public function testCreatingResponseWithEnumStatusCodeSetsStatusCodeCorrectly(): void
+    {
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), HttpStatusCode::Ok);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+    }
+
+    public function testCreatingResponseWithIntStatusCodeSetsStatusCodeCorrectly(): void
+    {
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+    }
+
     public function testCreatingResponseUsesStatusCode(): void
     {
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202);
-        $this->assertSame(202, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Accepted, $response->getStatusCode());
     }
 
     public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void

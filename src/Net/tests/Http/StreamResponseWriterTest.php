@@ -15,6 +15,7 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
@@ -44,7 +45,7 @@ class StreamResponseWriterTest extends TestCase
         $this->response->method('getProtocolVersion')
             ->willReturn('1.1');
         $this->response->method('getStatusCode')
-            ->willReturn(200);
+            ->willReturn(HttpStatusCode::Ok);
         $this->response->method('getReasonPhrase')
             ->willReturn('OK');
     }

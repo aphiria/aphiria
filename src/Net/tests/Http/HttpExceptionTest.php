@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\HttpException;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IResponse;
 use Exception;
 use PHPUnit\Framework\TestCase;
@@ -25,10 +26,16 @@ class HttpExceptionTest extends TestCase
         $this->assertSame(4, $exception->getCode());
     }
 
+    public function testEnumStatusCodeIsSetInResponse(): void
+    {
+        $exception = new HttpException(HttpStatusCode::InternalServerError);
+        $this->assertSame(HttpStatusCode::InternalServerError, $exception->response->getStatusCode());
+    }
+
     public function testIntStatusCodeIsSetInResponse(): void
     {
         $exception = new HttpException(500);
-        $this->assertSame(500, $exception->response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $exception->response->getStatusCode());
     }
 
     public function testMessageIsSameOneSetInConstructor(): void

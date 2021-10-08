@@ -23,7 +23,7 @@ interface IResponseFactory
      * Creates a response from the input parameters
      *
      * @param IRequest $request The current request
-     * @param int $statusCode The status code to use
+     * @param HttpStatusCode|int $statusCode The status code to use
      * @param Headers|null $headers The headers to use
      * @param object|string|int|float|array|null $rawBody The raw body to use in the response
      * @return IResponse The created response
@@ -32,7 +32,7 @@ interface IResponseFactory
      */
     public function createResponse(
         IRequest $request,
-        int $statusCode,
+        HttpStatusCode|int $statusCode,
         Headers $headers = null,
         object|string|int|float|array $rawBody = null
     ): IResponse;

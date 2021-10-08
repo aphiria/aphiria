@@ -15,6 +15,7 @@ namespace Aphiria\Net\Http\Formatting;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 
 /**
  * Defines the response header parser
@@ -62,7 +63,7 @@ class ResponseHeaderParser extends HeaderParser
                         $isHttpOnly = true;
                         break;
                     case 'SameSite':
-                        $sameSite = (string)$kvp->value;
+                        $sameSite = SameSiteMode::tryFrom((string)$kvp->value);
                         break;
                     default:
                         // Treat the default value as the cookie name

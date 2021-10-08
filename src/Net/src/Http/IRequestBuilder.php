@@ -85,10 +85,10 @@ interface IRequestBuilder
     /**
      * Sets the target type of the request
      *
-     * @param string $requestTargetType
+     * @param RequestTargetType $requestTargetType
      * @return static For chaining
      */
-    public function withRequestTargetType(string $requestTargetType): static;
+    public function withRequestTargetType(RequestTargetType $requestTargetType): static;
 
     /**
      * Sets the request URI

@@ -63,7 +63,7 @@ class StreamResponseWriter implements IResponseWriter
             return;
         }
 
-        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()}";
+        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()->value}";
 
         if (($reasonPhrase = $response->getReasonPhrase()) !== null) {
             $startLine .= " $reasonPhrase";

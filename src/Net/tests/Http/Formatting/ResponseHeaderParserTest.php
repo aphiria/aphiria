@@ -16,6 +16,7 @@ use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 use PHPUnit\Framework\TestCase;
 
 class ResponseHeaderParserTest extends TestCase
@@ -33,7 +34,7 @@ class ResponseHeaderParserTest extends TestCase
             new KeyValuePair('Set-Cookie', 'foo=value; Max-Age=3600; Domain=example.com; Path=/path; HttpOnly; Secure; SameSite=strict')
         ]);
         $expectedCookies = [
-            new Cookie('foo', 'value', 3600, '/path', 'example.com', true, true, Cookie::SAME_SITE_STRICT)
+            new Cookie('foo', 'value', 3600, '/path', 'example.com', true, true, SameSiteMode::Strict)
         ];
         $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }
@@ -44,8 +45,8 @@ class ResponseHeaderParserTest extends TestCase
         $headers->add('Set-Cookie', 'foo=value1; Max-Age=3600; Domain=example1.com; Path=/path1; HttpOnly; Secure; SameSite=strict');
         $headers->add('Set-Cookie', 'bar=value2; Max-Age=7200; Domain=example2.com; Path=/path2; HttpOnly; Secure; SameSite=strict', true);
         $expectedCookies = [
-            new Cookie('foo', 'value1', 3600, '/path1', 'example1.com', true, true, Cookie::SAME_SITE_STRICT),
-            new Cookie('bar', 'value2', 7200, '/path2', 'example2.com', true, true, Cookie::SAME_SITE_STRICT)
+            new Cookie('foo', 'value1', 3600, '/path1', 'example1.com', true, true, SameSiteMode::Strict),
+            new Cookie('bar', 'value2', 7200, '/path2', 'example2.com', true, true, SameSiteMode::Strict)
         ];
         $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }

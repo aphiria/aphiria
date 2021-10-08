@@ -65,7 +65,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{status: int} $problemDetailsJson */
         $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame(HttpStatusCode::InternalServerError, $problemDetailsJson['status']);
+        $this->assertSame(HttpStatusCode::InternalServerError->value, $problemDetailsJson['status']);
         $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
     }
 
@@ -94,7 +94,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $expectedResponse = new Response(HttpStatusCode::InternalServerError);
         $this->responseFactory->expects($this->once())
             ->method('createResponse')
-            ->with($this->request, HttpStatusCode::InternalServerError, null, new ProblemDetails('https://tools.ietf.org/html/rfc7231#section-6.6.1', null, null, HttpStatusCode::InternalServerError))
+            ->with($this->request, HttpStatusCode::InternalServerError->value, null, new ProblemDetails('https://tools.ietf.org/html/rfc7231#section-6.6.1', null, null, HttpStatusCode::InternalServerError))
             ->willReturn($expectedResponse);
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
@@ -232,7 +232,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         /** @var array{status: int} $problemDetailsJson */
         $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
-        $this->assertSame(HttpStatusCode::InternalServerError, $problemDetailsJson['status']);
+        $this->assertSame(HttpStatusCode::InternalServerError->value, $problemDetailsJson['status']);
     }
 
     public function testNotHavingRequestSetCreatesProblemDetailsResponse(): void
@@ -242,7 +242,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $this->assertSame(HttpStatusCode::InternalServerError, $actualResponse->getStatusCode());
         $this->assertSame('application/problem+json', $actualResponse->getHeaders()->getFirst('Content-Type'));
         // In this test, we're not using the custom problem details Symfony normalizer, which means "extensions" will appear as a property in the JSON
-        $this->assertSame('{"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"foo","detail":null,"status":500,"instance":null,"extensions":null}', (string)$actualResponse->getBody());
+        $this->assertSame('{"status":500,"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"foo","detail":null,"instance":null,"extensions":null}', (string)$actualResponse->getBody());
     }
 
     /**

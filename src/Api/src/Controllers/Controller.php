@@ -410,7 +410,7 @@ class Controller
     /**
      * Creates a redirect redirect response
      *
-     * @param int $statusCode The redirect status code to use
+     * @param HttpStatusCode|int $statusCode The redirect status code to use
      * @param string|Uri $uri The URI to redirect to
      * @param object|string|int|float|array|null $body The raw response body
      * @param Headers|null $headers The headers to use
@@ -419,7 +419,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    private function redirect(int $statusCode, string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    private function redirect(HttpStatusCode|int $statusCode, string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');

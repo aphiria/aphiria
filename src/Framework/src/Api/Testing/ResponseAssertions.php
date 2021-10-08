@@ -20,6 +20,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -187,16 +188,17 @@ class ResponseAssertions
     /**
      * Asserts that the response status code matches the expected value
      *
-     * @param int $expectedStatusCode The expected value
+     * @param HttpStatusCode|int $expectedStatusCode The expected value
      * @param IResponse $response The response to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
      */
-    public function assertStatusCodeEquals(int $expectedStatusCode, IResponse $response): void
+    public function assertStatusCodeEquals(HttpStatusCode|int $expectedStatusCode, IResponse $response): void
     {
-        $actualStatusCode = $response->getStatusCode();
+        $actualStatusCodeAsInt = $response->getStatusCode()->value;
+        $expectedStatusCodeAsInt = \is_int($expectedStatusCode) ? $expectedStatusCode : $expectedStatusCode->value;
 
-        if ($actualStatusCode !== $expectedStatusCode) {
-            throw new AssertionFailedException("Expected status code $expectedStatusCode, got $actualStatusCode");
+        if ($actualStatusCodeAsInt !== $expectedStatusCodeAsInt) {
+            throw new AssertionFailedException("Expected status code $expectedStatusCodeAsInt, got $actualStatusCodeAsInt");
         }
     }
 

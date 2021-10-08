@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Api\Testing\PhpUnit;
 
 use Aphiria\Framework\Api\Testing\AssertionFailedException;
 use Aphiria\Framework\Api\Testing\IntegrationTest;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IResponse;
 use Closure;
 use PHPUnit\Framework\TestCase;
@@ -167,10 +168,10 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * Asserts that the response status code matches the expected value
      *
-     * @param int $expectedStatusCode The expected value
+     * @param HttpStatusCode|int $expectedStatusCode The expected value
      * @param IResponse $response The response to inspect
      */
-    public function assertStatusCodeEquals(int $expectedStatusCode, IResponse $response): void
+    public function assertStatusCodeEquals(HttpStatusCode|int $expectedStatusCode, IResponse $response): void
     {
         try {
             $this->responseAssertions->assertStatusCodeEquals($expectedStatusCode, $response);

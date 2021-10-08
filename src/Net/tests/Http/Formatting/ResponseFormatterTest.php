@@ -15,6 +15,7 @@ namespace Aphiria\Net\Tests\Http\Formatting;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
@@ -50,7 +51,7 @@ class ResponseFormatterTest extends TestCase
 
     public function testDeletingCookieSetsCookiesToExpire(): void
     {
-        $this->formatter->deleteCookie($this->response, 'name', '/path', 'example.com', true, true, 'lax');
+        $this->formatter->deleteCookie($this->response, 'name', '/path', 'example.com', true, true, SameSiteMode::Lax);
         $this->assertSame(
             'name=; Max-Age=0; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
@@ -79,7 +80,7 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->setCookie(
             $this->response,
-            new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, 'lax')
+            new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, SameSiteMode::Lax)
         );
         $this->assertSame(
             'name=value; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',

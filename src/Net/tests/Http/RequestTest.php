@@ -17,7 +17,7 @@ use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Request;
-use Aphiria\Net\Http\RequestTargetTypes;
+use Aphiria\Net\Http\RequestTargetType;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
@@ -86,13 +86,6 @@ class RequestTest extends TestCase
         $this->assertSame('foo.com', $request->getHeaders()->getFirst('Host'));
     }
 
-    public function testInvalidRequestTargetTypeThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Request target type foo is invalid');
-        new Request('GET', new Uri('https://example.com'), requestTargetType: 'foo');
-    }
-
     public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
@@ -106,7 +99,7 @@ class RequestTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://example.com:4343/foo?bar'),
-            requestTargetType: RequestTargetTypes::ABSOLUTE_FORM
+            requestTargetType: RequestTargetType::AbsoluteForm
         );
         $this->assertSame(
             "GET https://example.com:4343/foo?bar HTTP/1.1\r\nHost: example.com:4343\r\n\r\n",
@@ -119,7 +112,7 @@ class RequestTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://example.com'),
-            requestTargetType: RequestTargetTypes::ASTERISK_FORM
+            requestTargetType: RequestTargetType::AsteriskForm
         );
         $this->assertSame("GET * HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
     }
@@ -129,7 +122,7 @@ class RequestTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://user:password@www.example.com:4343/foo?bar'),
-            requestTargetType: RequestTargetTypes::AUTHORITY_FORM
+            requestTargetType: RequestTargetType::AuthorityForm
         );
         $this->assertSame("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string)$request);
     }

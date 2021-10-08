@@ -17,7 +17,12 @@ use PHPUnit\Framework\TestCase;
 
 class HttpStatusCodesTest extends TestCase
 {
-    public function testExistingStatusCodeReturnsDefaultStatusText(): void
+    public function testExistingStatusCodeAsEnumReturnsDefaultStatusText(): void
+    {
+        $this->assertSame('OK', HttpStatusCode::getDefaultReasonPhrase(HttpStatusCode::Ok));
+    }
+
+    public function testExistingStatusCodeAsIntReturnsDefaultStatusText(): void
     {
         $this->assertSame('OK', HttpStatusCode::getDefaultReasonPhrase(200));
     }

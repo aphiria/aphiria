@@ -46,7 +46,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
      */
     public function createResponse(
         IRequest $request,
-        int $statusCode,
+        HttpStatusCode|int $statusCode,
         Headers $headers = null,
         object|string|int|float|array $rawBody = null
     ): IResponse {

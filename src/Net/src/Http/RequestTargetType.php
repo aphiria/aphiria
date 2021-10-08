@@ -15,14 +15,14 @@ namespace Aphiria\Net\Http;
 /**
  * Defines the various request target types
  */
-final class RequestTargetTypes
+enum RequestTargetType
 {
     /** @const The origin form */
-    public const ORIGIN_FORM = 'origin-form';
+    case OriginForm;
     /** @const The absolute form */
-    public const ABSOLUTE_FORM = 'absolute-form';
+    case AbsoluteForm;
     /** @const The authority form */
-    public const AUTHORITY_FORM = 'authority-form';
+    case AuthorityForm;
     /** @const The asterisk form */
-    public const ASTERISK_FORM = 'asterisk-form';
+    case AsteriskForm;
 }

@@ -27,14 +27,14 @@ class HttpException extends Exception
      * @param int|IResponse $statusCodeOrResponse The status code or fully-formed response
      */
     public function __construct(
-        int|IResponse $statusCodeOrResponse,
+        HttpStatusCode|int|IResponse $statusCodeOrResponse,
         string $message = '',
         int $code = 0,
         Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
 
-        if (\is_int($statusCodeOrResponse)) {
+        if ($statusCodeOrResponse instanceof HttpStatusCode || \is_int($statusCodeOrResponse)) {
             $this->response = new Response($statusCodeOrResponse);
         } else {
             $this->response = $statusCodeOrResponse;

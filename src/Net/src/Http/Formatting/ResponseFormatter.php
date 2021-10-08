@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
@@ -41,7 +42,7 @@ class ResponseFormatter
      * @param string|null $domain The domain of the cookie to delete if set, otherwise null
      * @param bool $isSecure Whether or not the cookie to be deleted was HTTPS
      * @param bool $isHttpOnly Whether or not the cookie to be deleted was HTTP-only
-     * @param string|null $sameSite The same-site setting to use if set, otherwise null
+     * @param SameSiteMode|null $sameSite The same-site setting to use if set, otherwise null
      */
     public function deleteCookie(
         IResponse $response,
@@ -50,7 +51,7 @@ class ResponseFormatter
         ?string $domain = null,
         bool $isSecure = false,
         bool $isHttpOnly = true,
-        ?string $sameSite = null
+        ?SameSiteMode $sameSite = null
     ): void {
         $this->headerFormatter->deleteCookie(
             $response->getHeaders(),

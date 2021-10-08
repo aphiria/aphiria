@@ -891,7 +891,7 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithProblemDetailssWithoutGlobalContainerInstanceSetThrowsException(): void
+    public function testWithProblemDetailsWithoutGlobalContainerInstanceSetThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');

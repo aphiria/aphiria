@@ -169,7 +169,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $responseFactory = $this->createMock(IResponseFactory::class);
         $responseFactory->expects($this->once())
             ->method('createResponse')
-            ->with($request, HttpStatusCode::BadRequest, null, $this->isInstanceOf(ProblemDetails::class))
+            ->with($request, HttpStatusCode::BadRequest->value, null, $this->isInstanceOf(ProblemDetails::class))
             ->willReturn(new Response(HttpStatusCode::BadRequest));
         $this->apiExceptionRenderer->setResponseFactory($responseFactory);
         $exception = new InvalidRequestBodyException(['foo']);
