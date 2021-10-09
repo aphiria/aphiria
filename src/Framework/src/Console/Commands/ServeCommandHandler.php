@@ -36,8 +36,8 @@ class ServeCommandHandler implements ICommandHandler
             PHP_BINARY,
             $domain,
             $port,
-            '"' . $input->options['docroot'] . '"',
-            '"' . $input->options['router'] . '"'
+            '"' . (string)$input->options['docroot'] . '"',
+            '"' . (string)$input->options['router'] . '"'
         );
         $this->runPhpCommand($command);
     }
