@@ -14,7 +14,7 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
 
 use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
+use Aphiria\Routing\UriTemplates\Lexers\TokenType;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 
 /**
@@ -27,28 +27,28 @@ final class UriTemplateParser implements IUriTemplateParser
      */
     public function parse(TokenStream $tokens): AstNode
     {
-        $ast = new AstNode(AstNodeTypes::ROOT, null);
+        $ast = new AstNode(AstNodeType::Root, null);
 
         // Determine whether or not there's a host, and if so, parse it and the path
         $hostExists = false;
         $lookaheadBuffer = [];
 
         while (($token = $tokens->getCurrent()) !== null) {
-            if ($token->type === TokenTypes::T_PUNCTUATION && $token->value === '/') {
+            if ($token->type === TokenType::Punctuation && $token->value === '/') {
                 if ($hostExists) {
-                    $hostNode = new AstNode(AstNodeTypes::HOST, null);
+                    $hostNode = new AstNode(AstNodeType::Host, null);
                     $this->parseTokens(new TokenStream($lookaheadBuffer), $hostNode);
                     $ast->addChild($hostNode);
                 }
 
-                $pathNode = new AstNode(AstNodeTypes::PATH, null);
+                $pathNode = new AstNode(AstNodeType::Path, null);
                 $this->parseTokens($tokens, $pathNode);
                 $ast->addChild($pathNode);
                 break;
             }
 
             // Anything besides an opening '[' prior to a '/' is considered the host
-            if ($token->type !== TokenTypes::T_PUNCTUATION && $token->value !== '[') {
+            if ($token->type !== TokenType::Punctuation && $token->value !== '[') {
                 $hostExists = true;
             }
 
@@ -74,12 +74,12 @@ final class UriTemplateParser implements IUriTemplateParser
         switch ($currToken->value) {
             case '/':
                 // We don't have to worry about parsing a slash in the host because slashes are not added to the host lookahead buffer
-                $currNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, $currToken->value));
+                $currNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, $currToken->value));
                 $tokens->next();
                 break;
             case '.':
                 // Periods in paths are to be treated as just text
-                $nodeType = $parsingPath ? AstNodeTypes::TEXT : AstNodeTypes::SEGMENT_DELIMITER;
+                $nodeType = $parsingPath ? AstNodeType::Text : AstNodeType::SegmentDelimiter;
                 $currNode->addChild(new AstNode($nodeType, $currToken->value));
                 $tokens->next();
                 break;
@@ -90,14 +90,14 @@ final class UriTemplateParser implements IUriTemplateParser
                  * could accidentally insert an optional part into an invalid parent node).  So, we don't bother
                  * checking the parent node here.
                  */
-                $optionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, $currToken->value);
+                $optionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, $currToken->value);
                 $currNode->addChild($optionalRoutePartNode);
                 $currNode = $optionalRoutePartNode;
                 $tokens->next();
 
                 if ($parsingPath) {
                     $tokens->expect(
-                        TokenTypes::T_PUNCTUATION,
+                        TokenType::Punctuation,
                         '/',
                         'Expected optional path part to start with \'/\', got %s'
                     );
@@ -105,9 +105,9 @@ final class UriTemplateParser implements IUriTemplateParser
 
                 break;
             case ']':
-                if ($currNode->type !== AstNodeTypes::OPTIONAL_ROUTE_PART) {
+                if ($currNode->type !== AstNodeType::OptionalRoutePart) {
                     // Just treat this as normal text
-                    $currNode->addChild(new AstNode(AstNodeTypes::TEXT, $currToken->value));
+                    $currNode->addChild(new AstNode(AstNodeType::Text, $currToken->value));
                     $tokens->next();
                     break;
                 }
@@ -122,8 +122,8 @@ final class UriTemplateParser implements IUriTemplateParser
                     for ($i = \count($currNode->children) - 1;$i >= 0;$i--) {
                         $childNode = $currNode->children[$i];
 
-                        if ($childNode->type !== AstNodeTypes::OPTIONAL_ROUTE_PART) {
-                            if ($childNode->type === AstNodeTypes::SEGMENT_DELIMITER) {
+                        if ($childNode->type !== AstNodeType::OptionalRoutePart) {
+                            if ($childNode->type === AstNodeType::SegmentDelimiter) {
                                 $isValid = true;
                             }
 
@@ -142,7 +142,7 @@ final class UriTemplateParser implements IUriTemplateParser
                 break;
             default:
                 // Since we handle punctuation inside of variables elsewhere, we'll just treat this as text
-                $currNode->addChild(new AstNode(AstNodeTypes::TEXT, $currToken->value));
+                $currNode->addChild(new AstNode(AstNodeType::Text, $currToken->value));
                 $tokens->next();
                 break;
         }
@@ -157,7 +157,7 @@ final class UriTemplateParser implements IUriTemplateParser
      */
     private function parseText(Token $currToken, TokenStream $tokens, AstNode $currNode): void
     {
-        $currNode->addChild(new AstNode(AstNodeTypes::TEXT, $currToken->value));
+        $currNode->addChild(new AstNode(AstNodeType::Text, $currToken->value));
         $tokens->next();
     }
 
@@ -170,25 +170,25 @@ final class UriTemplateParser implements IUriTemplateParser
      */
     private function parseTokens(TokenStream $tokens, AstNode $ast): void
     {
-        $parsingPath = $ast->type === AstNodeTypes::PATH;
+        $parsingPath = $ast->type === AstNodeType::Path;
         $currNode = $ast;
 
         while (($token = $tokens->getCurrent()) !== null) {
             switch ($token->type) {
-                case TokenTypes::T_TEXT:
+                case TokenType::Text:
                     $this->parseText($token, $tokens, $currNode);
                     break;
-                case TokenTypes::T_NUMBER:
+                case TokenType::Number:
                     // Since we handle a number inside of variables elsewhere, we'll just treat this as text
                     $this->parseText($token, $tokens, $currNode);
                     break;
-                case TokenTypes::T_VARIABLE:
+                case TokenType::Variable:
                     $this->parseVariable($token, $tokens, $currNode);
                     break;
-                case TokenTypes::T_PUNCTUATION:
+                case TokenType::Punctuation:
                     $this->parsePunctuation($token, $tokens, $currNode, $parsingPath);
                     break;
-                case TokenTypes::T_QUOTED_STRING:
+                case TokenType::QuotedString:
                     // Since we handle a quoted string inside of variables elsewhere, we'll just treat this as text
                     $this->parseText($token, $tokens, $currNode);
                     break;
@@ -207,24 +207,24 @@ final class UriTemplateParser implements IUriTemplateParser
      */
     private function parseVariable(Token $currToken, TokenStream $tokens, AstNode &$currNode): void
     {
-        $variableNode = new AstNode(AstNodeTypes::VARIABLE, $currToken->value);
+        $variableNode = new AstNode(AstNodeType::Variable, $currToken->value);
         $currNode->addChild($variableNode);
         $currNode = $variableNode;
         $tokens->next();
 
         // Check for the beginning of a constraint list
-        if ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, '(')) {
+        if ($tokens->nextIfType(TokenType::Punctuation, '(')) {
             // Parse all variable constraints
             do {
                 /** @psalm-suppress PossiblyNullArgument Above, we've verified that the current token is punctuation */
                 $this->parseVariableConstraint($tokens->getCurrent(), $tokens, $variableNode);
-            } while ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, ','));
+            } while ($tokens->nextIfType(TokenType::Punctuation, ','));
 
-            $tokens->expect(TokenTypes::T_PUNCTUATION, ')', 'Expected closing parenthesis after constraints, got %s');
+            $tokens->expect(TokenType::Punctuation, ')', 'Expected closing parenthesis after constraints, got %s');
             $tokens->next();
         }
 
-        if ($tokens->test(TokenTypes::T_VARIABLE)) {
+        if ($tokens->test(TokenType::Variable)) {
             throw new UnexpectedTokenException('Cannot have consecutive variables without a delimiter');
         }
 
@@ -242,17 +242,17 @@ final class UriTemplateParser implements IUriTemplateParser
     private function parseVariableConstraint(Token $currToken, TokenStream $tokens, AstNode $currNode): void
     {
         // Expect a constraint name
-        $tokens->expect(TokenTypes::T_TEXT, null, 'Expected constraint name, got %s');
-        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, $currToken->value);
+        $tokens->expect(TokenType::Text, null, 'Expected constraint name, got %s');
+        $variableConstraintNode = new AstNode(AstNodeType::VariableConstraint, $currToken->value);
         $tokens->next();
 
         // Check for a parameter list for this constraint
-        if ($tokens->nextIfType(TokenTypes::T_PUNCTUATION, '(')) {
+        if ($tokens->nextIfType(TokenType::Punctuation, '(')) {
             $parameters = [];
             $currentToken = $tokens->getCurrent();
 
-            while ($currentToken !== null && !$tokens->test(TokenTypes::T_PUNCTUATION, ')')) {
-                if (!$tokens->test(TokenTypes::T_PUNCTUATION, ',')) {
+            while ($currentToken !== null && !$tokens->test(TokenType::Punctuation, ')')) {
+                if (!$tokens->test(TokenType::Punctuation, ',')) {
                     /** @psalm-suppress MixedAssignment We're purposely adding a mixed value to the parameter list */
                     $parameters[] = $currentToken->value;
                 }
@@ -260,9 +260,9 @@ final class UriTemplateParser implements IUriTemplateParser
                 $currentToken = $tokens->next();
             }
 
-            $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, $parameters));
+            $variableConstraintNode->addChild(new AstNode(AstNodeType::VariableConstraintParameters, $parameters));
             $tokens->expect(
-                TokenTypes::T_PUNCTUATION,
+                TokenType::Punctuation,
                 ')',
                 'Expected closing parenthesis after constraint parameters, got %s'
             );

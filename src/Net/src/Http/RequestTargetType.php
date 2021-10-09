@@ -17,12 +17,12 @@ namespace Aphiria\Net\Http;
  */
 enum RequestTargetType
 {
-    /** @const The origin form */
+    /** The origin form */
     case OriginForm;
-    /** @const The absolute form */
+    /** The absolute form */
     case AbsoluteForm;
-    /** @const The authority form */
+    /** The authority form */
     case AuthorityForm;
-    /** @const The asterisk form */
+    /** The asterisk form */
     case AsteriskForm;
 }

@@ -41,7 +41,7 @@ class MultipleChoice extends Question
      */
     public function choicesAreAssociative(): bool
     {
-        return \count(\array_filter(\array_keys($this->choices), 'is_string')) > 0;
+        return !\array_is_list($this->choices);
     }
 
     /**
