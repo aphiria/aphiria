@@ -29,7 +29,7 @@ use Exception;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var array<class-string, array{type: string|Closure(Exception): string|null, title: string|Closure(Exception): string|null, detail: string|Closure(Exception): string|null, status: int|Closure(Exception): int, instance: string|Closure(Exception): string|null, extensions: array|Closure(Exception): array|null}> The mapping of exception types to problem detail settings */
+    /** @var array<class-string, array{type: string|Closure(Exception): string|null, title: string|Closure(Exception): string|null, detail: string|Closure(Exception): string|null, status: HttpStatusCode|int|Closure(Exception): int, instance: string|Closure(Exception): string|null, extensions: array|Closure(Exception): array|null}> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
     /** @var array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
@@ -102,7 +102,7 @@ class ExceptionHandlerComponent implements IComponent
      * @param string|null|Closure(mixed): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|null|Closure(mixed): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|null|Closure(mixed): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param HttpStatusCode|int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|null|Closure(mixed): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|null|Closure(mixed): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
@@ -112,7 +112,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = HttpStatusCode::InternalServerError,
+        HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {
