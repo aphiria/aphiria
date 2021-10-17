@@ -31,6 +31,7 @@
 - `Aphiria\DependencyInjection\IContainer::bindFactory()` now requires a `Closure` `$factory` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
 - `Aphiria\DependencyInjection\IServiceResolver::for()` now requires a `Closure` `$callback` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
 - `Aphiria\Validation\Constraints\CallbackConstraint()` now requires a `Closure` `$callback` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Application\IModule::build()` renamed to `configure()` ([#165](https://github.com/aphiria/aphiria/pull/165))
 
 ## [v1.0.0-alpha4](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha3...v1.0.0-alpha4) (2021-08-08)
 
