@@ -54,7 +54,7 @@ class ConsoleApplicationBuilderTest extends TestCase
                 $this->builtParts = &$builtParts;
             }
 
-            public function build(IApplicationBuilder $appBuilder): void
+            public function configure(IApplicationBuilder $appBuilder): void
             {
                 $this->builtParts[] = $this::class;
             }
