@@ -30,7 +30,7 @@ class ValidationComponent implements IComponent
 {
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;
-    /** @var array<Closure(ObjectConstraintsRegistryBuilder): void> The list of callbacks that can register object constraints */
+    /** @var list<Closure(ObjectConstraintsRegistryBuilder): void> The list of callbacks that can register object constraints */
     private array $callbacks = [];
 
     /**

@@ -32,7 +32,7 @@ use RuntimeException;
  */
 class RouterComponent implements IComponent
 {
-    /** @var array<Closure(RouteCollectionBuilder): void> The list of callbacks that can register route builders */
+    /** @var list<Closure(RouteCollectionBuilder): void> The list of callbacks that can register route builders */
     private array $callbacks = [];
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;

@@ -20,7 +20,7 @@ use Closure;
 final class ClosureCommandRegistrant implements ICommandRegistrant
 {
     /**
-     * @param array<Closure(CommandRegistry): void> $closures The list of closures to execute
+     * @param list<Closure(CommandRegistry): void> $closures The list of closures to execute
      */
     public function __construct(private array $closures)
     {
