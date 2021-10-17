@@ -28,7 +28,7 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder = new class () extends ApplicationBuilder {
             public function build(): object
             {
-                $this->buildModules();
+                $this->configureModules();
                 $this->buildComponents();
 
                 return $this;
@@ -111,21 +111,21 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder->getComponent($component::class);
     }
 
-    public function testModulesAreBuiltOnBuild(): void
+    public function testModulesAreConfiguredOnBuild(): void
     {
         $module = $this->createMock(IModule::class);
         $module->expects($this->once())
-            ->method('build')
+            ->method('configure')
             ->with($this->appBuilder);
         $this->appBuilder->withModule($module);
         $this->appBuilder->build();
     }
 
-    public function testModulesThatAreRegisteredInsideOfModulesAreBuilt(): void
+    public function testModulesThatAreRegisteredInsideOfModulesAreConfigured(): void
     {
         $innerModule = $this->createMock(IModule::class);
         $innerModule->expects($this->once())
-            ->method('build')
+            ->method('configure')
             ->with($this->appBuilder);
         $outerModule = new class ($innerModule) implements IModule {
             private IModule $innerModule;
@@ -135,7 +135,7 @@ class ApplicationBuilderTest extends TestCase
                 $this->innerModule = $innerModule;
             }
 
-            public function build(IApplicationBuilder $appBuilder): void
+            public function configure(IApplicationBuilder $appBuilder): void
             {
                 $appBuilder->withModule($this->innerModule);
             }

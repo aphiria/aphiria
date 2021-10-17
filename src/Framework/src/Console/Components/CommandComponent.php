@@ -27,7 +27,7 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var array<Closure(CommandRegistry): void> The list of callbacks that can register commands */
+    /** @var list<Closure(CommandRegistry): void> The list of callbacks that can register commands */
     private array $callbacks = [];
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;

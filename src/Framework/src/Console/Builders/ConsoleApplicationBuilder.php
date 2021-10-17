@@ -37,7 +37,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
      */
     public function build(): ICommandBus
     {
-        $this->buildModules();
+        $this->configureModules();
         $this->buildComponents();
 
         try {

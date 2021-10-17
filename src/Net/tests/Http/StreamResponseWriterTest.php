@@ -52,7 +52,7 @@ class StreamResponseWriterTest extends TestCase
     /**
      * Gets a list of headers that should be not be concatenated
      *
-     * @return array<array<mixed>> The list of parameters to use
+     * @return list<list<mixed>> The list of parameters to use
      */
     public function getHeadersThatShouldNotBeConcatenated(): array
     {
