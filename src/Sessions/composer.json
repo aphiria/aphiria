@@ -37,8 +37,8 @@
         }
     },
     "require": {
-        "aphiria/middleware": "1.*@dev",
-        "aphiria/net": "1.*@dev",
+        "aphiria/middleware": "1.x-dev",
+        "aphiria/net": "1.x-dev",
         "php": ">=8.0"
     },
     "require-dev": {

@@ -38,7 +38,7 @@
         }
     },
     "require": {
-        "aphiria/reflection": "1.*@dev",
+        "aphiria/reflection": "1.x-dev",
         "ext-intl": "*",
         "php": ">=8.0"
     },

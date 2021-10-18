@@ -39,8 +39,8 @@
         }
     },
     "require": {
-        "aphiria/dependency-injection": "1.*@dev",
-        "aphiria/net": "1.*@dev",
+        "aphiria/dependency-injection": "1.x-dev",
+        "aphiria/net": "1.x-dev",
         "php": ">=8.0",
         "psr/container": "^1.0",
         "psr/http-factory": "^1.0",
