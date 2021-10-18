@@ -40,7 +40,7 @@
         }
     },
     "require": {
-        "aphiria/reflection": "1.*@dev",
+        "aphiria/reflection": "1.x-dev",
         "php": ">=8.1"
     },
     "require-dev": {
