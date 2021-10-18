@@ -38,9 +38,9 @@
         }
     },
     "require": {
-        "aphiria/io": "1.*@dev",
-        "aphiria/net": "1.*@dev",
-        "aphiria/reflection": "1.*@dev",
+        "aphiria/io": "1.x-dev",
+        "aphiria/net": "1.x-dev",
+        "aphiria/reflection": "1.x-dev",
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
