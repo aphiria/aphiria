@@ -135,7 +135,6 @@ enum HttpStatusCode: int
     case NotExtended = 510;
     /** The client needs to authenticate to gain network access */
     case NetworkAuthenticationRequired = 511;
-    /** @var array<int, string> Maps HTTP status codes to their default reason phrases */
 
     /**
      * Gets the default reason phrase for a status code
