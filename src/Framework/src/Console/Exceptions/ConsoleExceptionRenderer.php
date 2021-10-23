@@ -43,9 +43,9 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     public function render(Exception $ex): void
     {
         if (isset($this->outputWriters[$ex::class])) {
-            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::FATAL;
+            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::Fatal;
         } else {
-            $statusCode  = StatusCode::FATAL;
+            $statusCode  = StatusCode::Fatal;
             $this->output->writeln($this->getDefaultExceptionMessages($ex));
         }
 

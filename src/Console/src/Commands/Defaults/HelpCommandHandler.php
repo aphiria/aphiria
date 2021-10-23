@@ -64,7 +64,7 @@ EOF;
             if (!isset($input->arguments['command'])) {
                 $output->writeln("<comment>Pass in the name of the command you'd like help with</comment>");
 
-                return StatusCode::OK;
+                return StatusCode::Ok;
             }
 
             /** @var Command $command */
@@ -100,10 +100,10 @@ EOF;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>Command {$input->arguments['command']} does not exist</error>");
 
-            return StatusCode::ERROR;
+            return StatusCode::Error;
         }
 
-        return StatusCode::OK;
+        return StatusCode::Ok;
     }
 
     /**

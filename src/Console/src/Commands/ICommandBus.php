@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Commands;
 
 use Aphiria\Console\Output\IOutput;
+use Aphiria\Console\StatusCode;
 use InvalidArgumentException;
 
 /**
@@ -25,8 +26,8 @@ interface ICommandBus
      *
      * @param string|array $rawInput The raw input to parse
      * @param IOutput|null $output The output to write to, or null if using the default output
-     * @return int The status code
+     * @return StatusCode|int The status code
      * @throws InvalidArgumentException Thrown if the raw input was invalid in any way
      */
-    public function handle(string|array $rawInput, IOutput $output = null): int;
+    public function handle(string|array $rawInput, IOutput $output = null): StatusCode|int;
 }

@@ -36,8 +36,6 @@ use Throwable;
  */
 class Application implements ICommandBus
 {
-    /** @var IServiceResolver The resolver of command handlers */
-    private readonly IServiceResolver $commandHandlerResolver;
     /** @var IInputCompiler The input compiler to use */
     private readonly IInputCompiler $inputCompiler;
 
@@ -48,18 +46,17 @@ class Application implements ICommandBus
      */
     public function __construct(
         private readonly CommandRegistry $commands,
-        IServiceResolver $commandHandlerResolver,
+        private readonly IServiceResolver $commandHandlerResolver,
         IInputCompiler $inputCompiler = null
     ) {
         $this->registerDefaultCommands();
-        $this->commandHandlerResolver = $commandHandlerResolver;
         $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
     }
 
     /**
      * @inheritdoc
      */
-    public function handle(string|array $rawInput, IOutput $output = null): int
+    public function handle(string|array $rawInput, IOutput $output = null): StatusCode|int
     {
         $output = $output ?? new ConsoleOutput();
 
@@ -76,7 +73,7 @@ class Application implements ICommandBus
             $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
             $statusCode = $commandHandler->handle($compiledInput, $output);
 
-            return $statusCode ?? StatusCode::OK;
+            return $statusCode ?? StatusCode::Ok;
         } catch (CommandNotFoundException $ex) {
             // If there was no entered command, treat it like invoking the about command
             if ($ex->commandName === '') {
@@ -86,7 +83,7 @@ class Application implements ICommandBus
                 if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {
                     $output->writeln('<fatal>About command not registered</fatal>');
 
-                    return StatusCode::FATAL;
+                    return StatusCode::Fatal;
                 }
 
                 $output = $output ?? new ConsoleOutput();
@@ -94,20 +91,20 @@ class Application implements ICommandBus
                 $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
                 $commandHandler->handle(new Input('about', [], []), $output);
 
-                return StatusCode::OK;
+                return StatusCode::Ok;
             }
 
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
-            return StatusCode::ERROR;
+            return StatusCode::Error;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
-            return StatusCode::ERROR;
+            return StatusCode::Error;
         } catch (Exception | Throwable $ex) {
             $output->writeln("<fatal>{$this->formatExceptionMessage($ex)}</fatal>");
 
-            return StatusCode::FATAL;
+            return StatusCode::Fatal;
         }
     }
 

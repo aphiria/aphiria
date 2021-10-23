@@ -153,6 +153,6 @@ abstract class Driver implements IDriver
 
         \exec('stty 2>&1', $output, $sttyCheckStatusCode);
 
-        return $this->supportsStty = (StatusCode::OK === $sttyCheckStatusCode);
+        return $this->supportsStty = (StatusCode::Ok === $sttyCheckStatusCode);
     }
 }
