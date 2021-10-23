@@ -30,6 +30,7 @@ class AphiriaModuleTest extends TestCase
             }
         };
         $binderComponent = new class ($this->createMock(IContainer::class)) extends BinderComponent {
+            /** @var list<Binder> */
             public array $binders = [];
 
             public function withBinders(array|Binder $binders): static
