@@ -389,7 +389,6 @@ class Container implements IContainer
 
             foreach ($parameterTypes as $parameterType) {
                 try {
-                    /** @var class-string|null $parameterClassName */
                     $parameterClassName = $parameterType !== null && !$parameterType->isBuiltin()
                         ? $parameterType->getName()
                         : null;
