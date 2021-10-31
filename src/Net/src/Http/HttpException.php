@@ -24,7 +24,7 @@ class HttpException extends Exception
 
     /**
      * @inheritdoc
-     * @param int|IResponse $statusCodeOrResponse The status code or fully-formed response
+     * @param HttpStatusCode|int|IResponse $statusCodeOrResponse The status code or fully-formed response
      */
     public function __construct(
         HttpStatusCode|int|IResponse $statusCodeOrResponse,
