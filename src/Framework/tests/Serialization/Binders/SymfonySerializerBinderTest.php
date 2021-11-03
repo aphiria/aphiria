@@ -24,6 +24,8 @@ use Aphiria\Framework\Tests\Serialization\Binders\Mocks\MockNormalizer;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -83,6 +85,19 @@ class SymfonySerializerBinderTest extends TestCase
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
+    }
+
+    public function testEncoderThatDoesNotImplementEncoderOrDecoderInterfaceThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Encoder ' . $this::class . ' must implement ' . EncoderInterface::class . ' or ' . DecoderInterface::class);
+        $this->container->method('resolve')
+            ->with($this::class)
+            ->willReturn($this);
+        $config = self::getBaseConfig();
+        $config['aphiria']['serialization']['encoders'][] = $this::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->binder->bind($this->container);
     }
 
     public function testJsonEncoderIsInstantiated(): void
