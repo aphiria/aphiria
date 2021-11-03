@@ -82,9 +82,9 @@
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "psr/log": "~1.1",
-        "symfony/dotenv": "^5.4",
-        "symfony/property-access": "^5.4",
-        "symfony/serializer": "^5.4"
+        "symfony/dotenv": "^6.0",
+        "symfony/property-access": "^6.0",
+        "symfony/serializer": "^6.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",

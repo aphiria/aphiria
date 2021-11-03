@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Serialization\Normalizers;
 
 use Aphiria\Api\Errors\ProblemDetails;
+use ArrayObject;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -24,7 +25,7 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
     /**
      * @inheritdoc
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize(mixed $object, string $format = null, array $context = []):  array|string|int|float|bool|ArrayObject|null
     {
         if (!$object instanceof ProblemDetails) {
             throw new InvalidArgumentException('Object must be an instance of ' . ProblemDetails::class);
@@ -54,7 +55,7 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
     /**
      * @inheritdoc
      */
-    public function supportsNormalization($data, string $format = null): bool
+    public function supportsNormalization(mixed $data, string $format = null): bool
     {
         return $data instanceof ProblemDetails;
     }

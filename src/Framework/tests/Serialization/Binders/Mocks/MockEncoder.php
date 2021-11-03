@@ -19,15 +19,15 @@ class MockEncoder implements EncoderInterface
     /**
      * @inheritdoc
      */
-    public function encode($data, string $format, array $context = [])
+    public function encode(mixed $data, string $format, array $context = []): string
     {
-        return ['foo' => 'bar'];
+        return 'foobar';
     }
 
     /**
      * @inheritdoc
      */
-    public function supportsEncoding(string $format)
+    public function supportsEncoding(string $format): bool
     {
         return true;
     }
