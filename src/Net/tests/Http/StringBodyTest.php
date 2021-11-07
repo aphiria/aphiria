@@ -53,7 +53,7 @@ class StringBodyTest extends TestCase
 
     public function testWritingToStreamActuallyWritesContentsToStream(): void
     {
-        /** @var IStream|MockObject $stream */
+        /** @var IStream&MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('write')

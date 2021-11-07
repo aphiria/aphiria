@@ -23,10 +23,8 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
-    /** @var Headers $headers The request headers */
-    protected Headers $headers;
-    /** @var IDictionary<string, mixed> The request properties */
-    protected IDictionary $properties;
+    /** @var string The request method */
+    protected readonly string $method;
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -40,54 +38,30 @@ class Request implements IRequest
         'PUT' => true,
         'TRACE' => true
     ];
-    /** @var array<string, bool> The list of request target types that require a Host header */
-    private static array $validRequestTargetTypes = [
-        RequestTargetTypes::ORIGIN_FORM => true,
-        RequestTargetTypes::ABSOLUTE_FORM => true,
-        RequestTargetTypes::AUTHORITY_FORM => true,
-        RequestTargetTypes::ASTERISK_FORM => true
-    ];
-    /** @var array<string, bool> The list of valid request target types */
-    private static array $requestTargetTypesWithHostHeader = [
-        RequestTargetTypes::ORIGIN_FORM => true,
-        // Per https://tools.ietf.org/html/rfc7230#section-5.4, this is necessary for old HTTP/1.0 proxies
-        RequestTargetTypes::ABSOLUTE_FORM => true,
-        RequestTargetTypes::ASTERISK_FORM => true
-    ];
 
     /**
      * @param string $method The request method
      * @param Uri $uri The request URI
-     * @param Headers|null $headers The request headers if any are set, otherwise null
+     * @param Headers $headers The request headers if any are set, otherwise null
      * @param IBody|null $body The request body if one is set, otherwise null
-     * @param IDictionary<string, mixed>|null $properties The request properties
+     * @param IDictionary<string, mixed> $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
-     * @param string $requestTargetType The type of request target URI this request uses
+     * @param RequestTargetType $requestTargetType The type of request target URI this request uses
      * @throws InvalidArgumentException Thrown if the any of the properties are not valid
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function __construct(
-        protected string $method,
-        protected Uri $uri,
-        Headers $headers = null,
+        string $method,
+        protected readonly Uri $uri,
+        protected readonly Headers $headers = new Headers(),
         protected ?IBody $body = null,
-        IDictionary $properties = null,
-        protected string $protocolVersion = '1.1',
-        protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM
+        protected readonly IDictionary $properties = new HashTable(),
+        protected readonly string $protocolVersion = '1.1',
+        protected readonly RequestTargetType $requestTargetType = RequestTargetType::OriginForm
     ) {
         $this->method = \strtoupper($method);
-        $this->headers = $headers ?? new Headers();
-        /** @var IDictionary<string, mixed>|HashTable<string, mixed> properties */
-        $this->properties = $properties ?? new HashTable();
         $this->validateProperties();
-
-        /** @link https://tools.ietf.org/html/rfc7230#section-5.4 */
-        if (
-            isset(self::$requestTargetTypesWithHostHeader[$this->requestTargetType]) &&
-            !$this->headers->containsKey('Host')
-        ) {
-            $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
-        }
+        $this->addHostHeaderIfNecessary();
     }
 
     /**
@@ -168,6 +142,23 @@ class Request implements IRequest
     }
 
     /**
+     * Adds the host header if it's necessary per the request target type
+     *
+     * @link https://tools.ietf.org/html/rfc7230#section-5.4
+     */
+    private function addHostHeaderIfNecessary(): void
+    {
+        $requiresHostHeader = match ($this->requestTargetType) {
+            RequestTargetType::OriginForm, RequestTargetType::AsteriskForm, RequestTargetType::AbsoluteForm => true,
+            default => false
+        };
+
+        if ($requiresHostHeader && !$this->headers->containsKey('Host')) {
+            $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
+        }
+    }
+
+    /**
      * Gets the request target
      *
      * return @string The request target
@@ -175,24 +166,24 @@ class Request implements IRequest
     private function getRequestTarget(): string
     {
         switch ($this->requestTargetType) {
-            case RequestTargetTypes::ORIGIN_FORM:
-                $requestTarget = $this->uri->getPath();
+            case RequestTargetType::OriginForm:
+                $requestTarget = $this->uri->path;
 
                 /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
                 if ($requestTarget === null || $requestTarget === '') {
                     $requestTarget = '/';
                 }
 
-                if (($queryString = $this->uri->getQueryString()) !== null && $queryString !== '') {
+                if (($queryString = $this->uri->queryString) !== null && $queryString !== '') {
                     $requestTarget .= "?$queryString";
                 }
 
                 return $requestTarget;
-            case RequestTargetTypes::AUTHORITY_FORM:
+            case RequestTargetType::AuthorityForm:
                 return $this->uri->getAuthority(false) ?? '';
-            case RequestTargetTypes::ASTERISK_FORM:
+            case RequestTargetType::AsteriskForm:
                 return '*';
-            case RequestTargetTypes::ABSOLUTE_FORM:
+            case RequestTargetType::AbsoluteForm:
             default:
                 return (string)$this->uri;
         }
@@ -207,10 +198,6 @@ class Request implements IRequest
     {
         if (!isset(self::$validMethods[$this->method])) {
             throw new InvalidArgumentException("Invalid HTTP method {$this->method}");
-        }
-
-        if (!isset(self::$validRequestTargetTypes[$this->requestTargetType])) {
-            throw new InvalidArgumentException("Request target type {$this->requestTargetType} is invalid");
         }
     }
 }

@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 
 class ValidationBinderTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
     private ValidationBinder $binder;
     private ?string $currEnvironment;
 

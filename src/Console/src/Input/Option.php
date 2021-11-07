@@ -19,30 +19,42 @@ use InvalidArgumentException;
  */
 final class Option
 {
+
+    /** @var list<OptionType> The type of option this is */
+    public readonly array $type;
+    /** @var int The bitwise-OR'd flag representing all the types */
+    private int $typeFlag = 0;
+
     /**
      * @param string $name The name of the option
-     * @param int $type The type of option this is
+     * @param list<OptionType>|OptionType $type The type of option this is
      * @param string|null $shortName The short name of the option if it has one, otherwise null
      * @param string|null $description A brief description of the option
      * @param mixed $defaultValue The default value for the option if it's optional
      * @throws InvalidArgumentException Thrown if the type is invalid
      */
     public function __construct(
-        public string $name,
-        public int $type,
-        public ?string $shortName = null,
-        public ?string $description = null,
-        public mixed $defaultValue = null
+        public readonly string $name,
+        array|OptionType $type,
+        public readonly ?string $shortName = null,
+        public readonly ?string $description = null,
+        public readonly mixed $defaultValue = null
     ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Option name cannot be empty');
         }
 
-        if (($this->type & 3) === 3) {
+        $this->type = \is_array($type) ? $type : [$type];
+
+        foreach ($this->type as $type) {
+            $this->typeFlag |= $type->value;
+        }
+
+        if (($this->typeFlag & 3) === 3) {
             throw new InvalidArgumentException('Option type cannot be both optional and required');
         }
 
-        if (($this->type & 5) === 5 || ($this->type & 6) === 6) {
+        if (($this->typeFlag & 5) === 5 || ($this->typeFlag & 6) === 6) {
             throw new InvalidArgumentException('Option cannot have a value and not have a value');
         }
 
@@ -64,7 +76,7 @@ final class Option
      */
     public function valueIsArray(): bool
     {
-        return ($this->type & OptionTypes::IS_ARRAY) === OptionTypes::IS_ARRAY;
+        return ($this->typeFlag & OptionType::IsArray->value) === OptionType::IsArray->value;
     }
 
     /**
@@ -74,7 +86,7 @@ final class Option
      */
     public function valueIsOptional(): bool
     {
-        return ($this->type & OptionTypes::OPTIONAL_VALUE) === OptionTypes::OPTIONAL_VALUE;
+        return ($this->typeFlag & OptionType::OptionalValue->value) === OptionType::OptionalValue->value;
     }
 
     /**
@@ -84,7 +96,7 @@ final class Option
      */
     public function valueIsPermitted(): bool
     {
-        return ($this->type & OptionTypes::NO_VALUE) !== OptionTypes::NO_VALUE;
+        return ($this->typeFlag & OptionType::NoValue->value) !== OptionType::NoValue->value;
     }
 
     /**
@@ -94,6 +106,6 @@ final class Option
      */
     public function valueIsRequired(): bool
     {
-        return ($this->type & OptionTypes::REQUIRED_VALUE) === OptionTypes::REQUIRED_VALUE;
+        return ($this->typeFlag & OptionType::RequiredValue->value) === OptionType::RequiredValue->value;
     }
 }

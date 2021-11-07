@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Collections\Tests\Mocks\FakeObject;
 use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
@@ -29,7 +28,7 @@ class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    private IErrorMessageInterpolator|FakeObject|MockObject $errorMessageInterpolator;
+    private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
 
     protected function setUp(): void
     {
@@ -159,13 +158,14 @@ class ValidatorTest extends TestCase
             ->method('interpolate')
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
+        /** @var list<ConstraintViolation> $violations */
         $violations = [];
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame('error', $violations[0]->getErrorMessage());
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertEquals($object, $violations[0]->getRootValue());
-        $this->assertSame(1, $violations[0]->getInvalidValue());
+        $this->assertSame('error', $violations[0]->errorMessage);
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertEquals($object, $violations[0]->rootValue);
+        $this->assertSame(1, $violations[0]->invalidValue);
     }
 
     public function testTryValidateMethodWithValidValueHasNoConstraintViolations(): void
@@ -273,10 +273,10 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertFalse($this->validator->tryValidateObject($object, $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame('error', $violations[0]->getErrorMessage());
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertEquals($object, $violations[0]->getRootValue());
-        $this->assertSame(1, $violations[0]->getInvalidValue());
+        $this->assertSame('error', $violations[0]->errorMessage);
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertEquals($object, $violations[0]->rootValue);
+        $this->assertSame(1, $violations[0]->invalidValue);
     }
 
     public function testTryValidatePropertyReturnsFalseForInvalidValue(): void
@@ -377,10 +377,10 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame('error', $violations[0]->getErrorMessage());
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertEquals($object, $violations[0]->getRootValue());
-        $this->assertSame(1, $violations[0]->getInvalidValue());
+        $this->assertSame('error', $violations[0]->errorMessage);
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertEquals($object, $violations[0]->rootValue);
+        $this->assertSame(1, $violations[0]->invalidValue);
     }
 
     public function testTryValidateValueWithInvalidValueSetsConstraintViolations(): void
@@ -390,9 +390,9 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertFalse($this->validator->tryValidateValue('foo', $constraints, $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertSame('foo', $violations[0]->getRootValue());
-        $this->assertSame('foo', $violations[0]->getInvalidValue());
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertSame('foo', $violations[0]->rootValue);
+        $this->assertSame('foo', $violations[0]->invalidValue);
     }
 
     public function testTryValidateValueWithValidValueHasNoConstraintViolations(): void

@@ -23,15 +23,11 @@ use Aphiria\Net\Http\IRequest;
  */
 final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
 {
-    /** @var RequestHeaderParser The header parser to use to get charset headers */
-    private RequestHeaderParser $headerParser;
-
     /**
-     * @param RequestHeaderParser|null $headerParser The header parser to use to get charset headers
+     * @param RequestHeaderParser $headerParser The header parser to use to get charset headers
      */
-    public function __construct(RequestHeaderParser $headerParser = null)
+    public function __construct(private readonly RequestHeaderParser $headerParser = new RequestHeaderParser())
     {
-        $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 
     /**
@@ -47,7 +43,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
             foreach ($supportedEncodings as $supportedEncoding) {
-                $charset = $acceptCharsetHeader->getCharset();
+                $charset = $acceptCharsetHeader->charset;
 
                 if ($charset === '*' || \strcasecmp($charset, $supportedEncoding) === 0) {
                     return $supportedEncoding;
@@ -55,13 +51,13 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
             }
         }
 
-        if ($matchedMediaTypeHeaderValue?->getCharset() === null) {
+        if ($matchedMediaTypeHeaderValue?->charset === null) {
             return null;
         }
 
         // Fall back to the charset in the media type header
         foreach ($supportedEncodings as $supportedEncoding) {
-            $charset = $matchedMediaTypeHeaderValue?->getCharset();
+            $charset = $matchedMediaTypeHeaderValue?->charset;
 
             if ($charset === '*' || \strcasecmp($charset ?? '', $supportedEncoding) === 0) {
                 return $supportedEncoding;
@@ -91,8 +87,8 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
             return -1;
         }
 
-        $aValue = $a->getCharset();
-        $bValue = $b->getCharset();
+        $aValue = $a->charset;
+        $bValue = $b->charset;
 
         if ($aValue === '*') {
             if ($bValue === '*') {

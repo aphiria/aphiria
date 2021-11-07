@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Output;
 
 use Aphiria\Console\Output\Compilers\IOutputCompiler;
+use Aphiria\Console\Output\Compilers\OutputCompiler;
 
 /**
  * Defines the console response
@@ -20,9 +21,9 @@ use Aphiria\Console\Output\Compilers\IOutputCompiler;
 class ConsoleOutput extends StreamOutput
 {
     /**
-     * @param IOutputCompiler|null $outputCompiler The output compiler to use
+     * @param IOutputCompiler $outputCompiler The output compiler to use
      */
-    public function __construct(IOutputCompiler $outputCompiler = null)
+    public function __construct(IOutputCompiler $outputCompiler = new OutputCompiler())
     {
         parent::__construct(\fopen('php://stdout', 'wb'), \fopen('php://stdin', 'rb'), $outputCompiler);
     }

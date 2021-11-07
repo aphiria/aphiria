@@ -15,7 +15,7 @@ namespace Aphiria\Console\Tests\Drivers;
 use Aphiria\Console\Drivers\HiddenInputNotSupportedException;
 use Aphiria\Console\Drivers\UnixLikeDriver;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use PHPUnit\Framework\TestCase;
 
 class UnixLikeDriverTest extends TestCase
@@ -94,7 +94,7 @@ class UnixLikeDriverTest extends TestCase
     {
         $sttyOutput = \exec('(stty -a | grep columns) 2>&1', $output, $statusCode);
 
-        if ($statusCode !== StatusCodes::OK) {
+        if ($statusCode !== StatusCode::Ok) {
             $this->markTestSkipped('This test can only be run on *nix systems with STTY support');
         }
 

@@ -23,7 +23,7 @@ final class FileCommandRegistryCache implements ICommandRegistryCache
     /**
      * @param string $path The path to the cache file
      */
-    public function __construct(private string $path)
+    public function __construct(private readonly string $path)
     {
     }
 

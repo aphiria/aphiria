@@ -33,9 +33,9 @@ use InvalidArgumentException;
 trait IntegrationTest
 {
     /** @var ResponseAssertions The response assertions */
-    protected ResponseAssertions $responseAssertions;
+    protected readonly ResponseAssertions $responseAssertions;
     /** @var NegotiatedRequestBuilder The request builder */
-    protected NegotiatedRequestBuilder $requestBuilder;
+    protected readonly NegotiatedRequestBuilder $requestBuilder;
     /** @var IRequest|null The most recently sent request from the helper methods in this class */
     protected ?IRequest $lastRequest = null;
     /**
@@ -44,7 +44,7 @@ trait IntegrationTest
      *
      * @var IHttpClient
      */
-    private IHttpClient $client;
+    private readonly IHttpClient $client;
 
     /**
      * Gets the built application that will handle requests

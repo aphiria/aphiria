@@ -32,7 +32,7 @@ use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Closure;
@@ -44,7 +44,7 @@ use RuntimeException;
 
 class AphiriaComponentsTest extends TestCase
 {
-    private IApplicationBuilder|MockObject $appBuilder;
+    private IApplicationBuilder&MockObject $appBuilder;
 
     protected function setUp(): void
     {
@@ -840,7 +840,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {
@@ -879,7 +879,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {
@@ -891,7 +891,7 @@ class AphiriaComponentsTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testWithProblemDetailssWithoutGlobalContainerInstanceSetThrowsException(): void
+    public function testWithProblemDetailsWithoutGlobalContainerInstanceSetThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');

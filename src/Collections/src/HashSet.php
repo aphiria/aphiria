@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayIterator;
+use Closure;
 use RuntimeException;
 use Traversable;
 
@@ -25,10 +26,10 @@ use Traversable;
  */
 class HashSet implements ISet
 {
+    /** @var KeyHasher The key hasher to use */
+    private readonly KeyHasher $keyHasher;
     /** @var array<string, T> The set of values */
     protected array $values = [];
-    /** @var KeyHasher The key hasher to use */
-    private KeyHasher $keyHasher;
 
     /**
      * @param list<T> $values The set of values
@@ -117,7 +118,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function sort(callable $comparer): static
+    public function sort(Closure $comparer): static
     {
         // Get a copy of the values
         $values = $this->values;
@@ -139,7 +140,7 @@ class HashSet implements ISet
      */
     public function union(array $values): static
     {
-        return new static(\array_merge(\array_values($this->values), $values));
+        return new static([...\array_values($this->values), ...$values]);
     }
 
     /**

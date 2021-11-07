@@ -17,22 +17,10 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
  */
 final class ConstructorWithUnionType
 {
-    /** @var string|IFoo The union type property */
-    private string|IFoo $foo;
-
     /**
      * @param string|IFoo $foo The union type parameter
      */
-    public function __construct(string|IFoo $foo)
+    public function __construct(public readonly string|IFoo $foo)
     {
-        $this->foo = $foo;
-    }
-
-    /**
-     * @return string|IFoo
-     */
-    public function getFoo(): string|IFoo
-    {
-        return $this->foo;
     }
 }

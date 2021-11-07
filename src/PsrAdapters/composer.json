@@ -41,7 +41,7 @@
     "require": {
         "aphiria/dependency-injection": "1.x-dev",
         "aphiria/net": "1.x-dev",
-        "php": ">=8.0",
+        "php": ">=8.1",
         "psr/container": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0"
@@ -56,7 +56,8 @@
         "phpcs-fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --diff",
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml --verbose",
         "test": [
-            "@phpunit"
+            "@phpunit",
+            "@phpcs-test"
         ]
     },
     "extra": {

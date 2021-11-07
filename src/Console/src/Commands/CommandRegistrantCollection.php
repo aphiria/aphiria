@@ -25,7 +25,7 @@ class CommandRegistrantCollection implements ICommandRegistrant
     /**
      * @param ICommandRegistryCache|null $commandCache The optional command cache
      */
-    public function __construct(private ?ICommandRegistryCache $commandCache = null)
+    public function __construct(private readonly ?ICommandRegistryCache $commandCache = null)
     {
     }
 

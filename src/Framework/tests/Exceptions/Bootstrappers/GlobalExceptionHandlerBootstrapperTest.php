@@ -25,7 +25,7 @@ use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Framework\Exceptions\Bootstrappers\GlobalExceptionHandlerBootstrapper;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
@@ -41,7 +41,7 @@ use Psr\Log\LogLevel;
 
 class GlobalExceptionHandlerBootstrapperTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
     private Logger $logger;
     private GlobalExceptionHandlerBootstrapper $bootstrapper;
     private IApiExceptionRenderer $apiExceptionRenderer;
@@ -169,12 +169,12 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $responseFactory = $this->createMock(IResponseFactory::class);
         $responseFactory->expects($this->once())
             ->method('createResponse')
-            ->with($request, HttpStatusCodes::BAD_REQUEST, null, $this->isInstanceOf(ProblemDetails::class))
-            ->willReturn(new Response(HttpStatusCodes::BAD_REQUEST));
+            ->with($request, HttpStatusCode::BadRequest->value, null, $this->isInstanceOf(ProblemDetails::class))
+            ->willReturn(new Response(HttpStatusCode::BadRequest));
         $this->apiExceptionRenderer->setResponseFactory($responseFactory);
         $exception = new InvalidRequestBodyException(['foo']);
         $response = $this->apiExceptionRenderer->createResponse($exception);
-        $this->assertSame(HttpStatusCodes::BAD_REQUEST, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::BadRequest, $response->getStatusCode());
     }
 
     public function testLogLevelFactoryIsCreatedAndBound(): void

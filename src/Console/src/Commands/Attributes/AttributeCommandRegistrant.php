@@ -32,18 +32,17 @@ use ReflectionException;
 final class AttributeCommandRegistrant implements ICommandRegistrant
 {
     /** @var list<string> The paths to check for commands */
-    private array $paths;
-    /** @var ITypeFinder The type finder */
-    private ITypeFinder $typeFinder;
+    private readonly array $paths;
 
     /**
      * @param string|list<string> $paths The path or paths to check for commands
-     * @param ITypeFinder|null $typeFinder The type finder
+     * @param ITypeFinder $typeFinder The type finder
      */
-    public function __construct(string|array $paths, ITypeFinder $typeFinder = null)
-    {
+    public function __construct(
+        string|array $paths,
+        private readonly ITypeFinder $typeFinder = new TypeFinder()
+    ) {
         $this->paths = \is_array($paths) ? $paths : [$paths];
-        $this->typeFinder = $typeFinder ?? new TypeFinder();
     }
 
     /**

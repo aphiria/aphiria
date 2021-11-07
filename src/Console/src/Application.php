@@ -36,10 +36,8 @@ use Throwable;
  */
 class Application implements ICommandBus
 {
-    /** @var IServiceResolver The resolver of command handlers */
-    private IServiceResolver $commandHandlerResolver;
     /** @var IInputCompiler The input compiler to use */
-    private IInputCompiler $inputCompiler;
+    private readonly IInputCompiler $inputCompiler;
 
     /**
      * @param CommandRegistry $commands The commands
@@ -47,19 +45,18 @@ class Application implements ICommandBus
      * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
      */
     public function __construct(
-        private CommandRegistry $commands,
-        IServiceResolver $commandHandlerResolver,
+        private readonly CommandRegistry $commands,
+        private readonly IServiceResolver $commandHandlerResolver,
         IInputCompiler $inputCompiler = null
     ) {
         $this->registerDefaultCommands();
-        $this->commandHandlerResolver = $commandHandlerResolver;
         $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
     }
 
     /**
      * @inheritdoc
      */
-    public function handle(string|array $rawInput, IOutput $output = null): int
+    public function handle(string|array $rawInput, IOutput $output = null): StatusCode|int
     {
         $output = $output ?? new ConsoleOutput();
 
@@ -76,17 +73,17 @@ class Application implements ICommandBus
             $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
             $statusCode = $commandHandler->handle($compiledInput, $output);
 
-            return $statusCode ?? StatusCodes::OK;
+            return $statusCode ?? StatusCode::Ok;
         } catch (CommandNotFoundException $ex) {
             // If there was no entered command, treat it like invoking the about command
-            if ($ex->getCommandName() === '') {
+            if ($ex->commandName === '') {
                 /** @var class-string|null $aboutCommandHandlerClassName */
                 $aboutCommandHandlerClassName = null;
 
                 if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {
                     $output->writeln('<fatal>About command not registered</fatal>');
 
-                    return StatusCodes::FATAL;
+                    return StatusCode::Fatal;
                 }
 
                 $output = $output ?? new ConsoleOutput();
@@ -94,20 +91,20 @@ class Application implements ICommandBus
                 $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
                 $commandHandler->handle(new Input('about', [], []), $output);
 
-                return StatusCodes::OK;
+                return StatusCode::Ok;
             }
 
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
-            return StatusCodes::ERROR;
+            return StatusCode::Error;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
-            return StatusCodes::ERROR;
+            return StatusCode::Error;
         } catch (Exception | Throwable $ex) {
             $output->writeln("<fatal>{$this->formatExceptionMessage($ex)}</fatal>");
 
-            return StatusCodes::FATAL;
+            return StatusCode::Fatal;
         }
     }
 

@@ -12,26 +12,28 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output\Formatters;
 
+use Closure;
+
 /**
  * Defines the padding formatter
  */
 class PaddingFormatter
 {
+    /** @var string The end-of-line character */
+    public string $eolChar = PHP_EOL;
     /** @var bool Whether or not to pad after the string */
     private bool $padAfter = true;
     /** @var string The padding string */
     private string $paddingString = ' ';
-    /** @var string The end-of-line character */
-    private string $eolChar = PHP_EOL;
 
     /**
      * Formats rows of text so that each column is the same width
      *
      * @param array<int, mixed> $rows The rows to pad
-     * @param callable(array<mixed>): string $callback The callback that returns a formatted row of text
+     * @param Closure(array<mixed>): string $callback The callback that returns a formatted row of text
      * @return string A list of formatted rows
      */
-    public function format(array $rows, callable $callback): string
+    public function format(array $rows, Closure $callback): string
     {
         // Normalize all rows to be an array
         $numRows = \count($rows);
@@ -63,16 +65,6 @@ class PaddingFormatter
         $formattedText = \preg_replace('/' . \preg_quote($this->eolChar, '/') . '$/', '', $formattedText);
 
         return $formattedText;
-    }
-
-    /**
-     * Gets the EOL character
-     *
-     * @return string The end-of-line character
-     */
-    public function getEolChar(): string
-    {
-        return $this->eolChar;
     }
 
     /**
@@ -110,16 +102,6 @@ class PaddingFormatter
 
         /** @var array<int, int> $maxLengths */
         return $maxLengths;
-    }
-
-    /**
-     * Sets the EOL character
-     *
-     * @param string $eolChar The new end-of-line character
-     */
-    public function setEolChar(string $eolChar): void
-    {
-        $this->eolChar = $eolChar;
     }
 
     /**

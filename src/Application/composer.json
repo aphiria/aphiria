@@ -38,8 +38,8 @@
         }
     },
     "require": {
-        "php": ">=8.0",
-        "symfony/dotenv": "~5.2"
+        "php": ">=8.1",
+        "symfony/dotenv": "^6.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",
@@ -50,7 +50,8 @@
         "phpcs-fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --diff",
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml --verbose",
         "test": [
-            "@phpunit"
+            "@phpunit",
+            "@phpcs-test"
         ]
     },
     "extra": {

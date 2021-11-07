@@ -22,20 +22,19 @@ use Aphiria\Console\Output\Compilers\OutputCompiler;
  */
 abstract class Output implements IOutput
 {
-    /** @var IOutputCompiler The output compiler to use */
-    protected IOutputCompiler $outputCompiler;
     /** @var IDriver The driver */
-    protected IDriver $driver;
+    protected readonly IDriver $driver;
     /** @var bool Whether or not to include styling on output messages */
     protected bool $includeStyles = true;
 
     /**
-     * @param IOutputCompiler|null $outputCompiler The output compiler to use
+     * @param IOutputCompiler $outputCompiler The output compiler to use
      * @param IDriver|null $driver The driver
      */
-    public function __construct(IOutputCompiler $outputCompiler = null, IDriver $driver = null)
-    {
-        $this->outputCompiler = $outputCompiler ?? new OutputCompiler();
+    public function __construct(
+        protected readonly IOutputCompiler $outputCompiler = new OutputCompiler(),
+        IDriver $driver = null
+    ) {
         $this->driver = $driver ?? (new DriverSelector())->select();
     }
 

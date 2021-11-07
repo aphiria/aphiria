@@ -20,7 +20,7 @@ use Aphiria\Console\Input\Option;
 use Aphiria\Console\Output\Formatters\CommandFormatter;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use InvalidArgumentException;
 
 /**
@@ -42,23 +42,17 @@ Command: <info>{{name}}</info>
 <comment>Options:</comment>
 {{options}}{{helpText}}
 EOF;
-    /** @var CommandFormatter The command formatter to use */
-    private CommandFormatter $commandFormatter;
-    /** @var PaddingFormatter The space padding formatter to use */
-    private PaddingFormatter $paddingFormatter;
 
     /**
      * @param CommandRegistry $commands The commands
-     * @param CommandFormatter|null $commandFormatter The command formatter to use
-     * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
+     * @param CommandFormatter $commandFormatter The command formatter to use
+     * @param PaddingFormatter $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        private CommandRegistry $commands,
-        CommandFormatter $commandFormatter = null,
-        PaddingFormatter $paddingFormatter = null
+        private readonly CommandRegistry $commands,
+        private readonly CommandFormatter $commandFormatter = new CommandFormatter(),
+        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
     ) {
-        $this->commandFormatter = $commandFormatter ?? new CommandFormatter();
-        $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
     /**
@@ -70,7 +64,7 @@ EOF;
             if (!isset($input->arguments['command'])) {
                 $output->writeln("<comment>Pass in the name of the command you'd like help with</comment>");
 
-                return StatusCodes::OK;
+                return StatusCode::Ok;
             }
 
             /** @var Command $command */
@@ -106,10 +100,10 @@ EOF;
         } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>Command {$input->arguments['command']} does not exist</error>");
 
-            return StatusCodes::ERROR;
+            return StatusCode::Error;
         }
 
-        return StatusCodes::OK;
+        return StatusCode::Ok;
     }
 
     /**

@@ -28,7 +28,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(private IContainer $container)
+    public function __construct(private readonly IContainer $container)
     {
     }
 

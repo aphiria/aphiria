@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class ExceptionHandlerBinderTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockObject $container;
     private ExceptionHandlerBinder $binder;
     private ?IApiExceptionRenderer $apiExceptionRenderer;
     private ?IRequest $request;

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Drivers;
 
 use Aphiria\Console\Drivers\WindowsDriver;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use PHPUnit\Framework\TestCase;
 
 class WindowsDriverTest extends TestCase
@@ -93,7 +93,7 @@ class WindowsDriverTest extends TestCase
 
         $sttyOutput = \exec('(stty -a | grep columns) 2>&1', $output, $statusCode);
 
-        if ($statusCode !== StatusCodes::OK) {
+        if ($statusCode !== StatusCode::Ok) {
             $this->markTestSkipped('This test can only be run on Windows with STTY support');
         }
 

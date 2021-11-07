@@ -1,5 +1,45 @@
 # Changelog
 
+## [v1.0.0-alpha5](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha4...v1.0.0-alpha5) (?)
+
+### Fixed
+
+- Fixed typos in PHPDoc ([#159](https://github.com/aphiria/aphiria/pull/159))
+
+### Changed
+
+- Now requires PHP 8.1 ([#159](https://github.com/aphiria/aphiria/pull/159))
+- Many methods now converted to readonly properties ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Net\Http\Response::__construct()` now takes in either a `StatusCode` or an int status code ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Net\Http\IResponse::getStatusCode()` now returns `StatusCode` and `setStatusCode()` takes in a `StatusCode` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Net\Http\Headers\Cookie::sameSite` now returns `SameSiteMode` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- Converted the following classes to enums ([#159](https://github.com/aphiria/aphiria/pull/159)):
+  - `Aphiria\Console\Input\ArgumentTypes` => `Aphiria\Console\Input\ArgumentType`
+  - `Aphiria\Console\Input\OptionTypes` => `Aphiria\Console\Input\OptionType`
+  - `Aphiria\Console\Output\Compilers\Elements\Colors` => `Aphiria\Console\Output\Compilers\Elements\Color`
+  - `Aphiria\Console\Output\Compilers\Elements\TextStyles` => `Aphiria\Console\Output\Compilers\Elements\TextStyle`
+  - `Aphiria\Console\Output\Lexers\OutputTokenTypes` => `Aphiria\Console\Output\Lexers\OutputTokenType`
+  - `Aphiria\Net\Http\StatusCodes` => `Aphiria\Net\Http\StatusCode`
+  - `Aphiria\Net\Http\Headers\SameSiteMode` (new)
+  - `Aphiria\Routing\UriTemplates\Lexers\TokenTypes` => `Aphiria\Routing\UriTemplates\Lexers\TokenType`
+  - `Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes` => `Aphiria\Routing\UriTemplates\Parsers\AstNodeType`
+- `Aphiria\Console\Input\Argument` and `Aphiria\Console\Commands\Attributes\Argument` now take in an `ArgumentType` or list of `ArgumentType`s instead of a bitwise-OR'd integer ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Console\Input\Option` and `Aphiria\Console\Commands\Attributes\Option` now take in an `OptionType` or list of `OptionType`s instead of a bitwise-OR'd integer ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Api\Controllers\IRouteActionInvoker::invokeRouteAction()` now requires a `Closure` `$routeActionDelegate` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Collections\IList::sort()` now requires a `Closure` `$comparer` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Collections\ISet::sort()` now requires a `Closure` `$comparer` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Console\Output\Formatters\PaddingFormatter::format()` now requires a `Closure` `$callback` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\DependencyInjection\IContainer::bindFactory()` now requires a `Closure` `$factory` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\DependencyInjection\IServiceResolver::for()` now requires a `Closure` `$callback` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Validation\Constraints\CallbackConstraint()` now requires a `Closure` `$callback` instead of just a `callable` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- `Aphiria\Application\IModule::build()` renamed to `configure()` ([#165](https://github.com/aphiria/aphiria/pull/165))
+- All Symfony dependencies were bumped to ^6.0 ([#159](https://github.com/aphiria/aphiria/pull/159))
+
+### Added
+
+- Added support for automatically resolving unknown encoders/decoders and normalizers/denormalizers in `Aphiria\Framework\Serialization\Binders\SymfonySerializerBinder` ([#159](https://github.com/aphiria/aphiria/pull/159))
+- Added support for `Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer` so that enums can be properly (de)serialized ([#159](https://github.com/aphiria/aphiria/pull/159))
+
 ## [v1.0.0-alpha4](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha3...v1.0.0-alpha4) (2021-08-08)
 
 ### Fixed

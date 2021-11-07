@@ -20,21 +20,21 @@ use InvalidArgumentException;
 class Uri
 {
     /** @var string|null The URI scheme if set, otherwise null */
-    private ?string $scheme;
+    public readonly ?string $scheme;
     /** @var string|null The URI user if set, otherwise null */
-    private ?string $user;
+    public readonly ?string $user;
     /** @var string|null The URI password if set, otherwise null */
-    private ?string $password;
+    public readonly ?string $password;
     /** @var string|null The URI host if set, otherwise null */
-    private ?string $host;
+    public readonly ?string $host;
     /** @var int|null The URI port if set, otherwise null */
-    private ?int $port;
+    public readonly ?int $port;
     /** @var string|null The URI path if set, otherwise null */
-    private ?string $path;
+    public readonly ?string $path;
     /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    private ?string $queryString;
+    public readonly ?string $queryString;
     /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    private ?string $fragment;
+    public readonly ?string $fragment;
 
     /**
      * @param string $uri The raw URI
@@ -120,86 +120,6 @@ class Uri
         }
 
         return $authority === '' ? null : $authority;
-    }
-
-    /**
-     * Gets the fragment
-     *
-     * @return string|null The fragment if set, otherwise null
-     */
-    public function getFragment(): ?string
-    {
-        return $this->fragment;
-    }
-
-    /**
-     * Gets the host
-     *
-     * @return string|null The host if set, otherwise null
-     */
-    public function getHost(): ?string
-    {
-        return $this->host;
-    }
-
-    /**
-     * Gets the password
-     *
-     * @return string|null The password if set, otherwise null
-     */
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    /**
-     * Gets the path
-     *
-     * @return string|null The URI path if set, otherwise null
-     */
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    /**
-     * Gets the port
-     *
-     * @return int|null The port if set, otherwise null
-     */
-    public function getPort(): ?int
-    {
-        return $this->port;
-    }
-
-    /**
-     * Gets the query string
-     *
-     * @return string|null The query string if set, otherwise null
-     */
-    public function getQueryString(): ?string
-    {
-        return $this->queryString;
-    }
-
-    /**
-     * Gets the scheme
-     *
-     * @return string|null The scheme if set, otherwise null
-     */
-    public function getScheme(): ?string
-    {
-        return $this->scheme;
-    }
-
-    /**
-     * Gets the user
-     *
-     * @return string|null The user if set, otherwise null
-     */
-    public function getUser(): ?string
-    {
-        return $this->user;
     }
 
     /**

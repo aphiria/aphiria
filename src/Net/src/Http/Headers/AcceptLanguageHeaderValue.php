@@ -22,7 +22,7 @@ use InvalidArgumentException;
 final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var IImmutableDictionary<string, string|null> The dictionary of parameter names to values */
-    private IImmutableDictionary $parameters;
+    public readonly IImmutableDictionary $parameters;
     /** @var float The quality score of the header */
     private float $quality;
 
@@ -31,7 +31,7 @@ final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
      * @param IImmutableDictionary<string, string|null>|null $parameters The dictionary of parameters, or null if there are no parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
-    public function __construct(private string $language, IImmutableDictionary $parameters = null)
+    public function __construct(public readonly string $language, IImmutableDictionary $parameters = null)
     {
         /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
@@ -43,26 +43,6 @@ final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');
         }
-    }
-
-    /**
-     * Gets the value of the header
-     *
-     * @return string The value of the header
-     */
-    public function getLanguage(): string
-    {
-        return $this->language;
-    }
-
-    /**
-     * Gets the dictionary of parameters
-     *
-     * @return IImmutableDictionary<string, string|null> The dictionary of parameters
-     */
-    public function getParameters(): IImmutableDictionary
-    {
-        return $this->parameters;
     }
 
     /**

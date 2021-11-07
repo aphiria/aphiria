@@ -25,6 +25,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
@@ -367,13 +368,13 @@ class IntegrationTestCaseTest extends TestCase
     public function testAssertStatusCodeEqualsDoesNotThrowOnSuccess(): void
     {
         $response = new Response(200);
-        $this->integrationTests->assertStatusCodeEquals(200, $response);
+        $this->integrationTests->assertStatusCodeEquals(HttpStatusCode::Ok, $response);
     }
 
     public function testAssertStatusCodeEqualsThrowsOnFailure(): void
     {
         $response = new Response(200);
-        $this->integrationTests->assertStatusCodeEquals(500, $response);
+        $this->integrationTests->assertStatusCodeEquals(HttpStatusCode::InternalServerError, $response);
         $this->assertSame(
             'Expected status code 500, got 200',
             $this->integrationTests->getFailMessage()

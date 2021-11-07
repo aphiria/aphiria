@@ -26,13 +26,13 @@ class MultipartBodyTest extends TestCase
     public function testGettingBoundaryReturnsBoundarySpecifiedInConstructor(): void
     {
         $body = new MultipartBody([], 'foo');
-        $this->assertSame('foo', $body->getBoundary());
+        $this->assertSame('foo', $body->boundary);
     }
 
     public function testGettingBoundaryReturnsUuidWhenNoneSpecifiedInConstructor(): void
     {
         $body = new MultipartBody([]);
-        $this->assertNotEmpty($body->getBoundary());
+        $this->assertNotEmpty($body->boundary);
     }
 
     public function testGettingLengthWithABodyPartWithNullLengthReturnsNull(): void
@@ -116,7 +116,7 @@ class MultipartBodyTest extends TestCase
             $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark')
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertSame($parts, $body->getParts());
+        $this->assertSame($parts, $body->parts);
     }
 
     public function testNoPartsResultsInOnlyHeaderAndFooter(): void

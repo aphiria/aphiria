@@ -29,12 +29,12 @@ class Route
      * @param array<string, mixed> $parameters The custom parameters for the route
      */
     public function __construct(
-        public array $httpMethods,
-        public string $path = '',
-        public ?string $host = null,
-        public ?string $name = null,
-        public bool $isHttpsOnly = false,
-        public array $parameters = []
+        public readonly array $httpMethods,
+        public readonly string $path = '',
+        public readonly ?string $host = null,
+        public readonly ?string $name = null,
+        public readonly bool $isHttpsOnly = false,
+        public readonly array $parameters = []
     ) {
     }
 }

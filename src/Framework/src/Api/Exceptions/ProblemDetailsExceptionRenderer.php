@@ -16,7 +16,7 @@ use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\IO\Streams\Stream;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
@@ -32,64 +32,19 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
-    /** @var array<int, string> The mapping of HTTP status codes to their RFC type URIs */
-    protected static array $statusesToRfcTypes = [
-        HttpStatusCodes::OK => 'https://tools.ietf.org/html/rfc7231#section-6.3.1',
-        HttpStatusCodes::CREATED => 'https://tools.ietf.org/html/rfc7231#section-6.3.2',
-        HttpStatusCodes::ACCEPTED => 'https://tools.ietf.org/html/rfc7231#section-6.3.3',
-        HttpStatusCodes::NON_AUTHORITATIVE_INFORMATION => 'https://tools.ietf.org/html/rfc7231#section-6.3.4',
-        HttpStatusCodes::NO_CONTENT => 'https://tools.ietf.org/html/rfc7231#section-6.3.5',
-        HttpStatusCodes::RESET_CONTENT => 'https://tools.ietf.org/html/rfc7231#section-6.3.6',
-        HttpStatusCodes::PARTIAL_CONTENT => 'https://tools.ietf.org/html/rfc7233#section-4.1',
-        HttpStatusCodes::MULTIPLE_CHOICE => 'https://tools.ietf.org/html/rfc7231#section-6.4.1',
-        HttpStatusCodes::MOVED_PERMANENTLY => 'https://tools.ietf.org/html/rfc7231#section-6.4.2',
-        HttpStatusCodes::FOUND => 'https://tools.ietf.org/html/rfc7231#section-6.4.3',
-        HttpStatusCodes::SEE_OTHER => 'https://tools.ietf.org/html/rfc7231#section-6.4.4',
-        HttpStatusCodes::NOT_MODIFIED => 'https://tools.ietf.org/html/rfc7232#section-4.1',
-        HttpStatusCodes::USE_PROXY => 'https://tools.ietf.org/html/rfc7231#section-6.4.5',
-        HttpStatusCodes::TEMPORARY_REDIRECT => 'https://tools.ietf.org/html/rfc7231#section-6.4.7',
-        HttpStatusCodes::BAD_REQUEST => 'https://tools.ietf.org/html/rfc7231#section-6.5.1',
-        HttpStatusCodes::UNAUTHORIZED => 'https://tools.ietf.org/html/rfc7235#section-3.1',
-        HttpStatusCodes::PAYMENT_REQUIRED => 'https://tools.ietf.org/html/rfc7231#section-6.5.2',
-        HttpStatusCodes::FORBIDDEN => 'https://tools.ietf.org/html/rfc7231#section-6.5.3',
-        HttpStatusCodes::NOT_FOUND => 'https://tools.ietf.org/html/rfc7231#section-6.5.4',
-        HttpStatusCodes::METHOD_NOT_ALLOWED => 'https://tools.ietf.org/html/rfc7231#section-6.5.5',
-        HttpStatusCodes::NOT_ACCEPTABLE => 'https://tools.ietf.org/html/rfc7231#section-6.5.6',
-        HttpStatusCodes::PROXY_AUTHENTICATION_REQUIRED => 'https://tools.ietf.org/html/rfc7235#section-3.2',
-        HttpStatusCodes::REQUEST_TIMEOUT => 'https://tools.ietf.org/html/rfc7231#section-6.5.7',
-        HttpStatusCodes::CONFLICT => 'https://tools.ietf.org/html/rfc7231#section-6.5.8',
-        HttpStatusCodes::GONE => 'https://tools.ietf.org/html/rfc7231#section-6.5.9',
-        HttpStatusCodes::LENGTH_REQUIRED => 'https://tools.ietf.org/html/rfc7231#section-6.5.10',
-        HttpStatusCodes::PRECONDITION_FAILED => 'https://tools.ietf.org/html/rfc7232#section-4.2',
-        HttpStatusCodes::REQUEST_ENTITY_TOO_LARGE => 'https://tools.ietf.org/html/rfc7231#section-6.5.11',
-        HttpStatusCodes::URI_TOO_LONG => 'https://tools.ietf.org/html/rfc7231#section-6.5.12',
-        HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE => 'https://tools.ietf.org/html/rfc7231#section-6.5.13',
-        HttpStatusCodes::REQUESTED_RANGE_NOT_SATISFIABLE => 'https://tools.ietf.org/html/rfc7233#section-4.4',
-        HttpStatusCodes::EXPECTATION_FAILED => 'https://tools.ietf.org/html/rfc7231#section-6.5.14',
-        HttpStatusCodes::UPGRADE_REQUIRED => 'https://tools.ietf.org/html/rfc7231#section-6.5.15',
-        HttpStatusCodes::INTERNAL_SERVER_ERROR => 'https://tools.ietf.org/html/rfc7231#section-6.6.1',
-        HttpStatusCodes::NOT_IMPLEMENTED => 'https://tools.ietf.org/html/rfc7231#section-6.6.2',
-        HttpStatusCodes::BAD_GATEWAY => 'https://tools.ietf.org/html/rfc7231#section-6.6.3',
-        HttpStatusCodes::SERVICE_UNAVAILABLE => 'https://tools.ietf.org/html/rfc7231#section-6.6.4',
-        HttpStatusCodes::GATEWAY_TIMEOUT => 'https://tools.ietf.org/html/rfc7231#section-6.6.5',
-        HttpStatusCodes::HTTP_VERSION_NOT_SUPPORTED => 'https://tools.ietf.org/html/rfc7231#section-6.6.6'
-    ];
     /** @var array<class-string, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
-    /** @var IResponseWriter What is used to write the response */
-    protected IResponseWriter $responseWriter;
 
     /**
      * @param IRequest|null $request The current request, if there is one
      * @param IResponseFactory|null $responseFactory The optional response factory
-     * @param IResponseWriter|null $responseWriter What is used to write the response
+     * @param IResponseWriter $responseWriter What is used to write the response
      */
     public function __construct(
         protected ?IRequest $request = null,
         protected ?IResponseFactory $responseFactory = null,
-        IResponseWriter $responseWriter = null
+        protected readonly IResponseWriter $responseWriter = new StreamResponseWriter()
     ) {
-        $this->responseWriter = $responseWriter ?? new StreamResponseWriter();
     }
 
     /**
@@ -133,7 +88,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      * @param string|null|Closure(mixed): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|null|Closure(mixed): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|null|Closure(mixed): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param HttpStatusCode|int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|null|Closure(mixed): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|null|Closure(mixed): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      */
@@ -142,13 +97,15 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+        HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): void {
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {
             if (\is_callable($status)) {
                 $status = $status($ex);
+            } elseif ($status instanceof HttpStatusCode) {
+                $status = $status->value;
             }
 
             if (\is_callable($type)) {
@@ -218,7 +175,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     protected function createDefaultResponse(Exception $ex): IResponse
     {
-        return new Response(HttpStatusCodes::INTERNAL_SERVER_ERROR);
+        return new Response(HttpStatusCode::InternalServerError);
     }
 
     /**
@@ -236,10 +193,10 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         }
 
         return new ProblemDetails(
-            $this->getTypeFromException($ex, HttpStatusCodes::INTERNAL_SERVER_ERROR),
+            $this->getTypeFromException($ex, HttpStatusCode::InternalServerError->value),
             $this->getTitleFromException($ex),
             $this->getDetailFromException($ex),
-            HttpStatusCodes::INTERNAL_SERVER_ERROR,
+            HttpStatusCode::InternalServerError,
             $this->getInstanceFromException($ex)
         );
     }
@@ -286,6 +243,47 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     protected function getTypeFromException(Exception $ex, ?int $statusCode): ?string
     {
-        return self::$statusesToRfcTypes[$statusCode ?? HttpStatusCodes::INTERNAL_SERVER_ERROR] ?? null;
+        return match ($statusCode ?? HttpStatusCode::InternalServerError->value) {
+            HttpStatusCode::Ok->value => 'https://tools.ietf.org/html/rfc7231#section-6.3.1',
+            HttpStatusCode::Created->value => 'https://tools.ietf.org/html/rfc7231#section-6.3.2',
+            HttpStatusCode::Accepted->value => 'https://tools.ietf.org/html/rfc7231#section-6.3.3',
+            HttpStatusCode::NonAuthoritativeInformation->value => 'https://tools.ietf.org/html/rfc7231#section-6.3.4',
+            HttpStatusCode::NoContent->value => 'https://tools.ietf.org/html/rfc7231#section-6.3.5',
+            HttpStatusCode::ResetContent->value => 'https://tools.ietf.org/html/rfc7231#section-6.3.6',
+            HttpStatusCode::PartialContent->value => 'https://tools.ietf.org/html/rfc7233#section-4.1',
+            HttpStatusCode::MultipleChoice->value => 'https://tools.ietf.org/html/rfc7231#section-6.4.1',
+            HttpStatusCode::MovedPermanently->value => 'https://tools.ietf.org/html/rfc7231#section-6.4.2',
+            HttpStatusCode::Found->value => 'https://tools.ietf.org/html/rfc7231#section-6.4.3',
+            HttpStatusCode::SeeOther->value => 'https://tools.ietf.org/html/rfc7231#section-6.4.4',
+            HttpStatusCode::NotModified->value => 'https://tools.ietf.org/html/rfc7232#section-4.1',
+            HttpStatusCode::UseProxy->value => 'https://tools.ietf.org/html/rfc7231#section-6.4.5',
+            HttpStatusCode::TemporaryRedirect->value => 'https://tools.ietf.org/html/rfc7231#section-6.4.7',
+            HttpStatusCode::BadRequest->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.1',
+            HttpStatusCode::Unauthorized->value => 'https://tools.ietf.org/html/rfc7235#section-3.1',
+            HttpStatusCode::PaymentRequired->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.2',
+            HttpStatusCode::Forbidden->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.3',
+            HttpStatusCode::NotFound->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.4',
+            HttpStatusCode::MethodNotAllowed->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.5',
+            HttpStatusCode::NotAcceptable->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.6',
+            HttpStatusCode::ProxyAuthenticationRequired->value => 'https://tools.ietf.org/html/rfc7235#section-3.2',
+            HttpStatusCode::RequestTimeout->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.7',
+            HttpStatusCode::Conflict->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.8',
+            HttpStatusCode::Gone->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.9',
+            HttpStatusCode::LengthRequired->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.10',
+            HttpStatusCode::PreconditionFailed->value => 'https://tools.ietf.org/html/rfc7232#section-4.2',
+            HttpStatusCode::RequestEntityTooLarge->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.11',
+            HttpStatusCode::UriTooLong->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.12',
+            HttpStatusCode::UnsupportedMediaType->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.13',
+            HttpStatusCode::RequestedRangeNotSatisfiable->value => 'https://tools.ietf.org/html/rfc7233#section-4.4',
+            HttpStatusCode::ExpectationFailed->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.14',
+            HttpStatusCode::UpgradeRequired->value => 'https://tools.ietf.org/html/rfc7231#section-6.5.15',
+            HttpStatusCode::InternalServerError->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.1',
+            HttpStatusCode::NotImplemented->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.2',
+            HttpStatusCode::BadGateway->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.3',
+            HttpStatusCode::ServiceUnavailable->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.4',
+            HttpStatusCode::GatewayTimeout->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.5',
+            HttpStatusCode::HttpVersionNotSupported->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.6',
+            default => null
+        };
     }
 }

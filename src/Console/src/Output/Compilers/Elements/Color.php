@@ -15,22 +15,22 @@ namespace Aphiria\Console\Output\Compilers\Elements;
 /**
  * Defines the list of colors used by a console
  */
-final class Colors
+enum Color: string
 {
     /** The color black */
-    public const BLACK = 'black';
+    case Black = 'black';
     /** The color blue */
-    public const BLUE = 'blue';
+    case Blue = 'blue';
     /** The color cyan */
-    public const CYAN = 'cyan';
+    case Cyan = 'cyan';
     /** The color green */
-    public const GREEN = 'green';
+    case Green = 'green';
     /** The color magenta */
-    public const MAGENTA = 'magenta';
+    case Magenta = 'magenta';
     /** The color red */
-    public const RED = 'red';
+    case Red = 'red';
     /** The color white */
-    public const WHITE = 'white';
+    case White = 'white';
     /** The color yellow */
-    public const YELLOW = 'yellow';
+    case Yellow = 'yellow';
 }

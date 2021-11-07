@@ -26,9 +26,9 @@ final class Command
      * @param string|null $helpText The extra descriptive help text, or null if there is none
      */
     public function __construct(
-        public string $name,
-        public ?string $description = null,
-        public ?string $helpText = null
+        public readonly string $name,
+        public readonly ?string $description = null,
+        public readonly ?string $helpText = null
     ) {
     }
 }

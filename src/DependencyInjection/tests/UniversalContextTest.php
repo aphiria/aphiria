@@ -20,8 +20,8 @@ class UniversalContextTest extends TestCase
     public function testMethodsIndicateUniversalContext(): void
     {
         $context = new UniversalContext();
-        $this->assertNull($context->getTargetClass());
-        $this->assertFalse($context->isTargeted());
-        $this->assertTrue($context->isUniversal());
+        $this->assertNull($context->targetClass);
+        $this->assertFalse($context->isTargeted);
+        $this->assertTrue($context->isUniversal);
     }
 }

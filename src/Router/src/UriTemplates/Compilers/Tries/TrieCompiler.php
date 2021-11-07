@@ -21,7 +21,7 @@ use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
-use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 
@@ -31,21 +31,17 @@ use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 final class TrieCompiler implements ITrieCompiler
 {
     /** @var RouteVariableConstraintFactory The factory that will create constraints */
-    private RouteVariableConstraintFactory $constraintFactory;
-    /** @var IUriTemplateParser The URI template parser */
-    private IUriTemplateParser $uriTemplateParser;
-    /** @var IUriTemplateLexer The URI template lexer */
-    private IUriTemplateLexer $uriTemplateLexer;
+    private readonly RouteVariableConstraintFactory $constraintFactory;
 
     /**
      * @param RouteVariableConstraintFactory|null $constraintFactory The factory that will create constraints
-     * @param IUriTemplateParser|null $uriTemplateParser The URI template parser
-     * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer
+     * @param IUriTemplateParser $uriTemplateParser The URI template parser
+     * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer
      */
     public function __construct(
         RouteVariableConstraintFactory $constraintFactory = null,
-        IUriTemplateParser $uriTemplateParser = null,
-        IUriTemplateLexer $uriTemplateLexer = null
+        private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
+        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
     ) {
         if ($constraintFactory === null) {
             $this->constraintFactory = new RouteVariableConstraintFactory();
@@ -53,9 +49,6 @@ final class TrieCompiler implements ITrieCompiler
         } else {
             $this->constraintFactory = $constraintFactory;
         }
-
-        $this->uriTemplateParser = $uriTemplateParser ?? new UriTemplateParser();
-        $this->uriTemplateLexer = $uriTemplateLexer ?? new UriTemplateLexer();
     }
 
     /**
@@ -70,11 +63,11 @@ final class TrieCompiler implements ITrieCompiler
 
             foreach ($ast->children as $childAstNode) {
                 switch ($childAstNode->type) {
-                    case AstNodeTypes::HOST:
+                    case AstNodeType::Host:
                         $hostTrie = new RootTrieNode();
                         $this->compileNode(true, $hostTrie, $childAstNode, $route, null);
                         break;
-                    case AstNodeTypes::PATH:
+                    case AstNodeType::Path:
                         $this->compileNode(false, $trie, $childAstNode, $route, $hostTrie);
                         break;
                 }
@@ -153,13 +146,13 @@ final class TrieCompiler implements ITrieCompiler
                     ($isCompilingHostTrie || $hostTrie === null)
                     && (
                         $i === $numAstChildren - 1
-                        || $childAstNode->type === AstNodeTypes::OPTIONAL_ROUTE_PART
-                        || ($astChildren[(int)$i + 1]->type === AstNodeTypes::OPTIONAL_ROUTE_PART)
+                        || $childAstNode->type === AstNodeType::OptionalRoutePart
+                        || ($astChildren[(int)$i + 1]->type === AstNodeType::OptionalRoutePart)
                     )
                 );
 
             switch ($childAstNode->type) {
-                case AstNodeTypes::SEGMENT_DELIMITER:
+                case AstNodeType::SegmentDelimiter:
                     // Checking if this is an endpoint handles the case of a route at the root path
                     if ($isEndpoint || \count($segmentBuffer) > 0) {
                         $newTrieNode = self::createTrieNode(
@@ -174,7 +167,7 @@ final class TrieCompiler implements ITrieCompiler
                     }
 
                     break;
-                case AstNodeTypes::OPTIONAL_ROUTE_PART:
+                case AstNodeType::OptionalRoutePart:
                     // Handles flushing 'foo' in the case of 'foo[/bar]'
                     if (\count($segmentBuffer) > 0) {
                         $newTrieNode = self::createTrieNode(
@@ -190,15 +183,15 @@ final class TrieCompiler implements ITrieCompiler
 
                     $this->compileNode($isCompilingHostTrie, $currTrieNode, $childAstNode, $route, $hostTrie);
                     break;
-                case AstNodeTypes::TEXT:
+                case AstNodeType::Text:
                     $segmentBuffer[] = (string)$childAstNode->value;
                     break;
-                case AstNodeTypes::VARIABLE:
+                case AstNodeType::Variable:
                     $segmentContainsVariable = true;
                     $segmentBuffer[] = $this->compileVariableNode($childAstNode);
                     break;
                 default:
-                    throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type}");
+                    throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type->name}");
             }
         }
 
@@ -222,8 +215,8 @@ final class TrieCompiler implements ITrieCompiler
         $constraints = [];
 
         foreach ($astNode->children as $childAstNode) {
-            if ($childAstNode->type !== AstNodeTypes::VARIABLE_CONSTRAINT) {
-                throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type}");
+            if ($childAstNode->type !== AstNodeType::VariableConstraint) {
+                throw new InvalidUriTemplateException("Unexpected node type {$childAstNode->type->name}");
             }
 
             /** @var list<mixed> $constraintParams */

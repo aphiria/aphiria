@@ -28,12 +28,12 @@ class ClassContainerBindingTest extends TestCase
     public function testGettingConcreteClass(): void
     {
         $binding = new ClassContainerBinding(self::class, [], false);
-        $this->assertSame(self::class, $binding->getConcreteClass());
+        $this->assertSame(self::class, $binding->concreteClass);
     }
 
     public function testGettingConstructorPrimitives(): void
     {
         $binding = new ClassContainerBinding(self::class, ['bar'], false);
-        $this->assertEquals(['bar'], $binding->getConstructorPrimitives());
+        $this->assertEquals(['bar'], $binding->constructorPrimitives);
     }
 }

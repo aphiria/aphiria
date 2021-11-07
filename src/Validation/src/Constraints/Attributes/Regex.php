@@ -25,7 +25,7 @@ final class Regex extends ConstraintAttribute
      * @inheritdoc
      * @param string $regex The regex to apply
      */
-    public function __construct(public string $regex, string $errorMessageId = null)
+    public function __construct(public readonly string $regex, string $errorMessageId = null)
     {
         parent::__construct($errorMessageId);
     }

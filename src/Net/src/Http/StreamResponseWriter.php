@@ -24,7 +24,7 @@ class StreamResponseWriter implements IResponseWriter
     /** @var array<string, true> The hash table of headers that should not concatenate multiple values */
     protected static array $headersToNotConcatenate = ['Set-Cookie' => true, 'Www-Authenticate' => true, 'Proxy-Authenticate' => true];
     /** @var IStream The output stream to write the body to */
-    private IStream $outputStream;
+    private readonly IStream $outputStream;
 
     /**
      * @param IStream|null $outputStream The output stream to write the body to (null defaults to PHP's output stream)
@@ -63,7 +63,7 @@ class StreamResponseWriter implements IResponseWriter
             return;
         }
 
-        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()}";
+        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()->value}";
 
         if (($reasonPhrase = $response->getReasonPhrase()) !== null) {
             $startLine .= " $reasonPhrase";
@@ -73,15 +73,15 @@ class StreamResponseWriter implements IResponseWriter
 
         /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($response->getHeaders() as $kvp) {
-            $headerName = (string)$kvp->getKey();
+            $headerName = (string)$kvp->key;
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
                 /** @var string $headerValue */
-                foreach ($kvp->getValue() as $headerValue) {
+                foreach ($kvp->value as $headerValue) {
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->getValue())));
+                $this->header("$headerName: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->value)));
             }
         }
 

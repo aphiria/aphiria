@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayIterator;
+use Closure;
 use OutOfRangeException;
 use Traversable;
 
@@ -189,7 +190,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function sort(callable $comparer): static
+    public function sort(Closure $comparer): static
     {
         // Get a copy of the values
         $values = $this->values;
@@ -211,7 +212,7 @@ class ArrayList implements IList
      */
     public function union(array $values): static
     {
-        $unionedValues = \array_merge(($this->values), $values);
+        $unionedValues = [...$this->values, ...$values];
 
         return new static($unionedValues);
     }

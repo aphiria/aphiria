@@ -18,7 +18,7 @@ use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
-use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use OutOfBoundsException;
@@ -28,23 +28,16 @@ use OutOfBoundsException;
  */
 final class AstRouteUriFactory implements IRouteUriFactory
 {
-    /** @var IUriTemplateLexer The URI template lexer */
-    private IUriTemplateLexer $uriTemplateLexer;
-    /** @var IUriTemplateParser The URI template parser */
-    private IUriTemplateParser $uriTemplateParser;
-
     /**
      * @param RouteCollection $routes The list of routes
-     * @param IUriTemplateParser|null $uriTemplateParser The URI template parser, or null if using the default one
-     * @param IUriTemplateLexer|null $uriTemplateLexer The URI template lexer, or null if using the default one
+     * @param IUriTemplateParser $uriTemplateParser The URI template parser, or null if using the default one
+     * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer, or null if using the default one
      */
     public function __construct(
-        private RouteCollection $routes,
-        IUriTemplateParser $uriTemplateParser = null,
-        IUriTemplateLexer $uriTemplateLexer = null
+        private readonly RouteCollection $routes,
+        private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
+        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
     ) {
-        $this->uriTemplateParser = $uriTemplateParser ?? new UriTemplateParser();
-        $this->uriTemplateLexer = $uriTemplateLexer ?? new UriTemplateLexer();
     }
 
     /**
@@ -69,10 +62,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
 
         foreach ($ast->children as $childAstNode) {
             switch ($childAstNode->type) {
-                case AstNodeTypes::HOST:
+                case AstNodeType::Host:
                     $host = $this->compileHost($childAstNode, $routeVariables);
                     break;
-                case AstNodeTypes::PATH:
+                case AstNodeType::Path:
                     $path = $this->compilePath($childAstNode, $routeVariables);
                     break;
             }
@@ -102,12 +95,12 @@ final class AstRouteUriFactory implements IRouteUriFactory
     private function compileHost(AstNode $node, array &$routeVariables): string
     {
         $hostParts = [];
-        $inOptionalRoutePart = $node->type === AstNodeTypes::OPTIONAL_ROUTE_PART;
+        $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
         $optionalSegmentBuffer = '';
 
         foreach (\array_reverse($node->children) as $childNode) {
             switch ($childNode->type) {
-                case AstNodeTypes::SEGMENT_DELIMITER:
+                case AstNodeType::SegmentDelimiter:
                     // If we're in an optional part, we don't want to include it unless it contains text or a defined variable
                     if ($inOptionalRoutePart) {
                         $optionalSegmentBuffer .= (string)$childNode->value;
@@ -116,7 +109,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     }
 
                     break;
-                case AstNodeTypes::TEXT:
+                case AstNodeType::Text:
                     if (!empty($optionalSegmentBuffer)) {
                         $hostParts[] = $optionalSegmentBuffer;
                         $optionalSegmentBuffer = '';
@@ -124,11 +117,11 @@ final class AstRouteUriFactory implements IRouteUriFactory
 
                     $hostParts[] = (string)$childNode->value;
                     break;
-                case AstNodeTypes::OPTIONAL_ROUTE_PART:
+                case AstNodeType::OptionalRoutePart:
                     $inOptionalRoutePart = true;
                     $hostParts[] = $this->compileHost($childNode, $routeVariables);
                     break;
-                case AstNodeTypes::VARIABLE:
+                case AstNodeType::Variable:
                     if (isset($routeVariables[(string)$childNode->value])) {
                         if (!empty($optionalSegmentBuffer)) {
                             // We've hit a defined variable, eg "[:foo.]bar.com", flush the buffer, eg "."
@@ -164,12 +157,12 @@ final class AstRouteUriFactory implements IRouteUriFactory
     private function compilePath(AstNode $node, array &$routeVariables): string
     {
         $path = '';
-        $inOptionalRoutePart = $node->type === AstNodeTypes::OPTIONAL_ROUTE_PART;
+        $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
         $optionalSegmentBuffer = '';
 
         foreach ($node->children as $childNode) {
             switch ($childNode->type) {
-                case AstNodeTypes::SEGMENT_DELIMITER:
+                case AstNodeType::SegmentDelimiter:
                     // If we're in an optional part, we don't want to include it unless it contains text or a defined variable
                     if ($inOptionalRoutePart) {
                         $optionalSegmentBuffer .= (string)$childNode->value;
@@ -178,7 +171,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     }
 
                     break;
-                case AstNodeTypes::TEXT:
+                case AstNodeType::Text:
                     if (!empty($optionalSegmentBuffer)) {
                         $path .= $optionalSegmentBuffer;
                         $optionalSegmentBuffer = '';
@@ -186,10 +179,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
 
                     $path .= (string)$childNode->value;
                     break;
-                case AstNodeTypes::OPTIONAL_ROUTE_PART:
+                case AstNodeType::OptionalRoutePart:
                     $path .= $this->compilePath($childNode, $routeVariables);
                     break;
-                case AstNodeTypes::VARIABLE:
+                case AstNodeType::Variable:
                     if (isset($routeVariables[(string)$childNode->value])) {
                         // We've hit a defined variable, eg "/foo[/:bar]", flush the buffer, eg "/"
                         if (!empty($optionalSegmentBuffer)) {

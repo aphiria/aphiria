@@ -27,10 +27,10 @@ use Traversable;
  */
 class HashTable implements IDictionary
 {
+    /** @var KeyHasher The key hasher to use */
+    private readonly KeyHasher $keyHasher;
     /** @var array<string, KeyValuePair<TKey, TValue>> The mapping of hash keys to key-value pairs */
     protected array $hashKeysToKvps = [];
-    /** @var KeyHasher The key hasher to use */
-    private KeyHasher $keyHasher;
 
     /**
      * @param list<KeyValuePair<TKey, TValue>> $kvps The list of key-value pairs to add
@@ -61,7 +61,7 @@ class HashTable implements IDictionary
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
 
-            $this->hashKeysToKvps[$this->getHashKey($kvp->getKey())] = $kvp;
+            $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
         }
     }
 
@@ -87,7 +87,7 @@ class HashTable implements IDictionary
     public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
-            if ($kvp->getValue() == $value) {
+            if ($kvp->value == $value) {
                 return true;
             }
         }
@@ -114,7 +114,7 @@ class HashTable implements IDictionary
             throw new OutOfBoundsException("Hash key \"$hashKey\" not found");
         }
 
-        return $this->hashKeysToKvps[$hashKey]->getValue();
+        return $this->hashKeysToKvps[$hashKey]->value;
     }
 
     /**
@@ -125,7 +125,7 @@ class HashTable implements IDictionary
         $keys = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $keys[] = $kvp->getKey();
+            $keys[] = $kvp->key;
         }
 
         return $keys;
@@ -139,7 +139,7 @@ class HashTable implements IDictionary
         $values = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $values[] = $kvp->getValue();
+            $values[] = $kvp->value;
         }
 
         return $values;

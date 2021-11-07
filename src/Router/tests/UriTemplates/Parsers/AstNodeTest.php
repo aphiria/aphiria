@@ -13,43 +13,43 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\UriTemplates\Parsers;
 
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
-use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use PHPUnit\Framework\TestCase;
 
 class AstNodeTest extends TestCase
 {
     public function testCheckingForChildrenReturnsCorrectValue(): void
     {
-        $node = new AstNode('foo', 'bar');
+        $node = new AstNode(AstNodeType::Text, 'foo');
         $this->assertFalse($node->hasChildren());
-        $node->addChild(new AstNode('baz', 'blah'));
+        $node->addChild(new AstNode(AstNodeType::Text, 'bar'));
         $this->assertTrue($node->hasChildren());
     }
 
     public function testGettingChildReturnsCorrectNodes(): void
     {
-        $node = new AstNode('foo', 'bar');
-        $child = new AstNode('baz', 'blah');
+        $node = new AstNode(AstNodeType::Text, 'foo');
+        $child = new AstNode(AstNodeType::Text, 'bar');
         $node->addChild($child);
         $this->assertEquals([$child], $node->children);
     }
 
     public function testGettingTypeReturnsCorrectValue(): void
     {
-        $expectedType = AstNodeTypes::VARIABLE;
+        $expectedType = AstNodeType::Variable;
         $this->assertSame($expectedType, (new AstNode($expectedType, 'foo'))->type);
     }
 
     public function testGettingValueReturnsCorrectValue(): void
     {
         $expectedValue = 'bar';
-        $this->assertSame($expectedValue, (new AstNode('foo', $expectedValue))->value);
+        $this->assertSame($expectedValue, (new AstNode(AstNodeType::Text, $expectedValue))->value);
     }
 
     public function testNodeIsRootOnlyIfItHasNoParent(): void
     {
-        $node = new AstNode('foo', 'bar');
-        $child = new AstNode('baz', 'blah');
+        $node = new AstNode(AstNodeType::Text, 'foo');
+        $child = new AstNode(AstNodeType::Text, 'bar');
         $node->addChild($child);
         $this->assertTrue($node->isRoot());
         $this->assertFalse($child->isRoot());
@@ -57,8 +57,8 @@ class AstNodeTest extends TestCase
 
     public function testParentNodeIsSetOnChildNodes(): void
     {
-        $node = new AstNode('foo', 'bar');
-        $child = new AstNode('baz', 'blah');
+        $node = new AstNode(AstNodeType::Text, 'foo');
+        $child = new AstNode(AstNodeType::Text, 'bar');
         $node->addChild($child);
         $this->assertSame($node, $child->parent);
     }

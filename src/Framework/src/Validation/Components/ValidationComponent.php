@@ -36,7 +36,7 @@ class ValidationComponent implements IComponent
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(private IServiceResolver $serviceResolver)
+    public function __construct(private readonly IServiceResolver $serviceResolver)
     {
     }
 

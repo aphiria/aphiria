@@ -26,10 +26,10 @@ use PHPUnit\Framework\TestCase;
 
 class RequestBodyValidatorTest extends TestCase
 {
-    private IRequest|MockObject $request;
-    private IValidator|MockObject $validator;
-    private IErrorMessageInterpolator|MockObject $errorMessageInterpolator;
-    private ILanguageMatcher|MockObject $languageMatcher;
+    private IRequest&MockObject $request;
+    private IValidator&MockObject $validator;
+    private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
+    private ILanguageMatcher&MockObject $languageMatcher;
     private RequestBodyValidator $requestBodyValidator;
 
     protected function setUp(): void
@@ -96,7 +96,7 @@ class RequestBodyValidatorTest extends TestCase
             $this->requestBodyValidator->validate($this->request, $this);
             $this->fail('Failed to assert that ' . InvalidRequestBodyException::class . ' is thrown');
         } catch (InvalidRequestBodyException $ex) {
-            $this->assertEquals(['error1', 'error2'], $ex->getErrors());
+            $this->assertEquals(['error1', 'error2'], $ex->errors);
             $this->assertSame('Invalid request body', $ex->getMessage());
             // Dummy assertion
             $this->assertTrue(true);

@@ -17,22 +17,10 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
  */
 final class ConstructorWithTypedPrimitives
 {
-    /** @var string A primitive stored by this class */
-    private string $foo;
-
     /**
      * @param string $foo A primitive to store in this class
      */
-    public function __construct(string $foo)
+    public function __construct(public readonly string $foo)
     {
-        $this->foo = $foo;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFoo(): string
-    {
-        return $this->foo;
     }
 }

@@ -14,7 +14,7 @@ namespace Aphiria\Console\Commands\Defaults;
 
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 
 /**
  * Defines the help command
@@ -25,7 +25,7 @@ final class HelpCommand extends Command
     {
         parent::__construct(
             'help',
-            [new Argument('command', ArgumentTypes::OPTIONAL, 'The command to get help with')],
+            [new Argument('command', ArgumentType::Optional, 'The command to get help with')],
             [],
             'Displays information about a command'
         );

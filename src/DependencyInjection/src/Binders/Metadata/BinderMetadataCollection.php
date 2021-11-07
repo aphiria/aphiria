@@ -26,14 +26,14 @@ final class BinderMetadataCollection
      * @param list<BinderMetadata> $binderMetadatas The list of all binder metadata
      * @psalm-suppress InvalidPropertyAssignmentValue Psalm is getting confused about assigning arrays with keys - bug
      */
-    public function __construct(private array $binderMetadatas)
+    public function __construct(public readonly array $binderMetadatas)
     {
         foreach ($this->binderMetadatas as $binderMetadata) {
-            foreach ($binderMetadata->getResolvedInterfaces() as $resolvedInterface) {
-                if ($resolvedInterface->getContext()->isTargeted()) {
+            foreach ($binderMetadata->resolvedInterfaces as $resolvedInterface) {
+                if ($resolvedInterface->context->isTargeted) {
                     /** @var class-string $targetClass We know that this will be set because it's targeted */
-                    $targetClass = $resolvedInterface->getContext()->getTargetClass();
-                    $interface = $resolvedInterface->getInterface();
+                    $targetClass = $resolvedInterface->context->targetClass;
+                    $interface = $resolvedInterface->interface;
 
                     if (!isset($this->targetedResolutions[$targetClass])) {
                         $this->targetedResolutions[$targetClass] = [];
@@ -45,7 +45,7 @@ final class BinderMetadataCollection
 
                     $this->targetedResolutions[$targetClass][$interface][] = $binderMetadata;
                 } else {
-                    $interface = $resolvedInterface->getInterface();
+                    $interface = $resolvedInterface->interface;
 
                     if (!isset($this->universalResolutions[$interface])) {
                         $this->universalResolutions[$interface] = [];
@@ -55,16 +55,6 @@ final class BinderMetadataCollection
                 }
             }
         }
-    }
-
-    /**
-     * Gets a list of all binder metadata in the collection
-     *
-     * @return list<BinderMetadata> The list of all binder metadata
-     */
-    public function getAllBinderMetadata(): array
-    {
-        return $this->binderMetadatas;
     }
 
     /**
@@ -99,26 +89,26 @@ final class BinderMetadataCollection
          */
         $binders = [];
 
-        if ($boundInterface->getContext()->isTargeted()) {
-            if (isset($this->targetedResolutions[$boundInterface->getContext()->getTargetClass()][$boundInterface->getInterface()])) {
+        if ($boundInterface->context->isTargeted) {
+            if (isset($this->targetedResolutions[$boundInterface->context->targetClass][$boundInterface->interface])) {
                 $binders = [
                     ...$binders,
-                    ...$this->targetedResolutions[$boundInterface->getContext()->getTargetClass()][$boundInterface->getInterface()]
+                    ...$this->targetedResolutions[$boundInterface->context->targetClass][$boundInterface->interface]
                 ];
             }
         } else {
-            if (isset($this->universalResolutions[$boundInterface->getInterface()])) {
+            if (isset($this->universalResolutions[$boundInterface->interface])) {
                 $binders = [
                     ...$binders,
-                    ...$this->universalResolutions[$boundInterface->getInterface()]
+                    ...$this->universalResolutions[$boundInterface->interface]
                 ];
             }
 
             foreach ($this->targetedResolutions as $interfacesToBinderMetadatas) {
-                if (isset($interfacesToBinderMetadatas[$boundInterface->getInterface()])) {
+                if (isset($interfacesToBinderMetadatas[$boundInterface->interface])) {
                     $binders = [
                         ...$binders,
-                        ...$interfacesToBinderMetadatas[$boundInterface->getInterface()]
+                        ...$interfacesToBinderMetadatas[$boundInterface->interface]
                     ];
                 }
             }

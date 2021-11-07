@@ -18,13 +18,14 @@ use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
+use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
 {
-    private IRouteActionInvoker|MockObject $routeActionInvoker;
-    private IContentNegotiator|MockObject $contentNegotiator;
+    private IRouteActionInvoker&MockObject $routeActionInvoker;
+    private IContentNegotiator&MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
@@ -34,9 +35,9 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestSetsControllerProperties(): void
     {
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var ControllerWithEndpoints|MockObject $controller */
+        /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
         $controller->expects($this->once())
             ->method('setRequest')
@@ -48,15 +49,15 @@ class ControllerRequestHandlerTest extends TestCase
             ->with($this->contentNegotiator);
         $controller->expects($this->once())
             ->method('setResponseFactory');
-        $controllerCallable = [$controller, 'noParameters'];
+        $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
-            ->with($controllerCallable, $request, [])
+            ->with($controllerClosure, $request, [])
             ->willReturn($this->createMock(IResponse::class));
 
         $requestHandler = new ControllerRequestHandler(
             $controller,
-            $controllerCallable,
+            $controllerClosure,
             [],
             $this->contentNegotiator,
             $this->routeActionInvoker
@@ -66,21 +67,21 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestReturnsResponseFromRouteInvoker(): void
     {
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var IResponse|MockObject $expectedResponse */
+        /** @var IResponse&MockObject $expectedResponse */
         $expectedResponse = $this->createMock(IResponse::class);
-        /** @var ControllerWithEndpoints|MockObject $controller */
+        /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
-        $controllerCallable = [$controller, 'noParameters'];
+        $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
-            ->with($controllerCallable, $request, [])
+            ->with($controllerClosure, $request, [])
             ->willReturn($expectedResponse);
 
         $requestHandler = new ControllerRequestHandler(
             $controller,
-            $controllerCallable,
+            $controllerClosure,
             [],
             $this->contentNegotiator,
             $this->routeActionInvoker

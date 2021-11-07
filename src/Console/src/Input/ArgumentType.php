@@ -15,12 +15,12 @@ namespace Aphiria\Console\Input;
 /**
  * Defines the different types of arguments
  */
-final class ArgumentTypes
+enum ArgumentType: int
 {
     /** The argument is required */
-    public const REQUIRED = 1;
+    case Required = 1;
     /** The argument is optional */
-    public const OPTIONAL = 2;
+    case Optional = 2;
     /** The argument is an array */
-    public const IS_ARRAY = 4;
+    case IsArray = 4;
 }

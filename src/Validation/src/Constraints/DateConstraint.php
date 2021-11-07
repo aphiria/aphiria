@@ -28,8 +28,10 @@ final class DateConstraint extends Constraint
      * @param list<string> $acceptableFormats The acceptable date formats
      * @throws InvalidArgumentException Thrown if the formats were empty
      */
-    public function __construct(private array $acceptableFormats, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
-    {
+    public function __construct(
+        private readonly array $acceptableFormats,
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+    ) {
         parent::__construct($errorMessageId);
 
         if (\count($this->acceptableFormats) === 0) {

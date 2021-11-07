@@ -29,10 +29,10 @@ final class BetweenConstraint extends Constraint
      * @param bool $maxIsInclusive Whether or not the max is inclusive
      */
     public function __construct(
-        private int|float $min,
-        private int|float $max,
-        private bool $minIsInclusive,
-        private bool $maxIsInclusive,
+        private readonly int|float $min,
+        private readonly int|float $max,
+        private readonly bool $minIsInclusive,
+        private readonly bool $maxIsInclusive,
         string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
     ) {
         parent::__construct($errorMessageId);
@@ -43,7 +43,7 @@ final class BetweenConstraint extends Constraint
      */
     public function getErrorMessagePlaceholders($value): array
     {
-        return \array_merge(parent::getErrorMessagePlaceholders($value), ['min' => $this->min, 'max' => $this->max]);
+        return [...parent::getErrorMessagePlaceholders($value), ...['min' => $this->min, 'max' => $this->max]];
     }
 
     /**

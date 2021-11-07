@@ -31,7 +31,7 @@ class BinderMetadataTest extends TestCase
             }
         };
         $binderMetadata = new BinderMetadata($expectedBinder, [], []);
-        $this->assertSame($expectedBinder, $binderMetadata->getBinder());
+        $this->assertSame($expectedBinder, $binderMetadata->binder);
     }
 
     public function testGetBoundInterfacesReturnsSetBoundInterfaces(): void
@@ -51,7 +51,7 @@ class BinderMetadataTest extends TestCase
             new BoundInterface($boundInterface2::class, new UniversalContext())
         ];
         $binderMetadata = new BinderMetadata($binder, $expectedBoundInterfaces, []);
-        $this->assertSame($expectedBoundInterfaces, $binderMetadata->getBoundInterfaces());
+        $this->assertSame($expectedBoundInterfaces, $binderMetadata->boundInterfaces);
     }
 
     public function testGetBoundInterfacesReturnsSetResolvedInterfaces(): void
@@ -71,6 +71,6 @@ class BinderMetadataTest extends TestCase
             new ResolvedInterface($resolvedInterface2::class, new UniversalContext())
         ];
         $binderMetadata = new BinderMetadata($binder, [], $expectedResolvedInterfaces);
-        $this->assertSame($expectedResolvedInterfaces, $binderMetadata->getResolvedInterfaces());
+        $this->assertSame($expectedResolvedInterfaces, $binderMetadata->resolvedInterfaces);
     }
 }

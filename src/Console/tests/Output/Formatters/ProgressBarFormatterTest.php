@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProgressBarFormatterTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {
@@ -56,7 +56,7 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
         // Use a redraw frequency of 0 so that it redraws every time
-        $formatter = new ProgressBarFormatter($this->output, 12, null, 0);
+        $formatter = new ProgressBarFormatter($this->output, 12, redrawFrequency: 0);
         $this->output->method('write')
             ->withConsecutive(
                 [$this->anything()],

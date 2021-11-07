@@ -31,27 +31,23 @@ use InvalidArgumentException;
  */
 class NegotiatedRequestBuilder extends RequestBuilder
 {
-    /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
-    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
-
     /**
-     * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
+     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
      * @param string $defaultContentType The default content type to use for bodies
      * @param string $defaultAccept The default Accept header value
      */
     public function __construct(
-        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        private string $defaultContentType = 'application/json',
+        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
+            new JsonMediaTypeFormatter(),
+            new XmlMediaTypeFormatter(),
+            new HtmlMediaTypeFormatter(),
+            new PlainTextMediaTypeFormatter()
+        ]),
+        private readonly string $defaultContentType = 'application/json',
         string $defaultAccept = '*/*'
     ) {
         parent::__construct();
 
-        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
-                new JsonMediaTypeFormatter(),
-                new XmlMediaTypeFormatter(),
-                new HtmlMediaTypeFormatter(),
-                new PlainTextMediaTypeFormatter()
-            ]);
         $this->headers->add('Accept', $defaultAccept);
     }
 
@@ -85,11 +81,11 @@ class NegotiatedRequestBuilder extends RequestBuilder
                 throw new InvalidArgumentException("No media type formatter available for $type");
             }
 
-            $encoding = $mediaTypeFormatterMatch->getFormatter()->getDefaultEncoding();
+            $encoding = $mediaTypeFormatterMatch->formatter->getDefaultEncoding();
             $bodyStream = new Stream(\fopen('php://temp', 'w+b'));
-            $mediaTypeFormatterMatch->getFormatter()->writeToStream($body, $bodyStream, $encoding);
+            $mediaTypeFormatterMatch->formatter->writeToStream($body, $bodyStream, $encoding);
             $new->body = new StreamBody($bodyStream);
-            $new->headers->add('Content-Type', $mediaTypeFormatterMatch->getMediaType());
+            $new->headers->add('Content-Type', $mediaTypeFormatterMatch->mediaType);
         } else {
             throw new InvalidArgumentException('Body must either implement ' . IBody::class . ' or be an array, object, or scalar');
         }

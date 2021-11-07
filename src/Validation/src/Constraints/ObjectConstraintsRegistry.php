@@ -49,6 +49,6 @@ final class ObjectConstraintsRegistry
      */
     public function registerObjectConstraints(ObjectConstraints $constraints): void
     {
-        $this->objectConstraints[$constraints->getClassName()] = $constraints;
+        $this->objectConstraints[$constraints->className] = $constraints;
     }
 }

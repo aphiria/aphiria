@@ -125,7 +125,7 @@ class BinderMetadataCollectionTest extends TestCase
             new BinderMetadata($this->createMockBinder(), [], [])
         ];
         $collection = new BinderMetadataCollection($expectedBinderMetadatas);
-        $this->assertSame($expectedBinderMetadatas, $collection->getAllBinderMetadata());
+        $this->assertSame($expectedBinderMetadatas, $collection->binderMetadatas);
     }
 
     /**

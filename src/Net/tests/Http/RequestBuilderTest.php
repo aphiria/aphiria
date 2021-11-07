@@ -14,7 +14,7 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\RequestBuilder;
-use Aphiria\Net\Http\RequestTargetTypes;
+use Aphiria\Net\Http\RequestTargetType;
 use Aphiria\Net\Uri;
 use LogicException;
 use PHPUnit\Framework\TestCase;
@@ -139,7 +139,7 @@ class RequestBuilderTest extends TestCase
     {
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost')
-            ->withRequestTargetType(RequestTargetTypes::ABSOLUTE_FORM)
+            ->withRequestTargetType(RequestTargetType::AbsoluteForm)
             ->build();
         $this->assertSame('GET http://localhost HTTP/1.1', \explode("\r\n", (string)$request)[0]);
     }

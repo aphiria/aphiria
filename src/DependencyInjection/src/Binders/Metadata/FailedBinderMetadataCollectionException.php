@@ -26,35 +26,15 @@ final class FailedBinderMetadataCollectionException extends Exception
      * @param class-string $failedInterface The name of the interface that failed to be resolved
      */
     public function __construct(
-        private BinderMetadata $incompleteBinderMetadata,
-        private string $failedInterface,
+        public readonly BinderMetadata $incompleteBinderMetadata,
+        public readonly string $failedInterface,
         int $code = 0,
         Throwable $previous = null
     ) {
         parent::__construct(
-            'Failed to collect metadata for ' . $this->incompleteBinderMetadata->getBinder()::class,
+            'Failed to collect metadata for ' . $this->incompleteBinderMetadata->binder::class,
             $code,
             $previous
         );
-    }
-
-    /**
-     * Gets the name of the interface that failed to be resolved
-     *
-     * @return class-string The name of the interface
-     */
-    public function getFailedInterface(): string
-    {
-        return $this->failedInterface;
-    }
-
-    /**
-     * Gets the incomplete binder metadata
-     *
-     * @return BinderMetadata The incomplete binder metadata
-     */
-    public function getIncompleteBinderMetadata(): BinderMetadata
-    {
-        return $this->incompleteBinderMetadata;
     }
 }

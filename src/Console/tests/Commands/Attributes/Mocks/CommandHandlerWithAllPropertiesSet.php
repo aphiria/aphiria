@@ -16,9 +16,9 @@ use Aphiria\Console\Commands\Attributes\Argument;
 use Aphiria\Console\Commands\Attributes\Command;
 use Aphiria\Console\Commands\Attributes\Option;
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Input;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
 
 /**
@@ -26,8 +26,8 @@ use Aphiria\Console\Output\IOutput;
  */
 #[
     Command('foo', 'command description', 'command help text'),
-    Argument('arg1', ArgumentTypes::REQUIRED, 'arg1 description', 'arg1 value'),
-    Option('opt1', OptionTypes::REQUIRED_VALUE, 'o', 'opt1 description', 'opt1 value')
+    Argument('arg1', ArgumentType::Required, 'arg1 description', 'arg1 value'),
+    Option('opt1', OptionType::RequiredValue, 'o', 'opt1 description', 'opt1 value')
 ]
 final class CommandHandlerWithAllPropertiesSet implements ICommandHandler
 {

@@ -18,18 +18,18 @@ use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class HelpCommandHandlerTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
     private HelpCommandHandler $handler;
     private CommandRegistry $commands;
 
@@ -45,7 +45,7 @@ class HelpCommandHandlerTest extends TestCase
         $this->output->expects($this->once())
             ->method('writeln')
             ->with('<error>Command foo does not exist</error>');
-        $this->assertSame(StatusCodes::ERROR, $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output));
+        $this->assertSame(StatusCode::Error, $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output));
     }
 
     public function testHandlingCommandWithHelpTextIncludesIt(): void
@@ -82,7 +82,7 @@ class HelpCommandHandlerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg1', ArgumentTypes::REQUIRED, 'Arg1 description')],
+                [new Argument('arg1', ArgumentType::Required, 'Arg1 description')],
                 [],
                 'The description'
             ),
@@ -98,7 +98,7 @@ class HelpCommandHandlerTest extends TestCase
         $this->output->expects($this->once())
             ->method('writeln')
             ->with("<comment>Pass in the name of the command you'd like help with</comment>");
-        $this->assertSame(StatusCodes::OK, $this->handler->handle(new Input('help', [], []), $this->output));
+        $this->assertSame(StatusCode::Ok, $this->handler->handle(new Input('help', [], []), $this->output));
     }
 
     public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
@@ -201,7 +201,7 @@ class HelpCommandHandlerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt1', OptionTypes::REQUIRED_VALUE, null, 'Opt1 description')],
+                [new Option('opt1', OptionType::RequiredValue, null, 'Opt1 description')],
                 'The description'
             ),
             $commandHandler::class
@@ -223,7 +223,7 @@ class HelpCommandHandlerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt1', OptionTypes::REQUIRED_VALUE, 'o', 'Opt1 description')],
+                [new Option('opt1', OptionType::RequiredValue, 'o', 'Opt1 description')],
                 'The description'
             ),
             $commandHandler::class

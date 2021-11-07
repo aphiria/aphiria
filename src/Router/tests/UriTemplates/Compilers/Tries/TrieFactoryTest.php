@@ -28,8 +28,8 @@ class TrieFactoryTest extends TestCase
 {
     private TrieFactory $trieFactory;
     private RouteCollection $routes;
-    private ITrieCache|MockObject $trieCache;
-    private ITrieCompiler|MockObject $trieCompiler;
+    private ITrieCache&MockObject $trieCache;
+    private ITrieCompiler&MockObject $trieCompiler;
 
     protected function setUp(): void
     {

@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
+use Closure;
+
 /**
  * Defines the interface for service resolvers to implement
  */
@@ -22,10 +24,10 @@ interface IServiceResolver
      *
      * @template T
      * @param Context|class-string $context The context (or name of the target class) to apply to all bindings and resolutions
-     * @param callable(static): T $callback The callback that takes in an instance of the implementing resolver and performs actions under the context
+     * @param Closure(static): T $callback The callback that takes in an instance of the implementing resolver and performs actions under the context
      * @return T The return value of the callback
      */
-    public function for(Context|string $context, callable $callback);
+    public function for(Context|string $context, Closure $callback);
 
     /**
      * Resolve an instance of the interface

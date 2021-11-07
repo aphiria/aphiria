@@ -15,14 +15,14 @@ namespace Aphiria\Console\Output\Lexers;
 /**
  * Defines the different output token types
  */
-final class OutputTokenTypes
+enum OutputTokenType
 {
     /** Defines an end of file token type */
-    public const T_EOF = 'T_EOF';
+    case Eof;
     /** Defines a word token type */
-    public const T_WORD = 'T_WORD';
+    case Word;
     /** Defines an open tag token type */
-    public const T_TAG_OPEN = 'T_TAG_OPEN';
+    case TagOpen;
     /** Defines a close tag token type */
-    public const T_TAG_CLOSE = 'T_TAG_CLOSE';
+    case TagClose;
 }

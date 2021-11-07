@@ -27,10 +27,10 @@ use Traversable;
  */
 class ImmutableHashTable implements IImmutableDictionary
 {
+    /** @var KeyHasher The key hasher to use */
+    private readonly KeyHasher $keyHasher;
     /** @var array<string, KeyValuePair<TKey, TValue>> The mapping of hash keys to key-value pairs */
     protected array $hashKeysToKvps = [];
-    /** @var KeyHasher The key hasher to use */
-    private KeyHasher $keyHasher;
 
     /**
      * @param list<KeyValuePair<TKey, TValue>> $kvps The list of values to add
@@ -47,7 +47,7 @@ class ImmutableHashTable implements IImmutableDictionary
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
 
-            $this->hashKeysToKvps[$this->getHashKey($kvp->getKey())] = $kvp;
+            $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
         }
     }
 
@@ -65,7 +65,7 @@ class ImmutableHashTable implements IImmutableDictionary
     public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
-            if ($kvp->getValue() == $value) {
+            if ($kvp->value == $value) {
                 return true;
             }
         }
@@ -92,7 +92,7 @@ class ImmutableHashTable implements IImmutableDictionary
             throw new OutOfBoundsException("Hash key \"$hashKey\" not found");
         }
 
-        return $this->hashKeysToKvps[$hashKey]->getValue();
+        return $this->hashKeysToKvps[$hashKey]->value;
     }
 
     /**
@@ -111,7 +111,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $keys = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $keys[] = $kvp->getKey();
+            $keys[] = $kvp->key;
         }
 
         return $keys;
@@ -125,7 +125,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $values = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $values[] = $kvp->getValue();
+            $values[] = $kvp->value;
         }
 
         return $values;

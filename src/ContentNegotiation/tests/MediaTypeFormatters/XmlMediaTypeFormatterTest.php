@@ -75,7 +75,7 @@ class XmlMediaTypeFormatterTest extends TestCase
     {
         $xml = <<<XML
 <?xml version="1.0"?>
-<response><item key="0"><email>foo@bar.com</email><id>123</id></item></response>
+<response><item key="0"><id>123</id><email>foo@bar.com</email></item></response>
 
 XML;
         $stream = $this->createStreamThatExpectsBody($xml);
@@ -87,7 +87,7 @@ XML;
     {
         $xml = <<<XML
 <?xml version="1.0"?>
-<response><email>foo@bar.com</email><id>123</id></response>
+<response><id>123</id><email>foo@bar.com</email></response>
 
 XML;
         $stream = $this->createStreamThatExpectsBody($xml);
@@ -109,7 +109,7 @@ XML;
         $user = new User(123, 'foo@bar.com');
         $xml = <<<XML
 <?xml version="1.0"?>
-<response><email>foo@bar.com</email><id>123</id></response>
+<response><id>123</id><email>foo@bar.com</email></response>
 
 XML;
         $expectedEncodedValue = \mb_convert_encoding($xml, 'utf-8');
@@ -123,9 +123,9 @@ XML;
      * Creates a stream with an expected body that will be written to it
      *
      * @param string $body The expected body of the stream
-     * @return IStream|MockObject The stream that expects the input body
+     * @return IStream&MockObject The stream that expects the input body
      */
-    private function createStreamThatExpectsBody(string $body): IStream|MockObject
+    private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
@@ -139,9 +139,9 @@ XML;
      * Creates a stream with a string body
      *
      * @param string $body The body of the stream
-     * @return IStream|MockObject The stream with the input body as its string body
+     * @return IStream&MockObject The stream with the input body as its string body
      */
-    private function createStreamWithStringBody(string $body): IStream|MockObject
+    private function createStreamWithStringBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())

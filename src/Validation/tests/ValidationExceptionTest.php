@@ -23,6 +23,6 @@ class ValidationExceptionTest extends TestCase
     {
         $violations = [new ConstraintViolation('foo', $this->createMock(IConstraint::class), 'bar', 'baz')];
         $exception = new ValidationException($violations);
-        $this->assertSame($violations, $exception->getViolations());
+        $this->assertSame($violations, $exception->violations);
     }
 }

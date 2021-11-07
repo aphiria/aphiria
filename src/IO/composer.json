@@ -40,7 +40,7 @@
         }
     },
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.2",
@@ -51,7 +51,8 @@
         "phpcs-fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --diff",
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml --verbose",
         "test": [
-            "@phpunit"
+            "@phpunit",
+            "@phpcs-test"
         ]
     },
     "extra": {

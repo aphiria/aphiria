@@ -21,7 +21,7 @@ class MultipartBodyPart
      * @param Headers $headers The headers of this body part
      * @param IBody|null $body The body of this body part if one is set, otherwise null
      */
-    public function __construct(private Headers $headers, private ?IBody $body)
+    public function __construct(public readonly Headers $headers, public readonly ?IBody $body)
     {
     }
 
@@ -34,25 +34,5 @@ class MultipartBodyPart
     public function __toString(): string
     {
         return "{$this->headers}\r\n\r\n" . ($this->body === null ? '' : (string)$this->body);
-    }
-
-    /**
-     * Gets the body of this body part
-     *
-     * @return IBody|null The body of this body part if one is set, otherwise null
-     */
-    public function getBody(): ?IBody
-    {
-        return $this->body;
-    }
-
-    /**
-     * Gets the headers of this body part
-     *
-     * @return Headers The headers of this body part
-     */
-    public function getHeaders(): Headers
-    {
-        return $this->headers;
     }
 }

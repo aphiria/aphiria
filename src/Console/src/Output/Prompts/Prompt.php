@@ -22,15 +22,11 @@ use RuntimeException;
  */
 class Prompt
 {
-    /** @var PaddingFormatter The space padding formatter to use */
-    private PaddingFormatter $paddingFormatter;
-
     /***
-     * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
+     * @param PaddingFormatter $paddingFormatter The space padding formatter to use
      */
-    public function __construct(PaddingFormatter $paddingFormatter = null)
+    public function __construct(private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter())
     {
-        $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
     /**
@@ -63,7 +59,7 @@ class Prompt
             }
 
             $output->writeln($this->paddingFormatter->format($choiceTexts, fn (array $row): string => "  {$row[0]} {$row[1]}"));
-            $output->write($question->getAnswerLineString());
+            $output->write($question->answerLineString);
         }
 
         if ($question->isHidden) {

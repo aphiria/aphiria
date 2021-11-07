@@ -23,7 +23,7 @@ final class RouteVariable
      * @param string $name The name of the variable
      * @param list<IRouteVariableConstraint> $constraints The list of constraints that applies to this route variable
      */
-    public function __construct(public string $name, public array $constraints = [])
+    public function __construct(public readonly string $name, public readonly array $constraints = [])
     {
     }
 }

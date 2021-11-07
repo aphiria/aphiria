@@ -75,7 +75,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
     private static function flushTextBuffer(string &$textBuffer, array &$tokens): void
     {
         if ($textBuffer !== '') {
-            $tokens[] = new Token(TokenTypes::T_TEXT, $textBuffer);
+            $tokens[] = new Token(TokenType::Text, $textBuffer);
             $textBuffer = '';
         }
     }
@@ -94,9 +94,9 @@ final class UriTemplateLexer implements IUriTemplateLexer
 
         // Determine if this was a float or not
         if ($floatVal && $intVal != $floatVal) {
-            $tokens[] = new Token(TokenTypes::T_NUMBER, $floatVal);
+            $tokens[] = new Token(TokenType::Number, $floatVal);
         } else {
-            $tokens[] = new Token(TokenTypes::T_NUMBER, $intVal);
+            $tokens[] = new Token(TokenType::Number, $intVal);
         }
 
         $cursor += \mb_strlen($number);
@@ -111,7 +111,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      */
     private static function lexPunctuation(string $punctuation, array &$tokens, int &$cursor): void
     {
-        $tokens[] = new Token(TokenTypes::T_PUNCTUATION, $punctuation);
+        $tokens[] = new Token(TokenType::Punctuation, $punctuation);
         $cursor++;
     }
 
@@ -124,7 +124,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
      */
     private static function lexQuotedString(string $quotedString, array &$tokens, int &$cursor): void
     {
-        $tokens[] = new Token(TokenTypes::T_QUOTED_STRING, \stripcslashes(\substr(\trim($quotedString), 1, -1)));
+        $tokens[] = new Token(TokenType::QuotedString, \stripcslashes(\substr(\trim($quotedString), 1, -1)));
         $cursor += \mb_strlen($quotedString);
     }
 
@@ -158,7 +158,7 @@ final class UriTemplateLexer implements IUriTemplateLexer
             throw new LexingException("Variable name \"$trimmedVariableName\" exceeds the max length limit");
         }
 
-        $tokens[] = new Token(TokenTypes::T_VARIABLE, $trimmedVariableName);
+        $tokens[] = new Token(TokenType::Variable, $trimmedVariableName);
         // We have to advance the cursor the length of the untrimmed variable name
         $cursor += \mb_strlen($variableName);
     }

@@ -24,7 +24,7 @@ class NotInConstraint extends Constraint
      * @inheritdoc
      * @param list<mixed> $values The values to check
      */
-    public function __construct(private array $values, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(private readonly array $values, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
     }

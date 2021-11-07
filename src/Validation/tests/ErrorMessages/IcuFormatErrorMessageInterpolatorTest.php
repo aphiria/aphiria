@@ -30,7 +30,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
 
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithFallbackLocale(): void
     {
-        $interpolator = new IcuFormatErrorMessageInterpolator(null, 'de');
+        $interpolator = new IcuFormatErrorMessageInterpolator(defaultLocale: 'de');
         $this->assertSame(
             'Dave has $1,23',
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Drivers;
 
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 
 /**
  * Defines a base CLI driver that's common to multiple OS
@@ -153,6 +153,6 @@ abstract class Driver implements IDriver
 
         \exec('stty 2>&1', $output, $sttyCheckStatusCode);
 
-        return $this->supportsStty = (StatusCodes::OK === $sttyCheckStatusCode);
+        return $this->supportsStty = (StatusCode::Ok === $sttyCheckStatusCode);
     }
 }

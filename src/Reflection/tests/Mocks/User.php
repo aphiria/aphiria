@@ -17,38 +17,11 @@ namespace Aphiria\Reflection\Tests\Mocks;
  */
 class User
 {
-    /** @var int The user's ID */
-    private int $id;
-    /** @var string The user's email */
-    private string $email;
-
     /**
      * @param int $id The user's ID
      * @param string $email The user's email
      */
-    public function __construct(int $id, string $email)
+    public function __construct(public readonly int $id, public readonly string $email)
     {
-        $this->id = $id;
-        $this->email = $email;
-    }
-
-    /**
-     * Gets the user's email
-     *
-     * @return string The user's email
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Gets the user's ID
-     *
-     * @return int The user's ID
-     */
-    public function getId(): int
-    {
-        return $this->id;
     }
 }

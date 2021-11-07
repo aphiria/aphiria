@@ -14,10 +14,10 @@ namespace Aphiria\Routing\Tests\UriTemplates\Parsers;
 
 use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
+use Aphiria\Routing\UriTemplates\Lexers\TokenType;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
-use Aphiria\Routing\UriTemplates\Parsers\AstNodeTypes;
+use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use PHPUnit\Framework\TestCase;
 
@@ -33,13 +33,13 @@ class UriTemplateParserTest extends TestCase
     public function testParsingClosingBracketWhenNotParsingOptionalRoutePartTreatsBracketAsText(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_PUNCTUATION, ']')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Punctuation, ']')
         ]);
-        $pathNode = new AstNode(AstNodeTypes::PATH);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, ']'));
-        $expectedAst = new AstNode(AstNodeTypes::ROOT);
+        $pathNode = new AstNode(AstNodeType::Path);
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, ']'));
+        $expectedAst = new AstNode(AstNodeType::Root);
         $expectedAst->addChild($pathNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -47,13 +47,13 @@ class UriTemplateParserTest extends TestCase
     public function testParsingInvalidBracketInMiddleOfConstraintThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage("Expected optional path part to start with '/', got T_VARIABLE");
+        $this->expectExceptionMessage("Expected optional path part to start with '/', got " . TokenType::Variable->name);
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Punctuation, ']'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -61,27 +61,27 @@ class UriTemplateParserTest extends TestCase
     public function testParsingNestedOptionalPathParts(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-            new Token(TokenTypes::T_PUNCTUATION, ']')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, ']'),
+            new Token(TokenType::Punctuation, ']')
         ]);
-        $innerOptionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '[');
-        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
-        $outerOptionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '[');
-        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
+        $innerOptionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, '[');
+        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::Text, 'bar'));
+        $outerOptionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, '[');
+        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::Text, 'foo'));
         $outerOptionalRoutePartNode->addChild($innerOptionalRoutePartNode);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode = new AstNode(AstNodeType::Path, null);
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
         $pathNode->addChild($outerOptionalRoutePartNode);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
         $expectedAst->addChild($pathNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -89,38 +89,38 @@ class UriTemplateParserTest extends TestCase
     public function testParsingNestedOptionalHostPartCreatesNestedOptionalPartNodes(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_TEXT, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-            new Token(TokenTypes::T_TEXT, 'example'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_TEXT, 'com'),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo')
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Text, 'foo'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Punctuation, ']'),
+            new Token(TokenType::Punctuation, ']'),
+            new Token(TokenType::Text, 'example'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Text, 'com'),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $hostNode = new AstNode(AstNodeTypes::HOST, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $hostNode = new AstNode(AstNodeType::Host, null);
         $expectedAst->addChild($hostNode);
-        $innerOptionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '[');
-        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
-        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'));
-        $outerOptionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '[');
-        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
-        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'));
+        $innerOptionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, '[');
+        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::Text, 'bar'));
+        $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'));
+        $outerOptionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, '[');
+        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::Text, 'foo'));
+        $outerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'));
         $outerOptionalRoutePartNode->addChild($innerOptionalRoutePartNode);
         $hostNode->addChild($outerOptionalRoutePartNode);
-        $hostNode->addChild(new AstNode(AstNodeTypes::TEXT, 'example'));
-        $hostNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'));
-        $hostNode->addChild(new AstNode(AstNodeTypes::TEXT, 'com'));
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $hostNode->addChild(new AstNode(AstNodeType::Text, 'example'));
+        $hostNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'));
+        $hostNode->addChild(new AstNode(AstNodeType::Text, 'com'));
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, 'foo'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
@@ -129,18 +129,18 @@ class UriTemplateParserTest extends TestCase
         $this->expectException(UnexpectedTokenException::class);
         $this->expectExceptionMessage("Expected optional host part to end with '.'");
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_TEXT, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-            new Token(TokenTypes::T_TEXT, 'example'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_TEXT, 'com'),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo')
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Text, 'foo'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, ']'),
+            new Token(TokenType::Punctuation, ']'),
+            new Token(TokenType::Text, 'example'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Text, 'com'),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo')
         ]);
         $this->parser->parse($tokens);
     }
@@ -148,13 +148,13 @@ class UriTemplateParserTest extends TestCase
     public function testParsingNonStandardPunctuationJustGetsTreatedAsText(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_PUNCTUATION, '!')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Punctuation, '!')
         ]);
-        $pathNode = new AstNode(AstNodeTypes::PATH);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, '!'));
-        $expectedAst = new AstNode(AstNodeTypes::ROOT);
+        $pathNode = new AstNode(AstNodeType::Path);
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, '!'));
+        $expectedAst = new AstNode(AstNodeType::Root);
         $expectedAst->addChild($pathNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -164,14 +164,14 @@ class UriTemplateParserTest extends TestCase
         $this->expectException(UnexpectedTokenException::class);
         $this->expectExceptionMessage("Expected optional host part to end with '.'");
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_TEXT, 'api'),
-            new Token(TokenTypes::T_PUNCTUATION, ']'),
-            new Token(TokenTypes::T_TEXT, 'example'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_TEXT, 'com'),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo')
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Text, 'api'),
+            new Token(TokenType::Punctuation, ']'),
+            new Token(TokenType::Text, 'example'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Text, 'com'),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo')
         ]);
         $this->parser->parse($tokens);
     }
@@ -179,21 +179,21 @@ class UriTemplateParserTest extends TestCase
     public function testParsingOptionalPathPartCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, ']')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, ']')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
-        $optionalRoutePartNode = new AstNode(AstNodeTypes::OPTIONAL_ROUTE_PART, '[');
-        $optionalRoutePartNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $optionalRoutePartNode->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, 'foo'));
+        $optionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, '[');
+        $optionalRoutePartNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $optionalRoutePartNode->addChild(new AstNode(AstNodeType::Text, 'bar'));
         $pathNode->addChild($optionalRoutePartNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -201,13 +201,13 @@ class UriTemplateParserTest extends TestCase
     public function testParsingOptionalPathPartThatDoesNotBeginWithSlashThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage("Expected optional path part to start with '/', got T_TEXT");
+        $this->expectExceptionMessage("Expected optional path part to start with '/', got " . TokenType::Text->name);
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '['),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, ']')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo'),
+            new Token(TokenType::Punctuation, '['),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, ']')
         ]);
         $this->parser->parse($tokens);
     }
@@ -215,68 +215,68 @@ class UriTemplateParserTest extends TestCase
     public function testParsingTextOnlyPathCreatesSingleTextNode(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, 'foo'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
     public function testParsingNumberOnlyPathCreatesSingleNumber(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_NUMBER, 12345)
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Number, 12345)
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, 12345));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, 12345));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
     public function testParsingPeriodInPathCreatesTextNode(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_TEXT, 'example'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_TEXT, 'com'),
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_TEXT, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '.'),
-            new Token(TokenTypes::T_TEXT, 'bar'),
+            new Token(TokenType::Text, 'example'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Text, 'com'),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Text, 'foo'),
+            new Token(TokenType::Punctuation, '.'),
+            new Token(TokenType::Text, 'bar'),
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $hostNode = new AstNode(AstNodeTypes::HOST, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $hostNode = new AstNode(AstNodeType::Host, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($hostNode);
         $expectedAst->addChild($pathNode);
-        $hostNode->addChild(new AstNode(AstNodeTypes::TEXT, 'example'));
-        $hostNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '.'));
-        $hostNode->addChild(new AstNode(AstNodeTypes::TEXT, 'com'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, 'foo'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, '.'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, 'bar'));
+        $hostNode->addChild(new AstNode(AstNodeType::Text, 'example'));
+        $hostNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'));
+        $hostNode->addChild(new AstNode(AstNodeType::Text, 'com'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, 'foo'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, '.'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, 'bar'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
     public function testParsingQuotedStringOnlyPathCreatesSingleString(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_QUOTED_STRING, '"12345"')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::QuotedString, '"12345"')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::TEXT, '"12345"'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Text, '"12345"'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
@@ -285,9 +285,9 @@ class UriTemplateParserTest extends TestCase
         $this->expectException(UnexpectedTokenException::class);
         $this->expectExceptionMessage('Cannot have consecutive variables without a delimiter');
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_VARIABLE, 'foo')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Variable, 'foo')
         ]);
         $this->parser->parse($tokens);
     }
@@ -295,12 +295,12 @@ class UriTemplateParserTest extends TestCase
     public function testParsingUnclosedConstraintParenthesisThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage('Expected closing parenthesis after constraints, got T_EOF');
+        $this->expectExceptionMessage('Expected closing parenthesis after constraints, got ' . TokenType::Eof->name);
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_TEXT, 'bar'),
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Text, 'bar'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -308,39 +308,39 @@ class UriTemplateParserTest extends TestCase
     public function testParsingVariableInPathCreatesVariableNameNode(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
-        $pathNode->addChild(new AstNode(AstNodeTypes::VARIABLE, 'foo'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::Variable, 'foo'));
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
 
     public function testParsingVariableInPathWithConstraintWithMultipleParametersCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_QUOTED_STRING, 'baz'),
-            new Token(TokenTypes::T_PUNCTUATION, ','),
-            new Token(TokenTypes::T_TEXT, 'blah'),
-            new Token(TokenTypes::T_PUNCTUATION, ')'),
-            new Token(TokenTypes::T_PUNCTUATION, ')')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::QuotedString, 'baz'),
+            new Token(TokenType::Punctuation, ','),
+            new Token(TokenType::Text, 'blah'),
+            new Token(TokenType::Punctuation, ')'),
+            new Token(TokenType::Punctuation, ')')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
-        $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['baz', 'blah']));
-        $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
+        $variableConstraintNode = new AstNode(AstNodeType::VariableConstraint, 'bar');
+        $variableConstraintNode->addChild(new AstNode(AstNodeType::VariableConstraintParameters, ['baz', 'blah']));
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo');
         $variableNode->addChild($variableConstraintNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -348,19 +348,19 @@ class UriTemplateParserTest extends TestCase
     public function testParsingVariableInPathWithConstraintWithNoParametersCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, ')')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, ')')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
-        $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
+        $variableConstraintNode = new AstNode(AstNodeType::VariableConstraint, 'bar');
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo');
         $variableNode->addChild($variableConstraintNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -368,23 +368,23 @@ class UriTemplateParserTest extends TestCase
     public function testParsingVariableInPathWithConstraintWithSingleParameterCreatesCorrectNodes(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_QUOTED_STRING, 'baz'),
-            new Token(TokenTypes::T_PUNCTUATION, ')'),
-            new Token(TokenTypes::T_PUNCTUATION, ')')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::QuotedString, 'baz'),
+            new Token(TokenType::Punctuation, ')'),
+            new Token(TokenType::Punctuation, ')')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
-        $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['baz']));
-        $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
+        $variableConstraintNode = new AstNode(AstNodeType::VariableConstraint, 'bar');
+        $variableConstraintNode->addChild(new AstNode(AstNodeType::VariableConstraintParameters, ['baz']));
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo');
         $variableNode->addChild($variableConstraintNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }
@@ -392,12 +392,12 @@ class UriTemplateParserTest extends TestCase
     public function testParsingVariableInPathWithConstraintButWithNoSlugThrowsException(): void
     {
         $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage('Expected constraint name, got T_PUNCTUATION');
+        $this->expectExceptionMessage('Expected constraint name, got ' . TokenType::Punctuation->name);
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_PUNCTUATION, ')')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Punctuation, ')')
         ]);
         $this->parser->parse($tokens);
     }
@@ -405,24 +405,24 @@ class UriTemplateParserTest extends TestCase
     public function testParsingVariableInPathWithConstraintWithTrailingCommaDoesNotThrowException(): void
     {
         $tokens = new TokenStream([
-            new Token(TokenTypes::T_PUNCTUATION, '/'),
-            new Token(TokenTypes::T_VARIABLE, 'foo'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_TEXT, 'bar'),
-            new Token(TokenTypes::T_PUNCTUATION, '('),
-            new Token(TokenTypes::T_QUOTED_STRING, 'baz'),
-            new Token(TokenTypes::T_PUNCTUATION, ','),
-            new Token(TokenTypes::T_PUNCTUATION, ')'),
-            new Token(TokenTypes::T_PUNCTUATION, ')')
+            new Token(TokenType::Punctuation, '/'),
+            new Token(TokenType::Variable, 'foo'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::Text, 'bar'),
+            new Token(TokenType::Punctuation, '('),
+            new Token(TokenType::QuotedString, 'baz'),
+            new Token(TokenType::Punctuation, ','),
+            new Token(TokenType::Punctuation, ')'),
+            new Token(TokenType::Punctuation, ')')
         ]);
-        $expectedAst = new AstNode(AstNodeTypes::ROOT, null);
-        $pathNode = new AstNode(AstNodeTypes::PATH, null);
+        $expectedAst = new AstNode(AstNodeType::Root, null);
+        $pathNode = new AstNode(AstNodeType::Path, null);
         $expectedAst->addChild($pathNode);
-        $variableConstraintNode = new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT, 'bar');
-        $variableConstraintNode->addChild(new AstNode(AstNodeTypes::VARIABLE_CONSTRAINT_PARAMETERS, ['baz']));
-        $variableNode = new AstNode(AstNodeTypes::VARIABLE, 'foo');
+        $variableConstraintNode = new AstNode(AstNodeType::VariableConstraint, 'bar');
+        $variableConstraintNode->addChild(new AstNode(AstNodeType::VariableConstraintParameters, ['baz']));
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo');
         $variableNode->addChild($variableConstraintNode);
-        $pathNode->addChild(new AstNode(AstNodeTypes::SEGMENT_DELIMITER, '/'));
+        $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
         $pathNode->addChild($variableNode);
         $this->assertEquals($expectedAst, $this->parser->parse($tokens));
     }

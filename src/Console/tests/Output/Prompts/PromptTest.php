@@ -24,13 +24,13 @@ use PHPUnit\Framework\TestCase;
 
 class PromptTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
     private PaddingFormatter $paddingFormatter;
     private Prompt $prompt;
 
     protected function setUp(): void
     {
-        /** @var IOutput|MockObject output */
+        /** @var IOutput&MockObject output */
         $this->output = $this->createMock(IOutput::class);
         $this->paddingFormatter = new PaddingFormatter();
         $this->prompt = new Prompt($this->paddingFormatter);
@@ -76,7 +76,7 @@ class PromptTest extends TestCase
     public function testAskingMultipleChoiceQuestionWithCustomAnswerLineString(): void
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
-        $question->setAnswerLineString('  : ');
+        $question->answerLineString = '  : ';
         $this->output->method('readLine')
             ->willReturn('1');
         $this->output->method('write')

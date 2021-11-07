@@ -61,9 +61,9 @@ class ContainerTest extends TestCase
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
-        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
-        $this->assertInstanceOf(Bar::class, $instance2->getFoo());
-        $this->assertNotSame($instance1->getFoo(), $instance2->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance1->foo);
+        $this->assertInstanceOf(Bar::class, $instance2->foo);
+        $this->assertNotSame($instance1->foo, $instance2->foo);
         $this->assertNotSame($instance1, $instance2);
     }
 
@@ -76,8 +76,8 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
-        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
-        $this->assertSame($instance1->getFoo(), $instance2->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance1->foo);
+        $this->assertSame($instance1->foo, $instance2->foo);
         $this->assertNotSame($instance1, $instance2);
         $this->assertNotSame($instance1, $instance2);
     }
@@ -111,9 +111,9 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
-        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
-        $this->assertInstanceOf(Bar::class, $instance2->getFoo());
-        $this->assertSame($instance1->getFoo(), $instance2->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance1->foo);
+        $this->assertInstanceOf(Bar::class, $instance2->foo);
+        $this->assertSame($instance1->foo, $instance2->foo);
         $this->assertNotSame($instance1, $instance2);
     }
 
@@ -501,14 +501,14 @@ class ContainerTest extends TestCase
     {
         $instance = $this->container->resolve(ConstructorWithNullableObject::class);
         $this->assertInstanceOf(ConstructorWithNullableObject::class, $instance);
-        $this->assertNull($instance->getFoo());
+        $this->assertNull($instance->foo);
     }
 
     public function testResolvingClassWithObjectInConstructorThatCannotBeResolvedUsesDefaultValueIfAvailable(): void
     {
         $instance = $this->container->resolve(ConstructorWithDefaultValueObject::class);
         $this->assertInstanceOf(ConstructorWithDefaultValueObject::class, $instance);
-        $this->assertInstanceOf(DateTime::class, $instance->getFoo());
+        $this->assertInstanceOf(DateTime::class, $instance->foo);
     }
 
     public function testResolvingClassWithPrimitiveInConstructorWhoseTypesDoNotMatchThoseInBindingThrowsException(): void
@@ -662,7 +662,7 @@ class ContainerTest extends TestCase
         // This universal binding should NOT take precedence over the class binding
         $this->container->bindClass(IFoo::class, Blah::class);
         $resolvedInstance = $this->container->resolve(ConstructorWithInterface::class);
-        $this->assertSame($targetedInstance, $resolvedInstance->getFoo());
+        $this->assertSame($targetedInstance, $resolvedInstance->foo);
     }
 
     public function testTargetedFactoryBindingsOnlyApplyToNextCall(): void

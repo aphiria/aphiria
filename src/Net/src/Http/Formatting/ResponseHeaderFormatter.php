@@ -14,6 +14,7 @@ namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 use RuntimeException;
 
 /**
@@ -30,7 +31,7 @@ class ResponseHeaderFormatter extends HeaderParser
      * @param string|null $domain The domain of the cookie to delete if set, otherwise null
      * @param bool $isSecure Whether or not the cookie to be deleted was HTTPS
      * @param bool $isHttpOnly Whether or not the cookie to be deleted was HTTP-only
-     * @param string|null $sameSite The same-site setting to use if set, otherwise null
+     * @param SameSiteMode|null $sameSite The same-site setting to use if set, otherwise null
      * @throws RuntimeException Thrown if the set cookie header's hash key could not be calculated
      */
     public function deleteCookie(
@@ -40,7 +41,7 @@ class ResponseHeaderFormatter extends HeaderParser
         ?string $domain = null,
         bool $isSecure = false,
         bool $isHttpOnly = true,
-        ?string $sameSite = Cookie::SAME_SITE_LAX
+        ?SameSiteMode $sameSite = SameSiteMode::Lax
     ): void {
         $headerValue = "$name=";
         $headerValue .= '; Max-Age=0';
@@ -62,7 +63,7 @@ class ResponseHeaderFormatter extends HeaderParser
         }
 
         if ($sameSite !== null) {
-            $headerValue .= "; SameSite=$sameSite";
+            $headerValue .= "; SameSite={$sameSite->value}";
         }
 
         $headers->add('Set-Cookie', $headerValue, true);
@@ -102,30 +103,30 @@ class ResponseHeaderFormatter extends HeaderParser
      */
     private function getSetCookieHeaderValue(Cookie $cookie): string
     {
-        $headerValue = "{$cookie->getName()}=" . \urlencode((string)$cookie->getValue());
+        $headerValue = "{$cookie->getName()}=" . \urlencode((string)$cookie->value);
 
-        if (($maxAge = $cookie->getMaxAge()) !== null) {
+        if (($maxAge = $cookie->maxAge) !== null) {
             $headerValue .= "; Max-Age=$maxAge";
         }
 
-        if (($path = $cookie->getPath()) !== null) {
+        if (($path = $cookie->path) !== null) {
             $headerValue .= "; Path=$path";
         }
 
-        if (($domain = $cookie->getDomain()) !== null) {
+        if (($domain = $cookie->domain) !== null) {
             $headerValue .= "; Domain=$domain";
         }
 
-        if ($cookie->isSecure()) {
+        if ($cookie->isSecure) {
             $headerValue .= '; Secure';
         }
 
-        if ($cookie->isHttpOnly()) {
+        if ($cookie->isHttpOnly) {
             $headerValue .= '; HttpOnly';
         }
 
-        if (($sameSite = $cookie->getSameSite()) !== null) {
-            $headerValue .= "; SameSite=$sameSite";
+        if (($sameSite = $cookie->sameSite) !== null) {
+            $headerValue .= "; SameSite={$sameSite->value}";
         }
 
         return $headerValue;

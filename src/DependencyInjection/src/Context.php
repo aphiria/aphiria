@@ -18,23 +18,14 @@ namespace Aphiria\DependencyInjection;
 abstract class Context
 {
     /**
-     * Gets the targeted class
-     *
-     * @return class-string|null The targeted class, if there was one
+     * @param class-string|null $targetClass The targeted class, if there was one
+     * @param bool $isTargeted Whether or not the context is targeted
+     * @param bool $isUniversal Whether or not the context is universal
      */
-    abstract public function getTargetClass(): ?string;
-
-    /**
-     * Whether or not the context is targeted
-     *
-     * @return bool True if the context is targeted, otherwise false
-     */
-    abstract public function isTargeted(): bool;
-
-    /**
-     * Gets whether or not the context is universal
-     *
-     * @return bool True if the context is universal, otherwise false
-     */
-    abstract public function isUniversal(): bool;
+    protected function __construct(
+        public readonly ?string $targetClass,
+        public readonly bool $isTargeted,
+        public readonly bool $isUniversal
+    ) {
+    }
 }

@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 class AboutCommandHandlerTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
     private AboutCommandHandler $handler;
     private CommandRegistry $commands;
 

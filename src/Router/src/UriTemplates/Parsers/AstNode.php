@@ -23,10 +23,10 @@ final class AstNode
     public array $children = [];
 
     /**
-     * @param string $type The node type
+     * @param AstNodeType $type The node type
      * @param mixed $value The value of the node
      */
-    public function __construct(public string $type, public mixed $value = null)
+    public function __construct(public AstNodeType $type, public mixed $value = null)
     {
     }
 

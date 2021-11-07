@@ -20,7 +20,7 @@ abstract class Constraint implements IConstraint
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint
      */
-    protected function __construct(protected string $errorMessageId)
+    protected function __construct(protected readonly string $errorMessageId)
     {
     }
 

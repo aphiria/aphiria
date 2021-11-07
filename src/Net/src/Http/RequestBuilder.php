@@ -22,26 +22,27 @@ use LogicException;
  */
 class RequestBuilder implements IRequestBuilder
 {
+    /** @var Headers The request headers */
+    protected readonly Headers $headers;
+    /** @var IDictionary<string, mixed> The request properties */
+    protected readonly IDictionary $properties;
     /** @var string|null The HTTP method */
     protected ?string $method = null;
     /** @var Uri|null The URI of the request */
     protected ?Uri $uri = null;
-    /** @var Headers The request headers */
-    protected Headers $headers;
     /** @var IBody|null The request body if one is set, otherwise null */
     protected ?IBody $body = null;
-    /** @var IDictionary<string, mixed> The request properties */
-    protected IDictionary $properties;
     /** @var string The protocol version */
     protected string $protocolVersion = '1.1';
-    /** @var string The request target type */
-    protected string $requestTargetType = RequestTargetTypes::ORIGIN_FORM;
+    /** @var RequestTargetType The request target type */
+    protected RequestTargetType $requestTargetType;
 
     public function __construct()
     {
         $this->headers = new Headers();
         /** @var HashTable<string, mixed> properties */
         $this->properties = new HashTable();
+        $this->requestTargetType = RequestTargetType::OriginForm;
     }
 
     /**
@@ -141,7 +142,7 @@ class RequestBuilder implements IRequestBuilder
     /**
      * @inheritdoc
      */
-    public function withRequestTargetType(string $requestTargetType): static
+    public function withRequestTargetType(RequestTargetType $requestTargetType): static
     {
         $new = clone $this;
         $new->requestTargetType = $requestTargetType;

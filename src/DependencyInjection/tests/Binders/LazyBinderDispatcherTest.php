@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
 
 class LazyBinderDispatcherTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer $container;
 
     protected function setUp(): void
     {
@@ -104,11 +104,11 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var InstanceContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
-        $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
+        $this->assertInstanceOf(Foo::class, $bindingFromBinder->instance);
     }
 
     public function testDispatchingUniversalBindingRegistersBindingsFromBinder(): void
@@ -123,11 +123,11 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var InstanceContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
-        $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
+        $this->assertInstanceOf(Foo::class, $bindingFromBinder->instance);
     }
 
     public function testDispatchingUsesUniversalContextWhenBindingBinders(): void
@@ -189,11 +189,11 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
-        $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
+        $this->assertSame(Foo::class, $bindingFromBinder->concreteClass);
     }
 
     public function testDispatchingWithNoCacheForcesCollectionCreation(): void
@@ -208,11 +208,11 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
-        $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
+        $this->assertSame(Foo::class, $bindingFromBinder->concreteClass);
     }
 
     /**

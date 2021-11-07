@@ -22,7 +22,7 @@ final class FileSessionDriver implements ISessionDriver
     /**
      * @param string $basePath The base path to the session storage files
      */
-    public function __construct(private string $basePath)
+    public function __construct(private readonly string $basePath)
     {
     }
 

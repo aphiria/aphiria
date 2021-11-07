@@ -47,7 +47,7 @@ class AcceptCharsetHeaderValueTest extends TestCase
         /** @var IImmutableDictionary<string, string|null> $parameters */
         $parameters = $this->createMock(IImmutableDictionary::class);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
-        $this->assertSame('utf-8', $value->getCharset());
+        $this->assertSame('utf-8', $value->charset);
     }
 
     public function testGettingParametersReturnsSameOneSetInConstructor(): void
@@ -55,7 +55,7 @@ class AcceptCharsetHeaderValueTest extends TestCase
         /** @var ImmutableHashTable<string, string|null> $parameters */
         $parameters = new ImmutableHashTable([]);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
-        $this->assertSame($parameters, $value->getParameters());
+        $this->assertSame($parameters, $value->parameters);
     }
 
     public function testGettingQualityReturnsCorrectQuality(): void

@@ -22,7 +22,10 @@ final class Input
      * @param array<string, mixed> $arguments The mapping of argument names to values
      * @param array<string, mixed> $options The option names to values
      */
-    public function __construct(public string $commandName, public array $arguments, public array $options)
-    {
+    public function __construct(
+        public readonly string $commandName,
+        public readonly array $arguments,
+        public readonly array $options
+    ) {
     }
 }

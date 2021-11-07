@@ -12,32 +12,20 @@ declare(strict_types=1);
 
 namespace Aphiria\DependencyInjection;
 
+use Closure;
+
 /**
  * Defines a factory container binding
  * @internal
  */
 class FactoryContainerBinding implements IContainerBinding
 {
-    /** @var callable(): object The factory */
-    private $factory;
-
     /**
-     * @param callable(): object $factory The factory
+     * @param Closure(): object $factory The factory
      * @param bool $resolveAsSingleton Whether or not the factory should be resolved as a singleton
      */
-    public function __construct(callable $factory, private bool $resolveAsSingleton)
+    public function __construct(public readonly Closure $factory, private readonly bool $resolveAsSingleton)
     {
-        $this->factory = $factory;
-    }
-
-    /**
-     * Gets the factory binding
-     *
-     * @return callable(): object The factory
-     */
-    public function getFactory(): callable
-    {
-        return $this->factory;
     }
 
     /**

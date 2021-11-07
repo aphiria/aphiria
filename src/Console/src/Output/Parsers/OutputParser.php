@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Output\Parsers;
 
 use Aphiria\Console\Output\Lexers\OutputToken;
-use Aphiria\Console\Output\Lexers\OutputTokenTypes;
+use Aphiria\Console\Output\Lexers\OutputTokenType;
 use RuntimeException;
 
 /**
@@ -32,17 +32,17 @@ final class OutputParser implements IOutputParser
 
         foreach ($tokens as $token) {
             switch ($token->type) {
-                case OutputTokenTypes::T_WORD:
+                case OutputTokenType::Word:
                     $currNode?->addChild(new WordAstNode($token->value));
 
                     break;
-                case OutputTokenTypes::T_TAG_OPEN:
+                case OutputTokenType::TagOpen:
                     $childNode = new TagAstNode($token->value);
                     $currNode?->addChild($childNode);
                     $currNode = $childNode;
 
                     break;
-                case OutputTokenTypes::T_TAG_CLOSE:
+                case OutputTokenType::TagClose:
                     if ($currNode?->value !== $token->value) {
                         throw new RuntimeException(
                             \sprintf(
@@ -57,7 +57,7 @@ final class OutputParser implements IOutputParser
                     $currNode = $currNode?->parent;
 
                     break;
-                case OutputTokenTypes::T_EOF:
+                case OutputTokenType::Eof:
                     if ($currNode === null || !$currNode->isRoot()) {
                         throw new RuntimeException(
                             \sprintf(
@@ -69,15 +69,6 @@ final class OutputParser implements IOutputParser
                     }
 
                     break;
-                default:
-                    throw new RuntimeException(
-                        \sprintf(
-                            'Unknown token type "%s" with value "%s" near character #%d',
-                            $token->type,
-                            (string)$token->value,
-                            $token->position
-                        )
-                    );
             }
         }
 

@@ -56,7 +56,7 @@ class RouteBuilderTest extends TestCase
 
     public function testConstraintBindingIsSet(): void
     {
-        /** @var IRouteConstraint|MockObject $constraint */
+        /** @var IRouteConstraint&MockObject $constraint */
         $constraint = $this->createMock(IRouteConstraint::class);
         $this->routeBuilder->withConstraint($constraint);
         $controller = new class () {

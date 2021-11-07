@@ -30,7 +30,7 @@ class AttributeRouteRegistrantTest extends TestCase
 {
     private const PATH = __DIR__;
     private AttributeRouteRegistrant $registrant;
-    private ITypeFinder|MockObject $typeFinder;
+    private ITypeFinder&MockObject $typeFinder;
 
     protected function setUp(): void
     {

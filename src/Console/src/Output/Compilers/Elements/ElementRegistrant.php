@@ -24,13 +24,13 @@ final class ElementRegistrant
      */
     public function registerElements(ElementRegistry $registry): void
     {
-        $registry->registerElement(new Element('success', new Style(Colors::BLACK, Colors::GREEN)));
-        $registry->registerElement(new Element('info', new Style(Colors::GREEN)));
-        $registry->registerElement(new Element('error', new Style(Colors::BLACK, Colors::YELLOW)));
-        $registry->registerElement(new Element('fatal', new Style(Colors::WHITE, Colors::RED)));
-        $registry->registerElement(new Element('question', new Style(Colors::WHITE, Colors::BLUE)));
-        $registry->registerElement(new Element('comment', new Style(Colors::YELLOW)));
-        $registry->registerElement(new Element('b', new Style(null, null, [TextStyles::BOLD])));
-        $registry->registerElement(new Element('u', new Style(null, null, [TextStyles::UNDERLINE])));
+        $registry->registerElement(new Element('success', new Style(Color::Black, Color::Green)));
+        $registry->registerElement(new Element('info', new Style(Color::Green)));
+        $registry->registerElement(new Element('error', new Style(Color::Black, Color::Yellow)));
+        $registry->registerElement(new Element('fatal', new Style(Color::White, Color::Red)));
+        $registry->registerElement(new Element('question', new Style(Color::White, Color::Blue)));
+        $registry->registerElement(new Element('comment', new Style(Color::Yellow)));
+        $registry->registerElement(new Element('b', new Style(null, null, [TextStyle::Bold])));
+        $registry->registerElement(new Element('u', new Style(null, null, [TextStyle::Underline])));
     }
 }

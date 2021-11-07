@@ -24,7 +24,7 @@ class RegexConstraint extends Constraint
      * @inheritdoc
      * @param string $regex The regular expression to run
      */
-    public function __construct(private string $regex, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
+    public function __construct(private readonly string $regex, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)
     {
         parent::__construct($errorMessageId);
     }
