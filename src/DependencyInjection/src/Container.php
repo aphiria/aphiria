@@ -186,7 +186,7 @@ class Container implements IContainer
     {
         if (
             $this->currentContext->isTargeted
-            && $this->hasTargetedBinding($interface, $this->currentContext->targetClass)
+            && $this->hasTargetedBinding($interface, $this->currentContext->getTargetClass())
         ) {
             return true;
         }
@@ -339,7 +339,7 @@ class Container implements IContainer
                         \sprintf(
                             '%s is not instantiable%s',
                             $className,
-                            $this->currentContext->isTargeted ? " (dependency of {$this->currentContext->targetClass})" : ''
+                            $this->currentContext->isTargeted ? " (dependency of {$this->currentContext->getTargetClass()})" : ''
                         )
                     );
                 }
