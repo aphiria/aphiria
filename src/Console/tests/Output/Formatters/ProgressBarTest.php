@@ -15,6 +15,7 @@ namespace Aphiria\Console\Tests\Output\Formatters;
 use Aphiria\Console\Output\Formatters\IProgressBarObserver;
 use Aphiria\Console\Output\Formatters\ProgressBar;
 use InvalidArgumentException;
+use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -27,6 +28,11 @@ class ProgressBarTest extends TestCase
     {
         $this->formatter = $this->createMock(IProgressBarObserver::class);
         $this->progressBar = new ProgressBar(100, $this->formatter);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function testAdvancingBeyondMaxStepsDoesNotCallFormatter(): void
@@ -65,11 +71,15 @@ class ProgressBarTest extends TestCase
 
     public function testSettingProgressToValueLessThanZeroBoundsItToZero(): void
     {
-        $this->formatter->method('onProgressChanged')
-            ->withConsecutive([0, 1, 100], [1, 0, 100]);
+        $formatter = Mockery::mock(IProgressBarObserver::class);
+        $formatter->shouldReceive('onProgressChanged')
+            ->with(0, 1, 100);
+        $formatter->shouldReceive('onProgressChanged')
+            ->with(1, 0, 100);
+        $progressBar = new ProgressBar(100, $formatter);
         // Note: We're advancing at least once so that the update is sent to the formatter
-        $this->progressBar->advance();
-        $this->progressBar->setProgress(-1);
+        $progressBar->advance();
+        $progressBar->setProgress(-1);
         // Dummy assertion
         $this->assertTrue(true);
     }

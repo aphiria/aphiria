@@ -16,18 +16,24 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class ConsoleExceptionRendererTest extends TestCase
 {
     private ConsoleExceptionRenderer $exceptionRenderer;
-    private IOutput&MockObject $output;
+    private IOutput&MockInterface $output;
 
     protected function setUp(): void
     {
-        $this->output = $this->createMock(IOutput::class);
+        $this->output = Mockery::mock(IOutput::class);
         $this->exceptionRenderer = new ConsoleExceptionRenderer($this->output, false);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function testRenderingExceptionWithManyRegisteredOutputWritersWritesMessagesAndReturnsStatusCodes(): void
@@ -44,8 +50,10 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         ]);
-        $this->output->method('writeln')
-            ->withConsecutive(['foo'], ['bar']);
+        $this->output->shouldReceive('writeln')
+            ->with('foo');
+        $this->output->shouldReceive('writeln')
+            ->with('bar');
         $this->exceptionRenderer->render(new Exception());
         $this->exceptionRenderer->render(new InvalidArgumentException());
         // Dummy assertion
@@ -55,10 +63,12 @@ class ConsoleExceptionRendererTest extends TestCase
     public function testRenderingExceptionWithNoRegisteredOutputWriterUsesDefaultResultMessage(): void
     {
         $exception = new Exception();
-        $this->output->expects($this->once())
-            ->method('writeln')
+        $this->output->shouldReceive('writeln')
+            ->once()
             ->with(["<fatal>{$exception->getMessage()}" . \PHP_EOL . "{$exception->getTraceAsString()}</fatal>"]);
         $this->exceptionRenderer->render($exception);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testRenderingExceptionWithRegisteredOutputWriterUsesIt(): void
@@ -71,10 +81,12 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         );
-        $this->output->expects($this->once())
-            ->method('writeln')
+        $this->output->shouldReceive('writeln')
+            ->once()
             ->with('foo');
         $this->exceptionRenderer->render(new Exception());
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testSettingOutputUsesNewOutputToWriteExceptionMessages(): void

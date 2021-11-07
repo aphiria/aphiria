@@ -21,13 +21,15 @@ use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\ValidationException;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class RequestBodyValidatorTest extends TestCase
 {
     private IRequest&MockObject $request;
-    private IValidator&MockObject $validator;
+    private IValidator&MockInterface $validator;
     private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
     private ILanguageMatcher&MockObject $languageMatcher;
     private RequestBodyValidator $requestBodyValidator;
@@ -35,7 +37,7 @@ class RequestBodyValidatorTest extends TestCase
     protected function setUp(): void
     {
         $this->request = $this->createMock(IRequest::class);
-        $this->validator = $this->createMock(IValidator::class);
+        $this->validator = Mockery::mock(IValidator::class);
         $this->errorMessageInterpolator = $this->createMock(IErrorMessageInterpolator::class);
         $this->languageMatcher = $this->createMock(ILanguageMatcher::class);
         $this->requestBodyValidator = new RequestBodyValidator(
@@ -45,13 +47,20 @@ class RequestBodyValidatorTest extends TestCase
         );
     }
 
+    protected function tearDown(): void
+    {
+        Mockery::close();
+    }
+
     public function testValidatingArrayOfObjectsValidatesEachOne(): void
     {
         $bodyParts = [new class () {
         }, new class () {
         }];
-        $this->validator->method('validateObject')
-            ->withConsecutive([$bodyParts[0]], [$bodyParts[1]]);
+        $this->validator->shouldReceive('validateObject')
+            ->with($bodyParts[0]);
+        $this->validator->shouldReceive('validateObject')
+            ->with($bodyParts[1]);
         $this->requestBodyValidator->validate($this->request, $bodyParts);
         // Dummy assertion
         $this->assertTrue(true);
@@ -59,6 +68,7 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingDoesNotSetLocaleOnErrorMessageInterpolatorIfNoLanguageMatcherFound(): void
     {
+        $this->validator->shouldReceive('validateObject');
         $this->languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
             ->with($this->request)
@@ -87,10 +97,9 @@ class RequestBodyValidatorTest extends TestCase
             )
         ];
         $expectedException = new ValidationException($violations);
-        $this->validator->expects($this->once())
-            ->method('validateObject')
+        $this->validator->shouldReceive('validateObject')
             ->with($this)
-            ->willThrowException($expectedException);
+            ->andThrow($expectedException);
 
         try {
             $this->requestBodyValidator->validate($this->request, $this);
@@ -105,6 +114,7 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingSetsLocaleOnErrorMessageInterpolatorOnlyOnce(): void
     {
+        $this->validator->shouldReceive('validateObject');
         $this->languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
             ->with($this->request)
@@ -121,6 +131,7 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingSetsLocaleOnErrorMessageInterpolatorIfLanguageMatcherFoundOne(): void
     {
+        $this->validator->shouldReceive('validateObject');
         $this->languageMatcher->expects($this->once())
             ->method('getBestLanguageMatch')
             ->with($this->request)
@@ -142,8 +153,7 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingValidBodyDoesNotThrowException(): void
     {
-        $this->validator->expects($this->once())
-            ->method('validateObject')
+        $this->validator->shouldReceive('validateObject')
             ->with($this);
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion

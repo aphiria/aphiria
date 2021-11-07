@@ -21,25 +21,28 @@ use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Console\Binders\CommandBinder;
-use PHPUnit\Framework\MockObject\MockObject;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class CommandBinderTest extends TestCase
 {
-    private IContainer&MockObject $container;
+    private IContainer&MockInterface $container;
     private CommandBinder $binder;
     private ?string $currEnvironment;
 
     protected function setUp(): void
     {
         $this->binder = new CommandBinder();
-        $this->container = $this->createMock(IContainer::class);
+        $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = \getenv('APP_ENV') ?: null;
     }
 
     protected function tearDown(): void
     {
+        Mockery::close();
+
         // Restore the environment name
         if ($this->currEnvironment === null) {
             \putenv('APP_ENV=');
@@ -50,7 +53,7 @@ class CommandBinderTest extends TestCase
 
     public function testAttributeRegistrantIsRegistered(): void
     {
-        $this->setUpContainerMockBindInstance([AttributeCommandRegistrant::class, $this->isInstanceOf(AttributeCommandRegistrant::class)]);
+        $this->setUpContainerMockBindInstance();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -85,22 +88,18 @@ class CommandBinderTest extends TestCase
         ];
     }
 
-    /**
-     * @param array|null $additionalParameters Any additional parameters to set up the mock with
-     */
-    private function setUpContainerMockBindInstance(array $additionalParameters = null): void
+    private function setUpContainerMockBindInstance(): void
     {
         $parameters = [
-            [CommandRegistry::class, $this->isInstanceOf(CommandRegistry::class)],
-            [ICommandRegistryCache::class, $this->isInstanceOf(FileCommandRegistryCache::class)],
-            [CommandRegistrantCollection::class, $this->isInstanceOf(CommandRegistrantCollection::class)]
+            [CommandRegistry::class, CommandRegistry::class],
+            [ICommandRegistryCache::class, FileCommandRegistryCache::class],
+            [CommandRegistrantCollection::class, CommandRegistrantCollection::class],
+            [AttributeCommandRegistrant::class, AttributeCommandRegistrant::class]
         ];
 
-        if ($additionalParameters !== null) {
-            $parameters[] = $additionalParameters;
+        foreach ($parameters as $parameter) {
+            $this->container->shouldReceive('bindInstance')
+                ->with($parameter[0], Mockery::type($parameter[1]));
         }
-
-        $this->container->method('bindInstance')
-            ->withConsecutive(...$parameters);
     }
 }
