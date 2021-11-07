@@ -38,7 +38,7 @@ jobs:
         run: composer phpcs-test
         env:
           PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-php-version }}
-      # For now, do not run the linter until PHP-CS-Fixer fully supports this PHP version
+      # For now, do not run Psalm until it fully supports this PHP version
       - name: Run Psalm Static Analysis
         if: matrix.experimental == false
         run: composer psalm -- --shepherd
