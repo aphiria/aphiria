@@ -32,10 +32,10 @@ class ServeCommandTest extends TestCase
         $this->assertSame('app:serve', $command->name);
         $this->assertSame('Runs your app locally', $command->description);
         $expectedOptions = [
-            new Option('domain', OptionType::REQUIRED_VALUE, null, 'The domain to run your app at', 'localhost'),
-            new Option('port', OptionType::REQUIRED_VALUE, null, 'The port to run your app at', 8080),
-            new Option('docroot', OptionType::REQUIRED_VALUE, null, 'The document root of your app', 'public'),
-            new Option('router', OptionType::REQUIRED_VALUE, null, 'The router file for your app', 'router')
+            new Option('domain', OptionType::RequiredValue, null, 'The domain to run your app at', 'localhost'),
+            new Option('port', OptionType::RequiredValue, null, 'The port to run your app at', 8080),
+            new Option('docroot', OptionType::RequiredValue, null, 'The document root of your app', 'public'),
+            new Option('router', OptionType::RequiredValue, null, 'The router file for your app', 'router')
         ];
         $this->assertEquals($expectedOptions, $command->options);
     }

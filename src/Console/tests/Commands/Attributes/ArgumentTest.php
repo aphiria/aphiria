@@ -18,12 +18,31 @@ use PHPUnit\Framework\TestCase;
 
 class ArgumentTest extends TestCase
 {
+    public function getTypes(): array
+    {
+        return [
+            [[ArgumentType::Required], ArgumentType::Required],
+            [[ArgumentType::Required], [ArgumentType::Required]]
+        ];
+    }
+
     public function testAllPropertiesAreSetInConstructor(): void
     {
-        $argument = new Argument('arg', ArgumentType::REQUIRED, 'description', 'foo');
+        $argument = new Argument('arg', ArgumentType::Required, 'description', 'foo');
         $this->assertSame('arg', $argument->name);
-        $this->assertSame(ArgumentType::REQUIRED, $argument->type);
+        $this->assertSame([ArgumentType::Required], $argument->type);
         $this->assertSame('description', $argument->description);
         $this->assertSame('foo', $argument->defaultValue);
+    }
+
+    /**
+     * @dataProvider getTypes
+     * @param list<ArgumentType> $expectedType The expected type
+     * @param list<ArgumentType>|ArgumentType $paramType The type passed into the argument constructor
+     */
+    public function testTypeIsAlwaysArray(array $expectedType, array|ArgumentType $paramType): void
+    {
+        $argument = new Argument('arg', $paramType);
+        $this->assertSame($expectedType, $argument->type);
     }
 }

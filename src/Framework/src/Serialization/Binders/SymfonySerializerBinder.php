@@ -19,7 +19,6 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
 use InvalidArgumentException;
-use ReflectionClass;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;

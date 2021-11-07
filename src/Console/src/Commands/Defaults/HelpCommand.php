@@ -25,7 +25,7 @@ final class HelpCommand extends Command
     {
         parent::__construct(
             'help',
-            [new Argument('command', ArgumentType::OPTIONAL, 'The command to get help with')],
+            [new Argument('command', ArgumentType::Optional, 'The command to get help with')],
             [],
             'Displays information about a command'
         );

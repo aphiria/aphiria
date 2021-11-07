@@ -87,7 +87,7 @@ class AttributeCommandRegistrantTest extends TestCase
         $this->assertCount(1, $command->arguments);
         $arg1 = $command->arguments[0];
         $this->assertSame('arg1', $arg1->name);
-        $this->assertSame(ArgumentType::REQUIRED, $arg1->type);
+        $this->assertSame([ArgumentType::Required], $arg1->type);
         $this->assertSame('arg1 description', $arg1->description);
         $this->assertSame('arg1 value', $arg1->defaultValue);
 
@@ -96,7 +96,7 @@ class AttributeCommandRegistrantTest extends TestCase
         $opt1 = $command->options[0];
         $this->assertSame('opt1', $opt1->name);
         $this->assertSame('o', $opt1->shortName);
-        $this->assertSame(OptionType::REQUIRED_VALUE, $opt1->type);
+        $this->assertSame([OptionType::RequiredValue], $opt1->type);
         $this->assertSame('opt1 description', $opt1->description);
         $this->assertSame('opt1 value', $opt1->defaultValue);
     }

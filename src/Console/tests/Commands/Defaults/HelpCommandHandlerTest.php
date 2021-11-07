@@ -82,7 +82,7 @@ class HelpCommandHandlerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg1', ArgumentType::REQUIRED, 'Arg1 description')],
+                [new Argument('arg1', ArgumentType::Required, 'Arg1 description')],
                 [],
                 'The description'
             ),
@@ -201,7 +201,7 @@ class HelpCommandHandlerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt1', OptionType::REQUIRED_VALUE, null, 'Opt1 description')],
+                [new Option('opt1', OptionType::RequiredValue, null, 'Opt1 description')],
                 'The description'
             ),
             $commandHandler::class
@@ -223,7 +223,7 @@ class HelpCommandHandlerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt1', OptionType::REQUIRED_VALUE, 'o', 'Opt1 description')],
+                [new Option('opt1', OptionType::RequiredValue, 'o', 'Opt1 description')],
                 'The description'
             ),
             $commandHandler::class

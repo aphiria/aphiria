@@ -182,8 +182,8 @@ class ApplicationTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'holiday',
-                [new Argument('holiday', ArgumentType::REQUIRED, '')],
-                [new Option('yell', OptionType::OPTIONAL_VALUE, 'y', '', 'yes')],
+                [new Argument('holiday', ArgumentType::Required, '')],
+                [new Option('yell', OptionType::OptionalValue, 'y', '', 'yes')],
                 ''
             ),
             $commandHandler::class

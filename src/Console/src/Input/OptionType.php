@@ -15,14 +15,14 @@ namespace Aphiria\Console\Input;
 /**
  * Defines the different types of options
  */
-final class OptionType
+enum OptionType: int
 {
     /** The argument is required */
-    public const REQUIRED_VALUE = 1;
+    case RequiredValue = 1;
     /** The argument is optional */
-    public const OPTIONAL_VALUE = 2;
+    case OptionalValue = 2;
     /** The argument is not allowed */
-    public const NO_VALUE = 4;
+    case NoValue = 4;
     /** The argument is an array */
-    public const IS_ARRAY = 8;
+    case IsArray = 8;
 }

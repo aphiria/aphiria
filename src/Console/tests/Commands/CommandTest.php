@@ -31,8 +31,8 @@ class CommandTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $expectedName = 'foo';
-        $expectedArguments = [new Argument('arg', ArgumentType::REQUIRED, 'description')];
-        $expectedOptions = [new Option('opt', OptionType::REQUIRED_VALUE, 'o', 'description')];
+        $expectedArguments = [new Argument('arg', ArgumentType::Required, 'description')];
+        $expectedOptions = [new Option('opt', OptionType::RequiredValue, 'o', 'description')];
         $expectedDescription = 'description';
         $expectedHelpText = 'help';
         $command = new Command(

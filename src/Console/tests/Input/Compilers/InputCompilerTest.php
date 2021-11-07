@@ -47,7 +47,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentType::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [],
                 ''
             ),
@@ -82,10 +82,10 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentType::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [
-                    new Option('opt1', OptionType::REQUIRED_VALUE, null, ''),
-                    new Option('opt2', OptionType::NO_VALUE, 'r', '')
+                    new Option('opt1', OptionType::RequiredValue, null, ''),
+                    new Option('opt2', OptionType::NoValue, 'r', '')
                 ],
                 ''
             ),
@@ -109,8 +109,8 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentType::IS_ARRAY, ''),
-                    new Argument('arg2', ArgumentType::OPTIONAL, '', 'blah')
+                    new Argument('arg1', ArgumentType::IsArray, ''),
+                    new Argument('arg2', ArgumentType::Optional, '', 'blah')
                 ],
                 [],
                 '',
@@ -134,7 +134,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg', ArgumentType::IS_ARRAY, '')
+                    new Argument('arg', ArgumentType::IsArray, '')
                 ],
                 [],
                 '',
@@ -158,8 +158,8 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentType::IS_ARRAY, ''),
-                    new Argument('arg2', ArgumentType::REQUIRED, '')
+                    new Argument('arg1', ArgumentType::IsArray, ''),
+                    new Argument('arg2', ArgumentType::Required, '')
                 ],
                 [],
                 '',
@@ -194,7 +194,7 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionType::IS_ARRAY, null, '')
+                    new Option('opt', OptionType::IsArray, null, '')
                 ],
                 ''
             ),
@@ -218,7 +218,7 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionType::IS_ARRAY, null, '')
+                    new Option('opt', OptionType::IsArray, null, '')
                 ],
                 ''
             ),
@@ -269,7 +269,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionType::REQUIRED_VALUE, null, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 ''
             ),
             $commandHandler::class
@@ -291,7 +291,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionType::REQUIRED_VALUE, null, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 ''
             ),
             $commandHandler::class
@@ -312,8 +312,8 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentType::REQUIRED, '')],
-                [new Option('opt', OptionType::REQUIRED_VALUE, null, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 ''
             ),
             $commandHandler::class
@@ -336,8 +336,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionType::REQUIRED_VALUE, null, ''),
-                    new Option('opt2', OptionType::REQUIRED_VALUE, null, '')
+                    new Option('opt1', OptionType::RequiredValue, null, ''),
+                    new Option('opt2', OptionType::RequiredValue, null, '')
                 ],
                 ''
             ),
@@ -362,9 +362,9 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentType::OPTIONAL, ''),
-                    new Argument('arg2', ArgumentType::OPTIONAL, ''),
-                    new Argument('arg3', ArgumentType::OPTIONAL, '')
+                    new Argument('arg1', ArgumentType::Optional, ''),
+                    new Argument('arg2', ArgumentType::Optional, ''),
+                    new Argument('arg3', ArgumentType::Optional, '')
                 ],
                 [],
                 ''
@@ -391,9 +391,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionType::NO_VALUE, 'r', ''),
-                    new Option('opt2', OptionType::NO_VALUE, 'f', ''),
-                    new Option('opt3', OptionType::NO_VALUE, 'd', '')
+                    new Option('opt1', OptionType::NoValue, 'r', ''),
+                    new Option('opt2', OptionType::NoValue, 'f', ''),
+                    new Option('opt3', OptionType::NoValue, 'd', '')
                 ],
                 ''
             ),
@@ -419,9 +419,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionType::NO_VALUE, 'r', ''),
-                    new Option('opt2', OptionType::NO_VALUE, 'f', ''),
-                    new Option('opt3', OptionType::NO_VALUE, 'd', '')
+                    new Option('opt1', OptionType::NoValue, 'r', ''),
+                    new Option('opt2', OptionType::NoValue, 'f', ''),
+                    new Option('opt3', OptionType::NoValue, 'd', '')
                 ],
                 ''
             ),
@@ -447,7 +447,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionType::NO_VALUE, null, '')],
+                [new Option('opt', OptionType::NoValue, null, '')],
                 '',
                 ''
             ),
@@ -466,7 +466,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentType::OPTIONAL, '', 'bar')],
+                [new Argument('arg', ArgumentType::Optional, '', 'bar')],
                 [],
                 '',
                 ''
@@ -489,8 +489,8 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentType::REQUIRED, ''),
-                    new Argument('arg2', ArgumentType::REQUIRED, '')
+                    new Argument('arg1', ArgumentType::Required, ''),
+                    new Argument('arg2', ArgumentType::Required, '')
                 ]
             ),
             $commandHandler::class
@@ -510,7 +510,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionType::REQUIRED_VALUE, null, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 '',
                 ''
             ),
@@ -529,7 +529,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentType::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [],
                 ''
             ),
@@ -552,7 +552,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionType::NO_VALUE, 'r', '')],
+                [new Option('opt', OptionType::NoValue, 'r', '')],
                 ''
             ),
             $commandHandler::class
@@ -575,8 +575,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionType::NO_VALUE, null, ''),
-                    new Option('opt2', OptionType::NO_VALUE, null, '')
+                    new Option('opt1', OptionType::NoValue, null, ''),
+                    new Option('opt2', OptionType::NoValue, null, '')
                 ],
                 ''
             ),
@@ -619,9 +619,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('foo', OptionType::REQUIRED_VALUE, 'f', '', 'foo value'),
-                    new Option('bar', OptionType::OPTIONAL_VALUE, 'b', '', 'bar value'),
-                    new Option('baz', OptionType::NO_VALUE, 'z', 'Baz command', 'baz value')
+                    new Option('foo', OptionType::RequiredValue, 'f', '', 'foo value'),
+                    new Option('bar', OptionType::OptionalValue, 'b', '', 'bar value'),
+                    new Option('baz', OptionType::NoValue, 'z', 'Baz command', 'baz value')
                 ],
                 '',
                 ''
@@ -645,7 +645,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentType::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [],
                 ''
             ),
