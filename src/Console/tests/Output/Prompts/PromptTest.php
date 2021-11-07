@@ -19,29 +19,34 @@ use Aphiria\Console\Output\Prompts\MultipleChoice;
 use Aphiria\Console\Output\Prompts\Prompt;
 use Aphiria\Console\Output\Prompts\Question;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class PromptTest extends TestCase
 {
-    private IOutput&MockObject $output;
+    private IOutput&MockInterface $output;
     private PaddingFormatter $paddingFormatter;
     private Prompt $prompt;
 
     protected function setUp(): void
     {
-        /** @var IOutput&MockObject output */
-        $this->output = $this->createMock(IOutput::class);
+        $this->output = Mockery::mock(IOutput::class);
         $this->paddingFormatter = new PaddingFormatter();
         $this->prompt = new Prompt($this->paddingFormatter);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function testAnsweringWithSpacesWillTrimThem(): void
     {
         $question = new Question('Name of dev', 'unknown');
-        $this->output->method('readLine')
-            ->willReturn('  Dave  ');
-        $this->output->method('write')
+        $this->output->shouldReceive('readline')
+            ->andReturn('   Dave   ');
+        $this->output->shouldReceive('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('Dave', $answer);
@@ -50,12 +55,16 @@ class PromptTest extends TestCase
     public function testAskingIndexedMultipleChoiceQuestion(): void
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
-        $this->output->method('readLine')
-            ->willReturn('2');
-        $this->output->method('write')
-            ->withConsecutive(["<question>{$question->text}</question>"], ['  > ']);
-        $this->output->method('writeln')
-            ->withConsecutive([''], ['  1) foo' . PHP_EOL . '  2) bar']);
+        $this->output->shouldReceive('readLine')
+            ->andReturn('2');
+        $this->output->shouldReceive('write')
+            ->with("<question>{$question->text}</question>");
+        $this->output->shouldReceive('write')
+            ->with('  > ');
+        $this->output->shouldReceive('writeln')
+            ->with('');
+        $this->output->shouldReceive('writeln')
+            ->with('  1) foo' . PHP_EOL . '  2) bar');
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('bar', $answer);
     }
@@ -63,12 +72,16 @@ class PromptTest extends TestCase
     public function testAskingKeyedMultipleChoiceQuestion(): void
     {
         $question = new MultipleChoice('Pick', ['a' => 'b', 'c' => 'd']);
-        $this->output->method('readLine')
-            ->willReturn('c');
-        $this->output->method('write')
-            ->withConsecutive(["<question>{$question->text}</question>"], ['  > ']);
-        $this->output->method('writeln')
-            ->withConsecutive([''], ['  a) b' . PHP_EOL . '  c) d']);
+        $this->output->shouldReceive('readLine')
+            ->andReturn('c');
+        $this->output->shouldReceive('write')
+            ->with("<question>{$question->text}</question>");
+        $this->output->shouldReceive('write')
+            ->with('  > ');
+        $this->output->shouldReceive('writeln')
+            ->with('');
+        $this->output->shouldReceive('writeln')
+            ->with('  a) b' . PHP_EOL . '  c) d');
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('d', $answer);
     }
@@ -77,12 +90,16 @@ class PromptTest extends TestCase
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
         $question->answerLineString = '  : ';
-        $this->output->method('readLine')
-            ->willReturn('1');
-        $this->output->method('write')
-            ->withConsecutive(["<question>{$question->text}</question>"], ['  : ']);
-        $this->output->method('writeln')
-            ->withConsecutive([''], ['  1) foo' . PHP_EOL . '  2) bar']);
+        $this->output->shouldReceive('readLine')
+            ->andReturn('1');
+        $this->output->shouldReceive('write')
+            ->with("<question>{$question->text}</question>");
+        $this->output->shouldReceive('write')
+            ->with('  : ');
+        $this->output->shouldReceive('writeln')
+            ->with('');
+        $this->output->shouldReceive('writeln')
+            ->with('  1) foo' . PHP_EOL . '  2) bar');
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('foo', $answer);
     }
@@ -90,9 +107,9 @@ class PromptTest extends TestCase
     public function testAskingQuestion(): void
     {
         $question = new Question('Name of dev', 'unknown');
-        $this->output->method('readLine')
-            ->willReturn('Dave');
-        $this->output->method('write')
+        $this->output->shouldReceive('readLine')
+            ->andReturn('Dave');
+        $this->output->shouldReceive('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('Dave', $answer);
@@ -105,9 +122,11 @@ class PromptTest extends TestCase
             ->method('readHiddenInput')
             ->with($this->output)
             ->willReturn('foo');
-        $this->output->expects($this->once())
-            ->method('getDriver')
-            ->willReturn($driver);
+        $this->output->shouldReceive('write')
+            ->with("<question>Question</question>");
+        $this->output->shouldReceive('getDriver')
+            ->times(1)
+            ->andReturn($driver);
         $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
         $this->assertSame('foo', $answer);
     }
@@ -116,8 +135,18 @@ class PromptTest extends TestCase
     {
         $triggeredException = false;
         $question = new MultipleChoice('Dummy question', ['foo', 'bar']);
-        $this->output->method('readLine')
-            ->willReturn(' ');
+        $this->output->shouldReceive('write')
+            ->with("<question>{$question->text}</question>");
+        $this->output->shouldReceive('writeln')
+            ->with('');
+        $this->output->shouldReceive('writeln')
+            ->with('  1) foo' . PHP_EOL . '  2) bar');
+        $this->output->shouldReceive('writeln')
+            ->with($question->answerLineString);
+        $this->output->shouldReceive('write')
+            ->with('  > ');
+        $this->output->shouldReceive('readLine')
+            ->andReturn(' ');
 
         try {
             $this->prompt->ask($question, $this->output);
@@ -132,8 +161,18 @@ class PromptTest extends TestCase
     {
         $triggeredException = false;
         $question = new MultipleChoice('Dummy question', ['foo' => 'bar', 'baz' => 'blah']);
-        $this->output->method('readLine')
-            ->willReturn(' ');
+        $this->output->shouldReceive('write')
+            ->with("<question>{$question->text}</question>");
+        $this->output->shouldReceive('writeln')
+            ->with('');
+        $this->output->shouldReceive('writeln')
+            ->with('  foo) bar ' . PHP_EOL . '  baz) blah');
+        $this->output->shouldReceive('writeln')
+            ->with($question->answerLineString);
+        $this->output->shouldReceive('write')
+            ->with('  > ');
+        $this->output->shouldReceive('readLine')
+            ->andReturn(' ');
 
         try {
             $this->prompt->ask($question, $this->output);
@@ -147,9 +186,9 @@ class PromptTest extends TestCase
     public function testNotReceivingAnswerUsesDefaultAnswer(): void
     {
         $question = new Question('Name of dev', 'unknown');
-        $this->output->method('readLine')
-            ->willReturn(' ');
-        $this->output->method('write')
+        $this->output->shouldReceive('readLine')
+            ->andReturn(' ');
+        $this->output->shouldReceive('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('unknown', $answer);

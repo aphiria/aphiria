@@ -37,6 +37,7 @@ use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
+use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
@@ -51,6 +52,11 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
         Container::$globalInstance = new Container();
         GlobalConfiguration::resetConfigurationSources();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function testWithBinderDispatcherRegisterBinderDispatcherToComponent(): void
@@ -697,8 +703,13 @@ class AphiriaComponentsTest extends TestCase
     public function testWithModulesAddsMultipleModulesToAppBuilder(): void
     {
         $modules = [$this->createMock(IModule::class), $this->createMock(IModule::class)];
-        $this->appBuilder->method('withModule')
-            ->withConsecutive([$modules[0]], [$modules[1]]);
+        $appBuilder = Mockery::mock(IApplicationBuilder::class);
+        $appBuilder->shouldReceive('withModule')
+            ->with($modules[0])
+            ->andReturnSelf();
+        $appBuilder->shouldReceive('withModule')
+            ->with($modules[1])
+            ->andReturnSelf();
         $component = new class () {
             use AphiriaComponents;
 
@@ -711,7 +722,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withModules($appBuilder, $modules);
             }
         };
-        $component->build($this->appBuilder, $modules);
+        $component->build($appBuilder, $modules);
         // Dummy assertion
         $this->assertTrue(true);
     }
