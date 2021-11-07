@@ -36,6 +36,7 @@ jobs:
         run: composer phpcs-test
         env:
           PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-php-version }}
+      - name: Upload Coverage Results To Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
