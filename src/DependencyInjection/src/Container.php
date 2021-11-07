@@ -214,14 +214,12 @@ class Container implements IContainer
                 /** @var InstanceContainerBinding $binding */
                 return $binding->getInstance();
             case ClassContainerBinding::class:
-                /** @var ClassContainerBinding $binding */
                 $instance = $this->resolveClass(
                     $binding->getConcreteClass(),
                     $binding->getConstructorPrimitives()
                 );
                 break;
             case FactoryContainerBinding::class:
-                /** @var FactoryContainerBinding $binding */
                 $factory = $binding->getFactory();
                 $instance = $factory();
                 break;
