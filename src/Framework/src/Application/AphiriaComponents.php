@@ -184,7 +184,7 @@ trait AphiriaComponents
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param class-string<Exception> $exceptionType The type of exception whose result factory we're registering
-     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The callback that takes in an exception and the output, and writes messages/returns the status code
+     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The callback that takes in an exception and the output, and writes messages/returns the status code
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
