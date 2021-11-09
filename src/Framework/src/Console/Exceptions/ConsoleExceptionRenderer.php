@@ -24,7 +24,7 @@ use Exception;
  */
 class ConsoleExceptionRenderer implements IExceptionRenderer
 {
-    /** @var array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to callbacks that write output and return status codes */
+    /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int> The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
     /**
@@ -60,7 +60,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers many writers that can use exceptions to write output and return status codes
      *
-     * @param array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
+     * @param array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
      */
     public function registerManyOutputWriters(array $exceptionTypesToCallbacks): void
     {
@@ -73,7 +73,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      * Registers a callback that can use an exception to write output and return a status code
      *
      * @param class-string<Exception> $exceptionType The type of exception whose factory we're registering
-     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The callback that takes in an exception and output, and writes output/returns a status code
+     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The callback that takes in an exception and output, and writes output/returns a status code
      */
     public function registerOutputWriter(string $exceptionType, Closure $callback): void
     {

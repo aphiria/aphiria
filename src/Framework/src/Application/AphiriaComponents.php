@@ -184,7 +184,7 @@ trait AphiriaComponents
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param class-string<Exception> $exceptionType The type of exception whose result factory we're registering
-     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The callback that takes in an exception and the output, and writes messages/returns the status code
+     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The callback that takes in an exception and the output, and writes messages/returns the status code
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -289,7 +289,7 @@ trait AphiriaComponents
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param class-string<Exception> $exceptionType The exception type whose factory we're registering
-     * @param Closure(mixed): string $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
+     * @param Closure(Exception): string $logLevelFactory The factory that takes in an instance of the exception and returns the PSR-3 log level
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
@@ -363,12 +363,12 @@ trait AphiriaComponents
      *
      * @param IApplicationBuilder $appBuilder The app builder to decorate
      * @param class-string $exceptionType The type of exception whose response factory we're registering
-     * @param string|null|Closure(mixed): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(mixed): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
-     * @param string|null|Closure(mixed): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param HttpStatusCode|int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(mixed): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
-     * @param array|null|Closure(mixed): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @param string|null|Closure(Exception): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(Exception): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|null|Closure(Exception): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param HttpStatusCode|int|Closure(Exception): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(Exception): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|null|Closure(Exception): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
      * @throws RuntimeException Thrown if the global instance of the container is not set
      */
