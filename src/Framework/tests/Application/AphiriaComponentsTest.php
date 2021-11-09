@@ -367,7 +367,7 @@ class AphiriaComponentsTest extends TestCase
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string<Exception> $exceptionType
-             * @param Closure(Exception, IOutput): void|Closure(mixed, IOutput): int $callback
+             * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback
              */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
@@ -642,7 +642,7 @@ class AphiriaComponentsTest extends TestCase
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string<Exception> $exceptionType
-             * @param Closure(mixed): string $logLevelFactory
+             * @param Closure(Exception): string $logLevelFactory
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -838,12 +838,12 @@ class AphiriaComponentsTest extends TestCase
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string $exceptionType
-             * @param string|null|Closure(mixed): string $type
-             * @param string|null|Closure(mixed): string $title
-             * @param string|null|Closure(mixed): string $detail
-             * @param int|Closure(mixed): int $status
-             * @param string|null|Closure(mixed): string $instance
-             * @param array|null|Closure(mixed): array $extensions
+             * @param string|null|Closure(Exception): string $type
+             * @param string|null|Closure(Exception): string $title
+             * @param string|null|Closure(Exception): string $detail
+             * @param int|Closure(Exception): int $status
+             * @param string|null|Closure(Exception): string $instance
+             * @param array|null|Closure(Exception): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -877,12 +877,12 @@ class AphiriaComponentsTest extends TestCase
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string $exceptionType
-             * @param string|null|Closure(mixed): string $type
-             * @param string|null|Closure(mixed): string $title
-             * @param string|null|Closure(mixed): string $detail
-             * @param int|Closure(mixed): int $status
-             * @param string|null|Closure(mixed): string $instance
-             * @param array|null|Closure(mixed): array $extensions
+             * @param string|null|Closure(Exception): string $type
+             * @param string|null|Closure(Exception): string $title
+             * @param string|null|Closure(Exception): string $detail
+             * @param int|Closure(Exception): int $status
+             * @param string|null|Closure(Exception): string $instance
+             * @param array|null|Closure(Exception): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,

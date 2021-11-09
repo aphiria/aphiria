@@ -85,12 +85,12 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      * Maps an exception type to problem details properties
      *
      * @param class-string $exceptionType The type of exception that was thrown
-     * @param string|null|Closure(mixed): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(mixed): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
-     * @param string|null|Closure(mixed): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param HttpStatusCode|int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(mixed): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
-     * @param array|null|Closure(mixed): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @param string|null|Closure(Exception): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(Exception): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|null|Closure(Exception): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param HttpStatusCode|int|Closure(Exception): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(Exception): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|null|Closure(Exception): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      */
     public function mapExceptionToProblemDetails(
         string $exceptionType,
