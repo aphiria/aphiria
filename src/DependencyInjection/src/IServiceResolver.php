@@ -32,7 +32,7 @@ interface IServiceResolver
     /**
      * Resolve an instance of the interface
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $interface The interface to resolve
      * @return T The resolved instance
      * @throws ResolutionException Thrown if there was an error resolving the interface
@@ -42,7 +42,7 @@ interface IServiceResolver
     /**
      * Tries to resolve an instance of the interface
      *
-     * @template T
+     * @template T of object
      * @param class-string<T> $interface The interface to resolve
      * @param-out T $instance The resolved instance if successful
      * @return bool True if the binding was successful, otherwise false

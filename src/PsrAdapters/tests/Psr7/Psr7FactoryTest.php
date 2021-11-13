@@ -203,7 +203,7 @@ class Psr7FactoryTest extends TestCase
             new MultipartBody([$file1BodyPart, $file2BodyPart], '--test')
         );
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
-        /** @var array<UploadedFileInterface> $psr7UploadedFiles */
+        /** @var list<UploadedFileInterface> $psr7UploadedFiles */
         $psr7UploadedFiles = $psr7Request->getUploadedFiles();
         $this->assertCount(2, $psr7UploadedFiles);
         $this->assertSame('file1contents', (string)$psr7UploadedFiles['file1']->getStream());

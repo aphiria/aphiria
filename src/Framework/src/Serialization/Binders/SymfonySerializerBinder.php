@@ -47,7 +47,7 @@ final class SymfonySerializerBinder extends Binder
     public function bind(IContainer $container): void
     {
         $encoders = $normalizers = [];
-        /** @var array<class-string> $encoderNames */
+        /** @var list<class-string> $encoderNames */
         $encoderNames = GlobalConfiguration::getArray('aphiria.serialization.encoders');
 
         foreach ($encoderNames as $encoderName) {
@@ -72,7 +72,7 @@ final class SymfonySerializerBinder extends Binder
             }
         }
 
-        /** @var array<class-string> $normalizerNames */
+        /** @var list<class-string> $normalizerNames */
         $normalizerNames = GlobalConfiguration::getArray('aphiria.serialization.normalizers');
 
         foreach ($normalizerNames as $normalizerName) {

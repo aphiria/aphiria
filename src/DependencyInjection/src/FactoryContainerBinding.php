@@ -16,12 +16,14 @@ use Closure;
 
 /**
  * Defines a factory container binding
+ * @template T of object
+ * @implements IContainerBinding<T>
  * @internal
  */
 class FactoryContainerBinding implements IContainerBinding
 {
     /**
-     * @param Closure(): object $factory The factory
+     * @param Closure(): T $factory The factory
      * @param bool $resolveAsSingleton Whether or not the factory should be resolved as a singleton
      */
     public function __construct(public readonly Closure $factory, private readonly bool $resolveAsSingleton)

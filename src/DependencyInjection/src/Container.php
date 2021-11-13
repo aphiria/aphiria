@@ -40,7 +40,7 @@ class Container implements IContainer
     protected Context $currentContext;
     /** @var list<Context> The stack of contexts */
     protected array $contextStack = [];
-    /** @var array<string|class-string, array<string|class-string, IContainerBinding>> The list of bindings */
+    /** @var array<string|class-string, array<string|class-string, IContainerBinding<object>>> The list of bindings */
     protected array $bindings = [];
     /** @var array<class-string, array{0: ReflectionMethod|null, 1: list<ReflectionParameter>|null}> The cache of reflection constructors and their parameters */
     protected array $constructorReflectionCache = [];
@@ -197,6 +197,9 @@ class Container implements IContainer
     /**
      * @inheritdoc
      *
+     * @template T of object
+     * @param class-string<T> $interface The interface to resolve
+     * @return T The resolved instance
      * @psalm-suppress InvalidReturnType This method will always return the correct type
      * @psalm-suppress InvalidReturnStatement Ditto
      */
@@ -211,17 +214,17 @@ class Container implements IContainer
 
         switch ($binding::class) {
             case InstanceContainerBinding::class:
-                /** @var InstanceContainerBinding $binding */
+                /** @var InstanceContainerBinding<T> $binding */
                 return $binding->instance;
             case ClassContainerBinding::class:
-                /** @var ClassContainerBinding $binding */
+                /** @var ClassContainerBinding<T> $binding */
                 $instance = $this->resolveClass(
                     $binding->concreteClass,
                     $binding->constructorPrimitives
                 );
                 break;
             case FactoryContainerBinding::class:
-                /** @var FactoryContainerBinding $binding */
+                /** @var FactoryContainerBinding<T> $binding */
                 $factory = $binding->factory;
                 $instance = $factory();
                 break;
@@ -268,8 +271,9 @@ class Container implements IContainer
     /**
      * Adds a binding to an interface
      *
-     * @param class-string $interface The interface to bind to
-     * @param IContainerBinding $binding The binding to add
+     * @template T of object
+     * @param class-string<T> $interface The interface to bind to
+     * @param IContainerBinding<T> $binding The binding to add
      */
     protected function addBinding(string $interface, IContainerBinding $binding): void
     {
@@ -285,8 +289,9 @@ class Container implements IContainer
     /**
      * Gets a binding for an interface
      *
-     * @param class-string $interface The interface whose binding we want
-     * @return IContainerBinding|null The binding if one exists, otherwise null
+     * @template T of object
+     * @param class-string<T> $interface The interface whose binding we want
+     * @return IContainerBinding<T>|null The binding if one exists, otherwise null
      */
     protected function getBinding(string $interface): ?IContainerBinding
     {
@@ -295,12 +300,20 @@ class Container implements IContainer
             $this->currentContext->isTargeted
             && isset($this->bindings[($targetClass = $this->currentContext->targetClass)][$interface])
         ) {
-            /** @var class-string $targetClass This will not be null because the context is targeted */
-            return $this->bindings[$targetClass][$interface];
+            /**
+             * @var class-string<T> $targetClass This will not be null because the context is targeted
+             * @var IContainerBinding<T> $binding
+             */
+            $binding = $this->bindings[$targetClass][$interface];
+
+            return $binding;
         }
 
         // If there's a universal binding, use it
-        return $this->bindings[''][$interface] ?? null;
+        /** @var IContainerBinding<T> $binding */
+        $binding = $this->bindings[''][$interface] ?? null;
+
+        return $binding;
     }
 
     /**
