@@ -179,7 +179,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     /**
      * Adds a bound interface to the list of bound interfaces
      *
-     * @param array<class-string>|class-string $interfaces The interface or interfaces we're binding
+     * @param list<class-string>|class-string $interfaces The interface or interfaces we're binding
      */
     private function addBoundInterface(string|array $interfaces): void
     {

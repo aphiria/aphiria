@@ -14,6 +14,7 @@ namespace Aphiria\DependencyInjection;
 
 /**
  * Defines the interface for container bindings to implement
+ * @template T of object
  * @internal
  */
 interface IContainerBinding

@@ -40,6 +40,11 @@ class LazyBinderDispatcherTest extends TestCase
     {
         // Allow us to more easily retrieve bindings for testing purposes
         $this->container = new class () extends Container {
+            /**
+             * @template T of object
+             * @param class-string<T> $interface The interface whose binding we want
+             * @return IContainerBinding<T>|null The binding if one exists, otherwise null
+             */
             public function getBinding(string $interface): ?IContainerBinding
             {
                 return parent::getBinding($interface);
