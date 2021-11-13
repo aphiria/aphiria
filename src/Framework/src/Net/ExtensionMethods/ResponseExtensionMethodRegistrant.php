@@ -15,6 +15,7 @@ namespace Aphiria\Framework\Net\ExtensionMethods;
 use Aphiria\ExtensionMethods\ExtensionMethodRegistry;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Uri;
 
@@ -51,7 +52,7 @@ class ResponseExtensionMethodRegistrant
                 ?string $domain = null,
                 bool $isSecure = false,
                 bool $isHttpOnly = true,
-                ?string $sameSite = null
+                ?SameSiteMode $sameSite = null
             ) => $responseFormatter->deleteCookie($this, $name, $path, $domain, $isSecure, $isHttpOnly, $sameSite)
         );
         ExtensionMethodRegistry::registerExtensionMethod(
