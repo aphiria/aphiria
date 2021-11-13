@@ -87,14 +87,17 @@ class HeaderParser
      * @param Headers $headers The headers to parse
      * @param string $headerName The name of the header whose parameters we're parsing
      * @param int $index The index of the header value to parse
-     * @return IImmutableDictionary The dictionary of parameters for the first value
+     * @return IImmutableDictionary<string, string|null> The dictionary of parameters for the first value
      */
     public function parseParameters(Headers $headers, string $headerName, int $index = 0): IImmutableDictionary
     {
         $headerValues = [];
 
         if (!$headers->tryGet($headerName, $headerValues) || !isset($headerValues[$index])) {
-            return new ImmutableHashTable([]);
+            /** @var ImmutableHashTable<string, string|null> $parameters */
+            $parameters = new ImmutableHashTable([]);
+
+            return $parameters;
         }
 
         $kvps = [];

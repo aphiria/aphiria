@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiatorTest extends TestCase
 {
-    private IRequest|MockObject $request;
+    private IRequest&MockObject $request;
     private Headers $headers;
 
     protected function setUp(): void
@@ -102,10 +102,10 @@ class ContentNegotiatorTest extends TestCase
         /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
-        $this->assertNull($result->getFormatter());
-        $this->assertNull($result->getMediaType());
-        $this->assertNull($result->getEncoding());
-        $this->assertNull($result->getLanguage());
+        $this->assertNull($result->formatter);
+        $this->assertNull($result->mediaType);
+        $this->assertNull($result->encoding);
+        $this->assertNull($result->language);
     }
 
     public function testNoMatchingResponseFormatterReturnsResultWithAllNullProperties(): void
@@ -119,10 +119,10 @@ class ContentNegotiatorTest extends TestCase
         /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertNull($result->getFormatter());
-        $this->assertNull($result->getMediaType());
-        $this->assertNull($result->getEncoding());
-        $this->assertNull($result->getLanguage());
+        $this->assertNull($result->formatter);
+        $this->assertNull($result->mediaType);
+        $this->assertNull($result->encoding);
+        $this->assertNull($result->language);
     }
 
     public function testNotSpecifyingFormattersIsAcceptable(): void
@@ -147,10 +147,10 @@ class ContentNegotiatorTest extends TestCase
         /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->getFormatter());
-        $this->assertSame('text/html', $result->getMediaType());
-        $this->assertSame('utf-16', $result->getEncoding());
-        $this->assertSame('en-US', $result->getLanguage());
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('text/html', $result->mediaType);
+        $this->assertSame('utf-16', $result->encoding);
+        $this->assertSame('en-US', $result->language);
     }
 
     public function testRequestFormatterIsNullWithNoContentTypeSpecified(): void
@@ -158,9 +158,9 @@ class ContentNegotiatorTest extends TestCase
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
-        $this->assertNull($result->getFormatter());
-        $this->assertSame('application/octet-stream', $result->getMediaType());
-        $this->assertNull($result->getEncoding());
+        $this->assertNull($result->formatter);
+        $this->assertSame('application/octet-stream', $result->mediaType);
+        $this->assertNull($result->encoding);
     }
 
     public function testRequestResultLanguageIsSetFromContentLanguageHeaderIfSet(): void
@@ -178,10 +178,10 @@ class ContentNegotiatorTest extends TestCase
         /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->getFormatter());
-        $this->assertSame('text/html', $result->getMediaType());
-        $this->assertSame('utf-8', $result->getEncoding());
-        $this->assertSame('en-US', $result->getLanguage());
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('text/html', $result->mediaType);
+        $this->assertSame('utf-8', $result->encoding);
+        $this->assertSame('en-US', $result->language);
     }
 
     public function testResponseFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified(): void
@@ -197,10 +197,10 @@ class ContentNegotiatorTest extends TestCase
         $formatter2 = $this->createMock(IMediaTypeFormatter::class);
         $negotiator = new ContentNegotiator([$formatter1, $formatter2]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter1, $result->getFormatter());
+        $this->assertSame($formatter1, $result->formatter);
         // Verify it's using the default media type
-        $this->assertSame('application/json', $result->getMediaType());
-        $this->assertNull($result->getEncoding());
+        $this->assertSame('application/json', $result->mediaType);
+        $this->assertNull($result->encoding);
     }
 
     public function testResponseFormatterIsFirstFormatterThatCanWriteTypeWithNoAcceptSpecified(): void
@@ -220,10 +220,10 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn(true);
         $negotiator = new ContentNegotiator([$formatter1, $formatter2]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter2, $result->getFormatter());
+        $this->assertSame($formatter2, $result->formatter);
         // Verify it's using the default media type
-        $this->assertSame('application/json', $result->getMediaType());
-        $this->assertNull($result->getEncoding());
+        $this->assertSame('application/json', $result->mediaType);
+        $this->assertNull($result->encoding);
     }
 
     public function testResponseFormatterIsNullWhenFirstFormatterRegisteredCannotWriteType(): void
@@ -235,10 +235,10 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn(false);
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertNull($result->getFormatter());
-        $this->assertNull($result->getMediaType());
-        $this->assertNull($result->getEncoding());
-        $this->assertNull($result->getLanguage());
+        $this->assertNull($result->formatter);
+        $this->assertNull($result->mediaType);
+        $this->assertNull($result->encoding);
+        $this->assertNull($result->language);
     }
 
     public function testResponseEncodingIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet(): void
@@ -258,9 +258,9 @@ class ContentNegotiatorTest extends TestCase
         $this->headers->add('Accept-Language', 'en-US');
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->getFormatter());
-        $this->assertSame('application/json', $result->getMediaType());
-        $this->assertSame('utf-16', $result->getEncoding());
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('application/json', $result->mediaType);
+        $this->assertSame('utf-16', $result->encoding);
     }
 
     public function testResponseEncodingIsSetFromAcceptCharsetHeaderWhenPresent(): void
@@ -278,8 +278,8 @@ class ContentNegotiatorTest extends TestCase
         /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->getFormatter());
-        $this->assertSame('utf-8', $result->getEncoding());
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('utf-8', $result->encoding);
     }
 
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void
@@ -297,10 +297,10 @@ class ContentNegotiatorTest extends TestCase
             ->method('getBestLanguageMatch')
             ->with($this->request)
             ->willReturn(null);
-        $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
+        $negotiator = new ContentNegotiator([$formatter], languageMatcher: $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->getFormatter());
-        $this->assertNull($result->getLanguage());
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertNull($result->language);
     }
 
     public function testResponseLanguageIsSetFromLanguageMatcherResults(): void
@@ -323,12 +323,12 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn('en-US');
         $this->headers->add('Accept-Charset', 'utf-8');
         $this->headers->add('Accept-Language', 'en-US');
-        $negotiator = new ContentNegotiator([$formatter], null, null, $languageMatcher);
+        $negotiator = new ContentNegotiator([$formatter], languageMatcher: $languageMatcher);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->getFormatter());
-        $this->assertSame('application/json', $result->getMediaType());
-        $this->assertSame('utf-8', $result->getEncoding());
-        $this->assertSame('en-US', $result->getLanguage());
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('application/json', $result->mediaType);
+        $this->assertSame('utf-8', $result->encoding);
+        $this->assertSame('en-US', $result->language);
     }
 
     /**
@@ -336,12 +336,12 @@ class ContentNegotiatorTest extends TestCase
      *
      * @param list<string> $supportedMediaTypes The list of supported media types
      * @param int $numTimesSupportedMediaTypesCalled The number of times the formatter's supported media types will be checked
-     * @return IMediaTypeFormatter|MockObject The mocked formatter
+     * @return IMediaTypeFormatter&MockObject The mocked formatter
      */
     private function createFormatterMock(
         array $supportedMediaTypes,
         int $numTimesSupportedMediaTypesCalled
-    ): IMediaTypeFormatter|MockObject {
+    ): IMediaTypeFormatter&MockObject {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $formatter->expects($this->exactly($numTimesSupportedMediaTypesCalled))
             ->method('getSupportedMediaTypes')

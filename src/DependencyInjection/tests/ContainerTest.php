@@ -61,9 +61,9 @@ class ContainerTest extends TestCase
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
-        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
-        $this->assertInstanceOf(Bar::class, $instance2->getFoo());
-        $this->assertNotSame($instance1->getFoo(), $instance2->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance1->foo);
+        $this->assertInstanceOf(Bar::class, $instance2->foo);
+        $this->assertNotSame($instance1->foo, $instance2->foo);
         $this->assertNotSame($instance1, $instance2);
     }
 
@@ -76,8 +76,8 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
-        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
-        $this->assertSame($instance1->getFoo(), $instance2->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance1->foo);
+        $this->assertSame($instance1->foo, $instance2->foo);
         $this->assertNotSame($instance1, $instance2);
         $this->assertNotSame($instance1, $instance2);
     }
@@ -111,9 +111,9 @@ class ContainerTest extends TestCase
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
-        $this->assertInstanceOf(Bar::class, $instance1->getFoo());
-        $this->assertInstanceOf(Bar::class, $instance2->getFoo());
-        $this->assertSame($instance1->getFoo(), $instance2->getFoo());
+        $this->assertInstanceOf(Bar::class, $instance1->foo);
+        $this->assertInstanceOf(Bar::class, $instance2->foo);
+        $this->assertSame($instance1->foo, $instance2->foo);
         $this->assertNotSame($instance1, $instance2);
     }
 
@@ -418,7 +418,7 @@ class ContainerTest extends TestCase
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
         $this->container->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
         $this->container->for($target::class, function (IContainer $container) {
@@ -477,7 +477,7 @@ class ContainerTest extends TestCase
 
     public function testMultipleTargetedBindings(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->bindClass([IFoo::class, Bar::class], Bar::class);
@@ -501,14 +501,14 @@ class ContainerTest extends TestCase
     {
         $instance = $this->container->resolve(ConstructorWithNullableObject::class);
         $this->assertInstanceOf(ConstructorWithNullableObject::class, $instance);
-        $this->assertNull($instance->getFoo());
+        $this->assertNull($instance->foo);
     }
 
     public function testResolvingClassWithObjectInConstructorThatCannotBeResolvedUsesDefaultValueIfAvailable(): void
     {
         $instance = $this->container->resolve(ConstructorWithDefaultValueObject::class);
         $this->assertInstanceOf(ConstructorWithDefaultValueObject::class, $instance);
-        $this->assertInstanceOf(DateTime::class, $instance->getFoo());
+        $this->assertInstanceOf(DateTime::class, $instance->foo);
     }
 
     public function testResolvingClassWithPrimitiveInConstructorWhoseTypesDoNotMatchThoseInBindingThrowsException(): void
@@ -574,7 +574,7 @@ class ContainerTest extends TestCase
 
     public function testResolvingSingletonForTarget(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Bar::class, [], true);
@@ -602,15 +602,16 @@ class ContainerTest extends TestCase
     public function testResolvingWithUnsupportedBindingTypeThrowsException(): void
     {
         $this->expectException(ResolutionException::class);
-        $container = new class() extends Container {
+        $container = new class () extends Container {
             public function bindUnsupported(): void
             {
-                $unsupportedBinding = new class() implements IContainerBinding {
+                $unsupportedBinding = new class () implements IContainerBinding {
                     public function resolveAsSingleton(): bool
                     {
                         return true;
                     }
                 };
+                /** @psalm-suppress InvalidArgument We cannot add generics to anonymous classes */
                 $this->addBinding(IFoo::class, $unsupportedBinding);
             }
         };
@@ -662,14 +663,14 @@ class ContainerTest extends TestCase
         // This universal binding should NOT take precedence over the class binding
         $this->container->bindClass(IFoo::class, Blah::class);
         $resolvedInstance = $this->container->resolve(ConstructorWithInterface::class);
-        $this->assertSame($targetedInstance, $resolvedInstance->getFoo());
+        $this->assertSame($targetedInstance, $resolvedInstance->foo);
     }
 
     public function testTargetedFactoryBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class() {
+        $target1 = new class () {
         };
-        $target2 = new class() {
+        $target2 = new class () {
         };
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
@@ -691,9 +692,9 @@ class ContainerTest extends TestCase
 
     public function testTargetedInstanceBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class() {
+        $target1 = new class () {
         };
-        $target2 = new class() {
+        $target2 = new class () {
         };
         $fooInstance = new Bar();
         $personInstance = new Dave();
@@ -713,9 +714,9 @@ class ContainerTest extends TestCase
 
     public function testTargetedPrototypeBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class() {
+        $target1 = new class () {
         };
-        $target2 = new class() {
+        $target2 = new class () {
         };
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Foo::class);
@@ -733,9 +734,9 @@ class ContainerTest extends TestCase
 
     public function testTargetedSingletonBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class() {
+        $target1 = new class () {
         };
-        $target2 = new class() {
+        $target2 = new class () {
         };
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Foo::class, [], true);
@@ -785,9 +786,9 @@ class ContainerTest extends TestCase
 
     public function testUnbindingMultipleInterfaces(): void
     {
-        $object1 = new class() {
+        $object1 = new class () {
         };
-        $object2 = new class() {
+        $object2 = new class () {
         };
         $this->container->bindClass($object1::class, $object1::class);
         $this->container->bindClass($object2::class, $object2::class);

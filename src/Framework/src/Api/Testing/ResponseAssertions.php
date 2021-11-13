@@ -20,6 +20,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -32,26 +33,19 @@ use InvalidArgumentException;
  */
 class ResponseAssertions
 {
-    /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
-    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
-    /** @var ResponseHeaderParser The response header parser */
-    private ResponseHeaderParser $responseHeaderParser;
-
     /**
-     * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher
+     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
      * @param ResponseHeaderParser|null $responseHeaderParser The response header parser
      */
     public function __construct(
-        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        ResponseHeaderParser $responseHeaderParser = null
-    ) {
-        $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher([
+        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
             new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
-        ]);
-        $this->responseHeaderParser = $responseHeaderParser ?? new ResponseHeaderParser();
+        ]),
+        private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser()
+    ) {
     }
 
     /**
@@ -65,7 +59,7 @@ class ResponseAssertions
     public function assertCookieEquals(mixed $expectedValue, IResponse $response, string $cookieName): void
     {
         foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
-            if ($cookie->getName() === $cookieName && $cookie->getValue() === $expectedValue) {
+            if ($cookie->getName() === $cookieName && $cookie->value === $expectedValue) {
                 return;
             }
         }
@@ -194,16 +188,17 @@ class ResponseAssertions
     /**
      * Asserts that the response status code matches the expected value
      *
-     * @param int $expectedStatusCode The expected value
+     * @param HttpStatusCode|int $expectedStatusCode The expected value
      * @param IResponse $response The response to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
      */
-    public function assertStatusCodeEquals(int $expectedStatusCode, IResponse $response): void
+    public function assertStatusCodeEquals(HttpStatusCode|int $expectedStatusCode, IResponse $response): void
     {
-        $actualStatusCode = $response->getStatusCode();
+        $actualStatusCodeAsInt = $response->getStatusCode()->value;
+        $expectedStatusCodeAsInt = \is_int($expectedStatusCode) ? $expectedStatusCode : $expectedStatusCode->value;
 
-        if ($actualStatusCode !== $expectedStatusCode) {
-            throw new AssertionFailedException("Expected status code $expectedStatusCode, got $actualStatusCode");
+        if ($actualStatusCodeAsInt !== $expectedStatusCodeAsInt) {
+            throw new AssertionFailedException("Expected status code $expectedStatusCodeAsInt, got $actualStatusCodeAsInt");
         }
     }
 
@@ -231,6 +226,6 @@ class ResponseAssertions
             throw new InvalidArgumentException("No media type formatter available for $type");
         }
 
-        return $mediaTypeFormatterMatch->getFormatter()->readFromStream($body->readAsStream(), $type);
+        return $mediaTypeFormatterMatch->formatter->readFromStream($body->readAsStream(), $type);
     }
 }

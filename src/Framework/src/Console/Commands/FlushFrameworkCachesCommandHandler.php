@@ -34,11 +34,11 @@ class FlushFrameworkCachesCommandHandler implements ICommandHandler
      * @param IObjectConstraintsRegistryCache|null $constraintCache The object constraints cache if one is set, or null
      */
     public function __construct(
-        private ?IBinderMetadataCollectionCache $binderMetadataCache,
-        private ?ICommandRegistryCache $commandCache,
-        private ?IRouteCache $routeCache,
-        private ?ITrieCache $trieCache,
-        private ?IObjectConstraintsRegistryCache $constraintCache
+        private readonly ?IBinderMetadataCollectionCache $binderMetadataCache,
+        private readonly ?ICommandRegistryCache $commandCache,
+        private readonly ?IRouteCache $routeCache,
+        private readonly ?ITrieCache $trieCache,
+        private readonly ?IObjectConstraintsRegistryCache $constraintCache
     ) {
     }
 

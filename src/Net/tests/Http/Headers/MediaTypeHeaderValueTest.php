@@ -25,47 +25,55 @@ class MediaTypeHeaderValueTest extends TestCase
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
-        $this->assertSame('utf-8', $value->getCharset());
+        $this->assertSame('utf-8', $value->charset);
     }
 
     public function testGettingMediaTypeReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
-        $this->assertSame('foo/bar', $value->getMediaType());
+        $this->assertSame('foo/bar', $value->mediaType);
     }
     public function testGettingParametersReturnsOnesSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
-        $this->assertSame($parameters, $value->getParameters());
+        $this->assertSame($parameters, $value->parameters);
     }
 
     public function testGettingSubTypeReturnsCorrectSubType(): void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
-        $this->assertSame('bar', $value->getSubType());
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
+        $this->assertSame('bar', $value->subType);
     }
 
     public function testGettingSubTypeWithoutSuffixForSubTypeWithoutSuffixReturnsCorrectSubType(): void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->getSubTypeWithoutSuffix());
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
-        $value = new MediaTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
-        $this->assertSame('foo', $value->getType());
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('foo/bar', $parameters);
+        $this->assertSame('foo', $value->type);
     }
 
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
-        $value = new MediaTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
-        $this->assertSame('application', $value->getType());
-        $this->assertSame('foo+json', $value->getSubType());
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new MediaTypeHeaderValue('application/foo+json', $parameters);
+        $this->assertSame('application', $value->type);
+        $this->assertSame('foo+json', $value->subType);
         $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
-        $this->assertSame('json', $value->getSuffix());
+        $this->assertSame('json', $value->suffix);
     }
 
     public function incorrectlyFormattedMediaTypeProvider(): array
@@ -85,6 +93,8 @@ class MediaTypeHeaderValueTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
-        new MediaTypeHeaderValue($incorrectlyFormattedMediaType, $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        new MediaTypeHeaderValue($incorrectlyFormattedMediaType, $parameters);
     }
 }

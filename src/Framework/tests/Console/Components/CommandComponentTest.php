@@ -38,7 +38,7 @@ class CommandComponentTest extends TestCase
         $this->commandComponent = new CommandComponent($this->container);
 
         $this->container->bindInstance(CommandRegistry::class, $this->commands = new CommandRegistry());
-        $this->container->bindInstance(CommandRegistrantCollection::class, $this->commandRegistrants = new class() extends CommandRegistrantCollection {
+        $this->container->bindInstance(CommandRegistrantCollection::class, $this->commandRegistrants = new class () extends CommandRegistrantCollection {
             public function getAll(): array
             {
                 return $this->commandRegistrants;
@@ -49,7 +49,7 @@ class CommandComponentTest extends TestCase
     public function testBuildRegistersCommandsRegisteredInCallbacks(): void
     {
         $expectedCommand = new Command('foo');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

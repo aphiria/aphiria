@@ -17,7 +17,7 @@ use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -34,15 +34,11 @@ use JsonException;
  */
 final class NegotiatedResponseFactory implements IResponseFactory
 {
-    /** @var IContentNegotiator The content negotiator to use */
-    private IContentNegotiator $contentNegotiator;
-
     /**
-     * @param IContentNegotiator|null $contentNegotiator The content negotiator to use, or null if using the default
+     * @param IContentNegotiator $contentNegotiator The content negotiator to use
      */
-    public function __construct(IContentNegotiator $contentNegotiator = null)
+    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator())
     {
-        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
     }
 
     /**
@@ -50,7 +46,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
      */
     public function createResponse(
         IRequest $request,
-        int $statusCode,
+        HttpStatusCode|int $statusCode,
         Headers $headers = null,
         object|string|int|float|array $rawBody = null
     ): IResponse {
@@ -62,7 +58,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $body = $this->createBody($request, $rawBody, $contentNegotiationResult);
         } catch (InvalidArgumentException $ex) {
             throw new HttpException(
-                HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                HttpStatusCode::InternalServerError,
                 'Failed to create response body',
                 0,
                 $ex
@@ -70,11 +66,11 @@ final class NegotiatedResponseFactory implements IResponseFactory
         }
 
         if ($contentNegotiationResult !== null) {
-            if (($mediaType = $contentNegotiationResult->getMediaType()) !== null) {
+            if (($mediaType = $contentNegotiationResult->mediaType) !== null) {
                 $headers->add('Content-Type', $mediaType);
             }
 
-            if (($language = $contentNegotiationResult->getLanguage()) !== null) {
+            if (($language = $contentNegotiationResult->language) !== null) {
                 $headers->add('Content-Language', $language);
             }
         }
@@ -123,7 +119,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
 
         $type = TypeResolver::resolveType($rawBody);
         $contentNegotiationResult = $this->contentNegotiator->negotiateResponseContent($type, $request);
-        $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
+        $mediaTypeFormatter = $contentNegotiationResult->formatter;
 
         if ($mediaTypeFormatter === null) {
             throw $this->createNotAcceptableException($type);
@@ -135,11 +131,11 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $mediaTypeFormatter->writeToStream(
                 $rawBody,
                 $bodyStream,
-                $contentNegotiationResult->getEncoding()
+                $contentNegotiationResult->encoding
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                HttpStatusCode::InternalServerError,
                 'Failed to serialize response body',
                 0,
                 $ex
@@ -169,7 +165,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             // @codeCoverageIgnoreEnd
         }
 
-        $response = new Response(HttpStatusCodes::NOT_ACCEPTABLE, $headers, $body);
+        $response = new Response(HttpStatusCode::NotAcceptable, $headers, $body);
 
         return new HttpException($response);
     }

@@ -13,18 +13,26 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Errors;
 
 use Aphiria\Api\Errors\ProblemDetails;
+use Aphiria\Net\Http\HttpStatusCode;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsTest extends TestCase
 {
     public function testConstructorSetsProperties(): void
     {
-        $problemDetails = new ProblemDetails('type', 'title', 'detail', 1, 'instance', ['foo' => 'bar']);
+        $problemDetails = new ProblemDetails('type', 'title', 'detail', 200, 'instance', ['foo' => 'bar']);
         $this->assertSame('type', $problemDetails->type);
         $this->assertSame('title', $problemDetails->title);
         $this->assertSame('detail', $problemDetails->detail);
-        $this->assertSame(1, $problemDetails->status);
+        $this->assertSame(200, $problemDetails->status);
         $this->assertSame('instance', $problemDetails->instance);
         $this->assertSame(['foo' => 'bar'], $problemDetails->extensions);
+    }
+
+    public function testEnumStatusCodeGetsConverted(): void
+    {
+        $problemDetails = new ProblemDetails(status: HttpStatusCode::Created);
+        $this->assertSame(201, $problemDetails->status);
     }
 }

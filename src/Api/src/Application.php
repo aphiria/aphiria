@@ -27,7 +27,7 @@ class Application implements IRequestHandler
      * @param IRequestHandler $router The request handler that will be the last to be executed in the middleware pipeline and performs routing
      * @param MiddlewareCollection $middleware The list of middleware to send requests and responses through
      */
-    public function __construct(private IRequestHandler $router, private MiddlewareCollection $middleware)
+    public function __construct(private readonly IRequestHandler $router, private readonly MiddlewareCollection $middleware)
     {
     }
 

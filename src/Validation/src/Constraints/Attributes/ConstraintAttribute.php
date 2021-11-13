@@ -20,7 +20,7 @@ abstract class ConstraintAttribute implements IConstraintAttribute
     /**
      * @param string|null $errorMessageId The error message ID, or null if there is none
      */
-    protected function __construct(public ?string $errorMessageId)
+    protected function __construct(public readonly ?string $errorMessageId)
     {
     }
 }

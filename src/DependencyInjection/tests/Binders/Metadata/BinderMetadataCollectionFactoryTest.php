@@ -42,7 +42,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionCreatesBindingsFromWhatIsBoundInBinder(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -57,9 +57,9 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionThatNeedsTargetedBindingWorksWhenOneHasUniversalBinding(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public object $target;
 
             public function bind(IContainer $container): void
@@ -70,7 +70,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             }
         };
         $binderA->target = $target;
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -88,15 +88,15 @@ class BinderMetadataCollectionFactoryTest extends TestCase
     public function testCreatingCollectionThatNeedsUniversalBindingThrowsExceptionWhenAnotherOneHasTargetedBinding(): void
     {
         $this->expectException(ImpossibleBindingException::class);
-        $target = new class() {
+        $target = new class () {
         };
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
             }
         };
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public object $target;
 
             public function bind(IContainer $container): void
@@ -112,14 +112,14 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionThatReliesOnBindingSetInAnotherStillWorks(): void
     {
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
                 $container->bindClass(IPerson::class, Dave::class);
             }
         };
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -136,9 +136,9 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionThatReliesOnTargetedBindingSetInAnotherStillWorks(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public object $target;
 
             public function bind(IContainer $container): void
@@ -150,7 +150,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             }
         };
         $binderA->target = $target;
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public object $target;
 
             public function bind(IContainer $container): void
@@ -173,7 +173,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
     public function testCreatingCollectionThatMustRetryBinderKeepsTrackOfResolutionsThatWorkedTheSecondTime(): void
     {
         $this->expectException(ImpossibleBindingException::class);
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // This will fail the first time, but should pass the second time
@@ -183,7 +183,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
                 $container->resolve(IBar::class);
             }
         };
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -197,7 +197,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionThatReliesOnMultipleOtherBindersBindingStillWorks(): void
     {
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
@@ -205,13 +205,13 @@ class BinderMetadataCollectionFactoryTest extends TestCase
                 $container->resolve(IBar::class);
             }
         };
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
             }
         };
-        $binderC = new class() extends Binder {
+        $binderC = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IBar::class, new Bar());
@@ -230,7 +230,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
     public function testCreatingCollectionWithBinderThatCannotResolveSomethingThrowsException(): void
     {
         $this->expectException(ImpossibleBindingException::class);
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
@@ -242,7 +242,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
     public function testCreatingCollectionWithCyclicalDependenciesThrowsException(): void
     {
         $this->expectException(ImpossibleBindingException::class);
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 /*
@@ -253,7 +253,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
                 $container->bindInstance(IBar::class, new Bar());
             }
         };
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Ditto about order being important

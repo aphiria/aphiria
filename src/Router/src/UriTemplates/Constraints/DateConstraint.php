@@ -21,7 +21,7 @@ use InvalidArgumentException;
 final class DateConstraint implements IRouteVariableConstraint
 {
     /** @var list<string> The list of acceptable formats */
-    private array $formats;
+    private readonly array $formats;
 
     /**
      * @param array|string $formats The format or list of acceptable formats

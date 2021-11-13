@@ -29,7 +29,7 @@ class StringBody implements IBody
     /**
      * @param string $content The body content
      */
-    public function __construct(protected string $content)
+    public function __construct(protected readonly string $content)
     {
     }
 

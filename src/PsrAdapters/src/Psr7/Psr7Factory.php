@@ -42,10 +42,8 @@ use Psr\Http\Message\UriInterface;
  */
 class Psr7Factory implements IPsr7Factory
 {
-    /** @var RequestHeaderParser The Aphiria request header parser */
-    private RequestHeaderParser $aphiriaRequestHeaderParser;
     /** @var RequestParser The Aphiria request parser */
-    private RequestParser $aphiriaRequestParser;
+    private readonly RequestParser $aphiriaRequestParser;
 
     /**
      * @param ServerRequestFactoryInterface $psr7RequestFactory The PSR-7 request factory
@@ -53,19 +51,18 @@ class Psr7Factory implements IPsr7Factory
      * @param StreamFactoryInterface $psr7StreamFactory The PSR-7 stream factory
      * @param UploadedFileFactoryInterface $psr7UploadedFileFactory The PSR-7 uploaded file factory
      * @param UriFactoryInterface $psr7UriFactory The PSR-7 URI factory
-     * @param RequestHeaderParser|null $aphiriaRequestHeaderParser The Aphiria request header parser
+     * @param RequestHeaderParser $aphiriaRequestHeaderParser The Aphiria request header parser
      * @param RequestParser|null $aphiriaRequestParser The Aphiria request parser
      */
     public function __construct(
-        private ServerRequestFactoryInterface $psr7RequestFactory,
-        private ResponseFactoryInterface $psr7ResponseFactory,
-        private StreamFactoryInterface $psr7StreamFactory,
-        private UploadedFileFactoryInterface $psr7UploadedFileFactory,
-        private UriFactoryInterface $psr7UriFactory,
-        RequestHeaderParser $aphiriaRequestHeaderParser = null,
+        private readonly ServerRequestFactoryInterface $psr7RequestFactory,
+        private readonly ResponseFactoryInterface $psr7ResponseFactory,
+        private readonly StreamFactoryInterface $psr7StreamFactory,
+        private readonly UploadedFileFactoryInterface $psr7UploadedFileFactory,
+        private readonly UriFactoryInterface $psr7UriFactory,
+        private readonly RequestHeaderParser $aphiriaRequestHeaderParser = new RequestHeaderParser(),
         RequestParser $aphiriaRequestParser = null
     ) {
-        $this->aphiriaRequestHeaderParser = $aphiriaRequestHeaderParser ?? new RequestHeaderParser();
         $this->aphiriaRequestParser = $aphiriaRequestParser ?? new RequestParser($this->aphiriaRequestHeaderParser);
     }
 
@@ -99,10 +96,10 @@ class Psr7Factory implements IPsr7Factory
                     $contentDisposition .= "; filename=$psr7ClientFilename";
                 }
 
-                $bodyPart->getHeaders()->add('Content-Disposition', $contentDisposition);
+                $bodyPart->headers->add('Content-Disposition', $contentDisposition);
 
                 if (($psr7ClientMimeType = $uploadedFile->getClientMediaType()) !== null) {
-                    $bodyPart->getHeaders()->add('Content-Type', $psr7ClientMimeType);
+                    $bodyPart->headers->add('Content-Type', $psr7ClientMimeType);
                 }
 
                 $bodyParts[] = $bodyPart;
@@ -110,7 +107,6 @@ class Psr7Factory implements IPsr7Factory
 
             $boundary = null;
             $this->aphiriaRequestParser->parseParameters($aphiriaRequest, 'Content-Type')->tryGet('boundary', $boundary);
-            /** @var string|null $boundary */
             $aphiriaRequest->setBody(new MultipartBody($bodyParts, $boundary));
         } else {
             $aphiriaRequest->setBody(new StreamBody($this->createAphiriaStream($psr7Request->getBody())));
@@ -122,7 +118,7 @@ class Psr7Factory implements IPsr7Factory
 
         /** @psalm-suppress MixedAssignment The values could legitimately be mixed */
         foreach ($psr7Request->getAttributes() as $name => $value) {
-            $aphiriaRequest->getProperties()->add($name, $value);
+            $aphiriaRequest->getProperties()->add((string)$name, $value);
         }
 
         return $aphiriaRequest;
@@ -135,7 +131,7 @@ class Psr7Factory implements IPsr7Factory
     {
         $aphiriaResponse = new Response(
             $psr7Response->getStatusCode(),
-            null,
+            new Headers(),
             new StreamBody($this->createAphiriaStream($psr7Response->getBody())),
             $psr7Response->getProtocolVersion()
         );
@@ -180,11 +176,10 @@ class Psr7Factory implements IPsr7Factory
             (string)$aphiriaRequest->getUri()
         );
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($aphiriaRequest->getHeaders() as $kvp) {
-            /** @var string|string[] $headerValue */
-            foreach ($kvp->getValue() as $headerValue) {
-                $psr7Request = $psr7Request->withHeader((string)$kvp->getKey(), $headerValue);
+            foreach ($kvp->value as $headerValue) {
+                $psr7Request = $psr7Request->withHeader((string)$kvp->key, (string)$headerValue);
             }
         }
 
@@ -195,22 +190,14 @@ class Psr7Factory implements IPsr7Factory
         $psr7Request = $psr7Request->withUploadedFiles($this->createPsr7UploadedFiles($aphiriaRequest));
         $psr7CookieParams = $psr7QueryParams = [];
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, string> $kvp */
         foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
-            /**
-             * @psalm-suppress MixedArrayOffset Purposely building a mixed array
-             * @psalm-suppress MixedAssignment Ditto
-             */
-            $psr7CookieParams[$kvp->getKey()] = $kvp->getValue();
+            $psr7CookieParams[$kvp->key] = $kvp->value;
         }
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, string> $kvp */
         foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
-            /**
-             * @psalm-suppress MixedArrayOffset Purposely building a mixed array
-             * @psalm-suppress MixedAssignment Ditto
-             */
-            $psr7QueryParams[$kvp->getKey()] = $kvp->getValue();
+            $psr7QueryParams[$kvp->key] = $kvp->value;
         }
 
         $psr7Request = $psr7Request->withCookieParams($psr7CookieParams)
@@ -223,9 +210,9 @@ class Psr7Factory implements IPsr7Factory
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, mixed> $kvp */
         foreach ($aphiriaRequest->getProperties() as $kvp) {
-            $psr7Request = $psr7Request->withAttribute((string)$kvp->getKey(), $kvp->getValue());
+            $psr7Request = $psr7Request->withAttribute((string)$kvp->key, $kvp->value);
         }
 
         return $psr7Request;
@@ -237,16 +224,15 @@ class Psr7Factory implements IPsr7Factory
     public function createPsr7Response(IResponse $aphiriaResponse): ResponseInterface
     {
         $psr7Response = $this->psr7ResponseFactory->createResponse(
-            $aphiriaResponse->getStatusCode(),
+            $aphiriaResponse->getStatusCode()->value,
             $aphiriaResponse->getReasonPhrase() ?? ''
         )
             ->withProtocolVersion($aphiriaResponse->getProtocolVersion());
 
-        /** @var KeyValuePair $kvp */
+        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
         foreach ($aphiriaResponse->getHeaders() as $kvp) {
-            /** @var string|string[] $headerValue */
-            foreach ((array)$kvp->getValue() as $headerValue) {
-                $psr7Response = $psr7Response->withHeader((string)$kvp->getKey(), $headerValue);
+            foreach ((array)$kvp->value as $headerValue) {
+                $psr7Response = $psr7Response->withHeader((string)$kvp->key, (string)$headerValue);
             }
         }
 
@@ -286,13 +272,13 @@ class Psr7Factory implements IPsr7Factory
 
         $psr7UploadedFiles = [];
 
-        foreach ($multipartBody->getParts() as $i => $part) {
-            if (($partBody = $part->getBody()) === null) {
+        foreach ($multipartBody->parts as $i => $part) {
+            if (($partBody = $part->body) === null) {
                 continue;
             }
 
             $contentDispositionParameters = $this->aphiriaRequestHeaderParser->parseParameters(
-                $part->getHeaders(),
+                $part->headers,
                 'Content-Disposition'
             );
             $name = $filename = null;
@@ -303,7 +289,6 @@ class Psr7Factory implements IPsr7Factory
 
             /** @var string $name */
             $contentDispositionParameters->tryGet('filename', $filename);
-            /** @var string|null $filename */
             $psr7UploadedFiles[$name] = $this->psr7UploadedFileFactory->createUploadedFile(
                 $this->createPsr7Stream($partBody->readAsStream()),
                 $partBody->getLength(),

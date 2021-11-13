@@ -35,7 +35,7 @@ class ServeCommandHandlerTest extends TestCase
                 'docroot' => 'public'
             ]
         );
-        $handler = new class() extends ServeCommandHandler {
+        $handler = new class () extends ServeCommandHandler {
             public ?string $ranCommand = null;
 
             protected function runPhpCommand(string $command): void
@@ -44,6 +44,6 @@ class ServeCommandHandlerTest extends TestCase
             }
         };
         $handler->handle($input, $output);
-        $this->assertSame(PHP_BINARY . ' -S localhost.app:443 -t public router', $handler->ranCommand);
+        $this->assertSame(PHP_BINARY . ' -S localhost.app:443 -t "public" "router"', $handler->ranCommand);
     }
 }

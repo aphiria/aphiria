@@ -27,28 +27,18 @@ use RuntimeException;
  */
 final class InputCompiler implements IInputCompiler
 {
-    /** @var IInputTokenizer The argv input tokenizer */
-    private IInputTokenizer $argvTokenizer;
-    /** @var IInputTokenizer The string input tokenizer */
-    private IInputTokenizer $stringTokenizer;
-    /** @var IInputTokenizer The array list input tokenizer */
-    private IInputTokenizer $arrayListTokenizer;
-
     /**
      * @param CommandRegistry $commands The commands that are registered
-     * @param IInputTokenizer|null $argvTokenizer The argv input tokenizer
-     * @param IInputTokenizer|null $stringTokenizer The string input tokenizer
-     * @param IInputTokenizer|null $arrayListTokenizer The array list input tokenizer
+     * @param IInputTokenizer $argvTokenizer The argv input tokenizer
+     * @param IInputTokenizer $stringTokenizer The string input tokenizer
+     * @param IInputTokenizer $arrayListTokenizer The array list input tokenizer
      */
     public function __construct(
-        private CommandRegistry $commands,
-        IInputTokenizer $argvTokenizer = null,
-        IInputTokenizer $stringTokenizer = null,
-        IInputTokenizer $arrayListTokenizer = null
+        private readonly CommandRegistry $commands,
+        private readonly IInputTokenizer $argvTokenizer = new ArgvInputTokenizer(),
+        private readonly IInputTokenizer $stringTokenizer = new StringInputTokenizer(),
+        private readonly IInputTokenizer $arrayListTokenizer = new ArrayListInputTokenizer()
     ) {
-        $this->argvTokenizer = $argvTokenizer ?? new ArgvInputTokenizer();
-        $this->stringTokenizer = $stringTokenizer ?? new StringInputTokenizer();
-        $this->arrayListTokenizer = $arrayListTokenizer ?? new ArrayListInputTokenizer();
     }
 
     /**

@@ -22,8 +22,8 @@ interface IContainer extends IServiceResolver
     /**
      * Binds a class to use whenever resolving an interface
      *
-     * @template T
-     * @param array<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
+     * @template T of object
+     * @param list<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
      * @param class-string<T> $concreteClass The concrete class to bind to the interface
      * @param list<mixed> $primitives The list of primitives to inject (must be in same order they appear in constructor),
      * @param bool $resolveAsSingleton Whether or not to resolve the class as a singleton
@@ -39,17 +39,17 @@ interface IContainer extends IServiceResolver
      * Binds a factory that will return a concrete instance of the interface
      *
      * @template T of object
-     * @param array<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
-     * @param callable(): T $factory The factory to bind
+     * @param list<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
+     * @param Closure(): T $factory The factory to bind
      * @param bool $resolveAsSingleton Whether or not to resolve the factory as a singleton
      */
-    public function bindFactory(string|array $interfaces, callable $factory, bool $resolveAsSingleton = false): void;
+    public function bindFactory(string|array $interfaces, Closure $factory, bool $resolveAsSingleton = false): void;
 
     /**
      * Binds a concrete instance to the interface
      *
-     * @template T
-     * @param array<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
+     * @template T of object
+     * @param list<class-string<T>>|class-string<T> $interfaces The interface or interfaces to bind to
      * @param T $instance The instance to bind
      */
     public function bindInstance(string|array $interfaces, object $instance): void;
@@ -92,7 +92,7 @@ interface IContainer extends IServiceResolver
     /**
      * Unbinds the interface from the container
      *
-     * @param array<class-string>|class-string $interfaces The interface or interfaces to unbind from
+     * @param list<class-string>|class-string $interfaces The interface or interfaces to unbind from
      */
     public function unbind(string|array $interfaces): void;
 }

@@ -27,7 +27,7 @@ final class Date extends ConstraintAttribute
      * @param list<string> $acceptableFormats The list of acceptable DateTime formats
      * @throws InvalidArgumentException Thrown if there were no acceptable date formats
      */
-    public function __construct(public array $acceptableFormats, string $errorMessageId = null)
+    public function __construct(public readonly array $acceptableFormats, string $errorMessageId = null)
     {
         parent::__construct($errorMessageId);
 

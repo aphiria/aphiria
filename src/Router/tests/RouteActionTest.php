@@ -19,7 +19,7 @@ class RouteActionTest extends TestCase
 {
     public function testClassAndMethodNamesAreSetInConstructor(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

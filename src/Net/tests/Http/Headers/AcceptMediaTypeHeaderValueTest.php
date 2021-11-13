@@ -34,6 +34,7 @@ class AcceptMediaTypeHeaderValueTest extends TestCase
      */
     public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(string $invalidScore): void
     {
+        /** @var ImmutableHashTable<string, string|null> $parameters */
         $parameters = new ImmutableHashTable([new KeyValuePair('q', $invalidScore)]);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Quality score must be between 0 and 1, inclusive');
@@ -56,9 +57,9 @@ class AcceptMediaTypeHeaderValueTest extends TestCase
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
         $value = new AcceptMediaTypeHeaderValue('application/foo+json', null);
-        $this->assertSame('application', $value->getType());
-        $this->assertSame('foo+json', $value->getSubType());
+        $this->assertSame('application', $value->type);
+        $this->assertSame('foo+json', $value->subType);
         $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
-        $this->assertSame('json', $value->getSuffix());
+        $this->assertSame('json', $value->suffix);
     }
 }

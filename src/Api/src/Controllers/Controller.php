@@ -18,7 +18,7 @@ use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
@@ -114,7 +114,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::ACCEPTED,
+            HttpStatusCode::Accepted,
             $headers,
             $body
         );
@@ -137,7 +137,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::BAD_REQUEST,
+            HttpStatusCode::BadRequest,
             $headers,
             $body
         );
@@ -160,7 +160,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::CONFLICT,
+            HttpStatusCode::Conflict,
             $headers,
             $body
         );
@@ -188,7 +188,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::CREATED,
+            HttpStatusCode::Created,
             $headers,
             $body
         );
@@ -211,7 +211,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::FORBIDDEN,
+            HttpStatusCode::Forbidden,
             $headers,
             $body
         );
@@ -231,7 +231,7 @@ class Controller
      */
     protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::FOUND, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCode::Found, $uri, $body, $headers);
     }
 
     /**
@@ -251,7 +251,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::INTERNAL_SERVER_ERROR,
+            HttpStatusCode::InternalServerError,
             $headers,
             $body
         );
@@ -270,7 +270,7 @@ class Controller
      */
     protected function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
-        return $this->redirect(HttpStatusCodes::MOVED_PERMANENTLY, $uri, $body, $headers);
+        return $this->redirect(HttpStatusCode::MovedPermanently, $uri, $body, $headers);
     }
 
     /**
@@ -289,7 +289,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::NO_CONTENT,
+            HttpStatusCode::NoContent,
             $headers
         );
     }
@@ -311,7 +311,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::NOT_FOUND,
+            HttpStatusCode::NotFound,
             $headers,
             $body
         );
@@ -334,7 +334,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::OK,
+            HttpStatusCode::Ok,
             $headers,
             $body
         );
@@ -363,11 +363,11 @@ class Controller
         }
 
         $contentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($type, $this->request);
-        $mediaTypeFormatter = $contentNegotiationResult->getFormatter();
+        $mediaTypeFormatter = $contentNegotiationResult->formatter;
 
         if ($mediaTypeFormatter === null) {
             throw new HttpException(
-                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
+                HttpStatusCode::UnsupportedMediaType,
                 "Failed to negotiate request content with type $type"
             );
         }
@@ -376,7 +376,7 @@ class Controller
             return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::UNPROCESSABLE_ENTITY,
+                HttpStatusCode::UnprocessableEntity,
                 "Failed to deserialize request body when resolving body as type $type",
                 0,
                 $ex
@@ -401,7 +401,7 @@ class Controller
 
         return $this->responseFactory->createResponse(
             $this->request,
-            HttpStatusCodes::UNAUTHORIZED,
+            HttpStatusCode::Unauthorized,
             $headers,
             $body
         );
@@ -410,7 +410,7 @@ class Controller
     /**
      * Creates a redirect redirect response
      *
-     * @param int $statusCode The redirect status code to use
+     * @param HttpStatusCode|int $statusCode The redirect status code to use
      * @param string|Uri $uri The URI to redirect to
      * @param object|string|int|float|array|null $body The raw response body
      * @param Headers|null $headers The headers to use
@@ -419,7 +419,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    private function redirect(int $statusCode, string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    private function redirect(HttpStatusCode|int $statusCode, string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');

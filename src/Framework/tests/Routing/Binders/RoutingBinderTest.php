@@ -28,21 +28,22 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
 use Closure;
-use PHPUnit\Framework\MockObject\MockObject;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class RoutingBinderTest extends TestCase
 {
     private const ROUTE_CACHE_PATH = __DIR__ . '/tmp/routes.txt';
     private const TRIE_CACHE_PATH = __DIR__ . '/tmp/trie.txt';
-    private IContainer|MockObject $container;
+    private IContainer&MockInterface $container;
     private RoutingBinder $binder;
     private ?string $currEnvironment;
 
     protected function setUp(): void
     {
         $this->binder = new RoutingBinder();
-        $this->container = $this->createMock(IContainer::class);
+        $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = \getenv('APP_ENV') ?: null;
 
@@ -57,6 +58,8 @@ class RoutingBinderTest extends TestCase
 
     protected function tearDown(): void
     {
+        Mockery::close();
+
         // Restore the environment name
         if ($this->currEnvironment === null) {
             \putenv('APP_ENV=');
@@ -75,11 +78,9 @@ class RoutingBinderTest extends TestCase
     public function testAttributeRegistrantIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->setUpContainerMock([
-            [AttributeRouteRegistrant::class, $this->isInstanceOf(AttributeRouteRegistrant::class)]
-        ]);
-        $this->container->method('bindFactory')
-            ->with([IRouteMatcher::class, TrieRouteMatcher::class], $this->isInstanceOf(Closure::class));
+        $this->setUpContainerMock();
+        $this->container->shouldReceive('bindFactory')
+            ->with([IRouteMatcher::class, TrieRouteMatcher::class], Mockery::type(Closure::class), true);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -91,12 +92,13 @@ class RoutingBinderTest extends TestCase
         \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->method('bindFactory')
+        $this->container->shouldReceive('bindFactory')
             ->with(
                 [IRouteMatcher::class, TrieRouteMatcher::class],
-                $this->callback(function (Closure $factory) {
+                Mockery::on(function (Closure $factory) {
                     return $factory() instanceof TrieRouteMatcher;
-                })
+                }),
+                true
             );
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -107,6 +109,14 @@ class RoutingBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
+        $this->container->shouldReceive('bindFactory')
+            ->with(
+                [IRouteMatcher::class, TrieRouteMatcher::class],
+                Mockery::on(function (Closure $factory) {
+                    return $factory() instanceof TrieRouteMatcher;
+                }),
+                true
+            );
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -116,12 +126,13 @@ class RoutingBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->method('bindFactory')
+        $this->container->shouldReceive('bindFactory')
             ->with(
                 [IRouteMatcher::class, TrieRouteMatcher::class],
-                $this->callback(function (Closure $factory) {
+                Mockery::on(function (Closure $factory) {
                     return $factory() instanceof TrieRouteMatcher;
-                })
+                }),
+                true
             );
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -146,26 +157,20 @@ class RoutingBinderTest extends TestCase
         ];
     }
 
-    /**
-     * Sets up the container mock
-     *
-     * @param list<array> $additionalParameters The additional parameters to configure
-     */
-    private function setUpContainerMock(array $additionalParameters = []): void
+    private function setUpContainerMock(): void
     {
         $parameters = [
-            [RouteCollection::class, $this->isInstanceOf(RouteCollection::class)],
-            [IRouteCache::class, $this->isInstanceOf(FileRouteCache::class)],
-            [ITrieCache::class, $this->isInstanceOf(FileTrieCache::class)],
-            [RouteRegistrantCollection::class, $this->isInstanceOf(RouteRegistrantCollection::class)],
-            [IRouteUriFactory::class, $this->isInstanceOf(AstRouteUriFactory::class)]
+            [RouteCollection::class, RouteCollection::class],
+            [IRouteCache::class, FileRouteCache::class],
+            [ITrieCache::class, FileTrieCache::class],
+            [RouteRegistrantCollection::class, RouteRegistrantCollection::class],
+            [IRouteUriFactory::class, AstRouteUriFactory::class],
+            [AttributeRouteRegistrant::class, AttributeRouteRegistrant::class]
         ];
 
-        foreach ($additionalParameters as $additionalParameter) {
-            $parameters[] = $additionalParameter;
+        foreach ($parameters as $parameter) {
+            $this->container->shouldReceive('bindInstance')
+                ->with($parameter[0], Mockery::type($parameter[1]));
         }
-
-        $this->container->method('bindInstance')
-            ->withConsecutive(...$parameters);
     }
 }

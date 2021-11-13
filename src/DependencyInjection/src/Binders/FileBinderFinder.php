@@ -23,15 +23,11 @@ use ReflectionException;
  */
 final class FileBinderFinder
 {
-    /** @var ITypeFinder The class finder */
-    private ITypeFinder $classFinder;
-
     /**
-     * @param ITypeFinder|null $classFinder The class finder
+     * @param ITypeFinder $classFinder The class finder
      */
-    public function __construct(ITypeFinder $classFinder = null)
+    public function __construct(private readonly ITypeFinder $classFinder = new TypeFinder())
     {
-        $this->classFinder = $classFinder ?? new TypeFinder();
     }
 
     /**

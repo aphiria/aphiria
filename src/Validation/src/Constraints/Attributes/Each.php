@@ -27,7 +27,7 @@ final class Each extends ConstraintAttribute
      * @param list<IConstraintAttribute> $constraints The list of constraint attributes that mucst be passed
      * @throws InvalidArgumentException Thrown if the list of constraints is empty
      */
-    public function __construct(public array $constraints, string $errorMessageId = null)
+    public function __construct(public readonly array $constraints, string $errorMessageId = null)
     {
         parent::__construct($errorMessageId);
 

@@ -25,6 +25,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
@@ -46,7 +47,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $this->prevAppUrl = \getenv('APP_URL') ?: '';
         $this->app = $this->createMock(IRequestHandler::class);
-        $this->integrationTests = new class($this->app) extends IntegrationTestCase {
+        $this->integrationTests = new class ($this->app) extends IntegrationTestCase {
             private static ?string $failMessage = null;
             private IRequestHandler $app;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
@@ -281,7 +282,7 @@ class IntegrationTestCaseTest extends TestCase
             ->with($request)
             ->willReturn($response);
         $this->integrationTests->send($request);
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->integrationTests->assertParsedBodyEquals($expectedParsedBody, $response);
@@ -322,7 +323,7 @@ class IntegrationTestCaseTest extends TestCase
             new Headers([new KeyValuePair('Foo', 'bar')]),
             new StringBody('{"foo":"bar"}')
         );
-        $expectedParsedBody = new class() {
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->app->expects($this->once())
@@ -367,13 +368,13 @@ class IntegrationTestCaseTest extends TestCase
     public function testAssertStatusCodeEqualsDoesNotThrowOnSuccess(): void
     {
         $response = new Response(200);
-        $this->integrationTests->assertStatusCodeEquals(200, $response);
+        $this->integrationTests->assertStatusCodeEquals(HttpStatusCode::Ok, $response);
     }
 
     public function testAssertStatusCodeEqualsThrowsOnFailure(): void
     {
         $response = new Response(200);
-        $this->integrationTests->assertStatusCodeEquals(500, $response);
+        $this->integrationTests->assertStatusCodeEquals(HttpStatusCode::InternalServerError, $response);
         $this->assertSame(
             'Expected status code 500, got 200',
             $this->integrationTests->getFailMessage()

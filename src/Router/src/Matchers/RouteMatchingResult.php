@@ -20,9 +20,9 @@ use Aphiria\Routing\Route;
 final class RouteMatchingResult
 {
     /** @var bool Whether or not a match was found */
-    public bool $matchFound;
+    public readonly bool $matchFound;
     /** @var bool|null Whether or not the request method was allowed, or null if no match was found */
-    public ?bool $methodIsAllowed;
+    public readonly ?bool $methodIsAllowed;
 
     /**
      * @param Route|null $route The matched route, if one was found, otherwise null
@@ -31,9 +31,9 @@ final class RouteMatchingResult
      *      Only populated on an unsuccessful match
      */
     public function __construct(
-        public ?Route $route,
-        public array $routeVariables,
-        public array $allowedMethods = []
+        public readonly ?Route $route,
+        public readonly array $routeVariables,
+        public readonly array $allowedMethods = []
     ) {
         $this->matchFound = $this->route !== null;
 

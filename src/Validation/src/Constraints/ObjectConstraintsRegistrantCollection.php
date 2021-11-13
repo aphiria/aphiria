@@ -25,7 +25,7 @@ class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistr
     /**
      * @param IObjectConstraintsRegistryCache|null $objectConstraintsCache The optional cache of constraints
      */
-    public function __construct(private ?IObjectConstraintsRegistryCache $objectConstraintsCache = null)
+    public function __construct(private readonly ?IObjectConstraintsRegistryCache $objectConstraintsCache = null)
     {
     }
 

@@ -28,8 +28,8 @@ class TrieFactoryTest extends TestCase
 {
     private TrieFactory $trieFactory;
     private RouteCollection $routes;
-    private ITrieCache|MockObject $trieCache;
-    private ITrieCompiler|MockObject $trieCompiler;
+    private ITrieCache&MockObject $trieCache;
+    private ITrieCompiler&MockObject $trieCompiler;
 
     protected function setUp(): void
     {
@@ -50,7 +50,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithCacheMissSetsItInCache(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -72,7 +72,7 @@ class TrieFactoryTest extends TestCase
 
     public function testCreatingTrieWithNoCacheSetCreatesTrieFromCompiler(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

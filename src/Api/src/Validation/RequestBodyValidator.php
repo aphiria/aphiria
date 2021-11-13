@@ -32,9 +32,9 @@ final class RequestBodyValidator implements IRequestBodyValidator
      * @param ILanguageMatcher|null $languageMatcher The language matcher to use, or null if not using one
      */
     public function __construct(
-        private IValidator $validator,
-        private ?IErrorMessageInterpolator $errorMessageInterpolator = null,
-        private ?ILanguageMatcher $languageMatcher = null
+        private readonly IValidator $validator,
+        private readonly ?IErrorMessageInterpolator $errorMessageInterpolator = null,
+        private readonly ?ILanguageMatcher $languageMatcher = null
     ) {
     }
 
@@ -69,8 +69,8 @@ final class RequestBodyValidator implements IRequestBodyValidator
         } catch (ValidationException $ex) {
             $errors = [];
 
-            foreach ($ex->getViolations() as $violation) {
-                $errors[] = $violation->getErrorMessage();
+            foreach ($ex->violations as $violation) {
+                $errors[] = $violation->errorMessage;
             }
 
             throw new InvalidRequestBodyException($errors, 'Invalid request body', 0, $ex);

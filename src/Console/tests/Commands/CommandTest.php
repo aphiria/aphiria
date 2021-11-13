@@ -14,9 +14,9 @@ namespace Aphiria\Console\Tests\Commands;
 
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -31,8 +31,8 @@ class CommandTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $expectedName = 'foo';
-        $expectedArguments = [new Argument('arg', ArgumentTypes::REQUIRED, 'description')];
-        $expectedOptions = [new Option('opt', OptionTypes::REQUIRED_VALUE, 'o', 'description')];
+        $expectedArguments = [new Argument('arg', ArgumentType::Required, 'description')];
+        $expectedOptions = [new Option('opt', OptionType::RequiredValue, 'o', 'description')];
         $expectedDescription = 'description';
         $expectedHelpText = 'help';
         $command = new Command(

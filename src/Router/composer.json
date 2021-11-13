@@ -39,24 +39,25 @@
         }
     },
     "require": {
-        "aphiria/reflection": "1.*@dev",
+        "aphiria/reflection": "1.x-dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "php": ">=8.0"
+        "php": ">=8.1"
     },
     "require-dev": {
-        "aphiria/api": "1.*@dev",
-        "friendsofphp/php-cs-fixer": "2.18",
+        "aphiria/api": "1.x-dev",
+        "friendsofphp/php-cs-fixer": "^3.2",
         "nikic/fast-route": "1.2",
         "phpunit/phpunit": "~9.5",
-        "symfony/routing": "5.2.*"
+        "symfony/routing": "^6.0"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",
-        "phpcs-fix": "php-cs-fixer fix --config=.php_cs.dist -v --diff",
+        "phpcs-fix": "php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --diff",
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml --verbose",
         "test": [
-            "@phpunit"
+            "@phpunit",
+            "@phpcs-test"
         ]
     },
     "extra": {

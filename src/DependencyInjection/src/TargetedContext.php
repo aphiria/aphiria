@@ -20,31 +20,8 @@ final class TargetedContext extends Context
     /**
      * @param class-string|null $targetClass The targeted class, if there was one
      */
-    public function __construct(private ?string $targetClass = null)
+    public function __construct(?string $targetClass = null)
     {
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getTargetClass(): ?string
-    {
-        return $this->targetClass;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isTargeted(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isUniversal(): bool
-    {
-        return false;
+        parent::__construct($targetClass, true, false);
     }
 }

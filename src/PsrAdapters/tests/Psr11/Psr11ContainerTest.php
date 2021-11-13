@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class Psr11ContainerTest extends TestCase
 {
-    private IContainer|MockObject $aphiriaContainer;
+    private IContainer&MockObject $aphiriaContainer;
     private Psr11Container $psr11Container;
 
     protected function setUp(): void

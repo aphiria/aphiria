@@ -26,7 +26,7 @@ class ClosureCommandRegistrantTest extends TestCase
     public function testRegisteringCommandsRegistersCommandsFromClosures(): void
     {
         $expectedCommand = new Command('foo');
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }

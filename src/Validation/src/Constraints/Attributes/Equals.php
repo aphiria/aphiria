@@ -25,7 +25,7 @@ final class Equals extends ConstraintAttribute
      * @inheritdoc
      * @param mixed $value The value to compare against
      */
-    public function __construct(public mixed $value, string $errorMessageId = null)
+    public function __construct(public readonly mixed $value, string $errorMessageId = null)
     {
         parent::__construct($errorMessageId);
     }

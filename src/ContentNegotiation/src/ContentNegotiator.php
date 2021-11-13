@@ -28,50 +28,34 @@ final class ContentNegotiator implements IContentNegotiator
 {
     /** @const The default media type if none is found (RFC 7231) */
     private const DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';
-    /** @var list<IMediaTypeFormatter> The list of media type formatters */
-    private array $mediaTypeFormatters;
     /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
-    private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
-    /** @var IEncodingMatcher The encoding matcher */
-    private IEncodingMatcher $encodingMatcher;
-    /** @var ILanguageMatcher The language matcher */
-    private ILanguageMatcher $languageMatcher;
-    /** @var RequestHeaderParser The header parser */
-    private RequestHeaderParser $headerParser;
+    private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
 
     /**
-     * @param list<IMediaTypeFormatter>|null $mediaTypeFormatters The list of media type formatters to use, or null if using the default formatters
+     * @param list<IMediaTypeFormatter> $mediaTypeFormatters The list of media type formatters to use, or null if using the default formatters
      * @param IMediaTypeFormatterMatcher|null $mediaTypeFormatterMatcher The media type formatter matcher, or null if using the default one
-     * @param IEncodingMatcher|null $encodingMatcher The encoding matcher, or null if using the default one
-     * @param ILanguageMatcher|null $languageMatcher The language matcher, or null if using the default one
-     * @param RequestHeaderParser|null $headerParser The header parser, or null if using the default one
+     * @param IEncodingMatcher $encodingMatcher The encoding matcher
+     * @param ILanguageMatcher $languageMatcher The language matcher
+     * @param RequestHeaderParser $headerParser The header parser
      * @throws InvalidArgumentException Thrown if the list of media type formatters is empty
      */
     public function __construct(
-        array $mediaTypeFormatters = null,
+        private readonly array $mediaTypeFormatters = [
+            new JsonMediaTypeFormatter(),
+            new XmlMediaTypeFormatter(),
+            new HtmlMediaTypeFormatter(),
+            new PlainTextMediaTypeFormatter()
+        ],
         IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
-        IEncodingMatcher $encodingMatcher = null,
-        ILanguageMatcher $languageMatcher = null,
-        RequestHeaderParser $headerParser = null
+        private readonly IEncodingMatcher $encodingMatcher = new AcceptCharsetEncodingMatcher(),
+        private readonly ILanguageMatcher $languageMatcher = new AcceptLanguageMatcher(['en']),
+        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()
     ) {
-        if ($mediaTypeFormatters === null) {
-            $mediaTypeFormatters = [
-                new JsonMediaTypeFormatter(),
-                new XmlMediaTypeFormatter(),
-                new HtmlMediaTypeFormatter(),
-                new PlainTextMediaTypeFormatter()
-            ];
-        }
-
         if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
         }
 
-        $this->mediaTypeFormatters = $mediaTypeFormatters;
         $this->mediaTypeFormatterMatcher = $mediaTypeFormatterMatcher ?? new MediaTypeFormatterMatcher($this->mediaTypeFormatters);
-        $this->encodingMatcher = $encodingMatcher ?? new AcceptCharsetEncodingMatcher();
-        $this->languageMatcher = $languageMatcher ?? new AcceptLanguageMatcher(['en']);
-        $this->headerParser = $headerParser ?? new RequestHeaderParser();
     }
 
     /**
@@ -119,14 +103,14 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $mediaTypeFormatterMatch->getFormatter()->getSupportedEncodings(),
+            $mediaTypeFormatterMatch->formatter->getSupportedEncodings(),
             $request,
-            $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
+            $mediaTypeFormatterMatch->mediaTypeHeaderValue
         );
 
         return new ContentNegotiationResult(
-            $mediaTypeFormatterMatch->getFormatter(),
-            $mediaTypeFormatterMatch->getMediaType(),
+            $mediaTypeFormatterMatch->formatter,
+            $mediaTypeFormatterMatch->mediaType,
             $encoding,
             $language
         );
@@ -153,14 +137,14 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $mediaTypeFormatterMatch->getFormatter()->getSupportedEncodings(),
+            $mediaTypeFormatterMatch->formatter->getSupportedEncodings(),
             $request,
-            $mediaTypeFormatterMatch->getMediaTypeHeaderValue()
+            $mediaTypeFormatterMatch->mediaTypeHeaderValue
         );
 
         return new ContentNegotiationResult(
-            $mediaTypeFormatterMatch->getFormatter(),
-            $mediaTypeFormatterMatch->getMediaType(),
+            $mediaTypeFormatterMatch->formatter,
+            $mediaTypeFormatterMatch->mediaType,
             $encoding,
             $language
         );

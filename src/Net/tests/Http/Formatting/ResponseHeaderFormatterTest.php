@@ -15,6 +15,7 @@ namespace Aphiria\Net\Tests\Http\Formatting;
 use Aphiria\Net\Http\Formatting\ResponseHeaderFormatter;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 use PHPUnit\Framework\TestCase;
 
 class ResponseHeaderFormatterTest extends TestCase
@@ -30,7 +31,7 @@ class ResponseHeaderFormatterTest extends TestCase
 
     public function testCookiePropertiesWithValuesAreNotUrlEncoded(): void
     {
-        $cookie = new Cookie('foo', '+', null, '/', null, false, false, 'strict');
+        $cookie = new Cookie('foo', '+', null, '/', null, false, false, sameSite: SameSiteMode::Strict);
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=' . \urlencode('+') . '; Path=/; SameSite=strict',
@@ -81,7 +82,7 @@ class ResponseHeaderFormatterTest extends TestCase
 
     public function testCookieWithSameSiteSetsSameSiteProperty(): void
     {
-        $cookie = new Cookie('foo', 'bar', null, null, null, false, false, 'lax');
+        $cookie = new Cookie('foo', 'bar', null, null, null, false, false, SameSiteMode::Lax);
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=bar; SameSite=lax',
@@ -120,7 +121,7 @@ class ResponseHeaderFormatterTest extends TestCase
 
     public function testDeletingCookieWithSameSite(): void
     {
-        $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false, Cookie::SAME_SITE_STRICT);
+        $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false, SameSiteMode::Strict);
         $this->assertSame('foo=; Max-Age=0; SameSite=strict', $this->headers->getFirst('Set-Cookie'));
     }
 

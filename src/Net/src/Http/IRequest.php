@@ -53,7 +53,7 @@ interface IRequest extends IHttpMessage, IExtendable
      * Gets the properties of the request
      * These are custom pieces of metadata that the application can attach to the request
      *
-     * @return IDictionary The collection of properties
+     * @return IDictionary<string, mixed> The collection of properties
      */
     public function getProperties(): IDictionary;
 

@@ -15,14 +15,14 @@ namespace Aphiria\Console;
 /**
  * Defines different console status codes
  */
-final class StatusCodes
+enum StatusCode: int
 {
     /** Everything executed successfully */
-    public const OK = 0;
+    case Ok = 0;
     /** There was a warning */
-    public const WARNING = 1;
+    case Warning = 1;
     /** There was a non-fatal error */
-    public const ERROR = 2;
+    case Error = 2;
     /** The application crashed */
-    public const FATAL = 3;
+    case Fatal = 3;
 }

@@ -152,7 +152,7 @@ class ResponseAssertionsTest extends TestCase
         $this->expectExceptionMessage('Failed to parse the response body');
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{}');
-        $response = new Response(200, null, $body);
+        $response = new Response(200, body: $body);
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
         $mediaTypeFormatterMatcher->expects($this->once())
             ->method('getBestResponseMediaTypeFormatterMatch')
@@ -166,7 +166,7 @@ class ResponseAssertionsTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $body = new StringBody('foo');
-        $response = new Response(200, null, $body);
+        $response = new Response(200, body: $body);
         $this->assertions->assertParsedBodyEquals($body, $request, $response);
         // Dummy assertion
         $this->assertTrue(true);
@@ -178,7 +178,7 @@ class ResponseAssertionsTest extends TestCase
         $this->expectExceptionMessage('Failed to assert that the response body equals the expected value');
         $request = new Request('GET', new Uri('http://localhost'));
         $body = new StringBody('foo');
-        $response = new Response(200, null, $body);
+        $response = new Response(200, body: $body);
         $this->assertions->assertParsedBodyEquals(new StringBody('baz'), $request, $response);
     }
 
@@ -186,8 +186,8 @@ class ResponseAssertionsTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
-        $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $response = new Response(200, body: $body);
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->assertions->assertParsedBodyEquals($expectedParsedBody, $request, $response);
@@ -201,8 +201,8 @@ class ResponseAssertionsTest extends TestCase
         $this->expectExceptionMessage('Failed to assert that the response body matches the expected value');
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
-        $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $response = new Response(200, body: $body);
+        $expectedParsedBody = new class () {
             public string $foo = 'baz';
         };
         $this->assertions->assertParsedBodyEquals($expectedParsedBody, $request, $response);
@@ -223,7 +223,7 @@ class ResponseAssertionsTest extends TestCase
         $this->expectExceptionMessage('Failed to parse the response body');
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{}');
-        $response = new Response(200, null, $body);
+        $response = new Response(200, body: $body);
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
         $mediaTypeFormatterMatcher->expects($this->once())
             ->method('getBestResponseMediaTypeFormatterMatch')
@@ -237,8 +237,8 @@ class ResponseAssertionsTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
-        $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $response = new Response(200, body: $body);
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function (mixed $parsedBody) use ($expectedParsedBody): bool {
@@ -254,8 +254,8 @@ class ResponseAssertionsTest extends TestCase
         $this->expectExceptionMessage('Failed to assert that the response body passes the callback');
         $request = new Request('GET', new Uri('http://localhost'), new Headers([new KeyValuePair('Accept', 'application/json')]));
         $body = new StringBody('{"foo":"bar"}');
-        $response = new Response(200, null, $body);
-        $expectedParsedBody = new class() {
+        $response = new Response(200, body: $body);
+        $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
         $this->assertions->assertParsedBodyPassesCallback($request, $response, $expectedParsedBody::class, function (mixed $parsedBody): bool {

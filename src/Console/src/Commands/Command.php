@@ -29,11 +29,11 @@ class Command
      * @param string|null $helpText the help text
      */
     public function __construct(
-        public string $name,
-        public array $arguments = [],
-        public array $options = [],
-        public ?string $description = null,
-        public ?string $helpText = null
+        public readonly string $name,
+        public readonly array $arguments = [],
+        public readonly array $options = [],
+        public readonly ?string $description = null,
+        public readonly ?string $helpText = null
     ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Command name cannot be empty');

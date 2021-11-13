@@ -27,7 +27,7 @@ class ObjectConstraintsBuilderTest extends TestCase
 
     public function testBuiltConstraintsHasCorrectClassName(): void
     {
-        $this->assertSame(self::class, $this->builder->build()->getClassName());
+        $this->assertSame(self::class, $this->builder->build()->className);
     }
 
     public function testHasMethodConstraintsWithMultipleConstraintsAddsThemToRegistry(): void

@@ -25,69 +25,68 @@ final class Style
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
      * @var array<string, array{0: int, 1: int}>
      */
-    private static array $supportedForegroundColors = [
-        Colors::BLACK => [30, 39],
-        Colors::RED => [31, 39],
-        Colors::GREEN => [32, 39],
-        Colors::YELLOW => [33, 39],
-        Colors::BLUE => [34, 39],
-        Colors::MAGENTA => [35, 39],
-        Colors::CYAN => [36, 39],
-        Colors::WHITE => [37, 39]
-    ];
+    private array $supportedForegroundColors;
     /**
      * The list of possible background colors
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
      * @var array<string, array{0: int, 1: int}>
      */
-    private static array $supportedBackgroundColors = [
-        Colors::BLACK => [40, 49],
-        Colors::RED => [41, 49],
-        Colors::GREEN => [42, 49],
-        Colors::YELLOW => [43, 49],
-        Colors::BLUE => [44, 49],
-        Colors::MAGENTA => [45, 49],
-        Colors::CYAN => [46, 49],
-        Colors::WHITE => [47, 49]
-    ];
+    private array $supportedBackgroundColors;
     /**
      * The list of possible text styles
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
      * @var array<string, array{0: int, 1: int}>
      */
-    private static array $supportedTextStyles = [
-        TextStyles::BOLD => [1, 22],
-        TextStyles::UNDERLINE => [4, 24],
-        TextStyles::BLINK => [5, 25]
-    ];
+    private array $supportedTextStyles;
 
     /**
-     * @param string|null $foregroundColor The foreground color
-     * @param string|null $backgroundColor The background color
-     * @param list<string> $textStyles The list of text styles to apply
+     * @param Color|null $foregroundColor The foreground color
+     * @param Color|null $backgroundColor The background color
+     * @param list<TextStyle> $textStyles The list of text styles to apply
      */
     public function __construct(
-        public ?string $foregroundColor = null,
-        public ?string $backgroundColor = null,
-        public array $textStyles = []
+        public ?Color $foregroundColor = null,
+        public ?Color $backgroundColor = null,
+        public array  $textStyles = []
     ) {
+        $this->supportedForegroundColors = [
+            Color::Black->value => [30, 39],
+            Color::Red->value => [31, 39],
+            Color::Green->value => [32, 39],
+            Color::Yellow->value => [33, 39],
+            Color::Blue->value => [34, 39],
+            Color::Magenta->value => [35, 39],
+            Color::Cyan->value => [36, 39],
+            Color::White->value => [37, 39]
+        ];
+        $this->supportedBackgroundColors = [
+            Color::Black->value => [40, 49],
+            Color::Red->value => [41, 49],
+            Color::Green->value => [42, 49],
+            Color::Yellow->value => [43, 49],
+            Color::Blue->value => [44, 49],
+            Color::Magenta->value => [45, 49],
+            Color::Cyan->value => [46, 49],
+            Color::White->value => [47, 49]
+        ];
+        $this->supportedTextStyles = [
+            TextStyle::Bold->value => [1, 22],
+            TextStyle::Underline->value => [4, 24],
+            TextStyle::Blink->value => [5, 25]
+        ];
+
         $this->addTextStyles($this->textStyles);
     }
 
     /**
      * Adds the text to have a certain style
      *
-     * @param string $style The name of the text style
-     * @throws InvalidArgumentException Thrown if the text style does not exist
+     * @param TextStyle $style The name of the text style
      */
-    public function addTextStyle(string $style): void
+    public function addTextStyle(TextStyle $style): void
     {
-        if (!isset(self::$supportedTextStyles[$style])) {
-            throw new InvalidArgumentException("Invalid text style \"$style\"");
-        }
-
         // Don't double-add a style
         if (!\in_array($style, $this->textStyles, true)) {
             $this->textStyles[] = $style;
@@ -97,8 +96,7 @@ final class Style
     /**
      * Adds multiple text styles
      *
-     * @param list<string> $styles The names of the text styles
-     * @throws InvalidArgumentException Thrown if the text styles do not exist
+     * @param list<TextStyle> $styles The names of the text styles
      */
     public function addTextStyles(array $styles): void
     {
@@ -123,18 +121,18 @@ final class Style
         $endCodes = [];
 
         if ($this->foregroundColor !== null) {
-            $startCodes[] = self::$supportedForegroundColors[$this->foregroundColor][0];
-            $endCodes[] = self::$supportedForegroundColors[$this->foregroundColor][1];
+            $startCodes[] = $this->supportedForegroundColors[$this->foregroundColor->value][0];
+            $endCodes[] = $this->supportedForegroundColors[$this->foregroundColor->value][1];
         }
 
         if ($this->backgroundColor !== null) {
-            $startCodes[] = self::$supportedBackgroundColors[$this->backgroundColor][0];
-            $endCodes[] = self::$supportedBackgroundColors[$this->backgroundColor][1];
+            $startCodes[] = $this->supportedBackgroundColors[$this->backgroundColor->value][0];
+            $endCodes[] = $this->supportedBackgroundColors[$this->backgroundColor->value][1];
         }
 
         foreach ($this->textStyles as $style) {
-            $startCodes[] = self::$supportedTextStyles[$style][0];
-            $endCodes[] = self::$supportedTextStyles[$style][1];
+            $startCodes[] = $this->supportedTextStyles[$style->value][0];
+            $endCodes[] = $this->supportedTextStyles[$style->value][1];
         }
 
         if (\count($startCodes) === 0 && \count($endCodes) === 0) {
@@ -153,15 +151,10 @@ final class Style
     /**
      * Removes a text style
      *
-     * @param string $style The style to remove
-     * @throws InvalidArgumentException Thrown if the text style is invalid
+     * @param TextStyle $style The style to remove
      */
-    public function removeTextStyle(string $style): void
+    public function removeTextStyle(TextStyle $style): void
     {
-        if (!isset(self::$supportedTextStyles[$style])) {
-            throw new InvalidArgumentException("Invalid text style \"$style\"");
-        }
-
         if (($index = \array_search($style, $this->textStyles, true)) !== false) {
             unset($this->textStyles[$index]);
         }

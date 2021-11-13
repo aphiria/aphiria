@@ -34,12 +34,17 @@ use PHPUnit\Framework\TestCase;
 
 class LazyBinderDispatcherTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer $container;
 
     protected function setUp(): void
     {
         // Allow us to more easily retrieve bindings for testing purposes
-        $this->container = new class() extends Container {
+        $this->container = new class () extends Container {
+            /**
+             * @template T of object
+             * @param class-string<T> $interface The interface whose binding we want
+             * @return IContainerBinding<T>|null The binding if one exists, otherwise null
+             */
             public function getBinding(string $interface): ?IContainerBinding
             {
                 return parent::getBinding($interface);
@@ -49,7 +54,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingBinderThatResolvesAnotherBindersBindingCausesBothToBeActivelyDispatched(): void
     {
-        $binderA = new class() extends Binder {
+        $binderA = new class () extends Binder {
             public bool $binderDispatched = false;
 
             public function bind(IContainer $container): void
@@ -62,7 +67,7 @@ class LazyBinderDispatcherTest extends TestCase
                 $container->bindInstance(IFoo::class, new Foo());
             }
         };
-        $binderB = new class() extends Binder {
+        $binderB = new class () extends Binder {
             public bool $binderDispatched = false;
 
             public function bind(IContainer $container): void
@@ -87,9 +92,9 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingTargetedBindingRegistersBindingsFromBinder(): void
     {
-        $target = new class() {
+        $target = new class () {
         };
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public object $target;
 
             public function bind(IContainer $container): void
@@ -104,16 +109,16 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var InstanceContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
-        $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
+        $this->assertInstanceOf(Foo::class, $bindingFromBinder->instance);
     }
 
     public function testDispatchingUniversalBindingRegistersBindingsFromBinder(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -123,16 +128,16 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var InstanceContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
-        $this->assertInstanceOf(Foo::class, $bindingFromBinder->getInstance());
+        $this->assertInstanceOf(Foo::class, $bindingFromBinder->instance);
     }
 
     public function testDispatchingUsesUniversalContextWhenBindingBinders(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindInstance(IFoo::class, new Foo());
@@ -144,7 +149,7 @@ class LazyBinderDispatcherTest extends TestCase
          * We're testing that, when a lazy factory binding is invoked and the binder run, the binder's bindings occur
          * in the universal context, not in the targeted context that invoked the lazy factory binding.
          */
-        $target = new class() {
+        $target = new class () {
         };
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->resolve(IFoo::class);
@@ -154,7 +159,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingWithCacheForcesCreationOfMetadataCollectionAndSetsCacheOnCacheMiss(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindClass(IFoo::class, Foo::class);
@@ -179,7 +184,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingWithCacheUsesResultsOnCacheHit(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindClass(IFoo::class, Foo::class);
@@ -189,16 +194,16 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
-        $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
+        $this->assertSame(Foo::class, $bindingFromBinder->concreteClass);
     }
 
     public function testDispatchingWithNoCacheForcesCollectionCreation(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->bindClass(IFoo::class, Foo::class);
@@ -208,11 +213,11 @@ class LazyBinderDispatcherTest extends TestCase
         /** @var FactoryContainerBinding $lazyBinding */
         $lazyBinding = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
-        $this->assertInstanceOf(Foo::class, ($lazyBinding->getFactory())());
+        $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var ClassContainerBinding $bindingFromBinder */
         $bindingFromBinder = $this->container->getBinding(IFoo::class);
         $this->assertInstanceOf(ClassContainerBinding::class, $bindingFromBinder);
-        $this->assertSame(Foo::class, $bindingFromBinder->getConcreteClass());
+        $this->assertSame(Foo::class, $bindingFromBinder->concreteClass);
     }
 
     /**

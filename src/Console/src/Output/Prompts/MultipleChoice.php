@@ -20,9 +20,9 @@ use InvalidArgumentException;
 class MultipleChoice extends Question
 {
     /** @var string The string to display before the input */
-    private string $answerLineString = '  > ';
+    public string $answerLineString = '  > ';
     /** @var bool Whether or not to allow multiple choices */
-    private bool $allowsMultipleChoices = false;
+    public bool $allowsMultipleChoices = false;
 
     /*
      * @param string $question The question text
@@ -35,21 +35,13 @@ class MultipleChoice extends Question
     }
 
     /**
-     * @return bool
-     */
-    public function allowsMultipleChoices(): bool
-    {
-        return $this->allowsMultipleChoices;
-    }
-
-    /**
      * Gets whether or not the choices are an associative array
      *
      * @return bool True if the array is associative, otherwise false
      */
     public function choicesAreAssociative(): bool
     {
-        return \count(\array_filter(\array_keys($this->choices), 'is_string')) > 0;
+        return !\array_is_list($this->choices);
     }
 
     /**
@@ -87,30 +79,6 @@ class MultipleChoice extends Question
         }
 
         return $selectedChoices[0];
-    }
-
-    /**
-     * @return string
-     */
-    public function getAnswerLineString(): string
-    {
-        return $this->answerLineString;
-    }
-
-    /**
-     * @param bool $allowsMultipleChoices
-     */
-    public function setAllowsMultipleChoices(bool $allowsMultipleChoices): void
-    {
-        $this->allowsMultipleChoices = $allowsMultipleChoices;
-    }
-
-    /**
-     * @param string $answerLineString
-     */
-    public function setAnswerLineString(string $answerLineString): void
-    {
-        $this->answerLineString = $answerLineString;
     }
 
     /**

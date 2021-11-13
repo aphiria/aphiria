@@ -59,16 +59,16 @@ class MultipleChoiceTest extends TestCase
 
     public function testFormattingMultipleAnswers(): void
     {
-        $this->indexedChoiceQuestion->setAllowsMultipleChoices(true);
-        $this->keyedChoiceQuestion->setAllowsMultipleChoices(true);
+        $this->indexedChoiceQuestion->allowsMultipleChoices = true;
+        $this->keyedChoiceQuestion->allowsMultipleChoices = true;
         $this->assertEquals(['foo', 'bar'], $this->indexedChoiceQuestion->formatAnswer('1,2'));
         $this->assertEquals(['d', 'f'], $this->keyedChoiceQuestion->formatAnswer('c,e'));
     }
 
     public function testFormattingMultipleAnswersWithSpaces(): void
     {
-        $this->indexedChoiceQuestion->setAllowsMultipleChoices(true);
-        $this->keyedChoiceQuestion->setAllowsMultipleChoices(true);
+        $this->indexedChoiceQuestion->allowsMultipleChoices = true;
+        $this->keyedChoiceQuestion->allowsMultipleChoices = true;
         $this->assertEquals(['bar', 'baz'], $this->indexedChoiceQuestion->formatAnswer('2, 3'));
         $this->assertEquals(['b', 'f'], $this->keyedChoiceQuestion->formatAnswer('a, e'));
     }
@@ -92,12 +92,12 @@ class MultipleChoiceTest extends TestCase
 
     public function testGettingAllowsMultipleChoices(): void
     {
-        $this->assertFalse($this->indexedChoiceQuestion->allowsMultipleChoices());
+        $this->assertFalse($this->indexedChoiceQuestion->allowsMultipleChoices);
     }
 
     public function testGettingAnswerLineString(): void
     {
-        $this->indexedChoiceQuestion->setAnswerLineString(' > ');
+        $this->indexedChoiceQuestion->answerLineString = ' > ';
         // Essentially just test that we got here
         $this->assertTrue(true);
     }
@@ -117,14 +117,14 @@ class MultipleChoiceTest extends TestCase
     public function testMultipleIndexedChoicesWhenNotAllowed(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->indexedChoiceQuestion->setAllowsMultipleChoices(false);
+        $this->indexedChoiceQuestion->allowsMultipleChoices = false;
         $this->indexedChoiceQuestion->formatAnswer('1,2');
     }
 
     public function testMultipleKeyedChoicesWhenNotAllowed(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->keyedChoiceQuestion->setAllowsMultipleChoices(false);
+        $this->keyedChoiceQuestion->allowsMultipleChoices = false;
         $this->keyedChoiceQuestion->formatAnswer('a,c');
     }
 
@@ -138,18 +138,6 @@ class MultipleChoiceTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->keyedChoiceQuestion->formatAnswer(null);
-    }
-
-    public function testSettingAllowsMultipleChoices(): void
-    {
-        $this->indexedChoiceQuestion->setAllowsMultipleChoices(true);
-        $this->assertTrue($this->indexedChoiceQuestion->allowsMultipleChoices());
-    }
-
-    public function testSettingAnswerLineString(): void
-    {
-        $this->indexedChoiceQuestion->setAnswerLineString('foo');
-        $this->assertSame('foo', $this->indexedChoiceQuestion->getAnswerLineString());
     }
 
     public function testStringAsAnswerToIndexedChoices(): void

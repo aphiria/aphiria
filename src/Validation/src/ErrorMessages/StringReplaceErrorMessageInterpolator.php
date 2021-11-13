@@ -17,17 +17,15 @@ namespace Aphiria\Validation\ErrorMessages;
  */
 final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterpolator
 {
-    /** @var IErrorMessageTemplateRegistry The registry of error message templates */
-    private IErrorMessageTemplateRegistry $errorMessageTemplates;
     /** @var string|null The default locale */
     private ?string $defaultLocale = null;
 
     /**
-     * @param IErrorMessageTemplateRegistry|null $errorMessageTemplates The error message template registry to use
+     * @param IErrorMessageTemplateRegistry $errorMessageTemplates The error message template registry to use
      */
-    public function __construct(IErrorMessageTemplateRegistry $errorMessageTemplates = null)
-    {
-        $this->errorMessageTemplates = $errorMessageTemplates ?? new DefaultErrorMessageTemplateRegistry();
+    public function __construct(
+        private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry()
+    ) {
     }
 
     /**

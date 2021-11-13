@@ -29,7 +29,7 @@ final class ApiApplicationBuilder extends ApplicationBuilder
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(private IContainer $container)
+    public function __construct(private readonly IContainer $container)
     {
     }
 
@@ -38,7 +38,7 @@ final class ApiApplicationBuilder extends ApplicationBuilder
      */
     public function build(): IRequestHandler
     {
-        $this->buildModules();
+        $this->configureModules();
         $this->buildComponents();
 
         try {

@@ -21,21 +21,15 @@ class GlobalConfigurationBuilder
 {
     /** @var array<array-key, array{type: string, value: IConfiguration|Closure(): IConfiguration}> The list of structs that store data about the configuration sources */
     private array $configurationSourceStructs = [];
-    /** @var IConfigurationFileReader The PHP configuration file reader */
-    private IConfigurationFileReader $phpConfigurationFileReader;
-    /** @var IConfigurationFileReader The JSON configuration file reader */
-    private IConfigurationFileReader $jsonConfigurationFileReader;
 
     /**
-     * @param IConfigurationFileReader|null $phpConfigurationFileReader The PHP configuration file reader
-     * @param IConfigurationFileReader|null $jsonConfigurationFileReader The JSON configuration file reader
+     * @param IConfigurationFileReader $phpConfigurationFileReader The PHP configuration file reader
+     * @param IConfigurationFileReader $jsonConfigurationFileReader The JSON configuration file reader
      */
     public function __construct(
-        IConfigurationFileReader $phpConfigurationFileReader = null,
-        IConfigurationFileReader $jsonConfigurationFileReader = null
+        private readonly IConfigurationFileReader $phpConfigurationFileReader = new PhpConfigurationFileReader(),
+        private readonly IConfigurationFileReader $jsonConfigurationFileReader = new JsonConfigurationFileReader()
     ) {
-        $this->phpConfigurationFileReader = $phpConfigurationFileReader ?? new PhpConfigurationFileReader();
-        $this->jsonConfigurationFileReader = $jsonConfigurationFileReader ?? new JsonConfigurationFileReader();
     }
 
     /**

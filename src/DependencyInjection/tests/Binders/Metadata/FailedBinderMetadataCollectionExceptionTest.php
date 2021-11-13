@@ -25,7 +25,7 @@ class FailedBinderMetadataCollectionExceptionTest extends TestCase
 {
     public function testPropertiesAreSet(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
@@ -34,7 +34,7 @@ class FailedBinderMetadataCollectionExceptionTest extends TestCase
         $binderMetadata = new BinderMetadata($binder, [], [new ResolvedInterface(IFoo::class, new UniversalContext())]);
         $exception = new FailedBinderMetadataCollectionException($binderMetadata, IFoo::class);
         $this->assertSame('Failed to collect metadata for ' . $binder::class, $exception->getMessage());
-        $this->assertSame($binderMetadata, $exception->getIncompleteBinderMetadata());
-        $this->assertSame(IFoo::class, $exception->getFailedInterface());
+        $this->assertSame($binderMetadata, $exception->incompleteBinderMetadata);
+        $this->assertSame(IFoo::class, $exception->failedInterface);
     }
 }

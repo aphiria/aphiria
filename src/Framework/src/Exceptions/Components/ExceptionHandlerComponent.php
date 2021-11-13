@@ -20,7 +20,7 @@ use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Closure;
 use Exception;
 
@@ -29,17 +29,17 @@ use Exception;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var array<class-string, array{type: string|Closure(Exception): string|null, title: string|Closure(Exception): string|null, detail: string|Closure(Exception): string|null, status: int|Closure(Exception): int, instance: string|Closure(Exception): string|null, extensions: array|Closure(Exception): array|null}> The mapping of exception types to problem detail settings */
+    /** @var array<class-string, array{type: string|Closure(Exception): string|null, title: string|Closure(Exception): string|null, detail: string|Closure(Exception): string|null, status: HttpStatusCode|int|Closure(Exception): int, instance: string|Closure(Exception): string|null, extensions: array|Closure(Exception): array|null}> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
-    /** @var array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to console result factories */
+    /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
-    /** @var array<class-string<Exception>, Closure(mixed): string> The mapping of exception types to log level factories */
+    /** @var array<class-string<Exception>, Closure(Exception): string> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
      */
-    public function __construct(private IServiceResolver $serviceResolver)
+    public function __construct(private readonly IServiceResolver $serviceResolver)
     {
     }
 
@@ -71,7 +71,7 @@ class ExceptionHandlerComponent implements IComponent
      * Adds a console exception output writer
      *
      * @param class-string<Exception> $exceptionType The type of exception that's thrown
-     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The factory that takes in the exception and output, and writes messages/returns a status code
+     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The factory that takes in the exception and output, and writes messages/returns a status code
      * @return static For chaining
      */
     public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
@@ -85,7 +85,7 @@ class ExceptionHandlerComponent implements IComponent
      * Adds a log level factory for a particular exception type
      *
      * @param class-string<Exception> $exceptionType The type of exception that's thrown
-     * @param Closure(mixed): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
+     * @param Closure(Exception): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
      * @return static For chaining
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static
@@ -99,12 +99,12 @@ class ExceptionHandlerComponent implements IComponent
      * Adds a mapping of an exception type to problem details properties
      *
      * @param class-string $exceptionType The type of exception that's thrown
-     * @param string|null|Closure(mixed): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(mixed): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
-     * @param string|null|Closure(mixed): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param int|Closure(mixed): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(mixed): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
-     * @param array|null|Closure(mixed): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @param string|null|Closure(Exception): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(Exception): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|null|Closure(Exception): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param HttpStatusCode|int|Closure(Exception): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(Exception): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|null|Closure(Exception): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
      */
     public function withProblemDetails(
@@ -112,7 +112,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $type = null,
         string|Closure $title = null,
         string|Closure $detail = null,
-        int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+        HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {

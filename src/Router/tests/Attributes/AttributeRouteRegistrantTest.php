@@ -30,7 +30,7 @@ class AttributeRouteRegistrantTest extends TestCase
 {
     private const PATH = __DIR__;
     private AttributeRouteRegistrant $registrant;
-    private ITypeFinder|MockObject $typeFinder;
+    private ITypeFinder&MockObject $typeFinder;
 
     protected function setUp(): void
     {
@@ -40,7 +40,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteForNonControllerRegistersNothing(): void
     {
-        $nonController = new class() {
+        $nonController = new class () {
         };
         $this->typeFinder->expects($this->once())
             ->method('findAllClasses')
@@ -53,8 +53,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
-        $controller = new class() extends Controller {
-            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
+        $controller = new class () extends Controller {
             #[
                 Get('foo', 'example.com', 'routename', true, ['foo' => 'bar']),
                 RouteConstraint(DummyConstraint::class, ['param'])
@@ -84,8 +83,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMiddlewareCreatesRouteWithThatMiddleware(): void
     {
-        $controller = new class() extends Controller {
-            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
+        $controller = new class () extends Controller {
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar'])
@@ -111,9 +109,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
     {
-        /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
-        $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class() extends Controller
-        {
+        $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class () extends Controller {
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['baz' => 'blah'])
@@ -141,8 +137,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteWithMultipleMiddlewareCreatesRouteWithThoseMiddleware(): void
     {
-        $controller = new class() extends Controller {
-            /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
+        $controller = new class () extends Controller {
             #[
                 Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar']),
@@ -171,8 +166,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithEmptyPathPrependsNothingToRoutePaths(): void
     {
-        $controller = new #[RouteGroup('')] class() extends Controller
-        {
+        $controller = new #[RouteGroup('')] class () extends Controller {
             #[Get('foo')]
             public function route(): void
             {
@@ -193,8 +187,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithPathPrependsPathToRoutePaths(): void
     {
-        $controller = new #[RouteGroup('foo')] class() extends Controller
-        {
+        $controller = new #[RouteGroup('foo')] class () extends Controller {
             #[Get('bar')]
             public function route(): void
             {
@@ -215,8 +208,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
     {
-        $controller = new #[RouteGroup(host: 'example.com')] class() extends Controller
-        {
+        $controller = new #[RouteGroup(host: 'example.com')] class () extends Controller {
             #[Get('', 'api')]
             public function route(): void
             {
@@ -237,8 +229,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void
     {
-        $controller = new #[RouteGroup(isHttpsOnly: true)] class() extends Controller
-        {
+        $controller = new #[RouteGroup(isHttpsOnly: true)] class () extends Controller {
             #[Get('', isHttpsOnly: true)]
             public function routeThatIsAlreadyHttpsOnly(): void
             {
@@ -265,8 +256,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteGroupWithParametersAppliesParametersToChildRoutes(): void
     {
-        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class() extends Controller
-        {
+        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class () extends Controller {
             #[Get('')]
             public function routeWithNoParameters(): void
             {
@@ -293,9 +283,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void
     {
-        /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
-        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class() extends Controller
-        {
+        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class () extends Controller {
             #[Get('')]
             public function routeWithNoExtraConstraints(): void
             {

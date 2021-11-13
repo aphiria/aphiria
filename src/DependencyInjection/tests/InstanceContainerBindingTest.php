@@ -28,6 +28,6 @@ class InstanceContainerBindingTest extends TestCase
     {
         $instance = new stdClass();
         $binding = new InstanceContainerBinding($instance);
-        $this->assertSame($instance, $binding->getInstance());
+        $this->assertSame($instance, $binding->instance);
     }
 }

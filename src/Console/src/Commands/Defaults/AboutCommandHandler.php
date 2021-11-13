@@ -31,18 +31,14 @@ final class AboutCommandHandler implements ICommandHandler
 {{hr}}
 {{commands}}
 EOF;
-    /** @var PaddingFormatter The space padding formatter to use */
-    private PaddingFormatter $paddingFormatter;
-
     /**
      * @param CommandRegistry $commands The commands
-     * @param PaddingFormatter|null $paddingFormatter The space padding formatter to use
+     * @param PaddingFormatter $paddingFormatter The space padding formatter to use
      */
     public function __construct(
-        private CommandRegistry $commands,
-        PaddingFormatter $paddingFormatter = null
+        private readonly CommandRegistry $commands,
+        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
     ) {
-        $this->paddingFormatter = $paddingFormatter ?? new PaddingFormatter();
     }
 
     /**
@@ -113,11 +109,7 @@ EOF;
 
             if (\count($commandNameParts) > 1 && !\in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
                 $categorizedCommandNames[] = $command->name;
-
-                // If this is the first command for this category
-                if (!\in_array($commandNameParts[0], $firstCommandNamesToCategories, true)) {
-                    $firstCommandNamesToCategories[$command->name] = $commandNameParts[0];
-                }
+                $firstCommandNamesToCategories[$command->name] = $commandNameParts[0];
             }
 
             $commandTexts[] = [$command->name, $command->description];

@@ -20,16 +20,20 @@ use Traversable;
 
 /**
  * Defines a hash table
+ *
+ * @template TKey
+ * @template TValue
+ * @implements IDictionary<TKey, TValue>
  */
 class HashTable implements IDictionary
 {
-    /** @var array<string, KeyValuePair> The mapping of hash keys to key-value pairs */
-    protected array $hashKeysToKvps = [];
     /** @var KeyHasher The key hasher to use */
-    private KeyHasher $keyHasher;
+    private readonly KeyHasher $keyHasher;
+    /** @var array<string, KeyValuePair<TKey, TValue>> The mapping of hash keys to key-value pairs */
+    protected array $hashKeysToKvps = [];
 
     /**
-     * @param list<KeyValuePair> $kvps The list of key-value pairs to add
+     * @param list<KeyValuePair<TKey, TValue>> $kvps The list of key-value pairs to add
      * @throws InvalidArgumentException Thrown if the array contains a non-key-value pair
      */
     final public function __construct(array $kvps = [])
@@ -52,11 +56,12 @@ class HashTable implements IDictionary
     public function addRange(array $values): void
     {
         foreach ($values as $kvp) {
+            /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
             if (!$kvp instanceof KeyValuePair) {
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
 
-            $this->hashKeysToKvps[$this->getHashKey($kvp->getKey())] = $kvp;
+            $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
         }
     }
 
@@ -82,7 +87,7 @@ class HashTable implements IDictionary
     public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
-            if ($kvp->getValue() == $value) {
+            if ($kvp->value == $value) {
                 return true;
             }
         }
@@ -109,7 +114,7 @@ class HashTable implements IDictionary
             throw new OutOfBoundsException("Hash key \"$hashKey\" not found");
         }
 
-        return $this->hashKeysToKvps[$hashKey]->getValue();
+        return $this->hashKeysToKvps[$hashKey]->value;
     }
 
     /**
@@ -120,8 +125,7 @@ class HashTable implements IDictionary
         $keys = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
-            $keys[] = $kvp->getKey();
+            $keys[] = $kvp->key;
         }
 
         return $keys;
@@ -135,8 +139,7 @@ class HashTable implements IDictionary
         $values = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
-            $values[] = $kvp->getValue();
+            $values[] = $kvp->value;
         }
 
         return $values;
@@ -163,7 +166,6 @@ class HashTable implements IDictionary
      * @inheritdoc
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
-     * @psalm-suppress MixedReturnStatement This method is correctly returning a mixed type - bug
      */
     public function offsetGet(mixed $offset): mixed
     {
@@ -210,7 +212,6 @@ class HashTable implements IDictionary
     public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
-            /** @psalm-suppress MixedAssignment We are purposely adding mixed values */
             $value = $this->get($key);
 
             return true;

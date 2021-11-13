@@ -55,7 +55,7 @@ class FileSessionDriverTest extends TestCase
     {
         $this->driver->set('foo', 'bar');
         $this->driver->set('bar', 'baz');
-        $this->driver->gc(-1);
+        $this->assertEquals(2, $this->driver->gc(-1));
         $this->assertEquals([], \glob(self::BASE_PATH . '/*'));
     }
 

@@ -25,7 +25,7 @@ class RouteRegistrantCollection implements IRouteRegistrant
     /**
      * @param IRouteCache|null $routeCache The optional route cache
      */
-    public function __construct(private ?IRouteCache $routeCache = null)
+    public function __construct(private readonly ?IRouteCache $routeCache = null)
     {
     }
 

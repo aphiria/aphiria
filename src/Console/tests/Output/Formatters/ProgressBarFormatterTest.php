@@ -15,16 +15,22 @@ namespace Aphiria\Console\Tests\Output\Formatters;
 use Aphiria\Console\Output\Formatters\ProgressBarFormatter;
 use Aphiria\Console\Output\IOutput;
 use Exception;
+use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ProgressBarFormatterTest extends TestCase
 {
-    private IOutput|MockObject $output;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {
         $this->output = $this->createMock(IOutput::class);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function baseCaseProvider(): array
@@ -56,12 +62,14 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
         // Use a redraw frequency of 0 so that it redraws every time
-        $formatter = new ProgressBarFormatter($this->output, 12, null, 0);
-        $this->output->method('write')
-            ->withConsecutive(
-                [$this->anything()],
-                [$this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true))]
+        $output = Mockery::mock(IOutput::class);
+        $output->shouldReceive('write')
+            ->withAnyArgs();
+        $output->shouldReceive('write')
+            ->with(
+                fn (mixed $value): bool => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true)
             );
+        $formatter = new ProgressBarFormatter($output, 12, redrawFrequency: 0);
         $formatter->onProgressChanged(0, 1, 10);
         $formatter->onProgressChanged(1, 2, 10);
         // Dummy assertion
@@ -92,7 +100,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressWithImpossiblyLowTimeLeftShowsCorrectTime(): void
     {
-        $formatter = new class($this->output, 12) extends ProgressBarFormatter {
+        $formatter = new class ($this->output, 12) extends ProgressBarFormatter {
             protected function getSecondsRemaining(int $progress, int $maxSteps): float
             {
                 return -1;
@@ -107,7 +115,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressWithVeryLongTimeLeftShowsCorrectTime(): void
     {
-        $formatter = new class($this->output, 12) extends ProgressBarFormatter {
+        $formatter = new class ($this->output, 12) extends ProgressBarFormatter {
             protected function getSecondsRemaining(int $progress, int $maxSteps): float
             {
                 return 172800;

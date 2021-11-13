@@ -23,7 +23,7 @@ final class DotEnvBootstrapper implements IBootstrapper
     /**
      * @param string $envPath The path to the .env file
      */
-    public function __construct(private string $envPath)
+    public function __construct(private readonly string $envPath)
     {
     }
 

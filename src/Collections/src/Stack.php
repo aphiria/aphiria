@@ -19,10 +19,12 @@ use Traversable;
 
 /**
  * Defines a stack
+ *
+ * @template T
  */
 class Stack implements Countable, IteratorAggregate
 {
-    /** @var list<mixed> The values of the stack */
+    /** @var list<T> The values of the stack */
     protected array $values = [];
 
     /**
@@ -36,7 +38,7 @@ class Stack implements Countable, IteratorAggregate
     /**
      * Gets whether or not the value exists
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
     public function containsValue(mixed $value): bool
@@ -63,7 +65,7 @@ class Stack implements Countable, IteratorAggregate
     /**
      * Peeks at the value at the top of the stack
      *
-     * @return mixed The value at the top of the stack if one exists, otherwise null
+     * @return T|null The value at the top of the stack if one exists, otherwise null
      */
     public function peek(): mixed
     {
@@ -73,7 +75,7 @@ class Stack implements Countable, IteratorAggregate
     /**
      * Pops a value off of the stack
      *
-     * @return mixed The popped value if one exists, otherwise null
+     * @return T|null The popped value if one exists, otherwise null
      */
     public function pop(): mixed
     {
@@ -87,18 +89,17 @@ class Stack implements Countable, IteratorAggregate
     /**
      * Pushes a value onto the stack
      *
-     * @param mixed $value The value to push
+     * @param T $value The value to push
      */
     public function push(mixed $value): void
     {
-        /** @psalm-suppress PropertyTypeCoercion The is in fact a list of values */
         \array_unshift($this->values, $value);
     }
 
     /**
      * Gets all of the values as an array
      *
-     * @return list<mixed> All of the values
+     * @return list<T> All of the values
      */
     public function toArray(): array
     {

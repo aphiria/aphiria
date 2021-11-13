@@ -71,7 +71,7 @@ class ObjectConstraintsTest extends TestCase
     public function testGettingClassReturnsOneSetInConstructor(): void
     {
         $objectConstraints = new ObjectConstraints(self::class, [], []);
-        $this->assertSame(self::class, $objectConstraints->getClassName());
+        $this->assertSame(self::class, $objectConstraints->className);
     }
 
     public function testGettingMethodConstraintsForMethodWithoutAnyReturnsEmptyArray(): void

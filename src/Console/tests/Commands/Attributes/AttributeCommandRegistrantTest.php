@@ -15,9 +15,9 @@ namespace Aphiria\Console\Tests\Commands\Attributes;
 use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Input;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Tests\Commands\Attributes\Mocks\CommandHandlerWithAllPropertiesSet;
 use Aphiria\Console\Tests\Commands\Attributes\Mocks\CommandHandlerWithNonCommandAttribute;
@@ -29,7 +29,7 @@ class AttributeCommandRegistrantTest extends TestCase
 {
     private AttributeCommandRegistrant $registrant;
     private CommandRegistry $commands;
-    private ITypeFinder|MockObject $typeFinder;
+    private ITypeFinder&MockObject $typeFinder;
 
     protected function setUp(): void
     {
@@ -40,7 +40,7 @@ class AttributeCommandRegistrantTest extends TestCase
 
     public function testCommandHandlersWithNoCommandAttributesAreNotRegistered(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             /**
              * @inheritdoc
              *
@@ -87,7 +87,7 @@ class AttributeCommandRegistrantTest extends TestCase
         $this->assertCount(1, $command->arguments);
         $arg1 = $command->arguments[0];
         $this->assertSame('arg1', $arg1->name);
-        $this->assertSame(ArgumentTypes::REQUIRED, $arg1->type);
+        $this->assertSame([ArgumentType::Required], $arg1->type);
         $this->assertSame('arg1 description', $arg1->description);
         $this->assertSame('arg1 value', $arg1->defaultValue);
 
@@ -96,7 +96,7 @@ class AttributeCommandRegistrantTest extends TestCase
         $opt1 = $command->options[0];
         $this->assertSame('opt1', $opt1->name);
         $this->assertSame('o', $opt1->shortName);
-        $this->assertSame(OptionTypes::REQUIRED_VALUE, $opt1->type);
+        $this->assertSame([OptionType::RequiredValue], $opt1->type);
         $this->assertSame('opt1 description', $opt1->description);
         $this->assertSame('opt1 value', $opt1->defaultValue);
     }

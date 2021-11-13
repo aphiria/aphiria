@@ -29,25 +29,28 @@ use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use Aphiria\Validation\Validator;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class ValidationBinderTest extends TestCase
 {
-    private IContainer|MockObject $container;
+    private IContainer&MockInterface $container;
     private ValidationBinder $binder;
     private ?string $currEnvironment;
 
     protected function setUp(): void
     {
         $this->binder = new ValidationBinder();
-        $this->container = $this->createMock(IContainer::class);
+        $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = \getenv('APP_ENV') ?: null;
     }
 
     protected function tearDown(): void
     {
+        Mockery::close();
+
         // Restore the environment name
         if ($this->currEnvironment === null) {
             \putenv('APP_ENV=');
@@ -60,8 +63,8 @@ class ValidationBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, $this->isInstanceOf(IErrorMessageInterpolator::class)],
-            [AttributeObjectConstraintsRegistrant::class, $this->isInstanceOf(AttributeObjectConstraintsRegistrant::class)]
+            [IErrorMessageInterpolator::class, IErrorMessageInterpolator::class],
+            [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class]
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -73,7 +76,9 @@ class ValidationBinderTest extends TestCase
         // Basically just ensuring we cover the production case in this test
         \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->setUpContainerMock();
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+        ]);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -81,16 +86,18 @@ class ValidationBinderTest extends TestCase
 
     public function testCustomErrorMessageRegistriesAreResolved(): void
     {
-        $errorMessageTemplates = $this->createMock(IErrorMessageTemplateRegistry::class);
+        $errorMessageTemplates = Mockery::mock(IErrorMessageTemplateRegistry::class);
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
             'type' => $errorMessageTemplates::class
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->setUpContainerMock();
-        $this->container->method('resolve')
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+        ]);
+        $this->container->shouldReceive('resolve')
             ->with($errorMessageTemplates::class)
-            ->willReturn($errorMessageTemplates);
+            ->andReturn($errorMessageTemplates);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -103,7 +110,9 @@ class ValidationBinderTest extends TestCase
             'type' => DefaultErrorMessageTemplateRegistry::class
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->setUpContainerMock();
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+        ]);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -113,7 +122,7 @@ class ValidationBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, $this->isInstanceOf(StringReplaceErrorMessageInterpolator::class)]
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -129,7 +138,12 @@ class ValidationBinderTest extends TestCase
             'type' => self::class
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->setUpContainerMock();
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+        ]);
+        $this->container->shouldReceive('resolve')
+            ->with(self::class)
+            ->andReturn($this);
         $this->binder->bind($this->container);
     }
 
@@ -153,7 +167,7 @@ class ValidationBinderTest extends TestCase
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, $this->isInstanceOf(IcuFormatErrorMessageInterpolator::class)]
+            [IErrorMessageInterpolator::class, IcuFormatErrorMessageInterpolator::class]
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -169,6 +183,9 @@ class ValidationBinderTest extends TestCase
             'type' => 'foo'
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        $this->setUpContainerMock([
+            [IErrorMessageInterpolator::class, 'foo']
+        ]);
         $this->binder->bind($this->container);
     }
 
@@ -200,17 +217,20 @@ class ValidationBinderTest extends TestCase
     private function setUpContainerMock(array $additionalParameters = []): void
     {
         $parameters = [
-            [ObjectConstraintsRegistry::class, $this->isInstanceOf(ObjectConstraintsRegistry::class)],
-            [[IValidator::class, Validator::class], $this->isInstanceOf(Validator::class)],
-            [IObjectConstraintsRegistryCache::class, $this->isInstanceOf(FileObjectConstraintsRegistryCache::class)],
-            [ObjectConstraintsRegistrantCollection::class, $this->isInstanceOf(ObjectConstraintsRegistrantCollection::class)]
+            [ObjectConstraintsRegistry::class, ObjectConstraintsRegistry::class],
+            [[IValidator::class, Validator::class], Validator::class],
+            [IObjectConstraintsRegistryCache::class, FileObjectConstraintsRegistryCache::class],
+            [ObjectConstraintsRegistrantCollection::class, ObjectConstraintsRegistrantCollection::class],
+            [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class]
         ];
 
         foreach ($additionalParameters as $additionalParameter) {
             $parameters[] = $additionalParameter;
         }
 
-        $this->container->method('bindInstance')
-            ->withConsecutive(...$parameters);
+        foreach ($parameters as $parameter) {
+            $this->container->shouldReceive('bindInstance')
+                ->with($parameter[0], Mockery::type($parameter[1]));
+        }
     }
 }

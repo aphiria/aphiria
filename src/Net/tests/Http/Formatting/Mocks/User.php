@@ -17,38 +17,11 @@ namespace Aphiria\Net\Tests\Http\Formatting\Mocks;
  */
 class User
 {
-    /** @var int The user's ID */
-    private int $id;
-    /** @var string The user's email address */
-    private string $email;
-
     /**
      * @param int $id The user's ID
      * @param string $email The user's email address
      */
-    public function __construct(int $id, string $email)
+    public function __construct(public readonly int $id, public readonly string $email)
     {
-        $this->id = $id;
-        $this->email = $email;
-    }
-
-    /**
-     * Gets the user's email address
-     *
-     * @return string The user's email address
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * Gets the user's ID
-     *
-     * @return int The user's ID
-     */
-    public function getId(): int
-    {
-        return $this->id;
     }
 }

@@ -33,7 +33,7 @@ class ValidationComponentTest extends TestCase
     {
         $this->container = new Container();
         $this->container->bindInstance(ObjectConstraintsRegistry::class, $this->objectConstraints = new ObjectConstraintsRegistry());
-        $this->objectConstraintsRegistrants = new class() extends ObjectConstraintsRegistrantCollection {
+        $this->objectConstraintsRegistrants = new class () extends ObjectConstraintsRegistrantCollection {
             public function getAll(): array
             {
                 return $this->registrants;
@@ -45,7 +45,7 @@ class ValidationComponentTest extends TestCase
 
     public function testBuildRegistersObjectConstraintsRegisteredInCallbacks(): void
     {
-        $class = new class() {
+        $class = new class () {
         };
         $this->validationComponent->withObjectConstraints(
             fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders) => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())

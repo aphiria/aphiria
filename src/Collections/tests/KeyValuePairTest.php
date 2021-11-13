@@ -20,12 +20,12 @@ class KeyValuePairTest extends TestCase
     public function testGettingKey(): void
     {
         $kvp = new KeyValuePair('foo', 'bar');
-        $this->assertSame('foo', $kvp->getKey());
+        $this->assertSame('foo', $kvp->key);
     }
 
     public function testGettingValue(): void
     {
         $kvp = new KeyValuePair('foo', 'bar');
-        $this->assertSame('bar', $kvp->getValue());
+        $this->assertSame('bar', $kvp->value);
     }
 }

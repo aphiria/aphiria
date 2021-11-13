@@ -22,7 +22,7 @@ use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\Request;
@@ -36,7 +36,7 @@ use PHPUnit\Framework\TestCase;
 class NegotiatedResponseFactoryTest extends TestCase
 {
     private NegotiatedResponseFactory $factory;
-    private IContentNegotiator|MockObject $contentNegotiator;
+    private IContentNegotiator&MockObject $contentNegotiator;
 
     protected function setUp(): void
     {
@@ -48,7 +48,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     {
         $request = $this->createRequest('http://foo.com');
         $rawBody = [new User(123, 'foo@bar.com'), new User(456, 'bar@baz.com')];
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
@@ -70,7 +70,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseFromEmptyArrayWillSetStillNegotiateContent(): void
     {
         $request = $this->createRequest('http://foo.com');
-        /** @var IMediaTypeFormatter|MockObject $mediaTypeFormatter */
+        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
@@ -141,10 +141,22 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->assertSame('en-US', $response->getHeaders()->getFirst('Content-Language'));
     }
 
+    public function testCreatingResponseWithEnumStatusCodeSetsStatusCodeCorrectly(): void
+    {
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), HttpStatusCode::Ok);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+    }
+
+    public function testCreatingResponseWithIntStatusCodeSetsStatusCodeCorrectly(): void
+    {
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+    }
+
     public function testCreatingResponseUsesStatusCode(): void
     {
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202);
-        $this->assertSame(202, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Accepted, $response->getStatusCode());
     }
 
     public function testCreatingResponseWillSetContentTypeResponseHeaderFromMediaTypeFormatterMediaType(): void
@@ -210,8 +222,8 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $response = $ex->getResponse();
-            $this->assertSame(HttpStatusCodes::NOT_ACCEPTABLE, $response->getStatusCode());
+            $response = $ex->response;
+            $this->assertSame(HttpStatusCode::NotAcceptable, $response->getStatusCode());
             $this->assertSame('application/json', $response->getHeaders()->getFirst('Content-Type'));
             $this->assertSame('["foo\/bar"]', (string)$response->getBody());
         }
@@ -236,7 +248,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $this->factory->createResponse($request, 200, null, $rawBody);
             $this->fail('Expected exception to be thrown');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCodes::INTERNAL_SERVER_ERROR, $ex->getResponse()->getStatusCode());
+            $this->assertSame(HttpStatusCode::InternalServerError, $ex->response->getStatusCode());
         }
     }
 

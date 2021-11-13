@@ -49,12 +49,12 @@ class FileRouteCacheTest extends TestCase
 
     public function testGetOnHitReturnsRoutesWithAction(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
         };
-        $middleware = new class() {
+        $middleware = new class () {
         };
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $routes = new RouteCollection([

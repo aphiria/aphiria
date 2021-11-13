@@ -20,34 +20,24 @@ use Exception;
 class HttpException extends Exception
 {
     /** @var IResponse The response */
-    private IResponse $response;
+    public readonly IResponse $response;
 
     /**
      * @inheritdoc
-     * @param int|IResponse $statusCodeOrResponse The status code or fully-formed response
+     * @param HttpStatusCode|int|IResponse $statusCodeOrResponse The status code or fully-formed response
      */
     public function __construct(
-        int|IResponse $statusCodeOrResponse,
+        HttpStatusCode|int|IResponse $statusCodeOrResponse,
         string $message = '',
         int $code = 0,
         Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
 
-        if (\is_int($statusCodeOrResponse)) {
+        if ($statusCodeOrResponse instanceof HttpStatusCode || \is_int($statusCodeOrResponse)) {
             $this->response = new Response($statusCodeOrResponse);
         } else {
             $this->response = $statusCodeOrResponse;
         }
-    }
-
-    /**
-     * Gets the response
-     *
-     * @return IResponse The response
-     */
-    public function getResponse(): IResponse
-    {
-        return $this->response;
     }
 }

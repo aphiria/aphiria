@@ -25,35 +25,41 @@ class ContentTypeHeaderValueTest extends TestCase
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new ContentTypeHeaderValue('foo/bar', $parameters);
-        $this->assertSame('utf-8', $value->getCharset());
+        $this->assertSame('utf-8', $value->charset);
     }
 
     public function testGettingMediaTypeReturnsOneSetInConstructor(): void
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('charset', 'utf-8')]);
         $value = new ContentTypeHeaderValue('foo/bar', $parameters);
-        $this->assertSame('foo/bar', $value->getMediaType());
+        $this->assertSame('foo/bar', $value->mediaType);
     }
 
     public function testGettingSubTypeReturnsCorrectSubtType(): void
     {
-        $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
-        $this->assertSame('bar', $value->getSubType());
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new ContentTypeHeaderValue('foo/bar', $parameters);
+        $this->assertSame('bar', $value->subType);
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
-        $value = new ContentTypeHeaderValue('foo/bar', $this->createMock(IImmutableDictionary::class));
-        $this->assertSame('foo', $value->getType());
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new ContentTypeHeaderValue('foo/bar', $parameters);
+        $this->assertSame('foo', $value->type);
     }
 
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
-        $value = new ContentTypeHeaderValue('application/foo+json', $this->createMock(IImmutableDictionary::class));
-        $this->assertSame('application', $value->getType());
-        $this->assertSame('foo+json', $value->getSubType());
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        $value = new ContentTypeHeaderValue('application/foo+json', $parameters);
+        $this->assertSame('application', $value->type);
+        $this->assertSame('foo+json', $value->subType);
         $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
-        $this->assertSame('json', $value->getSuffix());
+        $this->assertSame('json', $value->suffix);
     }
 
     public function incorrectlyFormattedMediaTypeProvider(): array
@@ -72,6 +78,8 @@ class ContentTypeHeaderValueTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
-        new ContentTypeHeaderValue($incorrectlyFormattedMediaType, $this->createMock(IImmutableDictionary::class));
+        /** @var IImmutableDictionary<string, string|null> $parameters */
+        $parameters = $this->createMock(IImmutableDictionary::class);
+        new ContentTypeHeaderValue($incorrectlyFormattedMediaType, $parameters);
     }
 }

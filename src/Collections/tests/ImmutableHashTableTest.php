@@ -30,6 +30,7 @@ class ImmutableHashTableTest extends TestCase
 
     public function testContainsKey(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $this->assertFalse($hashTable->containsKey('baz'));
         $this->assertTrue($hashTable->containsKey('foo'));
@@ -43,6 +44,7 @@ class ImmutableHashTableTest extends TestCase
 
     public function testContainsValue(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $this->assertFalse($hashTable->containsValue('baz'));
         $this->assertTrue($hashTable->containsValue('bar'));
@@ -72,7 +74,7 @@ class ImmutableHashTableTest extends TestCase
         $kvp1 = new KeyValuePair(new FakeObject(), 'foo');
         $kvp2 = new KeyValuePair(new FakeObject(), 'bar');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
-        $this->assertEquals([$kvp1->getKey(), $kvp2->getKey()], $hashTable->getKeys());
+        $this->assertEquals([$kvp1->key, $kvp2->key], $hashTable->getKeys());
     }
 
     public function testGettingValuesReturnsListOfValues(): void
@@ -80,7 +82,7 @@ class ImmutableHashTableTest extends TestCase
         $kvp1 = new KeyValuePair('foo', 'bar');
         $kvp2 = new KeyValuePair('baz', 'blah');
         $hashTable = new ImmutableHashTable([$kvp1, $kvp2]);
-        $this->assertEquals([$kvp1->getValue(), $kvp2->getValue()], $hashTable->getValues());
+        $this->assertEquals([$kvp1->value, $kvp2->value], $hashTable->getValues());
     }
 
     public function testIssetReturnsWhetherOrNotKeyIsSet(): void
@@ -134,6 +136,7 @@ class ImmutableHashTableTest extends TestCase
 
     public function testTryGetReturnsTrueIfKeyExistsAndFalseIfValueDoesNotExist(): void
     {
+        /** @var ImmutableHashTable<string, string> $hashTable */
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $value = null;
         $this->assertFalse($hashTable->tryGet('baz', $value));

@@ -30,9 +30,9 @@ final class ValidationContext
      * @throws CircularDependencyException Thrown if a circular dependency was detected
      */
     public function __construct(
-        private mixed $value,
-        private ?string $propertyName = null,
-        private ?string $methodName = null,
+        public readonly mixed $value,
+        public readonly ?string $propertyName = null,
+        public readonly ?string $methodName = null,
         private ?ValidationContext $parentContext = null
     ) {
         if ($this->parentContext !== null) {
@@ -88,30 +88,10 @@ final class ValidationContext
         $errors = [];
 
         foreach ($this->getConstraintViolations() as $violation) {
-            $errors[] = $violation->getErrorMessage();
+            $errors[] = $violation->errorMessage;
         }
 
         return $errors;
-    }
-
-    /**
-     * Gets the name of the method being validated
-     *
-     * @return string|null The name of the method being validated, or null if not a method
-     */
-    public function getMethodName(): ?string
-    {
-        return $this->methodName;
-    }
-
-    /**
-     * Gets the name of the property being validated
-     *
-     * @return string|null The name of the property being validated, or null if not a property
-     */
-    public function getPropertyName(): ?string
-    {
-        return $this->propertyName;
     }
 
     /**
@@ -126,16 +106,6 @@ final class ValidationContext
         }
 
         return $this->parentContext->getRootValue();
-    }
-
-    /**
-     * Gets the value being validated
-     *
-     * @return mixed The value being validated
-     */
-    public function getValue(): mixed
-    {
-        return $this->value;
     }
 
     /**

@@ -24,53 +24,53 @@ class BinderMetadataTest extends TestCase
 {
     public function testGetBinderReturnsSetBinder(): void
     {
-        $expectedBinder = new class() extends Binder {
+        $expectedBinder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
         $binderMetadata = new BinderMetadata($expectedBinder, [], []);
-        $this->assertSame($expectedBinder, $binderMetadata->getBinder());
+        $this->assertSame($expectedBinder, $binderMetadata->binder);
     }
 
     public function testGetBoundInterfacesReturnsSetBoundInterfaces(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $boundInterface1 = new class() {
+        $boundInterface1 = new class () {
         };
-        $boundInterface2 = new class() {
+        $boundInterface2 = new class () {
         };
         $expectedBoundInterfaces = [
             new BoundInterface($boundInterface1::class, new UniversalContext()),
             new BoundInterface($boundInterface2::class, new UniversalContext())
         ];
         $binderMetadata = new BinderMetadata($binder, $expectedBoundInterfaces, []);
-        $this->assertSame($expectedBoundInterfaces, $binderMetadata->getBoundInterfaces());
+        $this->assertSame($expectedBoundInterfaces, $binderMetadata->boundInterfaces);
     }
 
     public function testGetBoundInterfacesReturnsSetResolvedInterfaces(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $resolvedInterface1 = new class() {
+        $resolvedInterface1 = new class () {
         };
-        $resolvedInterface2 = new class() {
+        $resolvedInterface2 = new class () {
         };
         $expectedResolvedInterfaces = [
             new ResolvedInterface($resolvedInterface1::class, new UniversalContext()),
             new ResolvedInterface($resolvedInterface2::class, new UniversalContext())
         ];
         $binderMetadata = new BinderMetadata($binder, [], $expectedResolvedInterfaces);
-        $this->assertSame($expectedResolvedInterfaces, $binderMetadata->getResolvedInterfaces());
+        $this->assertSame($expectedResolvedInterfaces, $binderMetadata->resolvedInterfaces);
     }
 }

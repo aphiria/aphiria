@@ -52,7 +52,7 @@ class SilentOutputTest extends TestCase
 
     public function testWritingUsingUnderlyingMethodDoesNothing(): void
     {
-        $output = new class() extends SilentOutput {
+        $output = new class () extends SilentOutput {
             public function doWrite(string $message, bool $includeNewLine): void
             {
                 parent::doWrite($message, $includeNewLine);

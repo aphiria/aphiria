@@ -26,8 +26,8 @@ use Throwable;
 
 class GlobalExceptionHandlerTest extends TestCase
 {
-    private IExceptionRenderer|MockObject $exceptionRenderer;
-    private LoggerInterface|MockObject $logger;
+    private IExceptionRenderer&MockObject $exceptionRenderer;
+    private LoggerInterface&MockObject $logger;
     private LogLevelFactory $logLevelFactory;
     private GlobalExceptionHandler $globalExceptionHandler;
     private int $prevErrorReporting;
@@ -104,7 +104,7 @@ class GlobalExceptionHandlerTest extends TestCase
             ['type' => \E_CORE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1],
             ['type' => \E_COMPILE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1]
         ];
-        $globalExceptionHandler = new class($this->createMock(IExceptionRenderer::class)) extends GlobalExceptionHandler {
+        $globalExceptionHandler = new class ($this->createMock(IExceptionRenderer::class)) extends GlobalExceptionHandler {
             public ?Throwable $handledException = null;
 
             public function handleException(Throwable $ex): void

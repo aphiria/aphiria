@@ -23,12 +23,21 @@ Aphiria is a suite of small, decoupled PHP libraries that make up a REST API fra
 * Support for <a href="https://www.aphiria.com/docs/1.x/routing.html#route-attributes" target="_blank">route</a> and <a href="https://www.aphiria.com/docs/1.x/validation.html" target="_blank">validation</a> attributes
 
 ```php
-// Define a controller endpoint
+// Define some controller endpoints
+#[RouteGroup('/users')]
 class UserController extends Controller
 {
     public function __construct(private IUserService $users) {}
 
-    #[Get('/users/:id')]
+    #[Post('')]
+    public function createUser(User $user): IHttpResponse
+    {
+        $this->users->create($user);
+        
+        return $this->created("/users/{$user->id}", $user);
+    }
+
+    #[Get('/:id')]
     public function getById(int $id): User
     {
         return $this->users->getById($id);
@@ -39,6 +48,7 @@ class UserController extends Controller
 $container->bindInstance(IUserService::class, new UserService());
 
 // Run an integration test
+$this->post('/users', new User(1, 'Dave'));
 $this->assertParsedBodyEquals(new User(1, 'Dave'), $this->get('/users/1'));
 ```
 
@@ -58,7 +68,7 @@ Full documentation is available at <a href="https://www.aphiria.com" target="_bl
 
 ## Requirements
 
-* PHP 8.0
+* PHP 8.1
 
 ## Contributing
 

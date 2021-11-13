@@ -18,13 +18,15 @@ use RuntimeException;
 
 /**
  * Defines the interface for immutable sets to implement
+ *
+ * @template T
  */
 interface IImmutableSet extends Countable, IteratorAggregate
 {
     /**
      * Gets whether or not the value exists
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return bool True if the value exists, otherwise false
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
@@ -33,7 +35,7 @@ interface IImmutableSet extends Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return list<mixed> All of the values
+     * @return list<T> All of the values
      */
     public function toArray(): array;
 }

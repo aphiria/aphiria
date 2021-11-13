@@ -29,7 +29,7 @@ class ApplicationClient implements IHttpClient
      * @param IRequestHandler$app The application
      * @param IContainer $container The DI container
      */
-    public function __construct(protected IRequestHandler $app, private IContainer $container)
+    public function __construct(protected readonly IRequestHandler $app, private readonly IContainer $container)
     {
     }
 

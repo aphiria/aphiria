@@ -29,10 +29,10 @@ final class Between extends ConstraintAttribute
      * @param bool $maxIsInclusive Whether or not the max is inclusive
      */
     public function __construct(
-        public int|float $min,
-        public int|float $max,
-        public bool $minIsInclusive = true,
-        public bool $maxIsInclusive = true,
+        public readonly int|float $min,
+        public readonly int|float $max,
+        public readonly bool $minIsInclusive = true,
+        public readonly bool $maxIsInclusive = true,
         string $errorMessageId = null
     ) {
         parent::__construct($errorMessageId);

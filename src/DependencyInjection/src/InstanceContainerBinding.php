@@ -14,25 +14,17 @@ namespace Aphiria\DependencyInjection;
 
 /**
  * Defines an instance container binding
+ * @template T of object
+ * @implements IContainerBinding<T>
  * @internal
  */
 class InstanceContainerBinding implements IContainerBinding
 {
     /**
-     * @param object $instance The instance
+     * @param T $instance The instance
      */
-    public function __construct(private object $instance)
+    public function __construct(public readonly object $instance)
     {
-    }
-
-    /**
-     * Gets the instance
-     *
-     * @return object The instance
-     */
-    public function getInstance(): object
-    {
-        return $this->instance;
     }
 
     /**

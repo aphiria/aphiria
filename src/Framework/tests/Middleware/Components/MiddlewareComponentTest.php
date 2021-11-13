@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 class MiddlewareComponentTest extends TestCase
 {
     private MiddlewareComponent $middlewareComponent;
-    private IServiceResolver|MockObject $dependencyResolver;
+    private IServiceResolver&MockObject $dependencyResolver;
 
     protected function setUp(): void
     {
@@ -39,7 +39,7 @@ class MiddlewareComponentTest extends TestCase
 
     public function testBuildWithAttributeMiddlewareSetsAttributes(): void
     {
-        $expectedMiddleware = new class($this->createMock(IResponse::class)) extends ParameterizedMiddleware {
+        $expectedMiddleware = new class ($this->createMock(IResponse::class)) extends ParameterizedMiddleware {
             private IResponse $expectedResponse;
 
             public function __construct(IResponse $expectedResponse)

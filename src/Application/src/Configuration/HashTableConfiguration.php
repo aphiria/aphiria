@@ -24,7 +24,7 @@ class HashTableConfiguration implements IConfiguration
      * @param array<string, mixed> $hashTable The hash table that backs the configuration
      * @param string $pathDelimiter The delimiter to use for nested path segments
      */
-    public function __construct(private array $hashTable, private string $pathDelimiter = '.')
+    public function __construct(private readonly array $hashTable, private readonly string $pathDelimiter = '.')
     {
     }
 
@@ -93,7 +93,10 @@ class HashTableConfiguration implements IConfiguration
 
         foreach ($explodedPath as $i => $pathPart) {
             if (!isset($value[$pathPart])) {
-                $fullPathToThisPart = \implode($this->pathDelimiter, \array_slice($explodedPath, 0, $i + 1));
+                $fullPathToThisPart = \implode(
+                    $this->pathDelimiter,
+                    \array_map(static fn (mixed $value) => (string)$value, \array_slice($explodedPath, 0, $i + 1))
+                );
 
                 throw new MissingConfigurationValueException($fullPathToThisPart);
             }

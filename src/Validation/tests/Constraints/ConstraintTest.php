@@ -21,7 +21,7 @@ class ConstraintTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->constraint = new class('foo') extends Constraint {
+        $this->constraint = new class ('foo') extends Constraint {
             public function __construct(string $errorMessageId)
             {
                 parent::__construct($errorMessageId);
@@ -49,7 +49,7 @@ class ConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholderForSerializableObjectsUsesSerializedValue(): void
     {
-        $value = new class() {
+        $value = new class () {
             public function __toString(): string
             {
                 return 'foo';
@@ -60,7 +60,7 @@ class ConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholderForUnserializableObjectsUsesClassName(): void
     {
-        $value = new class() {
+        $value = new class () {
         };
         $this->assertEquals(
             ['value' => $value::class . ' object'],

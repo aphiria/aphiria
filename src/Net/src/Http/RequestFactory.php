@@ -74,14 +74,16 @@ class RequestFactory
     ];
     /** @var array<string, true> The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
+    /** @var array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names */
+    protected readonly array $trustedHeaderNames;
 
     /**
      * @param list<string> $trustedProxyIPAddresses The list of trusted proxy IP addresses
      * @param array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names
      */
-    public function __construct(protected array $trustedProxyIPAddresses = [], protected array $trustedHeaderNames = [])
+    public function __construct(protected readonly array $trustedProxyIPAddresses = [], array $trustedHeaderNames = [])
     {
-        $this->trustedHeaderNames = \array_merge(self::$defaultTrustedHeaderNames, $trustedHeaderNames);
+        $this->trustedHeaderNames = [...self::$defaultTrustedHeaderNames, ...$trustedHeaderNames];
     }
 
     /**
@@ -145,11 +147,12 @@ class RequestFactory
      * Creates properties
      *
      * @param array<string, mixed> $server The global server array
-     * @return IDictionary The list of properties
+     * @return IDictionary<string, mixed> The list of properties
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     protected function createProperties(array $server): IDictionary
     {
+        /** @var HashTable<string, mixed> $properties */
         $properties = new HashTable();
 
         // Set the client IP address as a property

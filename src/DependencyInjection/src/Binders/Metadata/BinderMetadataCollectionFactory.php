@@ -21,14 +21,16 @@ use Aphiria\DependencyInjection\IContainer;
 final class BinderMetadataCollectionFactory
 {
     /** @var IBinderMetadataCollector The collector of binder metadata */
-    private IBinderMetadataCollector $binderMetadataCollector;
+    private readonly IBinderMetadataCollector $binderMetadataCollector;
 
     /**
      * @param IContainer $container The container to use when creating the collection
      * @param IBinderMetadataCollector|null $binderMetadataCollector The collector of binder metadata
      */
-    public function __construct(private IContainer $container, IBinderMetadataCollector $binderMetadataCollector = null)
-    {
+    public function __construct(
+        private readonly IContainer $container,
+        IBinderMetadataCollector $binderMetadataCollector = null
+    ) {
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
 
@@ -75,13 +77,13 @@ final class BinderMetadataCollectionFactory
         array &$failedInterfacesToBinders,
         FailedBinderMetadataCollectionException $ex
     ): void {
-        $interface = $ex->getFailedInterface();
+        $interface = $ex->failedInterface;
 
         if (!isset($failedInterfacesToBinders[$interface])) {
             $failedInterfacesToBinders[$interface] = [];
         }
 
-        $failedInterfacesToBinders[$interface][] = $ex->getIncompleteBinderMetadata()->getBinder();
+        $failedInterfacesToBinders[$interface][] = $ex->incompleteBinderMetadata->binder;
     }
 
     /**
@@ -135,13 +137,13 @@ final class BinderMetadataCollectionFactory
                     self::addFailedResolutionToMap($failedInterfacesToBinders, $ex);
 
                     // Remove any interfaces that did get resolved successfully prior to the exception
-                    foreach ($ex->getIncompleteBinderMetadata()->getResolvedInterfaces() as $resolvedInterface) {
+                    foreach ($ex->incompleteBinderMetadata->resolvedInterfaces as $resolvedInterface) {
                         // Check if this interface was successfully resolved before removing it from the map
-                        if ($resolvedInterface->getInterface() === $ex->getFailedInterface()) {
+                        if ($resolvedInterface->interface === $ex->failedInterface) {
                             continue;
                         }
 
-                        self::removeFailedResolutionFromMap($failedInterfacesToBinders, $resolvedInterface->getInterface(), $i);
+                        self::removeFailedResolutionFromMap($failedInterfacesToBinders, $resolvedInterface->interface, $i);
                     }
                 }
             }

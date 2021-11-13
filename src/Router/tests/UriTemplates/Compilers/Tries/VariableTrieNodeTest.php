@@ -43,7 +43,7 @@ class VariableTrieNodeTest extends TestCase
 
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -166,7 +166,7 @@ class VariableTrieNodeTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }
@@ -185,9 +185,9 @@ class VariableTrieNodeTest extends TestCase
     /**
      * Creates a mock node for use in tests
      *
-     * @return TrieNode|MockObject The mock node
+     * @return TrieNode&MockObject The mock node
      */
-    private function createMockNode(): TrieNode|MockObject
+    private function createMockNode(): TrieNode&MockObject
     {
         return $this->getMockForAbstractClass(TrieNode::class, [], '', false);
     }

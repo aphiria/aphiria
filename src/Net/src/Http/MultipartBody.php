@@ -27,7 +27,7 @@ class MultipartBody extends StreamBody
     use ExtensionMethods;
 
     /** @var string The boundary string */
-    private string $boundary;
+    public readonly string $boundary;
 
     /**
      * @param list<MultipartBodyPart> $parts The list of multipart body parts
@@ -35,7 +35,7 @@ class MultipartBody extends StreamBody
      * @throws RuntimeException Thrown if the boundary could not be generated
      * @throws InvalidArgumentException Thrown if the internal stream could not be generated
      */
-    public function __construct(private array $parts, string $boundary = null)
+    public function __construct(public readonly array $parts, string $boundary = null)
     {
         $this->boundary = $boundary ?? self::createDefaultBoundary();
         $stream = new MultiStream();
@@ -49,13 +49,13 @@ class MultipartBody extends StreamBody
                 $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}"));
             }
 
-            if (\count($this->parts[$i]->getHeaders()) > 0) {
-                $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->getHeaders()}"));
+            if (\count($this->parts[$i]->headers) > 0) {
+                $stream->addStream($this->createStreamFromString("\r\n{$this->parts[$i]->headers}"));
             }
 
             $stream->addStream($this->createStreamFromString("\r\n\r\n"));
 
-            if (($body = $this->parts[$i]->getBody()) !== null) {
+            if (($body = $this->parts[$i]->body) !== null) {
                 $stream->addStream($body->readAsStream());
             }
         }
@@ -64,26 +64,6 @@ class MultipartBody extends StreamBody
         $stream->addStream($this->createStreamFromString("\r\n--{$this->boundary}--"));
 
         parent::__construct($stream);
-    }
-
-    /**
-     * Gets the boundary string
-     *
-     * @return string The boundary string
-     */
-    public function getBoundary(): string
-    {
-        return $this->boundary;
-    }
-
-    /**
-     * Gets the multipart body parts that make up the body
-     *
-     * @return list<MultipartBodyPart> The list of body parts
-     */
-    public function getParts(): array
-    {
-        return $this->parts;
     }
 
     /**

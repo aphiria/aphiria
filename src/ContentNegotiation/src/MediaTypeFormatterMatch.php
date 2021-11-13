@@ -26,39 +26,9 @@ final class MediaTypeFormatterMatch
      * @param MediaTypeHeaderValue $mediaTypeHeaderValue The matched media type header value, eg 'Accept: application/json'
      */
     public function __construct(
-        private IMediaTypeFormatter $formatter,
-        private string $mediaType,
-        private MediaTypeHeaderValue $mediaTypeHeaderValue
+        public readonly IMediaTypeFormatter $formatter,
+        public readonly string $mediaType,
+        public readonly MediaTypeHeaderValue $mediaTypeHeaderValue
     ) {
-    }
-
-    /**
-     * Gets the matched media type formatter
-     *
-     * @return IMediaTypeFormatter The matched media type formatter
-     */
-    public function getFormatter(): IMediaTypeFormatter
-    {
-        return $this->formatter;
-    }
-
-    /**
-     * Gets the matched media type
-     *
-     * @return string The matched media type
-     */
-    public function getMediaType(): string
-    {
-        return $this->mediaType;
-    }
-
-    /**
-     * Gets the matched media type header value
-     *
-     * @return MediaTypeHeaderValue The matched media type header value
-     */
-    public function getMediaTypeHeaderValue(): MediaTypeHeaderValue
-    {
-        return $this->mediaTypeHeaderValue;
     }
 }

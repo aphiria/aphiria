@@ -27,6 +27,35 @@ class HeadersTest extends TestCase
         $this->headers = new Headers();
     }
 
+    public function getInvalidHeaderValues(): array
+    {
+        return [
+            ['foo', $this],
+            ['foo', [$this]],
+            ['foo', ['bar', $this]]
+        ];
+    }
+
+    /**
+     * @dataProvider getInvalidHeaderValues
+     * @param string $name The name of the header value to test
+     * @param mixed $value The header value to test
+     */
+    public function testAddingInvalidValueThrowsException(string $name, mixed $value): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Header values can only be strings, numbers, or lists of strings or numbers');
+        $this->headers->add($name, $value);
+    }
+
+    public function testAddingRangeOfInvalidValueThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Header values can only be strings, numbers, or lists of strings or numbers');
+        /** @psalm-suppress InvalidArgument Purposely testing invalid values */
+        $this->headers->addRange([new KeyValuePair('foo', $this)]);
+    }
+
     public function testAddingStringValue(): void
     {
         $this->headers->add('foo', 'bar');
@@ -147,16 +176,14 @@ class HeadersTest extends TestCase
         $this->headers->add('foo', 'bar');
         $actualValues = [];
 
-        /**
-         * @var int $key
-         * @var KeyValuePair $value
-         */
+        /** @var KeyValuePair $value */
         foreach ($this->headers->toArray() as $key => $value) {
             // Verify that the key is numeric, not associative
+            /** @psalm-suppress RedundantCondition We do not want to rely only on Psalm's type checking */
             $this->assertIsInt($key);
             $this->assertInstanceOf(KeyValuePair::class, $value);
             /** @psalm-suppress MixedArrayOffset We're purposely accessing mixed keys */
-            $actualValues[$value->getKey()] = $value->getValue();
+            $actualValues[$value->key] = $value->value;
         }
 
         $this->assertCount(1, $actualValues);
@@ -177,6 +204,7 @@ class HeadersTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('Value must be instance of %s', KeyValuePair::class));
+        /** @psalm-suppress InvalidArgument Purposely checking an invalid argument */
         $this->headers->addRange(['invalid KeyValuePair']);
     }
 }

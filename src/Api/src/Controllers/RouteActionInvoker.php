@@ -17,7 +17,7 @@ use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
@@ -26,7 +26,6 @@ use Closure;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
-use ReflectionMethod;
 
 /**
  * Defines the route action invoker
@@ -36,23 +35,22 @@ class RouteActionInvoker implements IRouteActionInvoker
     /** @const The name of the property to store the parsed body in */
     private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
     /** @var IResponseFactory The response factory */
-    private IResponseFactory $responseFactory;
+    private readonly IResponseFactory $responseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
-    private IControllerParameterResolver $controllerParameterResolver;
+    private readonly IControllerParameterResolver $controllerParameterResolver;
 
     /**
-     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
+     * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRequestBodyValidator|null $requestBodyValidator The validator for request bodies, or null if we aren't validating them
      * @param IResponseFactory|null $responseFactory The response factory
      * @param IControllerParameterResolver|null $controllerParameterResolver The controller parameter resolver to use
      */
     public function __construct(
-        IContentNegotiator $contentNegotiator = null,
-        private ?IRequestBodyValidator $requestBodyValidator = null,
+        IContentNegotiator $contentNegotiator = new ContentNegotiator(),
+        private readonly ?IRequestBodyValidator $requestBodyValidator = null,
         IResponseFactory $responseFactory = null,
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
-        $contentNegotiator ??= new ContentNegotiator();
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
     }
@@ -61,7 +59,7 @@ class RouteActionInvoker implements IRouteActionInvoker
      * @inheritdoc
      */
     public function invokeRouteAction(
-        callable $routeActionDelegate,
+        Closure $routeActionDelegate,
         IRequest $request,
         array $routeVariables
     ): IResponse {
@@ -69,11 +67,8 @@ class RouteActionInvoker implements IRouteActionInvoker
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
         } catch (ReflectionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::INTERNAL_SERVER_ERROR,
-                \sprintf(
-                    'Reflection failed for %s',
-                    self::getRouteActionDisplayName($routeActionDelegate)
-                ),
+                HttpStatusCode::InternalServerError,
+                'Failed to reflect controller',
                 0,
                 $ex
             );
@@ -103,22 +98,22 @@ class RouteActionInvoker implements IRouteActionInvoker
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
             throw new HttpException(
-                HttpStatusCodes::BAD_REQUEST,
-                'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
+                HttpStatusCode::BadRequest,
+                'Failed to invoke controller',
                 0,
                 $ex
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::UNSUPPORTED_MEDIA_TYPE,
-                'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
+                HttpStatusCode::UnsupportedMediaType,
+                'Failed to invoke controller',
                 0,
                 $ex
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
-                HttpStatusCodes::UNPROCESSABLE_ENTITY,
-                'Failed to invoke ' . self::getRouteActionDisplayName($routeActionDelegate),
+                HttpStatusCode::UnprocessableEntity,
+                'Failed to invoke controller',
                 0,
                 $ex
             );
@@ -133,13 +128,13 @@ class RouteActionInvoker implements IRouteActionInvoker
 
         // Handle void return types
         if ($actionResult === null) {
-            return new Response(HttpStatusCodes::NO_CONTENT);
+            return new Response(HttpStatusCode::NoContent);
         }
 
         // Attempt to create an OK response from the return value
         return $this->responseFactory->createResponse(
             $request,
-            HttpStatusCodes::OK,
+            HttpStatusCode::Ok,
             null,
             $actionResult
         );
@@ -149,36 +144,14 @@ class RouteActionInvoker implements IRouteActionInvoker
      * Reflects a route action delegate
      * Note: This is split out primarily for testability
      *
-     * @param callable $routeActionDelegate The route action delegate to reflect
+     * @param Closure $routeActionDelegate The route action delegate to reflect
      * @return ReflectionFunctionAbstract The reflected method/function
      * @throws ReflectionException Thrown if there was an error reflecting the delegate
+     * @internal
      */
-    protected function reflectRouteActionDelegate(callable $routeActionDelegate): ReflectionFunctionAbstract
+    protected function reflectRouteActionDelegate(Closure $routeActionDelegate): ReflectionFunctionAbstract
     {
-        if (\is_array($routeActionDelegate)) {
-            return new ReflectionMethod($routeActionDelegate[0], $routeActionDelegate[1]);
-        }
-
         /** @psalm-suppress ArgumentTypeCoercion Psalm is being a little strict here with what's allowed */
         return new ReflectionFunction($routeActionDelegate);
-    }
-
-    /**
-     * Gets the display name for a route action for use in exception messages
-     *
-     * @param callable $routeActionDelegate The route action delegate whose display name we want
-     * @return string The route action display name
-     */
-    private static function getRouteActionDisplayName(callable $routeActionDelegate): string
-    {
-        if (\is_array($routeActionDelegate)) {
-            if (\is_string($routeActionDelegate[0])) {
-                return $routeActionDelegate[0] . '::' . $routeActionDelegate[1];
-            }
-
-            return $routeActionDelegate[0]::class . '::' . $routeActionDelegate[1];
-        }
-
-        return Closure::class;
     }
 }

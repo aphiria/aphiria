@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Console\Exceptions;
 
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Closure;
 use Exception;
@@ -24,18 +24,17 @@ use Exception;
  */
 class ConsoleExceptionRenderer implements IExceptionRenderer
 {
-    /** @var IOutput The output to write to */
-    protected IOutput $output;
-    /** @var array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> The mapping of exception types to callbacks that write output and return status codes */
+    /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int> The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
     /**
-     * @param IOutput|null $output The output to write to
+     * @param IOutput $output The output to write to
      * @param bool $shouldExit Whether or not to exit after handling the exception
      */
-    public function __construct(IOutput $output = null, protected bool $shouldExit = true)
-    {
-        $this->output = $output ?? new ConsoleOutput();
+    public function __construct(
+        protected IOutput $output = new ConsoleOutput(),
+        protected readonly bool $shouldExit = true
+    ) {
     }
 
     /**
@@ -44,9 +43,9 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     public function render(Exception $ex): void
     {
         if (isset($this->outputWriters[$ex::class])) {
-            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCodes::FATAL;
+            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::Fatal;
         } else {
-            $statusCode  = StatusCodes::FATAL;
+            $statusCode  = StatusCode::Fatal;
             $this->output->writeln($this->getDefaultExceptionMessages($ex));
         }
 
@@ -61,7 +60,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers many writers that can use exceptions to write output and return status codes
      *
-     * @param array<class-string<Exception>, Closure(mixed, IOutput): void|Closure(mixed, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
+     * @param array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
      */
     public function registerManyOutputWriters(array $exceptionTypesToCallbacks): void
     {
@@ -74,7 +73,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      * Registers a callback that can use an exception to write output and return a status code
      *
      * @param class-string<Exception> $exceptionType The type of exception whose factory we're registering
-     * @param Closure(mixed, IOutput): void|Closure(mixed, IOutput): int $callback The callback that takes in an exception and output, and writes output/returns a status code
+     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The callback that takes in an exception and output, and writes output/returns a status code
      */
     public function registerOutputWriter(string $exceptionType, Closure $callback): void
     {

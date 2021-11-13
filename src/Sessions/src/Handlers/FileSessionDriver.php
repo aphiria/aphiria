@@ -22,7 +22,7 @@ final class FileSessionDriver implements ISessionDriver
     /**
      * @param string $basePath The base path to the session storage files
      */
-    public function __construct(private string $basePath)
+    public function __construct(private readonly string $basePath)
     {
     }
 
@@ -37,16 +37,20 @@ final class FileSessionDriver implements ISessionDriver
     /**
      * @inheritdoc
      */
-    public function gc(int $maxLifetime): void
+    public function gc(int $maxLifetime): int
     {
         $sessionFiles = \glob("{$this->basePath}/*", GLOB_NOSORT);
         $limit = \time() - $maxLifetime;
+        $numDeletedSessions = 0;
 
         foreach ($sessionFiles as $sessionFile) {
             if (\filemtime($sessionFile) < $limit) {
                 @\unlink($sessionFile);
+                $numDeletedSessions++;
             }
         }
+
+        return $numDeletedSessions;
     }
 
     /**

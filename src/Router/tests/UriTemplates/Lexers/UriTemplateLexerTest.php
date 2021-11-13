@@ -15,7 +15,7 @@ namespace Aphiria\Routing\Tests\UriTemplates\Lexers;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
-use Aphiria\Routing\UriTemplates\Lexers\TokenTypes;
+use Aphiria\Routing\UriTemplates\Lexers\TokenType;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
 use PHPUnit\Framework\TestCase;
 
@@ -45,7 +45,7 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_NUMBER, $number)
+                new Token(TokenType::Number, $number)
             ]),
             $this->lexer->lex($uriTemplate)
         );
@@ -55,7 +55,7 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_NUMBER, 123)
+                new Token(TokenType::Number, 123)
             ]),
             $this->lexer->lex('123')
         );
@@ -65,9 +65,9 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_TEXT, 'example'),
-                new Token(TokenTypes::T_PUNCTUATION, '.'),
-                new Token(TokenTypes::T_TEXT, 'com')
+                new Token(TokenType::Text, 'example'),
+                new Token(TokenType::Punctuation, '.'),
+                new Token(TokenType::Text, 'com')
             ]),
             $this->lexer->lex('example.com')
         );
@@ -77,13 +77,13 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '['),
-                new Token(TokenTypes::T_TEXT, 'api'),
-                new Token(TokenTypes::T_PUNCTUATION, '.'),
-                new Token(TokenTypes::T_PUNCTUATION, ']'),
-                new Token(TokenTypes::T_TEXT, 'example'),
-                new Token(TokenTypes::T_PUNCTUATION, '.'),
-                new Token(TokenTypes::T_TEXT, 'com')
+                new Token(TokenType::Punctuation, '['),
+                new Token(TokenType::Text, 'api'),
+                new Token(TokenType::Punctuation, '.'),
+                new Token(TokenType::Punctuation, ']'),
+                new Token(TokenType::Text, 'example'),
+                new Token(TokenType::Punctuation, '.'),
+                new Token(TokenType::Text, 'com')
             ]),
             $this->lexer->lex('[api.]example.com')
         );
@@ -93,11 +93,11 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_VARIABLE, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '.'),
-                new Token(TokenTypes::T_TEXT, 'example'),
-                new Token(TokenTypes::T_PUNCTUATION, '.'),
-                new Token(TokenTypes::T_TEXT, 'com')
+                new Token(TokenType::Variable, 'foo'),
+                new Token(TokenType::Punctuation, '.'),
+                new Token(TokenType::Text, 'example'),
+                new Token(TokenType::Punctuation, '.'),
+                new Token(TokenType::Text, 'com')
             ]),
             $this->lexer->lex(':foo.example.com')
         );
@@ -107,15 +107,15 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'int'),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, 'caf'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'int'),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Text, 'caf'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(int,caf)')
         );
@@ -125,20 +125,20 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'int'),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, 'caf'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'abc'),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_TEXT, 'def'),
-                new Token(TokenTypes::T_PUNCTUATION, ')'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'int'),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Text, 'caf'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'abc'),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Text, 'def'),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(int , caf(abc , def))')
         );
@@ -148,12 +148,12 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'baz'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'bar'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'baz'),
             ]),
             $this->lexer->lex('/foo/bar/baz')
         );
@@ -163,12 +163,12 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '['),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, ']')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '['),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'bar'),
+                new Token(TokenType::Punctuation, ']')
             ]),
             $this->lexer->lex('/foo[/bar]')
         );
@@ -178,13 +178,13 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'int'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'int'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(int)')
         );
@@ -194,15 +194,15 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'int'),
-                new Token(TokenTypes::T_PUNCTUATION, ')'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'baz')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'int'),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'baz')
             ]),
             $this->lexer->lex('/foo/:bar(int)/baz')
         );
@@ -212,18 +212,18 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'baz'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_QUOTED_STRING, '1,2'),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_NUMBER, 3),
-                new Token(TokenTypes::T_PUNCTUATION, ')'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'baz'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::QuotedString, '1,2'),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Number, 3),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(baz("1,2",3))')
         );
@@ -233,22 +233,22 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'baz'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_PUNCTUATION, '['),
-                new Token(TokenTypes::T_NUMBER, 1),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_NUMBER, 2),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_QUOTED_STRING, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, ']'),
-                new Token(TokenTypes::T_PUNCTUATION, ')'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'baz'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Punctuation, '['),
+                new Token(TokenType::Number, 1),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Number, 2),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::QuotedString, 'foo'),
+                new Token(TokenType::Punctuation, ']'),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(baz([1,2,"foo"]))')
         );
@@ -258,20 +258,20 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'in'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_NUMBER, 1),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_NUMBER, 2),
-                new Token(TokenTypes::T_PUNCTUATION, ','),
-                new Token(TokenTypes::T_NUMBER, 3),
-                new Token(TokenTypes::T_PUNCTUATION, ')'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'in'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Number, 1),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Number, 2),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Number, 3),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(in(1,2,3))')
         );
@@ -281,16 +281,16 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_TEXT, 'max'),
-                new Token(TokenTypes::T_PUNCTUATION, '('),
-                new Token(TokenTypes::T_NUMBER, 1),
-                new Token(TokenTypes::T_PUNCTUATION, ')'),
-                new Token(TokenTypes::T_PUNCTUATION, ')')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'max'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Number, 1),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(max(1))')
         );
@@ -300,11 +300,11 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_VARIABLE, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'baz')
+                new Token(TokenType::Variable, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'bar'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'baz')
             ]),
             $this->lexer->lex(':foo/bar/baz')
         );
@@ -314,12 +314,12 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'baz')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'bar'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'baz')
             ]),
             $this->lexer->lex('/foo/bar/:baz')
         );
@@ -329,12 +329,12 @@ class UriTemplateLexerTest extends TestCase
     {
         $this->assertEquals(
             new TokenStream([
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'foo'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_VARIABLE, 'bar'),
-                new Token(TokenTypes::T_PUNCTUATION, '/'),
-                new Token(TokenTypes::T_TEXT, 'baz')
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'baz')
             ]),
             $this->lexer->lex('/foo/:bar/baz')
         );

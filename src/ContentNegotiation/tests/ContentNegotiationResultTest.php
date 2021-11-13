@@ -23,7 +23,7 @@ class ContentNegotiationResultTest extends TestCase
         /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', null);
-        $this->assertSame('utf-8', $results->getEncoding());
+        $this->assertSame('utf-8', $results->encoding);
     }
 
     public function testGettingFormatterReturnsSameOneInConstructor(): void
@@ -31,7 +31,7 @@ class ContentNegotiationResultTest extends TestCase
         /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
-        $this->assertSame($formatter, $results->getFormatter());
+        $this->assertSame($formatter, $results->formatter);
     }
 
     public function testGettingLanguageReturnsSameOneInConstructor(): void
@@ -39,7 +39,7 @@ class ContentNegotiationResultTest extends TestCase
         /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', 'en-US');
-        $this->assertSame('en-US', $results->getLanguage());
+        $this->assertSame('en-US', $results->language);
     }
 
     public function testGettingMediaTypeReturnsSameOneInConstructor(): void
@@ -47,6 +47,6 @@ class ContentNegotiationResultTest extends TestCase
         /** @var IMediaTypeFormatter $formatter */
         $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
-        $this->assertSame('foo/bar', $results->getMediaType());
+        $this->assertSame('foo/bar', $results->mediaType);
     }
 }

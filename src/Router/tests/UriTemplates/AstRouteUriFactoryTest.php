@@ -53,7 +53,7 @@ class AstRouteUriFactoryTest extends TestCase
             ->with('example.com/')
             ->willThrowException(new LexingException());
         $this->addRouteWithUriTemplate('foo', 'example.com', '');
-        $uriFactory = new AstRouteUriFactory($this->routes, null, $lexer);
+        $uriFactory = new AstRouteUriFactory($this->routes, uriTemplateLexer: $lexer);
         $uriFactory->createRouteUri('foo');
     }
 
@@ -229,7 +229,7 @@ class AstRouteUriFactoryTest extends TestCase
         string $pathTemplate,
         bool $isHttpsOnly = true
     ): void {
-        $controller = new class() {
+        $controller = new class () {
             public function bar(): void
             {
             }

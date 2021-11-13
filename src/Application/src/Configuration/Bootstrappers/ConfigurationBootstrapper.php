@@ -23,7 +23,7 @@ final class ConfigurationBootstrapper implements IBootstrapper
     /**
      * @param GlobalConfigurationBuilder $configurationBuilder The global configuration builder
      */
-    public function __construct(private GlobalConfigurationBuilder $configurationBuilder)
+    public function __construct(private readonly GlobalConfigurationBuilder $configurationBuilder)
     {
     }
 

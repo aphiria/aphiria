@@ -25,7 +25,7 @@ class SerializerMediaTypeFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->formatter = new class() extends SerializerMediaTypeFormatter {
+        $this->formatter = new class () extends SerializerMediaTypeFormatter {
             public function __construct()
             {
                 parent::__construct(new Serializer([new ObjectNormalizer()]), 'foo');

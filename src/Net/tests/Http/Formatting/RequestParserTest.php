@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 class RequestParserTest extends TestCase
 {
     private RequestParser $parser;
-    private IRequest|MockObject $request;
+    private IRequest&MockObject $request;
     private Headers $headers;
-    private IBody|MockObject $body;
+    private IBody&MockObject $body;
     private IDictionary $properties;
 
     protected function setUp(): void
@@ -47,6 +47,43 @@ class RequestParserTest extends TestCase
             ->willReturn($this->body);
         $this->request->method('getProperties')
             ->willReturn($this->properties);
+    }
+
+    public function provideMissingBoundaryRequests(): array
+    {
+        $headers = new Headers([new KeyValuePair('Content-Type', 'multipart/mixed')]);
+        $badRequest = $this->createMock(IRequest::class);
+        $badRequest->method('getHeaders')
+            ->willReturn($headers);
+        $badRequest->method('getBody')
+            ->willReturn(null);
+        $badMultipartBodyPart = new MultipartBodyPart($headers, null);
+
+        return [
+            [$badRequest],
+            [$badMultipartBodyPart]
+        ];
+    }
+
+    public function provideValidMultipartRequests(): array
+    {
+        $expectedBody = 'body';
+        $serializedBody = "--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\n$expectedBody\r\n--boundary--";
+        $headers = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=boundary')]);
+        $body = $this->createMock(IBody::class);
+        $body->method('readAsString')
+            ->willReturn($serializedBody);
+        $request = $this->createMock(IRequest::class);
+        $request->method('getHeaders')
+            ->willReturn($headers);
+        $request->method('getBody')
+            ->willReturn($body);
+        $multipartBodyPart = new MultipartBodyPart($headers, $body);
+
+        return [
+            [$request, $expectedBody],
+            [$multipartBodyPart, $expectedBody]
+        ];
     }
 
     public function testGettingActualMimeTypeReturnsCorrectMimeType(): void
@@ -117,7 +154,7 @@ class RequestParserTest extends TestCase
         $this->headers->add('Accept-Charset', 'utf-8; q=0.1');
         $values = $this->parser->parseAcceptCharsetHeader($this->request);
         $this->assertCount(1, $values);
-        $this->assertSame('0.1', $values[0]->getParameters()->get('q'));
+        $this->assertSame('0.1', $values[0]->parameters->get('q'));
     }
 
     public function testParseAcceptHeaderReturnsThem(): void
@@ -125,7 +162,7 @@ class RequestParserTest extends TestCase
         $this->headers->add('Accept', 'tex/plain; q=0.1');
         $values = $this->parser->parseAcceptHeader($this->request);
         $this->assertCount(1, $values);
-        $this->assertSame('0.1', $values[0]->getParameters()->get('q'));
+        $this->assertSame('0.1', $values[0]->parameters->get('q'));
     }
 
     public function testParseAcceptLanguageHeaderReturnsThem(): void
@@ -133,15 +170,15 @@ class RequestParserTest extends TestCase
         $this->headers->add('Accept-language', 'en; q=0.1');
         $values = $this->parser->parseAcceptLanguageHeader($this->request);
         $this->assertCount(1, $values);
-        $this->assertSame('0.1', $values[0]->getParameters()->get('q'));
+        $this->assertSame('0.1', $values[0]->parameters->get('q'));
     }
 
     public function testParseContentTypeReturnsContentTypeHeader(): void
     {
         $this->headers->add('Content-Type', 'application/json; charset=utf-8');
         $header = $this->parser->parseContentTypeHeader($this->request);
-        $this->assertSame('application/json', $header?->getMediaType());
-        $this->assertSame('utf-8', $header?->getCharset());
+        $this->assertSame('application/json', $header?->mediaType);
+        $this->assertSame('utf-8', $header?->charset);
     }
 
     public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues(): void
@@ -152,12 +189,15 @@ class RequestParserTest extends TestCase
         $this->assertSame('blah', $cookies->get('baz'));
     }
 
-    public function testParsingMultipartRequestWithoutBoundaryThrowsException(): void
+    /**
+     * @dataProvider provideMissingBoundaryRequests
+     * @param IRequest|MultipartBodyPart $request The request to test
+     */
+    public function testParsingMultipartRequestWithoutBoundaryThrowsException(IRequest|MultipartBodyPart $request): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('"boundary" is missing in Content-Type header');
-        $this->headers->add('Content-Type', 'multipart/mixed');
-        $this->parser->readAsMultipart($this->request);
+        $this->parser->readAsMultipart($request);
     }
 
     public function testParsingParametersReturnsCorrectParameters(): void
@@ -193,18 +233,21 @@ class RequestParserTest extends TestCase
         $this->assertSame('bar', $value['foo']);
     }
 
-    public function testReadingAsMultipartRequestWithHeadersExtractsBody(): void
-    {
-        $this->headers->add('Content-Type', 'multipart/form-data; boundary=boundary');
-        $this->body->expects($this->once())
-            ->method('readAsString')
-            ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
-        $multipartBody = $this->parser->readAsMultipart($this->request);
+    /**
+     * @dataProvider provideValidMultipartRequests
+     * @param IRequest|MultipartBodyPart $request The request to test
+     * @param string $expectedBody The expected body
+     */
+    public function testReadingAsMultipartRequestWithHeadersExtractsBody(
+        IRequest|MultipartBodyPart $request,
+        string $expectedBody
+    ): void {
+        $multipartBody = $this->parser->readAsMultipart($request);
         $this->assertNotNull($multipartBody);
-        $bodyParts = $multipartBody->getParts();
+        $bodyParts = $multipartBody->parts;
         $this->assertCount(1, $bodyParts);
-        $body = $bodyParts[0]->getBody();
+        $body = $bodyParts[0]->body;
         $this->assertNotNull($body);
-        $this->assertSame('body', $body->readAsString());
+        $this->assertSame($expectedBody, $body->readAsString());
     }
 }

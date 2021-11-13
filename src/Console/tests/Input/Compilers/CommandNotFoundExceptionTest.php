@@ -20,6 +20,6 @@ class CommandNotFoundExceptionTest extends TestCase
     public function testGettingCommandNameReturnsOneSetInConstructor(): void
     {
         $exception = new CommandNotFoundException('foo');
-        $this->assertSame('foo', $exception->getCommandName());
+        $this->assertSame('foo', $exception->commandName);
     }
 }

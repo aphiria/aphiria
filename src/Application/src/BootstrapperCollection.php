@@ -46,6 +46,9 @@ final class BootstrapperCollection
         return $this;
     }
 
+    /**
+     * Bootstraps all the bootstrappers in the collection
+     */
     public function bootstrapAll(): void
     {
         foreach ($this->bootstrappers as $bootstrapper) {

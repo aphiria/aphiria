@@ -46,9 +46,9 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
 
     public function testBuildWithMultipleSubBuildersCreatesRegistryWithMultipleObjectConstraints(): void
     {
-        $foo = new class() {
+        $foo = new class () {
         };
-        $bar = new class() {
+        $bar = new class () {
         };
         $expectedObjectConstraints = new ObjectConstraintsRegistry();
         $expectedObjectConstraints->registerObjectConstraints(new ObjectConstraints($foo::class));
@@ -73,6 +73,6 @@ class ObjectConstraintsRegistryBuilderTest extends TestCase
     public function testClassCreatesBuilderWithCorrectClassName(): void
     {
         $actualConstraintsBuilder = $this->builder->class(self::class);
-        $this->assertSame(self::class, $actualConstraintsBuilder->build()->getClassName());
+        $this->assertSame(self::class, $actualConstraintsBuilder->build()->className);
     }
 }

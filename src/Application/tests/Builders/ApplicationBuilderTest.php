@@ -25,10 +25,10 @@ class ApplicationBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->appBuilder = new class() extends ApplicationBuilder {
+        $this->appBuilder = new class () extends ApplicationBuilder {
             public function build(): object
             {
-                $this->buildModules();
+                $this->configureModules();
                 $this->buildComponents();
 
                 return $this;
@@ -43,7 +43,7 @@ class ApplicationBuilderTest extends TestCase
          * When I initialize those components, I'm adding them to an array so that I can check the initialization order.
          */
         $initializedComponents = [];
-        $lowPriorityComponent = new class($initializedComponents) implements IComponent {
+        $lowPriorityComponent = new class ($initializedComponents) implements IComponent {
             private array $builtComponentsBuilders;
 
             public function __construct(array &$builtComponentBuilders)
@@ -56,7 +56,7 @@ class ApplicationBuilderTest extends TestCase
                 $this->builtComponentsBuilders[] = $this;
             }
         };
-        $highPriorityComponent = new class($initializedComponents) implements IComponent {
+        $highPriorityComponent = new class ($initializedComponents) implements IComponent {
             private array $builtComponentsBuilders;
 
             public function __construct(array &$builtComponentBuilders)
@@ -102,7 +102,7 @@ class ApplicationBuilderTest extends TestCase
     public function testGettingComponentThrowsExceptionForUnregistered(): void
     {
         $this->expectException(OutOfBoundsException::class);
-        $component = new class() implements IComponent {
+        $component = new class () implements IComponent {
             public function build(): void
             {
             }
@@ -111,23 +111,23 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder->getComponent($component::class);
     }
 
-    public function testModulesAreBuiltOnBuild(): void
+    public function testModulesAreConfiguredOnBuild(): void
     {
         $module = $this->createMock(IModule::class);
         $module->expects($this->once())
-            ->method('build')
+            ->method('configure')
             ->with($this->appBuilder);
         $this->appBuilder->withModule($module);
         $this->appBuilder->build();
     }
 
-    public function testModulesThatAreRegisteredInsideOfModulesAreBuilt(): void
+    public function testModulesThatAreRegisteredInsideOfModulesAreConfigured(): void
     {
         $innerModule = $this->createMock(IModule::class);
         $innerModule->expects($this->once())
-            ->method('build')
+            ->method('configure')
             ->with($this->appBuilder);
-        $outerModule = new class($innerModule) implements IModule {
+        $outerModule = new class ($innerModule) implements IModule {
             private IModule $innerModule;
 
             public function __construct(IModule $innerModule)
@@ -135,7 +135,7 @@ class ApplicationBuilderTest extends TestCase
                 $this->innerModule = $innerModule;
             }
 
-            public function build(IApplicationBuilder $appBuilder): void
+            public function configure(IApplicationBuilder $appBuilder): void
             {
                 $appBuilder->withModule($this->innerModule);
             }

@@ -16,12 +16,19 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
+use InvalidArgumentException;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -34,11 +41,13 @@ final class SymfonySerializerBinder extends Binder
     /**
      * @inheritdoc
      * @throws MissingConfigurationValueException Thrown if the config is missing values
+     * @throws InvalidArgumentException Thrown if any of the config values are invalid
+     * @throws ResolutionException Thrown if a normalizer could not be resolved
      */
     public function bind(IContainer $container): void
     {
         $encoders = $normalizers = [];
-        /** @var array<class-string> $encoderNames */
+        /** @var list<class-string> $encoderNames */
         $encoderNames = GlobalConfiguration::getArray('aphiria.serialization.encoders');
 
         foreach ($encoderNames as $encoderName) {
@@ -52,10 +61,18 @@ final class SymfonySerializerBinder extends Binder
                 case JsonEncoder::class:
                     $encoders[] = new JsonEncoder();
                     break;
+                default:
+                    $encoder = $container->resolve($encoderName);
+
+                    if (!$encoder instanceof EncoderInterface && !$encoder instanceof DecoderInterface) {
+                        throw new InvalidArgumentException("Encoder $encoderName must implement " . EncoderInterface::class . ' or ' . DecoderInterface::class);
+                    }
+
+                    $encoders[] = $encoder;
             }
         }
 
-        /** @var array<class-string> $normalizerNames */
+        /** @var list<class-string> $normalizerNames */
         $normalizerNames = GlobalConfiguration::getArray('aphiria.serialization.normalizers');
 
         foreach ($normalizerNames as $normalizerName) {
@@ -83,6 +100,17 @@ final class SymfonySerializerBinder extends Binder
                 case ProblemDetailsNormalizer::class:
                     $normalizers[] = new ProblemDetailsNormalizer();
                     break;
+                case BackedEnumNormalizer::class:
+                    $normalizers[] = new BackedEnumNormalizer();
+                    break;
+                default:
+                    $normalizer = $container->resolve($normalizerName);
+
+                    if (!$normalizer instanceof NormalizerInterface && !$normalizer instanceof DenormalizerInterface) {
+                        throw new InvalidArgumentException("Normalizer $normalizerName must implement " . NormalizerInterface::class . ' or ' . DenormalizerInterface::class);
+                    }
+
+                    $normalizers[] = $normalizer;
             }
         }
 

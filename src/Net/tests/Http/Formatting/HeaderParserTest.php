@@ -63,7 +63,7 @@ class HeaderParserTest extends TestCase
         $headers = new Headers();
         $headers->add('Content-Type', 'application/json');
         $value = $this->parser->parseContentTypeHeader($headers);
-        $this->assertSame('application/json', $value?->getMediaType());
+        $this->assertSame('application/json', $value?->mediaType);
     }
 
     public function testParsingParametersForIndexThatDoesNotExistReturnsEmptyDictionary(): void

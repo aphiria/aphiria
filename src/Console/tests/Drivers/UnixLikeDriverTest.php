@@ -15,7 +15,7 @@ namespace Aphiria\Console\Tests\Drivers;
 use Aphiria\Console\Drivers\HiddenInputNotSupportedException;
 use Aphiria\Console\Drivers\UnixLikeDriver;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\StatusCodes;
+use Aphiria\Console\StatusCode;
 use PHPUnit\Framework\TestCase;
 
 class UnixLikeDriverTest extends TestCase
@@ -52,7 +52,7 @@ class UnixLikeDriverTest extends TestCase
     {
         $this->expectException(HiddenInputNotSupportedException::class);
         $this->expectExceptionMessage('STTY must be supported to hide input');
-        $driver = new class() extends UnixLikeDriver {
+        $driver = new class () extends UnixLikeDriver {
             protected function supportsStty(): bool
             {
                 return false;
@@ -65,7 +65,7 @@ class UnixLikeDriverTest extends TestCase
     {
         \putenv('COLUMNS');
         \putenv('LINES');
-        $driver = new class() extends UnixLikeDriver {
+        $driver = new class () extends UnixLikeDriver {
             protected function getCliDimensionsFromOS(): ?array
             {
                 return null;
@@ -80,7 +80,7 @@ class UnixLikeDriverTest extends TestCase
         \putenv('COLUMNS');
         \putenv('LINES');
         \putenv('ANSICON');
-        $driver = new class() extends UnixLikeDriver {
+        $driver = new class () extends UnixLikeDriver {
             protected function getCliDimensionsFromOS(): ?array
             {
                 return [10, 15];
@@ -94,7 +94,7 @@ class UnixLikeDriverTest extends TestCase
     {
         $sttyOutput = \exec('(stty -a | grep columns) 2>&1', $output, $statusCode);
 
-        if ($statusCode !== StatusCodes::OK) {
+        if ($statusCode !== StatusCode::Ok) {
             $this->markTestSkipped('This test can only be run on *nix systems with STTY support');
         }
 

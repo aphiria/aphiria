@@ -15,12 +15,12 @@ namespace Aphiria\Console\Output\Compilers\Elements;
 /**
  * Defines the list of text styles
  */
-final class TextStyles
+enum TextStyle: string
 {
     /** Text is blinking */
-    public const BLINK = 'blink';
+    case Blink = 'blink';
     /** Text is bold */
-    public const BOLD = 'bold';
+    case Bold = 'bold';
     /** Text is underlined */
-    public const UNDERLINE = 'underline';
+    case Underline = 'underline';
 }

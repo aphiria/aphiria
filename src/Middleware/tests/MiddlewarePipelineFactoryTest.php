@@ -33,13 +33,13 @@ class MiddlewarePipelineFactoryTest extends TestCase
     {
         // We cannot test this directly because the middleware is internal to the request handler
         // So, we must test it by trying to execute the pipeline
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var IResponse|MockObject $response */
+        /** @var IResponse&MockObject $response */
         $response = $this->createMock(IResponse::class);
-        /** @var IRequestHandler|MockObject $controllerHandler */
+        /** @var IRequestHandler&MockObject $controllerHandler */
         $controllerHandler = $this->createMock(IRequestHandler::class);
-        /** @var IMiddleware|MockObject $middleware1 */
+        /** @var IMiddleware&MockObject $middleware1 */
         $middleware1 = $this->createMock(IMiddleware::class);
         $middleware1->expects($this->once())
             ->method('handle')
@@ -48,7 +48,7 @@ class MiddlewarePipelineFactoryTest extends TestCase
                 return $handler !== $controllerHandler;
             }))
             ->willReturn($response);
-        /** @var IMiddleware|MockObject $middleware2 */
+        /** @var IMiddleware&MockObject $middleware2 */
         $middleware2 = $this->createMock(IMiddleware::class);
 
         /** @psalm-suppress InvalidArgument Psalm doesn't handle union types yet - bug */
@@ -58,7 +58,7 @@ class MiddlewarePipelineFactoryTest extends TestCase
 
     public function testCreatingPipelineWithNoMiddlewareJustReturnsControllerHandler(): void
     {
-        /** @var IRequestHandler|MockObject $controllerHandler */
+        /** @var IRequestHandler&MockObject $controllerHandler */
         $controllerHandler = $this->createMock(IRequestHandler::class);
         $this->assertSame($controllerHandler, $this->pipelineFactory->createPipeline([], $controllerHandler));
     }
@@ -67,13 +67,13 @@ class MiddlewarePipelineFactoryTest extends TestCase
     {
         // We cannot test this directly because the middleware is internal to the request handler
         // So, we must test it by trying to execute the pipeline
-        /** @var IRequest|MockObject $request */
+        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var IResponse|MockObject $response */
+        /** @var IResponse&MockObject $response */
         $response = $this->createMock(IResponse::class);
-        /** @var IRequestHandler|MockObject $controllerHandler */
+        /** @var IRequestHandler&MockObject $controllerHandler */
         $controllerHandler = $this->createMock(IRequestHandler::class);
-        /** @var IMiddleware|MockObject $middleware */
+        /** @var IMiddleware&MockObject $middleware */
         $middleware = $this->createMock(IMiddleware::class);
         $middleware->expects($this->once())
             ->method('handle')

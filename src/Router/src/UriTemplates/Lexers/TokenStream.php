@@ -18,14 +18,14 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
 final class TokenStream
 {
     /** @var int The length of the stream */
-    public int $length;
+    public readonly int $length;
     /** @var int The current cursor */
     private int $cursor = 0;
 
     /**
      * @param list<Token> $tokens The list of tokens
      */
-    public function __construct(public array $tokens)
+    public function __construct(public readonly array $tokens)
     {
         $this->length = \count($this->tokens);
     }
@@ -34,13 +34,13 @@ final class TokenStream
      * Tests the current token to see if it matches the input type, and optionally the input value, and throws an
      * exception if the token did not match
      *
-     * @param string $type The type to check for
+     * @param TokenType $type The type to check for
      * @param mixed $value The optional value to match against
      * @param string|null $message The exception message to use, otherwise a default one is generated
      *      Any '%s' in the message is first populated with the expected type, and then with the expected value
      * @throws UnexpectedTokenException Thrown if the current token didn't match the expected type and value
      */
-    public function expect(string $type, mixed $value = null, string $message = null): void
+    public function expect(TokenType $type, mixed $value = null, string $message = null): void
     {
         if ($this->test($type, $value)) {
             return;
@@ -52,7 +52,7 @@ final class TokenStream
             // Let's create a default message
             $formattedMessage = \sprintf(
                 'Expected token type %s%s',
-                $type,
+                $type->name,
                 $value === null ? '' : " with value \"$value\""
             );
 
@@ -61,14 +61,14 @@ final class TokenStream
             } else {
                 $formattedMessage .= \sprintf(
                     ', got %s with value \"%s\"',
-                    $currentToken->type,
+                    $currentToken->type->name,
                     (string)$currentToken->value
                 );
             }
         } else {
             $formattedMessage = \sprintf(
                 $message,
-                $currentToken === null ? 'T_EOF' : $currentToken->type,
+                $currentToken === null ? TokenType::Eof->name : $currentToken->type->name,
                 (string)($currentToken === null ? 'end of stream' : $currentToken->value)
             );
         }
@@ -99,11 +99,11 @@ final class TokenStream
     /**
      * Gets the next token if the current one matches the input type, and optionally performs a value check
      *
-     * @param string $type The type to check for
+     * @param TokenType $type The type to check for
      * @param mixed $value The optional value to match against
      * @return bool True if the current token is of the input type, otherwise false
      */
-    public function nextIfType(string $type, mixed $value = null): bool
+    public function nextIfType(TokenType $type, mixed $value = null): bool
     {
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken?->type === $type;
@@ -135,11 +135,11 @@ final class TokenStream
     /**
      * Tests the current token to see if it matches the input type, and optionally the input value
      *
-     * @param string $type The type to check for
+     * @param TokenType $type The type to check for
      * @param mixed $value The optional value to match against
      * @return bool True if the current token is of the input type, otherwise false
      */
-    public function test(string $type, mixed $value = null): bool
+    public function test(TokenType $type, mixed $value = null): bool
     {
         $currentToken = $this->getCurrent();
         $typeMatches = $currentToken !== null && $currentToken->type === $type;

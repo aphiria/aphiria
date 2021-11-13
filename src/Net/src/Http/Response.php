@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\ExtensionMethods\ExtensionMethods;
+use InvalidArgumentException;
 
 /**
  * Defines an HTTP response message
@@ -21,25 +22,26 @@ class Response implements IResponse
 {
     use ExtensionMethods;
 
-    /** @var Headers The list of response headers if any are set, otherwise null */
-    protected Headers $headers;
+    /** @var HttpStatusCode The response status code */
+    protected HttpStatusCode $statusCode;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;
 
     /**
-     * @param int $statusCode The response status code
-     * @param Headers|null $headers The list of response headers
+     * @param HttpStatusCode|int $statusCode The response status code
+     * @param Headers $headers The list of response headers
      * @param IBody|null $body The response body
      * @param string $protocolVersion The HTTP protocol version
+     * @throws InvalidArgumentException Thrown if the status code was invalid
      */
     public function __construct(
-        protected int $statusCode = HttpStatusCodes::OK,
-        Headers $headers = null,
+        HttpStatusCode|int $statusCode = HttpStatusCode::Ok,
+        protected readonly Headers $headers = new Headers(),
         protected ?IBody $body = null,
-        protected string $protocolVersion = '1.1'
+        protected readonly string $protocolVersion = '1.1'
     ) {
-        $this->reasonPhrase = HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
-        $this->headers = $headers ?? new Headers();
+        $this->setStatusCode($statusCode);
+        $this->reasonPhrase = HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
     }
 
     /**
@@ -47,7 +49,7 @@ class Response implements IResponse
      */
     public function __toString(): string
     {
-        $startLine = "HTTP/{$this->protocolVersion} {$this->statusCode}";
+        $startLine = "HTTP/{$this->protocolVersion} {$this->statusCode->value}";
 
         if ($this->reasonPhrase !== null) {
             $startLine .= " {$this->reasonPhrase}";
@@ -103,7 +105,7 @@ class Response implements IResponse
     /**
      * @inheritdoc
      */
-    public function getStatusCode(): int
+    public function getStatusCode(): HttpStatusCode
     {
         return $this->statusCode;
     }
@@ -119,9 +121,17 @@ class Response implements IResponse
     /**
      * @inheritdoc
      */
-    public function setStatusCode(int $statusCode, ?string $reasonPhrase = null): void
+    public function setStatusCode(HttpStatusCode|int $statusCode, ?string $reasonPhrase = null): void
     {
+        if (\is_int($statusCode)) {
+            $originalStatusCode = $statusCode;
+
+            if (($statusCode = HttpStatusCode::tryFrom($originalStatusCode)) === null) {
+                throw new InvalidArgumentException("Invalid HTTP status code $originalStatusCode");
+            }
+        }
+
         $this->statusCode = $statusCode;
-        $this->reasonPhrase = $reasonPhrase ?? HttpStatusCodes::getDefaultReasonPhrase($this->statusCode);
+        $this->reasonPhrase = $reasonPhrase ?? HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
     }
 }

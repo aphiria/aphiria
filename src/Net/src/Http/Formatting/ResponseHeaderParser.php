@@ -15,6 +15,7 @@ namespace Aphiria\Net\Http\Formatting;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
+use Aphiria\Net\Http\Headers\SameSiteMode;
 
 /**
  * Defines the response header parser
@@ -43,17 +44,17 @@ class ResponseHeaderParser extends HeaderParser
             $name = $value = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = $isHttpOnly = false;
 
-            /** @var KeyValuePair $kvp */
+            /** @var KeyValuePair<string, string> $kvp */
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
-                switch ($kvp->getKey()) {
+                switch ($kvp->key) {
                     case 'Max-Age':
-                        $maxAge = (int)$kvp->getValue();
+                        $maxAge = (int)$kvp->value;
                         break;
                     case 'Path':
-                        $path = (string)$kvp->getValue();
+                        $path = (string)$kvp->value;
                         break;
                     case 'Domain':
-                        $domain = (string)$kvp->getValue();
+                        $domain = (string)$kvp->value;
                         break;
                     case 'Secure':
                         $isSecure = true;
@@ -62,13 +63,12 @@ class ResponseHeaderParser extends HeaderParser
                         $isHttpOnly = true;
                         break;
                     case 'SameSite':
-                        $sameSite = (string)$kvp->getValue();
+                        $sameSite = SameSiteMode::tryFrom((string)$kvp->value);
                         break;
                     default:
                         // Treat the default value as the cookie name
-                        $name = (string)$kvp->getKey();
-                        /** @psalm-suppress MixedAssignment The value could legitimately be mixed */
-                        $value = $kvp->getValue();
+                        $name = (string)$kvp->key;
+                        $value = $kvp->value;
                         break;
                 }
             }

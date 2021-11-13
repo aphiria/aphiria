@@ -24,7 +24,7 @@ final class TrieRouteMatcher implements IRouteMatcher
     /**
      * @param TrieNode $rootNode The root node
      */
-    public function __construct(private TrieNode $rootNode)
+    public function __construct(private readonly TrieNode $rootNode)
     {
     }
 

@@ -31,13 +31,13 @@ class BinderComponentTest extends TestCase
 
     public function testBuildWithBindersAppendsToListOfBindersToBeDispatched(): void
     {
-        $binder1 = new class() extends Binder {
+        $binder1 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $binder2 = new class() extends Binder {
+        $binder2 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -55,13 +55,13 @@ class BinderComponentTest extends TestCase
 
     public function testBuildWithBindersWithMultipleBinderAddsThemToBindersToBeDispatched(): void
     {
-        $binder1 = new class() extends Binder {
+        $binder1 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
             }
         };
-        $binder2 = new class() extends Binder {
+        $binder2 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -78,7 +78,7 @@ class BinderComponentTest extends TestCase
 
     public function testBuildWithBindersWithSingleBinderAddsItToBindersToBeDispatched(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything

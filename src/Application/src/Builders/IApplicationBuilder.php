@@ -43,7 +43,7 @@ interface IApplicationBuilder
     /**
      * Gets whether or not the application builder has a registered instance of the input component type
      *
-     * @param string $type The type of component to check for
+     * @param class-string<IComponent> $type The type of component to check for
      * @return bool True if the application builder already has the component, otherwise false
      */
     public function hasComponent(string $type): bool;

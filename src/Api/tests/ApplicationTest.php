@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 class ApplicationTest extends TestCase
 {
     private Application $app;
-    private IRequestHandler|MockObject $router;
+    private IRequestHandler&MockObject $router;
     private MiddlewareCollection $middleware;
 
     protected function setUp(): void

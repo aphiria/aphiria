@@ -21,7 +21,7 @@ use Throwable;
 final class InvalidRequestBodyException extends InvalidArgumentException
 {
     /** @var list<string> The list of error messages that describe why the body is invalid */
-    private array $errors;
+    public readonly array $errors;
 
     /**
      * @inheritdoc
@@ -32,15 +32,5 @@ final class InvalidRequestBodyException extends InvalidArgumentException
         parent::__construct($message, $code, $previous);
 
         $this->errors = $errors;
-    }
-
-    /**
-     * Gets the list of errors that describe why the body is invalid
-     *
-     * @return list<string> The list of errors
-     */
-    public function getErrors(): array
-    {
-        return $this->errors;
     }
 }

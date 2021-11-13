@@ -14,9 +14,9 @@ namespace Aphiria\Console\Tests\Output\Formatters;
 
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\Formatters\CommandFormatter;
 use PHPUnit\Framework\TestCase;
 
@@ -34,9 +34,9 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('bar', ArgumentTypes::REQUIRED, 'Bar argument'),
-                new Argument('baz', ArgumentTypes::OPTIONAL, 'Baz argument'),
-                new Argument('blah', ArgumentTypes::IS_ARRAY, 'Blah argument')
+                new Argument('bar', ArgumentType::Required, 'Bar argument'),
+                new Argument('baz', ArgumentType::Optional, 'Baz argument'),
+                new Argument('blah', ArgumentType::IsArray, 'Blah argument')
             ],
             [],
             ''
@@ -49,8 +49,8 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('bar', ArgumentTypes::REQUIRED, 'Bar argument'),
-                new Argument('baz', ArgumentTypes::REQUIRED, 'Baz argument')
+                new Argument('bar', ArgumentType::Required, 'Bar argument'),
+                new Argument('baz', ArgumentType::Required, 'Baz argument')
             ],
             [],
             ''
@@ -74,7 +74,7 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('bar', ArgumentTypes::REQUIRED, 'Bar argument')
+                new Argument('bar', ArgumentType::Required, 'Bar argument')
             ],
             [],
             'Foo command'
@@ -88,7 +88,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', OptionTypes::OPTIONAL_VALUE, 'b', 'Bar option', 'yes')
+                new Option('bar', OptionType::OptionalValue, 'b', 'Bar option', 'yes')
             ],
             'Foo command'
         );
@@ -101,7 +101,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', OptionTypes::OPTIONAL_VALUE, null, 'Bar option', 'yes')
+                new Option('bar', OptionType::OptionalValue, null, 'Bar option', 'yes')
             ],
             'Foo command'
         );
@@ -114,7 +114,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', OptionTypes::NO_VALUE, null, 'Bar option')
+                new Option('bar', OptionType::NoValue, null, 'Bar option')
             ],
             'Foo command'
         );
@@ -126,7 +126,7 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('bar', ArgumentTypes::OPTIONAL, 'Bar argument')
+                new Argument('bar', ArgumentType::Optional, 'Bar argument')
             ],
             [],
             'Foo command'
@@ -139,7 +139,7 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('blah', ArgumentTypes::IS_ARRAY | ArgumentTypes::OPTIONAL, 'Blah argument')
+                new Argument('blah', [ArgumentType::IsArray, ArgumentType::Optional], 'Blah argument')
             ],
             [],
             'Foo command'

@@ -19,13 +19,15 @@ use OutOfRangeException;
 
 /**
  * Defines the interface for immutable lists to implement
+ *
+ * @template T
  */
 interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * Gets whether or not the value exists
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
     public function containsValue(mixed $value): bool;
@@ -34,7 +36,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
      * Gets the value at an index
      *
      * @param int $index The index to get
-     * @return mixed The value if it was found, otherwise the default value
+     * @return T The value if it was found, otherwise the default value
      * @throws OutOfRangeException Thrown if the index is < 0 or >= than the length of the list
      */
     public function get(int $index): mixed;
@@ -42,7 +44,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets the index of a value
      *
-     * @param mixed $value The value to search for
+     * @param T $value The value to search for
      * @return int|null The index of the value if it was found, otherwise null
      */
     public function indexOf(mixed $value): ?int;
@@ -50,7 +52,7 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets all of the values as an array
      *
-     * @return list<mixed> All of the values
+     * @return list<T> All of the values
      */
     public function toArray(): array;
 }

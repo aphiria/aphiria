@@ -34,11 +34,12 @@ use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
+use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
@@ -46,13 +47,18 @@ use RuntimeException;
 
 class AphiriaComponentsTest extends TestCase
 {
-    private IApplicationBuilder|MockObject $appBuilder;
+    private IApplicationBuilder&MockObject $appBuilder;
 
     protected function setUp(): void
     {
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
         Container::$globalInstance = new Container();
         GlobalConfiguration::resetConfigurationSources();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function testWithBinderDispatcherRegisterBinderDispatcherToComponent(): void
@@ -68,7 +74,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, IBinderDispatcher $binderDispatcher): void
@@ -89,7 +95,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($this->createMock(BinderComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, IBinderDispatcher $binderDispatcher): void
@@ -107,7 +113,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, IBinderDispatcher $binderDispatcher): void
@@ -120,7 +126,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithBindersRegistersBindersToComponent(): void
     {
-        $binder = new class() extends Binder {
+        $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 // Don't do anything
@@ -136,7 +142,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Binder $binder): void
@@ -157,7 +163,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($this->createMock(BinderComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Binder $binder): void
@@ -175,7 +181,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, Binder $binder): void
@@ -197,7 +203,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -218,7 +224,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($this->createMock(CommandComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -236,7 +242,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -260,7 +266,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -285,7 +291,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($this->createMock(CommandComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -308,7 +314,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -329,7 +335,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->expects($this->once())
             ->method('withComponent')
             ->with($component);
-        $module = new class() {
+        $module = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, IComponent $component): void
@@ -357,13 +363,13 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string<Exception> $exceptionType
-             * @param Closure(Exception, IOutput): void|Closure(mixed, IOutput): int $callback
+             * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback
              */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
@@ -383,7 +389,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($this->createMock(ExceptionHandlerComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -404,7 +410,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -484,7 +490,7 @@ class AphiriaComponentsTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
             'aphiria' => ['api' => ['localhostRouterPath' => '/router']]
         ]));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -516,7 +522,7 @@ class AphiriaComponentsTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
             'aphiria' => ['api' => ['localhostRouterPath' => '/router']]
         ]));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -537,7 +543,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($this->createMock(CommandComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -555,7 +561,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -568,7 +574,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
     {
-        $middleware = new class() {
+        $middleware = new class () {
         };
         $middlewareBinding = new MiddlewareBinding($middleware::class);
         $expectedComponent = $this->createMock(MiddlewareComponent::class);
@@ -581,7 +587,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(
@@ -605,7 +611,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($this->createMock(MiddlewareComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, MiddlewareBinding $middlewareBinding): void
@@ -613,7 +619,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding);
             }
         };
-        $middleware = new class() {
+        $middleware = new class () {
         };
         $component->build($this->appBuilder, new MiddlewareBinding($middleware::class));
         // Dummy assertion
@@ -631,7 +637,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($this->createMock(MiddlewareComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, MiddlewareBinding $middlewareBinding): void
@@ -639,7 +645,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding);
             }
         };
-        $middleware = new class() {
+        $middleware = new class () {
         };
         $component->build($this->appBuilder, new MiddlewareBinding($middleware::class));
         // Dummy assertion
@@ -651,9 +657,9 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $middleware = new class() {
+        $middleware = new class () {
         };
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, MiddlewareBinding $middlewareBinding): void
@@ -677,13 +683,13 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string<Exception> $exceptionType
-             * @param Closure(mixed): string $logLevelFactory
+             * @param Closure(Exception): string $logLevelFactory
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -706,7 +712,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($this->createMock(ExceptionHandlerComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -727,7 +733,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -744,9 +750,14 @@ class AphiriaComponentsTest extends TestCase
     public function testWithModulesAddsMultipleModulesToAppBuilder(): void
     {
         $modules = [$this->createMock(IModule::class), $this->createMock(IModule::class)];
-        $this->appBuilder->method('withModule')
-            ->withConsecutive([$modules[0]], [$modules[1]]);
-        $component = new class() {
+        $appBuilder = Mockery::mock(IApplicationBuilder::class);
+        $appBuilder->shouldReceive('withModule')
+            ->with($modules[0])
+            ->andReturnSelf();
+        $appBuilder->shouldReceive('withModule')
+            ->with($modules[1])
+            ->andReturnSelf();
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -758,7 +769,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withModules($appBuilder, $modules);
             }
         };
-        $component->build($this->appBuilder, $modules);
+        $component->build($appBuilder, $modules);
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -769,7 +780,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->expects($this->once())
             ->method('withModule')
             ->with($module);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder, IModule $module): void
@@ -854,7 +865,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -879,7 +890,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($this->createMock(ValidationComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -902,7 +913,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -929,18 +940,18 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string $exceptionType
-             * @param string|null|Closure(mixed): string $type
-             * @param string|null|Closure(mixed): string $title
-             * @param string|null|Closure(mixed): string $detail
-             * @param int|Closure(mixed): int $status
-             * @param string|null|Closure(mixed): string $instance
-             * @param array|null|Closure(mixed): array $extensions
+             * @param string|null|Closure(Exception): string $type
+             * @param string|null|Closure(Exception): string $title
+             * @param string|null|Closure(Exception): string $detail
+             * @param int|Closure(Exception): int $status
+             * @param string|null|Closure(Exception): string $instance
+             * @param array|null|Closure(Exception): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -948,7 +959,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {
@@ -968,18 +979,18 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($this->createMock(ExceptionHandlerComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
              * @param IApplicationBuilder $appBuilder
              * @param class-string $exceptionType
-             * @param string|null|Closure(mixed): string $type
-             * @param string|null|Closure(mixed): string $title
-             * @param string|null|Closure(mixed): string $detail
-             * @param int|Closure(mixed): int $status
-             * @param string|null|Closure(mixed): string $instance
-             * @param array|null|Closure(mixed): array $extensions
+             * @param string|null|Closure(Exception): string $type
+             * @param string|null|Closure(Exception): string $title
+             * @param string|null|Closure(Exception): string $detail
+             * @param int|Closure(Exception): int $status
+             * @param string|null|Closure(Exception): string $instance
+             * @param array|null|Closure(Exception): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -987,7 +998,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = HttpStatusCodes::INTERNAL_SERVER_ERROR,
+                int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {
@@ -1004,7 +1015,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -1026,7 +1037,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -1047,7 +1058,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($this->createMock(RouterComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -1065,7 +1076,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -1089,7 +1100,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -1114,7 +1125,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($this->createMock(RouterComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -1137,7 +1148,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             /**
@@ -1163,7 +1174,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($expectedComponent);
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -1184,7 +1195,7 @@ class AphiriaComponentsTest extends TestCase
         $this->appBuilder->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($this->createMock(ValidationComponent::class));
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void
@@ -1202,7 +1213,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $component = new class() {
+        $component = new class () {
             use AphiriaComponents;
 
             public function build(IApplicationBuilder $appBuilder): void

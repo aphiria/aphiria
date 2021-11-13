@@ -13,25 +13,34 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\Headers;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
+    public function provideStatusCodes(): array
+    {
+        return [
+            [201, HttpStatusCode::Created],
+            [HttpStatusCode::Created, HttpStatusCode::Created]
+        ];
+    }
+
     public function testDefaultReasonPhraseIsSet(): void
     {
         $response = new Response(200);
-        $this->assertEquals(HttpStatusCodes::getDefaultReasonPhrase(200), $response->getReasonPhrase());
+        $this->assertEquals(HttpStatusCode::getDefaultReasonPhrase(200), $response->getReasonPhrase());
     }
 
     public function testGettingAndSettingBody(): void
     {
         /** @var IBody $body1 */
         $body1 = $this->createMock(IBody::class);
-        $response = new Response(200, null, $body1);
+        $response = new Response(200, body: $body1);
         $this->assertSame($body1, $response->getBody());
         /** @var IBody $body2 */
         $body2 = $this->createMock(IBody::class);
@@ -39,12 +48,15 @@ class ResponseTest extends TestCase
         $this->assertSame($body2, $response->getBody());
     }
 
-    public function testGettingAndSettingStatusCode(): void
+    /**
+     * @dataProvider provideStatusCodes
+     */
+    public function testGettingAndSettingStatusCode(HttpStatusCode|int $inputStatusCode, HttpStatusCode $expectedStatusCode): void
     {
-        $response = new Response(201);
-        $this->assertSame(201, $response->getStatusCode());
-        $response->setStatusCode(202);
-        $this->assertSame(202, $response->getStatusCode());
+        $response = new Response();
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+        $response->setStatusCode($inputStatusCode);
+        $this->assertSame($expectedStatusCode, $response->getStatusCode());
     }
 
     public function testGettingHeaders(): void
@@ -56,8 +68,21 @@ class ResponseTest extends TestCase
 
     public function testGettingProtocolVersion(): void
     {
-        $response = new Response(200, null, null, '2.0');
+        $response = new Response(200, protocolVersion: '2.0');
         $this->assertSame('2.0', $response->getProtocolVersion());
+    }
+
+    public function testIntStatusCodeIsConvertedToEnum(): void
+    {
+        $response = new Response(200);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+    }
+
+    public function testInvalidStatusCodeThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid HTTP status code -1');
+        new Response(-1);
     }
 
     public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
@@ -93,5 +118,13 @@ class ResponseTest extends TestCase
     {
         $response = new Response();
         $this->assertSame("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+    }
+
+    public function testSettingInvalidStatusCodeThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid HTTP status code -1');
+        (new Response())->setStatusCode(-1);
+
     }
 }

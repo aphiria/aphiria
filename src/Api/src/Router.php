@@ -24,7 +24,7 @@ use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewarePipelineFactory;
 use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\HttpException;
-use Aphiria\Net\Http\HttpStatusCodes;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
@@ -33,6 +33,7 @@ use Aphiria\Routing\Matchers\IRouteMatcher;
 use Aphiria\Routing\Matchers\RouteMatchingResult;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteAction;
+use Closure;
 use InvalidArgumentException;
 
 /**
@@ -40,24 +41,21 @@ use InvalidArgumentException;
  */
 class Router implements IRequestHandler
 {
-    /** @var IContentNegotiator The content negotiator */
-    private IContentNegotiator $contentNegotiator;
     /** @var IRouteActionInvoker The route action invoker */
-    private IRouteActionInvoker $routeActionInvoker;
+    private readonly IRouteActionInvoker $routeActionInvoker;
 
     /**
      * @param IRouteMatcher $routeMatcher The route matcher
      * @param IServiceResolver $serviceResolver The service resolver
-     * @param IContentNegotiator|null $contentNegotiator The content negotiator, or null if using the default negotiator
+     * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker
      */
     public function __construct(
-        private IRouteMatcher $routeMatcher,
-        private IServiceResolver $serviceResolver,
-        IContentNegotiator $contentNegotiator = null,
+        private readonly IRouteMatcher $routeMatcher,
+        private readonly IServiceResolver $serviceResolver,
+        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         IRouteActionInvoker $routeActionInvoker = null
     ) {
-        $this->contentNegotiator = $contentNegotiator ?? new ContentNegotiator();
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
 
@@ -92,26 +90,16 @@ class Router implements IRequestHandler
      *
      * @param RouteAction $routeAction The route action to create the controller from
      * @param Controller|null $controller The "out" parameter that will contain the controller
-     * @param callable|null $routeActionDelegate The "out" parameter that will contain the route action delegate
+     * @param Closure|null $routeActionDelegate The "out" parameter that will contain the route action delegate
      * @throws ResolutionException Thrown if the controller could not be resolved
      */
     private function createController(
         RouteAction $routeAction,
         ?Controller &$controller,
-        ?callable &$routeActionDelegate
+        ?Closure &$routeActionDelegate
     ): void {
         $controller = $this->serviceResolver->resolve($routeAction->className);
-        $routeActionDelegate = [$controller, $routeAction->methodName];
-
-        if (!\is_callable($routeActionDelegate)) {
-            throw new InvalidArgumentException(
-                \sprintf(
-                    'Controller method %s::%s() does not exist',
-                    $routeAction->className,
-                    $routeAction->methodName
-                )
-            );
-        }
+        $routeActionDelegate = Closure::fromCallable([$controller, $routeAction->methodName]);
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
@@ -160,14 +148,14 @@ class Router implements IRequestHandler
     private function matchRoute(IRequest $request): RouteMatchingResult
     {
         $uri = $request->getUri();
-        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->getHost() ?? '', $uri->getPath() ?? '');
+        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->host ?? '', $uri->path ?? '');
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {
-                throw new HttpException(HttpStatusCodes::NOT_FOUND, "No route found for {$request->getUri()}");
+                throw new HttpException(HttpStatusCode::NotFound, "No route found for {$request->getUri()}");
             }
 
-            $response = new Response(HttpStatusCodes::METHOD_NOT_ALLOWED);
+            $response = new Response(HttpStatusCode::MethodNotAllowed);
             $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');

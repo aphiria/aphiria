@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Validation\Tests;
 
-use Aphiria\Collections\Tests\Mocks\FakeObject;
 use Aphiria\Validation\CircularDependencyException;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\ObjectConstraints;
@@ -29,7 +28,7 @@ class ValidatorTest extends TestCase
 {
     private Validator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
-    private IErrorMessageInterpolator|FakeObject|MockObject $errorMessageInterpolator;
+    private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
 
     protected function setUp(): void
     {
@@ -40,7 +39,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodReturnsFalseForInvalidValue(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function method(): int
             {
                 return 1;
@@ -57,7 +56,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodReturnsTrueForValidValue(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function method(): int
             {
                 return 1;
@@ -74,10 +73,10 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWillRecursivelyValidateObjects(): void
     {
-        $innerObject = new class() {
+        $innerObject = new class () {
             public int $prop = 1;
         };
-        $outerObject = new class($innerObject) {
+        $outerObject = new class ($innerObject) {
             private object $innerObject;
 
             public function __construct(object $innerObject)
@@ -100,7 +99,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWithMagicMethodIsSkipped(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function __toString(): string
             {
                 die('Should not get here');
@@ -111,7 +110,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWithRequiredParamsIsSkipped(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function foo(int $foo): string
             {
                 die('Should not get here');
@@ -122,7 +121,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWithAPassedConstraintAndAFailedConstraintReturnsFalse(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function method(): int
             {
                 return 1;
@@ -142,7 +141,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateMethodWithInvalidValuePopulatesConstraintViolations(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function method(): int
             {
                 return 1;
@@ -159,18 +158,19 @@ class ValidatorTest extends TestCase
             ->method('interpolate')
             ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
+        /** @var list<ConstraintViolation> $violations */
         $violations = [];
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method', $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame('error', $violations[0]->getErrorMessage());
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertEquals($object, $violations[0]->getRootValue());
-        $this->assertSame(1, $violations[0]->getInvalidValue());
+        $this->assertSame('error', $violations[0]->errorMessage);
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertEquals($object, $violations[0]->rootValue);
+        $this->assertSame(1, $violations[0]->invalidValue);
     }
 
     public function testTryValidateMethodWithValidValueHasNoConstraintViolations(): void
     {
-        $object = new class() {
+        $object = new class () {
             public function method(): int
             {
                 return 1;
@@ -189,7 +189,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateObjectReturnsFalseForInvalidValue(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         $constraints = [$this->createMockConstraint(false, 1)];
@@ -203,7 +203,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateObjectReturnsTrueForValidValue(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         $constraints = [$this->createMockConstraint(true, 1)];
@@ -217,10 +217,10 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateObjectWillRecursivelyValidateObjects(): void
     {
-        $innerObject = new class() {
+        $innerObject = new class () {
             public int $prop = 1;
         };
-        $outerObject = new class($innerObject) {
+        $outerObject = new class ($innerObject) {
             public object $innerObject;
 
             public function __construct(object $innerObject)
@@ -238,7 +238,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateObjectWithAPassedConstraintAndAFailedConstraintReturnsFalse(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         $constraints = [
@@ -255,7 +255,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidateObjectWithInvalidValueSetsConstraintViolations(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         /** @var list<IConstraint> $constraints */
@@ -273,15 +273,15 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertFalse($this->validator->tryValidateObject($object, $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame('error', $violations[0]->getErrorMessage());
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertEquals($object, $violations[0]->getRootValue());
-        $this->assertSame(1, $violations[0]->getInvalidValue());
+        $this->assertSame('error', $violations[0]->errorMessage);
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertEquals($object, $violations[0]->rootValue);
+        $this->assertSame(1, $violations[0]->invalidValue);
     }
 
     public function testTryValidatePropertyReturnsFalseForInvalidValue(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         $constraints = [$this->createMockConstraint(false, 1)];
@@ -295,7 +295,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidatePropertyReturnsTrueForValidValue(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         $constraints = [$this->createMockConstraint(true, 1)];
@@ -321,10 +321,10 @@ class ValidatorTest extends TestCase
 
     public function testTryValidatePropertyWillRecursivelyValidateObjects(): void
     {
-        $innerObject = new class() {
+        $innerObject = new class () {
             public int $prop = 1;
         };
-        $outerObject = new class($innerObject) {
+        $outerObject = new class ($innerObject) {
             public object $innerObject;
 
             public function __construct(object $innerObject)
@@ -342,7 +342,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidatePropertyWithAPassedConstraintAndAFailedConstraintReturnsFalse(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         $constraints = [
@@ -359,7 +359,7 @@ class ValidatorTest extends TestCase
 
     public function testTryValidatePropertyWithInvalidValueSetsConstraintViolations(): void
     {
-        $object = new class() {
+        $object = new class () {
             public int $prop = 1;
         };
         /** @var list<IConstraint> $constraints */
@@ -377,10 +377,10 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop', $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame('error', $violations[0]->getErrorMessage());
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertEquals($object, $violations[0]->getRootValue());
-        $this->assertSame(1, $violations[0]->getInvalidValue());
+        $this->assertSame('error', $violations[0]->errorMessage);
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertEquals($object, $violations[0]->rootValue);
+        $this->assertSame(1, $violations[0]->invalidValue);
     }
 
     public function testTryValidateValueWithInvalidValueSetsConstraintViolations(): void
@@ -390,9 +390,9 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertFalse($this->validator->tryValidateValue('foo', $constraints, $violations));
         $this->assertCount(1, $violations);
-        $this->assertSame($constraints[0], $violations[0]->getConstraint());
-        $this->assertSame('foo', $violations[0]->getRootValue());
-        $this->assertSame('foo', $violations[0]->getInvalidValue());
+        $this->assertSame($constraints[0], $violations[0]->constraint);
+        $this->assertSame('foo', $violations[0]->rootValue);
+        $this->assertSame('foo', $violations[0]->invalidValue);
     }
 
     public function testTryValidateValueWithValidValueHasNoConstraintViolations(): void
@@ -405,7 +405,7 @@ class ValidatorTest extends TestCase
 
     public function testValidateMethodWithCircularDependencyThrowsException(): void
     {
-        $object1 = new class() {
+        $object1 = new class () {
             public ?object $methodReturnValue = null;
 
             public function method(): ?object
@@ -413,7 +413,7 @@ class ValidatorTest extends TestCase
                 return $this->methodReturnValue;
             }
         };
-        $object2 = new class() {
+        $object2 = new class () {
             public ?object $methodReturnValue = null;
 
             public function method(): ?object
@@ -430,10 +430,10 @@ class ValidatorTest extends TestCase
 
     public function testValidateObjectWithCircularDependencyThrowsException(): void
     {
-        $object1 = new class() {
+        $object1 = new class () {
             public ?object $prop = null;
         };
-        $object2 = new class() {
+        $object2 = new class () {
             public ?object $prop = null;
         };
         $object1->prop = $object2;
@@ -446,7 +446,7 @@ class ValidatorTest extends TestCase
 
     public function testValidateMethodThatDoesNotExistThrowsException(): void
     {
-        $class = new class() {
+        $class = new class () {
         };
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($class::class . '::foo() does not exist');
@@ -455,7 +455,7 @@ class ValidatorTest extends TestCase
 
     public function testValidateMethodThrowsIfInvalid(): void
     {
-        $class = new class() {
+        $class = new class () {
             public function foo(): string
             {
                 return 'foo';
@@ -477,7 +477,7 @@ class ValidatorTest extends TestCase
 
     public function testValidatePropertyThatDoesNotExistThrowsException(): void
     {
-        $class = new class() {
+        $class = new class () {
         };
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($class::class . '::foo does not exist');
@@ -486,7 +486,7 @@ class ValidatorTest extends TestCase
 
     public function testValidatePropertyThrowsIfInvalid(): void
     {
-        $class = new class() {
+        $class = new class () {
             public string $foo = 'foo';
         };
         $this->expectException(ValidationException::class);
@@ -505,10 +505,10 @@ class ValidatorTest extends TestCase
 
     public function testValidatePropertyWithCircularDependencyThrowsException(): void
     {
-        $object1 = new class() {
+        $object1 = new class () {
             public ?object $prop = null;
         };
-        $object2 = new class() {
+        $object2 = new class () {
             public ?object $prop = null;
         };
         $object1->prop = $object2;

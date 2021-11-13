@@ -15,6 +15,7 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Headers;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
@@ -26,8 +27,8 @@ class StreamResponseWriterTest extends TestCase
 {
     private StreamResponseWriter $writer;
     private Stream $outputStream;
-    private IResponse|MockObject $response;
-    private IBody|MockObject $body;
+    private IResponse&MockObject $response;
+    private IBody&MockObject $body;
 
     protected function setUp(): void
     {
@@ -44,7 +45,7 @@ class StreamResponseWriterTest extends TestCase
         $this->response->method('getProtocolVersion')
             ->willReturn('1.1');
         $this->response->method('getStatusCode')
-            ->willReturn(200);
+            ->willReturn(HttpStatusCode::Ok);
         $this->response->method('getReasonPhrase')
             ->willReturn('OK');
     }
@@ -52,7 +53,7 @@ class StreamResponseWriterTest extends TestCase
     /**
      * Gets a list of headers that should be not be concatenated
      *
-     * @return array<array<mixed>> The list of parameters to use
+     * @return list<list<mixed>> The list of parameters to use
      */
     public function getHeadersThatShouldNotBeConcatenated(): array
     {
@@ -89,7 +90,7 @@ class StreamResponseWriterTest extends TestCase
             $expectedHeaders[] = "$headerName: $headerValue";
         }
 
-        $responseWriter = new class($this->outputStream) extends StreamResponseWriter {
+        $responseWriter = new class ($this->outputStream) extends StreamResponseWriter {
             public array $headers = [];
 
             public function header(string $value, bool $replace = true, int $statusCode = null): void
@@ -108,7 +109,7 @@ class StreamResponseWriterTest extends TestCase
 
     public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
     {
-        $writer = new class($this->outputStream) extends StreamResponseWriter {
+        $writer = new class ($this->outputStream) extends StreamResponseWriter {
             public function headersAreSent(): bool
             {
                 return true;

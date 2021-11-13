@@ -21,7 +21,7 @@ class StreamBodyTest extends TestCase
 {
     public function testCastingToStringConvertsUnderlyingStreamToString(): void
     {
-        /** @var IStream|MockObject $stream */
+        /** @var IStream&MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -59,7 +59,7 @@ class StreamBodyTest extends TestCase
      */
     public function testReadingAsStringConvertsUnderlyingStreamToString(): void
     {
-        /** @var IStream|MockObject $stream */
+        /** @var IStream&MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -75,7 +75,7 @@ class StreamBodyTest extends TestCase
     {
         /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream|MockObject $underlyingStream */
+        /** @var IStream&MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
@@ -96,7 +96,7 @@ class StreamBodyTest extends TestCase
     {
         /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream|MockObject $underlyingStream */
+        /** @var IStream&MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
@@ -117,7 +117,7 @@ class StreamBodyTest extends TestCase
     {
         /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream|MockObject $underlyingStream */
+        /** @var IStream&MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')

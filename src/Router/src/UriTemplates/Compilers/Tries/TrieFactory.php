@@ -21,20 +21,16 @@ use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
  */
 final class TrieFactory
 {
-    /** @var ITrieCompiler The trie compiler */
-    private ITrieCompiler $trieCompiler;
-
     /**
      * @param RouteCollection $routes The list of routes
      * @param ITrieCache|null $trieCache The cache for tries, or null if not using a cache
-     * @param ITrieCompiler|null $trieCompiler The trie compiler
+     * @param ITrieCompiler $trieCompiler The trie compiler
      */
     public function __construct(
-        private RouteCollection $routes,
-        private ?ITrieCache $trieCache = null,
-        ITrieCompiler $trieCompiler = null
+        private readonly RouteCollection $routes,
+        private readonly ?ITrieCache $trieCache = null,
+        private readonly ITrieCompiler $trieCompiler = new TrieCompiler()
     ) {
-        $this->trieCompiler = $trieCompiler ?? new TrieCompiler();
     }
 
     /**

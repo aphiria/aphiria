@@ -21,7 +21,7 @@ class RouteAction
      * @param class-string $className The name of the class the route routes to
      * @param string $methodName The name of the method the route routes to
      */
-    public function __construct(public string $className, public string $methodName)
+    public function __construct(public readonly string $className, public readonly string $methodName)
     {
     }
 }

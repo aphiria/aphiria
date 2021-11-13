@@ -19,15 +19,6 @@ use InvalidArgumentException;
  */
 final class Cookie
 {
-    /** @const The lax same-site value */
-    public const SAME_SITE_LAX = 'lax';
-    /** @const The strict same-site value */
-    public const SAME_SITE_STRICT = 'strict';
-    /** @const The none same-site value (different than a null value, which doesn't set the SameSite parameter at all) */
-    public const SAME_SITE_NONE = 'none';
-    /** @var string The name of the cookie */
-    private string $name = '';
-
     /**
      * @param string $name The name of the cookie
      * @param mixed $value The value of the cookie
@@ -36,47 +27,20 @@ final class Cookie
      * @param string|null $domain The domain the cookie applies to
      * @param bool $isSecure Whether or not this cookie is HTTPS-only
      * @param bool $isHttpOnly Whether or not this cookie can be read client-side
-     * @param string|null $sameSite The same-site setting to use (defaults to lax), or null if none is specified
+     * @param SameSiteMode|null $sameSite The same-site setting to use (defaults to lax), or null if none is specified
      * @throws InvalidArgumentException Thrown if the name or expiration is in the incorrect format
      */
     public function __construct(
-        string $name,
-        private mixed $value,
-        private ?int $maxAge = null,
-        private ?string $path = null,
-        private ?string $domain = null,
-        private bool $isSecure = false,
-        private bool $isHttpOnly = true,
-        private ?string $sameSite = self::SAME_SITE_LAX
+        private string $name,
+        public mixed $value,
+        public ?int $maxAge = null,
+        public ?string $path = null,
+        public ?string $domain = null,
+        public bool $isSecure = false,
+        public bool $isHttpOnly = true,
+        public ?SameSiteMode $sameSite = SameSiteMode::Lax
     ) {
         $this->setName($name);
-
-        if (
-            $this->sameSite !== null
-            && !\in_array($this->sameSite, [self::SAME_SITE_STRICT, self::SAME_SITE_LAX, self::SAME_SITE_NONE], true)
-        ) {
-            throw new InvalidArgumentException('Acceptable values for SameSite are "lax", "strict", "none", or null');
-        }
-    }
-
-    /**
-     * Gets the domain of the cookie
-     *
-     * @return string|null The domain if set, otherwise null
-     */
-    public function getDomain(): ?string
-    {
-        return $this->domain;
-    }
-
-    /**
-     * Gets the max age of the cookie
-     *
-     * @return int|null The max age of the cookie if set, otherwise null
-     */
-    public function getMaxAge(): ?int
-    {
-        return $this->maxAge;
     }
 
     /**
@@ -87,86 +51,6 @@ final class Cookie
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * Gets the path of the cookie
-     *
-     * @return string|null The path if set, otherwise null
-     */
-    public function getPath(): ?string
-    {
-        return $this->path;
-    }
-
-    /**
-     * Gets the same-site value
-     *
-     * @return string|null The same-site value, or null if not set
-     */
-    public function getSameSite(): ?string
-    {
-        return $this->sameSite;
-    }
-
-    /**
-     * Gets the value of the cookie
-     *
-     * @return mixed The value
-     */
-    public function getValue(): mixed
-    {
-        return $this->value;
-    }
-
-    /**
-     * Gets whether or not the cookie is HTTP-only
-     *
-     * @return bool True if the cookie is HTTP-only, otherwise false
-     */
-    public function isHttpOnly(): bool
-    {
-        return $this->isHttpOnly;
-    }
-
-    /**
-     * Gets whether or not the cookie is secure
-     *
-     * @return bool True if the cookie is secure, otherwise false
-     */
-    public function isSecure(): bool
-    {
-        return $this->isSecure;
-    }
-
-    /**
-     * Sets the domain of the cookie
-     *
-     * @param string $domain The domain
-     */
-    public function setDomain(string $domain): void
-    {
-        $this->domain = $domain;
-    }
-
-    /**
-     * Sets whether or not the cookie is HTTP-only
-     *
-     * @param bool $isHttpOnly True if the cookie is HTTP-only, otherwise false
-     */
-    public function setHttpOnly(bool $isHttpOnly): void
-    {
-        $this->isHttpOnly = $isHttpOnly;
-    }
-
-    /**
-     * Sets the max age of the cookie
-     *
-     * @param int $maxAge The max age of the cookie
-     */
-    public function setMaxAge(int $maxAge): void
-    {
-        $this->maxAge = $maxAge;
     }
 
     /**
@@ -182,35 +66,5 @@ final class Cookie
         }
 
         $this->name = $name;
-    }
-
-    /**
-     * Sets the path of the cookie
-     *
-     * @param string $path The path
-     */
-    public function setPath(string $path): void
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * Sets whether or not the cookie is HTTPS
-     *
-     * @param bool $isSecure True if the cookie is HTTPS, otherwise false
-     */
-    public function setSecure(bool $isSecure): void
-    {
-        $this->isSecure = $isSecure;
-    }
-
-    /**
-     * Sets the value of the cookie
-     *
-     * @param mixed $value The value of the cookie
-     */
-    public function setValue(mixed $value): void
-    {
-        $this->value = $value;
     }
 }

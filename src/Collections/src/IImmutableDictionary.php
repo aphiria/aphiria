@@ -20,13 +20,16 @@ use RuntimeException;
 
 /**
  * Defines the interface for immutable dictionaries to implement
+ *
+ * @template TKey
+ * @template TValue
  */
 interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * Gets whether or not the key exists
      *
-     * @param mixed $key The key to check for
+     * @param TKey $key The key to check for
      * @return bool True if the key exists, otherwise false
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
@@ -35,7 +38,7 @@ interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets whether or not the value exists in the hash table
      *
-     * @param mixed $value The value to search for
+     * @param TValue $value The value to search for
      * @return bool True if the value exists, otherwise false
      */
     public function containsValue(mixed $value): bool;
@@ -43,8 +46,8 @@ interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets the value of the key
      *
-     * @param mixed $key The key to get
-     * @return mixed The value if it was found, otherwise the default value
+     * @param TKey $key The key to get
+     * @return TValue The value if it was found, otherwise the default value
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
@@ -53,30 +56,30 @@ interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
     /**
      * Gets the list of keys in the dictionary
      *
-     * @return list<mixed> The list of keys in the dictionary
+     * @return list<TKey> The list of keys in the dictionary
      */
     public function getKeys(): array;
 
     /**
      * Gets the list of values in the dictionary
      *
-     * @return list<mixed> The list of values in the dictionary
+     * @return list<TValue> The list of values in the dictionary
      */
     public function getValues(): array;
 
     /**
      * Gets all of the values as an array of key-value pairs
      *
-     * @return list<KeyValuePair> All of the values as a list of key-value pairs
+     * @return list<KeyValuePair<TKey, TValue>> All of the values as a list of key-value pairs
      */
     public function toArray(): array;
 
     /**
      * Attempts to get the value at a key
      *
-     * @param mixed $key The key to get
-     * @param mixed $value The value of the key, if it exists
-     * @param-out mixed $value
+     * @param TKey $key The key to get
+     * @param TValue|null $value The value of the key, if it exists
+     * @param-out TValue|null $value
      * @return bool True if the key existed, otherwise false
      */
     public function tryGet(mixed $key, mixed &$value): bool;

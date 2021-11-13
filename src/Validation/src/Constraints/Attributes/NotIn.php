@@ -25,7 +25,7 @@ final class NotIn extends ConstraintAttribute
      * @inheritdoc
      * @param list<mixed> $values The values to check
      */
-    public function __construct(public array $values, string $errorMessageId = null)
+    public function __construct(public readonly array $values, string $errorMessageId = null)
     {
         parent::__construct($errorMessageId);
     }

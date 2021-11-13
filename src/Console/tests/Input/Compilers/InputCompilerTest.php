@@ -16,12 +16,12 @@ use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Argument;
-use Aphiria\Console\Input\ArgumentTypes;
+use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Compilers\InputCompiler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
-use Aphiria\Console\Input\OptionTypes;
+use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -39,7 +39,7 @@ class InputCompilerTest extends TestCase
 
     public function testBackslashesAreRespected(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -47,7 +47,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentTypes::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [],
                 ''
             ),
@@ -59,7 +59,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArgvInputIsCompiledCorrectly(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -74,7 +74,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArgumentShortOptionLongOption(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -82,10 +82,10 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentTypes::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [
-                    new Option('opt1', OptionTypes::REQUIRED_VALUE, null, ''),
-                    new Option('opt2', OptionTypes::NO_VALUE, 'r', '')
+                    new Option('opt1', OptionType::RequiredValue, null, ''),
+                    new Option('opt2', OptionType::NoValue, 'r', '')
                 ],
                 ''
             ),
@@ -100,7 +100,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayArgumentWithOptionalArgumentAfterIsAcceptable(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -109,8 +109,8 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentTypes::IS_ARRAY, ''),
-                    new Argument('arg2', ArgumentTypes::OPTIONAL, '', 'blah')
+                    new Argument('arg1', ArgumentType::IsArray, ''),
+                    new Argument('arg2', ArgumentType::Optional, '', 'blah')
                 ],
                 [],
                 '',
@@ -125,7 +125,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayArgumentCreatesListOfValues(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -134,7 +134,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg', ArgumentTypes::IS_ARRAY, '')
+                    new Argument('arg', ArgumentType::IsArray, '')
                 ],
                 [],
                 '',
@@ -149,7 +149,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingArrayArgumentWithRequiredArgumentAfterThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -158,8 +158,8 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentTypes::IS_ARRAY, ''),
-                    new Argument('arg2', ArgumentTypes::REQUIRED, '')
+                    new Argument('arg1', ArgumentType::IsArray, ''),
+                    new Argument('arg2', ArgumentType::Required, '')
                 ],
                 [],
                 '',
@@ -172,7 +172,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayListInputIsCompiledCorrectly(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -184,7 +184,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayLongOptionWithEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -194,7 +194,7 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionTypes::IS_ARRAY, null, '')
+                    new Option('opt', OptionType::IsArray, null, '')
                 ],
                 ''
             ),
@@ -208,7 +208,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingArrayLongOptionWithoutEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -218,7 +218,7 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionTypes::IS_ARRAY, null, '')
+                    new Option('opt', OptionType::IsArray, null, '')
                 ],
                 ''
             ),
@@ -232,7 +232,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingCommandName(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -260,7 +260,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -269,7 +269,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 ''
             ),
             $commandHandler::class
@@ -282,7 +282,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithoutEqualsSign(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -291,7 +291,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 ''
             ),
             $commandHandler::class
@@ -304,7 +304,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithoutEqualsSignWithArgumentAfter(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -312,8 +312,8 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentTypes::REQUIRED, '')],
-                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 ''
             ),
             $commandHandler::class
@@ -326,7 +326,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingLongOptionWithoutEqualsSignWithQuotedValue(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -336,8 +336,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionTypes::REQUIRED_VALUE, null, ''),
-                    new Option('opt2', OptionTypes::REQUIRED_VALUE, null, '')
+                    new Option('opt1', OptionType::RequiredValue, null, ''),
+                    new Option('opt2', OptionType::RequiredValue, null, '')
                 ],
                 ''
             ),
@@ -353,7 +353,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingMultipleArgument(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -362,9 +362,9 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentTypes::OPTIONAL, ''),
-                    new Argument('arg2', ArgumentTypes::OPTIONAL, ''),
-                    new Argument('arg3', ArgumentTypes::OPTIONAL, '')
+                    new Argument('arg1', ArgumentType::Optional, ''),
+                    new Argument('arg2', ArgumentType::Optional, ''),
+                    new Argument('arg3', ArgumentType::Optional, '')
                 ],
                 [],
                 ''
@@ -381,7 +381,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingMultipleSeparateShortOptions(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -391,9 +391,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionTypes::NO_VALUE, 'r', ''),
-                    new Option('opt2', OptionTypes::NO_VALUE, 'f', ''),
-                    new Option('opt3', OptionTypes::NO_VALUE, 'd', '')
+                    new Option('opt1', OptionType::NoValue, 'r', ''),
+                    new Option('opt2', OptionType::NoValue, 'f', ''),
+                    new Option('opt3', OptionType::NoValue, 'd', '')
                 ],
                 ''
             ),
@@ -409,7 +409,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingMultipleShortOptions(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -419,9 +419,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionTypes::NO_VALUE, 'r', ''),
-                    new Option('opt2', OptionTypes::NO_VALUE, 'f', ''),
-                    new Option('opt3', OptionTypes::NO_VALUE, 'd', '')
+                    new Option('opt1', OptionType::NoValue, 'r', ''),
+                    new Option('opt2', OptionType::NoValue, 'f', ''),
+                    new Option('opt3', OptionType::NoValue, 'd', '')
                 ],
                 ''
             ),
@@ -438,7 +438,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingNoValueOptionWithValueThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -447,7 +447,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionTypes::NO_VALUE, null, '')],
+                [new Option('opt', OptionType::NoValue, null, '')],
                 '',
                 ''
             ),
@@ -458,7 +458,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingOptionalArgumentWithDefaultValueUsesDefaultValueWhenNoValueIsPassedIn(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -466,7 +466,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentTypes::OPTIONAL, '', 'bar')],
+                [new Argument('arg', ArgumentType::Optional, '', 'bar')],
                 [],
                 '',
                 ''
@@ -480,7 +480,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingRequiredArgumentsWithoutSpecifyingAllValuesThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -489,8 +489,8 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg1', ArgumentTypes::REQUIRED, ''),
-                    new Argument('arg2', ArgumentTypes::REQUIRED, '')
+                    new Argument('arg1', ArgumentType::Required, ''),
+                    new Argument('arg2', ArgumentType::Required, '')
                 ]
             ),
             $commandHandler::class
@@ -501,7 +501,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingRequiredValueOptionWithoutValueThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -510,7 +510,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionTypes::REQUIRED_VALUE, null, '')],
+                [new Option('opt', OptionType::RequiredValue, null, '')],
                 '',
                 ''
             ),
@@ -521,7 +521,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingSingleArgument(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -529,7 +529,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentTypes::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [],
                 ''
             ),
@@ -543,7 +543,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingSingleShortOption(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -552,7 +552,7 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [],
-                [new Option('opt', OptionTypes::NO_VALUE, 'r', '')],
+                [new Option('opt', OptionType::NoValue, 'r', '')],
                 ''
             ),
             $commandHandler::class
@@ -565,7 +565,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingTwoConsecutiveLongOptions(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -575,8 +575,8 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt1', OptionTypes::NO_VALUE, null, ''),
-                    new Option('opt2', OptionTypes::NO_VALUE, null, '')
+                    new Option('opt1', OptionType::NoValue, null, ''),
+                    new Option('opt2', OptionType::NoValue, null, '')
                 ],
                 ''
             ),
@@ -591,7 +591,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingStringInputIsCompiledCorrectly(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -609,7 +609,7 @@ class InputCompilerTest extends TestCase
 
     public function testCompilingUsesDefaultValuesForOptionsThatAreNotSet(): void
     {
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -619,9 +619,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('foo', OptionTypes::REQUIRED_VALUE, 'f', '', 'foo value'),
-                    new Option('bar', OptionTypes::OPTIONAL_VALUE, 'b', '', 'bar value'),
-                    new Option('baz', OptionTypes::NO_VALUE, 'z', 'Baz command', 'baz value')
+                    new Option('foo', OptionType::RequiredValue, 'f', '', 'foo value'),
+                    new Option('bar', OptionType::OptionalValue, 'b', '', 'bar value'),
+                    new Option('baz', OptionType::NoValue, 'z', 'Baz command', 'baz value')
                 ],
                 '',
                 ''
@@ -637,7 +637,7 @@ class InputCompilerTest extends TestCase
     public function testCompilingWithTooManyArgumentsThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
-        $commandHandler = new class() implements ICommandHandler {
+        $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
             }
@@ -645,7 +645,7 @@ class InputCompilerTest extends TestCase
         $this->commands->registerCommand(
             new Command(
                 'foo',
-                [new Argument('arg', ArgumentTypes::REQUIRED, '')],
+                [new Argument('arg', ArgumentType::Required, '')],
                 [],
                 ''
             ),

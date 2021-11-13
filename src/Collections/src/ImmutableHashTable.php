@@ -20,16 +20,20 @@ use Traversable;
 
 /**
  * Defines an immutable hash table
+ *
+ * @template TKey
+ * @template TValue
+ * @implements IImmutableDictionary<TKey, TValue>
  */
 class ImmutableHashTable implements IImmutableDictionary
 {
-    /** @var array<string, KeyValuePair> The mapping of hash keys to key-value pairs */
-    protected array $hashKeysToKvps = [];
     /** @var KeyHasher The key hasher to use */
-    private KeyHasher $keyHasher;
+    private readonly KeyHasher $keyHasher;
+    /** @var array<string, KeyValuePair<TKey, TValue>> The mapping of hash keys to key-value pairs */
+    protected array $hashKeysToKvps = [];
 
     /**
-     * @param list<KeyValuePair> $kvps The list of values to add
+     * @param list<KeyValuePair<TKey, TValue>> $kvps The list of values to add
      * @throws InvalidArgumentException Thrown if the array contains a non-key-value pair
      * @throws RuntimeException Thrown if a hash key could not be calculated
      */
@@ -43,7 +47,7 @@ class ImmutableHashTable implements IImmutableDictionary
                 throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
             }
 
-            $this->hashKeysToKvps[$this->getHashKey($kvp->getKey())] = $kvp;
+            $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
         }
     }
 
@@ -61,7 +65,7 @@ class ImmutableHashTable implements IImmutableDictionary
     public function containsValue(mixed $value): bool
     {
         foreach ($this->hashKeysToKvps as $kvp) {
-            if ($kvp->getValue() == $value) {
+            if ($kvp->value == $value) {
                 return true;
             }
         }
@@ -88,7 +92,7 @@ class ImmutableHashTable implements IImmutableDictionary
             throw new OutOfBoundsException("Hash key \"$hashKey\" not found");
         }
 
-        return $this->hashKeysToKvps[$hashKey]->getValue();
+        return $this->hashKeysToKvps[$hashKey]->value;
     }
 
     /**
@@ -107,8 +111,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $keys = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            /** @psalm-suppress MixedAssignment Value is intentionally mixed */
-            $keys[] = $kvp->getKey();
+            $keys[] = $kvp->key;
         }
 
         return $keys;
@@ -122,8 +125,7 @@ class ImmutableHashTable implements IImmutableDictionary
         $values = [];
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            /** @psalm-suppress MixedAssignment Value is intentionally mixed */
-            $values[] = $kvp->getValue();
+            $values[] = $kvp->value;
         }
 
         return $values;
@@ -142,7 +144,6 @@ class ImmutableHashTable implements IImmutableDictionary
      * @inheritdoc
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
-     * @psalm-suppress MixedReturnStatement This method is correctly returning a mixed type - bug
      */
     public function offsetGet(mixed $offset): mixed
     {
@@ -181,7 +182,6 @@ class ImmutableHashTable implements IImmutableDictionary
     public function tryGet(mixed $key, mixed &$value): bool
     {
         try {
-            /** @psalm-suppress MixedAssignment Value is intentionally mixed */
             $value = $this->get($key);
 
             return true;
@@ -194,12 +194,12 @@ class ImmutableHashTable implements IImmutableDictionary
      * Gets the hash key for a value
      * This method allows extending classes to customize how hash keys are calculated
      *
-     * @param mixed $value The value whose hash key we want
+     * @param TKey $key The value whose hash key we want
      * @return string The hash key
      * @throws RuntimeException Thrown if the hash key could not be calculated
      */
-    protected function getHashKey(mixed $value): string
+    protected function getHashKey(mixed $key): string
     {
-        return $this->keyHasher->getHashKey($value);
+        return $this->keyHasher->getHashKey($key);
     }
 }
