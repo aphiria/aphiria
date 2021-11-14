@@ -77,7 +77,7 @@ class Application implements ICommandBus
         } catch (CommandNotFoundException $ex) {
             // If there was no entered command, treat it like invoking the about command
             if ($ex->commandName === '') {
-                /** @var class-string|null $aboutCommandHandlerClassName */
+                /** @var class-string<ICommandHandler>|null $aboutCommandHandlerClassName */
                 $aboutCommandHandlerClassName = null;
 
                 if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {

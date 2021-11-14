@@ -63,7 +63,7 @@ final class CommandRegistry
      * Registers a command
      *
      * @param Command $command The command to register
-     * @param class-string $commandHandlerClassName The name of the command handler class
+     * @param class-string<ICommandHandler> $commandHandlerClassName The name of the command handler class
      * @throws InvalidArgumentException Thrown if the command handler is not a Closure nor a command handler
      */
     public function registerCommand(Command $command, string $commandHandlerClassName): void
@@ -136,8 +136,8 @@ final class CommandRegistry
      * Tries to find the command handler for a particular command
      *
      * @param Command|string $command Either the command name or the instance of the command
-     * @param class-string|null $commandHandlerClassName The command handler class name, if there was one
-     * @param-out class-string $commandHandlerClassName The command handler class name, if there was one
+     * @param class-string<ICommandHandler>|null $commandHandlerClassName The command handler class name, if there was one
+     * @param-out class-string<ICommandHandler> $commandHandlerClassName The command handler class name, if there was one
      * @return bool True if there was a handler for the command, otherwise false
      * @psalm-suppress ReferenceConstraintViolation We purposely set the command handler name to null if we're not successful
      */

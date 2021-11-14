@@ -28,7 +28,7 @@ use Closure;
  */
 class LazyBinderDispatcher implements IBinderDispatcher
 {
-    /** @var array<class-string, true> The list of already-dispatched binder classes */
+    /** @var array<class-string<Binder>, true> The list of already-dispatched binder classes */
     private array $alreadyDispatchedBinderClasses = [];
 
     /**

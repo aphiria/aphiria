@@ -47,7 +47,7 @@ final class SymfonySerializerBinder extends Binder
     public function bind(IContainer $container): void
     {
         $encoders = $normalizers = [];
-        /** @var list<class-string> $encoderNames */
+        /** @var list<class-string<EncoderInterface>|class-string<DecoderInterface>> $encoderNames */
         $encoderNames = GlobalConfiguration::getArray('aphiria.serialization.encoders');
 
         foreach ($encoderNames as $encoderName) {
