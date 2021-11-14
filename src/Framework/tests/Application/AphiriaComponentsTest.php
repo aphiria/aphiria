@@ -365,9 +365,10 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
+             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<Exception> $exceptionType
-             * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback
+             * @param class-string<T> $exceptionType
+             * @param Closure(T, IOutput): void|Closure(T, IOutput): int $callback
              */
             public function build(IApplicationBuilder $appBuilder, string $exceptionType, Closure $callback): void
             {
@@ -640,9 +641,10 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
+             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<Exception> $exceptionType
-             * @param Closure(Exception): string $logLevelFactory
+             * @param class-string<T> $exceptionType
+             * @param Closure(T): string $logLevelFactory
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -836,14 +838,15 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
+             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param string|null|Closure(Exception): string $type
-             * @param string|null|Closure(Exception): string $title
-             * @param string|null|Closure(Exception): string $detail
-             * @param int|Closure(Exception): int $status
-             * @param string|null|Closure(Exception): string $instance
-             * @param array|null|Closure(Exception): array $extensions
+             * @param class-string<T> $exceptionType
+             * @param string|null|Closure(T): string $type
+             * @param string|null|Closure(T): string $title
+             * @param string|null|Closure(T): string $detail
+             * @param HttpStatusCode|int|Closure(T): int $status
+             * @param string|null|Closure(T): string $instance
+             * @param array|null|Closure(T): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -851,7 +854,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = HttpStatusCode::InternalServerError,
+                HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {
@@ -875,14 +878,15 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
+             * @template T of Exception
              * @param IApplicationBuilder $appBuilder
-             * @param class-string $exceptionType
-             * @param string|null|Closure(Exception): string $type
-             * @param string|null|Closure(Exception): string $title
-             * @param string|null|Closure(Exception): string $detail
-             * @param int|Closure(Exception): int $status
-             * @param string|null|Closure(Exception): string $instance
-             * @param array|null|Closure(Exception): array $extensions
+             * @param class-string<T> $exceptionType
+             * @param string|null|Closure(T): string $type
+             * @param string|null|Closure(T): string $title
+             * @param string|null|Closure(T): string $detail
+             * @param HttpStatusCode|int|Closure(T): int $status
+             * @param string|null|Closure(T): string $instance
+             * @param array|null|Closure(T): array $extensions
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -890,7 +894,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure $type = null,
                 string|Closure $title = null,
                 string|Closure $detail = null,
-                int|Closure $status = HttpStatusCode::InternalServerError,
+                HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure $instance = null,
                 array|Closure $extensions = null
             ): void {

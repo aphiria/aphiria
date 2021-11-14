@@ -42,18 +42,21 @@ class LogLevelFactory
     /**
      * Registers an exception log level factory
      *
-     * @param class-string<Exception> $exceptionType The exception whose factory we're registering
-     * @param Closure(Exception): string $factory The factory that takes in an exception of the input type and returns a PSR-3 log level
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The exception whose factory we're registering
+     * @param Closure(T): string $factory The factory that takes in an exception of the input type and returns a PSR-3 log level
      */
     public function registerLogLevelFactory(string $exceptionType, Closure $factory): void
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->logLevelFactories[$exceptionType] = $factory;
     }
 
     /**
      * Registers an exception log level factory for an exception type
      *
-     * @param array<class-string<Exception>, Closure(Exception): string> $exceptionTypesToFactories The exception types to factories
+     * @template T of Exception
+     * @param array<class-string<T>, Closure(T): string> $exceptionTypesToFactories The exception types to factories
      */
     public function registerManyLogLevelFactories(array $exceptionTypesToFactories): void
     {

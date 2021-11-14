@@ -70,12 +70,14 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a console exception output writer
      *
-     * @param class-string<Exception> $exceptionType The type of exception that's thrown
-     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The factory that takes in the exception and output, and writes messages/returns a status code
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception that's thrown
+     * @param Closure(T, IOutput): void|Closure(T, IOutput): int $callback The factory that takes in the exception and output, and writes messages/returns a status code
      * @return static For chaining
      */
     public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->consoleOutputWriters[$exceptionType] = $callback;
 
         return $this;
@@ -84,12 +86,14 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a log level factory for a particular exception type
      *
-     * @param class-string<Exception> $exceptionType The type of exception that's thrown
-     * @param Closure(Exception): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception that's thrown
+     * @param Closure(T): string $logLevelFactory The factory that takes in an instance of the exception type and returns a PSR-3 log level
      * @return static For chaining
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
 
         return $this;
@@ -98,13 +102,14 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a mapping of an exception type to problem details properties
      *
-     * @param class-string $exceptionType The type of exception that's thrown
-     * @param string|null|Closure(Exception): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(Exception): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
-     * @param string|null|Closure(Exception): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param HttpStatusCode|int|Closure(Exception): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
-     * @param string|null|Closure(Exception): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
-     * @param array|null|Closure(Exception): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception that's thrown
+     * @param string|null|Closure(T): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(T): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
+     * @param string|null|Closure(T): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
+     * @param HttpStatusCode|int|Closure(T): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param string|null|Closure(T): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
+     * @param array|null|Closure(T): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      * @return static For chaining
      */
     public function withProblemDetails(
@@ -116,6 +121,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->exceptionProblemDetailMappings[$exceptionType] = [
             'type' => $type,
             'title' => $title,
