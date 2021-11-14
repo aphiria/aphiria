@@ -60,7 +60,8 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers many writers that can use exceptions to write output and return status codes
      *
-     * @param array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
+     * @template T of Exception
+     * @param array<class-string<T>, Closure(T, IOutput): void|Closure(T, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
      */
     public function registerManyOutputWriters(array $exceptionTypesToCallbacks): void
     {
@@ -72,11 +73,13 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers a callback that can use an exception to write output and return a status code
      *
-     * @param class-string<Exception> $exceptionType The type of exception whose factory we're registering
-     * @param Closure(Exception, IOutput): void|Closure(Exception, IOutput): int $callback The callback that takes in an exception and output, and writes output/returns a status code
+     * @template T of Exception
+     * @param class-string<T> $exceptionType The type of exception whose factory we're registering
+     * @param Closure(T, IOutput): void|Closure(T, IOutput): int $callback The callback that takes in an exception and output, and writes output/returns a status code
      */
     public function registerOutputWriter(string $exceptionType, Closure $callback): void
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->outputWriters[$exceptionType] = $callback;
     }
 
