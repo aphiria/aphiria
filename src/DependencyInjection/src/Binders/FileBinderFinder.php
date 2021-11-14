@@ -34,13 +34,14 @@ final class FileBinderFinder
      * Recursively finds all binder classes in the paths
      *
      * @param string|list<string> $paths The path or list of paths to search
-     * @return list<class-string> The list of all binder class names
+     * @return list<class-string<Binder>> The list of all binder class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array
      * @throws ReflectionException Thrown if a class could not be reflected
      */
     public function findAll(string|array $paths): array
     {
         // Filter out any non-concrete binder classes
+        /** @psalm-suppress LessSpecificReturnStatement This will return a list of binder names */
         return \array_values(\array_filter($this->classFinder->findAllTypes($paths, true), static function ($className) {
             $reflectionClass = new ReflectionClass($className);
 

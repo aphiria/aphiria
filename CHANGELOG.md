@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178))
+- Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178)),  ([#179](https://github.com/aphiria/aphiria/pull/179))
 
 ## [v1.0.0-alpha5](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha4...v1.0.0-alpha5) (2021-11-14)
 

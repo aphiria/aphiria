@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Attributes;
 
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Attribute;
 use InvalidArgumentException;
 
@@ -22,7 +23,7 @@ use InvalidArgumentException;
 final class RouteConstraint
 {
     /**
-     * @param class-string $className The name of the constraint class
+     * @param class-string<IRouteConstraint> $className The name of the constraint class
      * @param list<mixed> $constructorParameters The list of constructor parameters for the constraint class
      * @throws InvalidArgumentException Thrown if any of the parameters are invalid
      */

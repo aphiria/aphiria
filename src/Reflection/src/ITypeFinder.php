@@ -44,10 +44,11 @@ interface ITypeFinder
     /**
      * Recursively finds all sub-types of a particular type in a path
      *
-     * @param class-string $parentType The type whose sub-types we're searching for
+     * @template T of object
+     * @param class-string<T> $parentType The type whose sub-types we're searching for
      * @param string|list<string> $directories The path or list of paths of directories to search
      * @param bool $recursive Whether or not we want to recurse through all directories
-     * @return list<class-string> The list of all types that are sub-types of the input class/interface
+     * @return list<class-string<T>> The list of all types that are sub-types of the input class/interface
      * @throws InvalidArgumentException Thrown if the paths are not a string or array of strings
      * @throws ReflectionException Thrown if any types could not be reflected in the input directories
      */

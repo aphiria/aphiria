@@ -59,7 +59,7 @@ final class ValidationBinder extends Binder
         $errorMessageTemplateConfiguration = null;
 
         if (GlobalConfiguration::tryGetArray('aphiria.validation.errorMessageTemplates', $errorMessageTemplateConfiguration)) {
-            /** @var array{type: class-string} $errorMessageTemplateConfiguration */
+            /** @var array{type: class-string<IErrorMessageTemplateRegistry>} $errorMessageTemplateConfiguration */
             if (!isset($errorMessageTemplateConfiguration['type'])) {
                 throw new InvalidArgumentException('Missing key "type" from error message template config');
             }

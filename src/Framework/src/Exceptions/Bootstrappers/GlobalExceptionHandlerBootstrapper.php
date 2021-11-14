@@ -28,6 +28,7 @@ use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCode;
 use InvalidArgumentException;
+use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
@@ -81,7 +82,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
      */
     protected function createAndBindApiExceptionRenderer(): IExceptionRenderer
     {
-        /** @var class-string $exceptionRendererType */
+        /** @var class-string<IExceptionRenderer> $exceptionRendererType */
         $exceptionRendererType = GlobalConfiguration::getString('aphiria.exceptions.apiExceptionRenderer');
 
         switch ($exceptionRendererType) {
@@ -136,7 +137,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     {
         $logger = new Logger(GlobalConfiguration::getString('aphiria.logging.name'));
 
-        /** @var array{type: class-string, path: string, level: int|string, ident: string} $handlerConfiguration */
+        /** @var array{type: class-string<HandlerInterface>, path: string, level: int|string, ident: string} $handlerConfiguration */
         foreach (GlobalConfiguration::getArray('aphiria.logging.handlers') as $handlerConfiguration) {
             switch ($handlerConfiguration['type']) {
                 case StreamHandler::class:
