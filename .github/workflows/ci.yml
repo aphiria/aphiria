@@ -7,7 +7,7 @@ on:
 jobs:
   ci:
     uses: aphiria/aphiria/.github/workflows/ci-template.yml@1.x
-      with:
-        # Set this to true once we've closed https://github.com/aphiria/aphiria/issues/154
-        run-psalm-static-analysis: false
-        split-subtrees: true
+    with:
+      # Set this to true once we've closed https://github.com/aphiria/aphiria/issues/154
+      run-psalm-static-analysis: false
+      split-subtrees: true
