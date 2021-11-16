@@ -3,15 +3,18 @@ on:
   workflow_call:
     inputs:
       run-psalm-static-analysis:
+        description: Whether or not to run Psalm static analysis
         required: false
         type: boolean
         default: false
       split-subtrees:
+        description: Whether or not to split subtrees
         required: false
         type: boolean
         default: false
     secrets:
       ci-ssh-key:
+        description: The SSH key for splitting subtrees
         required: false
 jobs:
   ci:
@@ -48,7 +51,7 @@ jobs:
         env:
           PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-php-version }}
       - name: Run Psalm Static Analysis
-        if: ${{ inputs.run-psalm-static-analysis }} == true
+        if: ${{ inputs.run-psalm-static-analysis }}
         run: composer psalm -- --shepherd
       - name: Upload Coverage Results To Coveralls
         env:
@@ -57,7 +60,7 @@ jobs:
           composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Split Subtrees
-        if: ${{ inputs.split-subtrees }} == true && matrix.php == '8.1' && (github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/'))
+        if: ${{ inputs.split-subtrees }} && matrix.php == '8.1' && (github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/'))
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
