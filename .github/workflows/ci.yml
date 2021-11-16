@@ -6,55 +6,8 @@ on:
     - cron: '0 0 * * *'
 jobs:
   ci:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        include:
-          - php: '8.1'
-            stability: prefer-stable
-            experimental: true
-            php-cs-fixer-ignore-php-version: 1
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
-    steps:
-      - name: Check Out Code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Set Up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: curl, dom, libxml, mbstring, pcntl, xdebug, zip
-          tools: composer:v2
-          coverage: xdebug
-      - name: Install Dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
-      - name: Run Tests
-        run: composer phpunit
-      # For now, do not run the linter until PHP-CS-Fixer fully supports this PHP version
-      - name: Run Linter
-        if: matrix.experimental == false
-        run: composer phpcs-test
-        env:
-          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-php-version }}
-      # For now, do not run Psalm until it fully supports this PHP version
-      - name: Run Psalm Static Analysis
-        if: matrix.experimental == false
-        run: composer psalm -- --shepherd
-      - name: Upload Coverage Results To Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          composer global require php-coveralls/php-coveralls
-          php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
-      - name: Split Subtrees
-        if: matrix.php == '8.1' && (github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/'))
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.CI_SSH_KEY }}"
-          bash bin/split.sh ${{ github.ref }}
+    uses: aphiria/aphiria/.github/workflows/ci-template.yml@1.x
+      with:
+        # Set this to true once we've closed https://github.com/aphiria/aphiria/issues/154
+        run-psalm-static-analysis: false
+        split-subtrees: true
