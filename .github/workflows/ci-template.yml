@@ -60,7 +60,7 @@ jobs:
           composer global require php-coveralls/php-coveralls
           php-coveralls --coverage_clover=./.coverage/clover.xml --json_path=./coveralls-upload.json -v
       - name: Split Subtrees
-        if: ${{ inputs.split-subtrees }} && matrix.php == '8.1' && (github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/'))
+        if: ${{ inputs.split-subtrees }} == true && matrix.php == '8.1' && (github.ref == 'refs/heads/1.x' || startswith(github.ref, 'refs/tags/'))
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
