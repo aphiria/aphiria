@@ -10,6 +10,9 @@ on:
         required: false
         type: boolean
         default: false
+    secrets:
+      ci-ssh-key:
+        required: false
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -61,5 +64,5 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add - <<< "${{ secrets.CI_SSH_KEY }}"
+          ssh-add - <<< "${{ secrets.ci-ssh-key }}"
           bash bin/split.sh ${{ github.ref }}
