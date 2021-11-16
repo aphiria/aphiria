@@ -4,4 +4,4 @@ on:
   pull_request:
 jobs:
   ci:
-    uses: aphiria/aphiria/.github/workflows/library-ci-template.yml@1.x
+    uses: aphiria/aphiria/.github/workflows/ci-template.yml@1.x
