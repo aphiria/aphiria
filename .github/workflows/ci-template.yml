@@ -38,7 +38,7 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
       - name: Run Tests
         run: composer phpunit
-      # For now, do not run the linter until PHP-CS-Fixer fully supports this PHP version
+        # Remove "if" condition once this is closed: https://github.com/aphiria/aphiria/issues/154
       - name: Run Linter
         if: matrix.experimental == false
         run: composer phpcs-test
