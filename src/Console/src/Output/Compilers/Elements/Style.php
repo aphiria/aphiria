@@ -49,7 +49,7 @@ final class Style
     public function __construct(
         public ?Color $foregroundColor = null,
         public ?Color $backgroundColor = null,
-        public array  $textStyles = []
+        public array $textStyles = []
     ) {
         $this->supportedForegroundColors = [
             Color::Black->value => [30, 39],
