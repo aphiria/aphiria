@@ -47,7 +47,7 @@ interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
      * Gets the value of the key
      *
      * @param TKey $key The key to get
-     * @return TValue The value if it was found, otherwise the default value
+     * @return TValue The value if it was found
      * @throws OutOfBoundsException Thrown if the key could not be found
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
