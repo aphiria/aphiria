@@ -21,6 +21,7 @@ use Aphiria\Routing\Attributes\RouteConstraint;
 use Aphiria\Routing\Attributes\RouteGroup;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\Tests\Attributes\Mocks\CustomMiddleware;
 use Aphiria\Routing\Tests\Attributes\Mocks\DummyConstraint;
 use Aphiria\Routing\Tests\Attributes\Mocks\DummyMiddleware;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -49,6 +50,27 @@ class AttributeRouteRegistrantTest extends TestCase
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
         $this->assertEmpty($routes->getAll());
+    }
+
+    public function testRegisteringRouteGroupWithMiddlewareThatExtendsMiddlewareAttributeIsAddedToRouteGroup(): void
+    {
+        $controller = new #[RouteGroup(''), CustomMiddleware] class () extends Controller {
+            #[Get('')]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $this->assertCount(1, $routeArr[0]->middlewareBindings);
+        $this->assertSame(DummyMiddleware::class, $routeArr[0]->middlewareBindings[0]->className);
     }
 
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
@@ -105,6 +127,30 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->assertCount(1, $route->middlewareBindings);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[0]->className);
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->parameters);
+    }
+
+    public function testRegisteringRouteWithMiddlewareThatExtendsMiddlewareAttributeIsAddedToRoute(): void
+    {
+        $controller = new class () extends Controller {
+            #[
+                Get(''),
+                CustomMiddleware
+            ]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $this->assertCount(1, $routeArr[0]->middlewareBindings);
+        $this->assertSame(DummyMiddleware::class, $routeArr[0]->middlewareBindings[0]->className);
     }
 
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
