@@ -56,7 +56,7 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * Gets the value at an index
      *
      * @param int $index The index to get
-     * @return T The value if it was found, otherwise the default value
+     * @return T The value if it was found
      * @throws OutOfRangeException Thrown if the index is < 0 or >= than the length of the list
      */
     public function get(int $index): mixed;
