@@ -14,6 +14,7 @@ namespace Aphiria\Net\Http\Formatting;
 
 use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\Headers\SameSiteMode;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
@@ -91,10 +92,10 @@ class ResponseFormatter
      *
      * @param IResponse $response The response to format
      * @param string|Uri $uri The URI to redirect to
-     * @param int $statusCode The status code
+     * @param HttpStatusCode|int $statusCode The status code
      * @throws RuntimeException Thrown if the location header's hash key could not be calculated
      */
-    public function redirectToUri(IResponse $response, string|Uri $uri, int $statusCode = 302): void
+    public function redirectToUri(IResponse $response, string|Uri $uri, HttpStatusCode|int $statusCode = HttpStatusCode::Found): void
     {
         if (\is_string($uri)) {
             $uriString = $uri;
