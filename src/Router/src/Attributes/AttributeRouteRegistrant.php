@@ -94,7 +94,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         /** @var list<IRouteConstraint> $routeConstraints */
         $routeConstraints = [];
 
-        foreach ($controller->getAttributes(Middleware::class) as $middlewareAttribute) {
+        foreach ($controller->getAttributes(Middleware::class, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
             $middlewareAttributeInstance = $middlewareAttribute->newInstance();
             $middlewareBindings[] = new MiddlewareBinding(
                 $middlewareAttributeInstance->className,
@@ -117,7 +117,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $routeGroupAttributeInstance->host,
                 $routeGroupAttributeInstance->isHttpsOnly,
                 $routeConstraints,
-                [], // We'll set the middleware below in the case there was no route group attribute, but there was a middleware attribute
+                $middlewareBindings,
                 $routeGroupAttributeInstance->parameters
             );
         }
@@ -148,7 +148,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             /** @var list<IRouteConstraint> $routeConstraints */
             $routeConstraints = [];
 
-            foreach ($method->getAttributes(Middleware::class) as $middlewareAttribute) {
+            foreach ($method->getAttributes(Middleware::class, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
                 $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                 $middlewareBindings[] = new MiddlewareBinding(
                     $middlewareAttributeInstance->className,

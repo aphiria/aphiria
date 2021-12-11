@@ -19,7 +19,7 @@ use InvalidArgumentException;
  * Defines the middleware attribute
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
-final class Middleware
+class Middleware
 {
     /**
      * @param class-string $className The name of the middleware class
