@@ -25,7 +25,7 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
     /**
      * @inheritdoc
      */
-    public function normalize(mixed $object, string $format = null, array $context = []):  array|string|int|float|bool|ArrayObject|null
+    public function normalize(mixed $object, string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
     {
         if (!$object instanceof ProblemDetails) {
             throw new InvalidArgumentException('Object must be an instance of ' . ProblemDetails::class);

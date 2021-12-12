@@ -152,7 +152,7 @@ enum HttpStatusCode: int
             return null;
         }
 
-        return match($statusCode) {
+        return match ($statusCode) {
             self::Continue => 'Continue',
             self::SwitchingProtocol => 'Switching Protocol',
             self::Ok => 'OK',

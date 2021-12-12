@@ -26,6 +26,8 @@ class RequestFactory
 {
     /** @const The name of the request property that stores the client IP address */
     private const CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
+    /** @var array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names */
+    protected readonly array $trustedHeaderNames;
     /** @var array<string, true> The list of HTTP request headers that don't begin with "HTTP_" */
     private static array $specialCaseHeaders = [
         'AUTH_TYPE' => true,
@@ -74,8 +76,6 @@ class RequestFactory
     ];
     /** @var array<string, true> The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
-    /** @var array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names */
-    protected readonly array $trustedHeaderNames;
 
     /**
      * @param list<string> $trustedProxyIPAddresses The list of trusted proxy IP addresses

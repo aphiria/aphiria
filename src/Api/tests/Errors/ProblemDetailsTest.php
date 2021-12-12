@@ -14,7 +14,6 @@ namespace Aphiria\Api\Tests\Errors;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Net\Http\HttpStatusCode;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsTest extends TestCase

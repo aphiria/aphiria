@@ -123,7 +123,7 @@ class PromptTest extends TestCase
             ->with($this->output)
             ->willReturn('foo');
         $this->output->shouldReceive('write')
-            ->with("<question>Question</question>");
+            ->with('<question>Question</question>');
         $this->output->shouldReceive('getDriver')
             ->times(1)
             ->andReturn($driver);

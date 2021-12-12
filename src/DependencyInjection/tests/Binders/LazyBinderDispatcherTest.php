@@ -29,7 +29,6 @@ use Aphiria\DependencyInjection\TargetedContext;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
 use Aphiria\DependencyInjection\UniversalContext;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LazyBinderDispatcherTest extends TestCase

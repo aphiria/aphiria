@@ -26,8 +26,11 @@ final class LiteralTrieNode extends TrieNode
      * @param TrieNode|null $hostTrie The host trie, if there is one
      */
     public function __construct(
-        public readonly string $value, array $children, Route|array $routes = [], TrieNode $hostTrie = null)
-    {
+        public readonly string $value,
+        array $children,
+        Route|array $routes = [],
+        TrieNode $hostTrie = null
+    ) {
         parent::__construct($children, $routes, $hostTrie);
     }
 }
