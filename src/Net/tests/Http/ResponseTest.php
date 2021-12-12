@@ -125,6 +125,5 @@ class ResponseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid HTTP status code -1');
         (new Response())->setStatusCode(-1);
-
     }
 }

@@ -19,7 +19,6 @@ use InvalidArgumentException;
  */
 final class Option
 {
-
     /** @var list<OptionType> The type of option this is */
     public readonly array $type;
     /** @var int The bitwise-OR'd flag representing all the types */

@@ -15,7 +15,6 @@ namespace Aphiria\Console\Tests\Output\Compilers\Elements;
 use Aphiria\Console\Output\Compilers\Elements\Color;
 use Aphiria\Console\Output\Compilers\Elements\Style;
 use Aphiria\Console\Output\Compilers\Elements\TextStyle;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class StyleTest extends TestCase

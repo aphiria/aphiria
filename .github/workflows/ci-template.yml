@@ -25,8 +25,6 @@ jobs:
         include:
           - php: '8.1'
             stability: prefer-stable
-            experimental: true
-            php-cs-fixer-ignore-php-version: 1
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
       - name: Check Out Code
@@ -44,12 +42,8 @@ jobs:
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
       - name: Run Tests
         run: composer phpunit
-        # Remove "if" condition once this is closed: https://github.com/aphiria/aphiria/issues/154
       - name: Run Linter
-        if: matrix.experimental == false
         run: composer phpcs-test
-        env:
-          PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-cs-fixer-ignore-php-version }}
       - name: Run Psalm Static Analysis
         if: inputs.run-psalm-static-analysis
         run: composer psalm -- --shepherd
