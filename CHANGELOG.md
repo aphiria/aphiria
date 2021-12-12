@@ -4,7 +4,17 @@
 
 ### Fixed
 
-- Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178)),  ([#180](https://github.com/aphiria/aphiria/pull/180))
+- Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178)), ([#180](https://github.com/aphiria/aphiria/pull/180))
+- Fixed `Aphiria\Net\Http\Formatting\ResponseFormatter::redirectToUri()` to accept an `HttpStatusCode` as well as an `int` status code ([#184](https://github.com/aphiria/aphiria/pull/184))
+- Re-enabled PHP-CS-Fixer in CI ([#188](https://github.com/aphiria/aphiria/pull/188))
+
+### Changed
+
+- Changed to using templatized CI workflows for DRY ([#183](https://github.com/aphiria/aphiria/pull/183))
+
+### Added
+
+- Added ability to search for middleware attributes that extend `Aphiria\Routing\Attributes\Middleware` ([#187](https://github.com/aphiria/aphiria/pull/187))
 
 ## [v1.0.0-alpha5](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha4...v1.0.0-alpha5) (2021-11-14)
 
