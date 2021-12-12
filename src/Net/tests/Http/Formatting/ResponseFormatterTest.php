@@ -16,6 +16,7 @@ use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
 use Aphiria\Net\Http\Headers\SameSiteMode;
+use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
@@ -38,6 +39,14 @@ class ResponseFormatterTest extends TestCase
             ->willReturn($this->headers);
     }
 
+    public function getRedirectStatusCodes(): array
+    {
+        return [
+            [HttpStatusCode::Found],
+            [302]
+        ];
+    }
+
     public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
     {
         $this->response->expects($this->once())
@@ -56,6 +65,18 @@ class ResponseFormatterTest extends TestCase
             'name=; Max-Age=0; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $this->headers->getFirst('Set-Cookie')
         );
+    }
+
+    /**
+     * @dataProvider getRedirectStatusCodes
+     * @param HttpStatusCode|int $expectedStatusCode
+     */
+    public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(HttpStatusCode|int $expectedStatusCode): void
+    {
+        $this->response->expects($this->once())
+            ->method('setStatusCode')
+            ->with($expectedStatusCode);
+        $this->formatter->redirectToUri($this->response, 'http://foo.com', $expectedStatusCode);
     }
 
     public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
