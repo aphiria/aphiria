@@ -1,0 +1,7 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  ci:
+    uses: aphiria/aphiria/.github/workflows/ci-template.yml@1.x

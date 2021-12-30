@@ -10,7 +10,7 @@ then
     exit 1
 fi
 
-declare -A dirs_to_repos=(["Api"]="api" ["Application"]="application" ["Collections"]="collections" ["Console"]="console" ["ContentNegotiation"]="content-negotiation" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["Framework"]="framework" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["PsrAdapters"]="psr-adapters" ["Reflection"]="reflection" ["Router"]="router" ["Sessions"]="sessions" ["Validation"]="validation")
+declare -A dirs_to_repos=(["Api"]="api" ["Application"]="application" ["Authentication"]="authentication" ["Authorization"]="authorization" ["Collections"]="collections" ["Console"]="console" ["ContentNegotiation"]="content-negotiation" ["DependencyInjection"]="dependency-injection" ["Exceptions"]="exceptions" ["Framework"]="framework" ["IO"]="io" ["Middleware"]="middleware" ["Net"]="net" ["PsrAdapters"]="psr-adapters" ["Reflection"]="reflection" ["Router"]="router" ["Security"]="security" ["Sessions"]="sessions" ["Validation"]="validation")
 
 for dir in "${!dirs_to_repos[@]}"
 do
