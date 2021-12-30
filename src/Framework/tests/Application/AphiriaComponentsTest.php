@@ -17,6 +17,12 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
+use Aphiria\Authentication\AuthenticationScheme;
+use Aphiria\Authentication\AuthenticationSchemeOptions;
+use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
+use Aphiria\Authorization\AuthorizationPolicy;
+use Aphiria\Authorization\IAuthorizationRequirementHandler;
+use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -24,6 +30,8 @@ use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\AphiriaComponents;
+use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
+use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
@@ -57,6 +65,217 @@ class AphiriaComponentsTest extends TestCase
     protected function tearDown(): void
     {
         Mockery::close();
+    }
+
+    public function testWithAuthenticationSchemeRegistersSchemeToComponent(): void
+    {
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
+        $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
+        $expectedComponent = $this->createMock(AuthenticationComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withScheme')
+            ->with($scheme, true);
+        $this->appBuilder->method('hasComponent')
+            ->with(AuthenticationComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->method('getComponent')
+            ->with(AuthenticationComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, AuthenticationScheme $scheme, bool $isDefault): void
+            {
+                $this->withAuthenticationScheme($appBuilder, $scheme, $isDefault);
+            }
+        };
+        $component->build($this->appBuilder, $scheme, true);
+    }
+
+    public function testWithAuthenticationSchemeRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->method('hasComponent')
+            ->with(AuthenticationComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->method('withComponent')
+            ->with($this->isInstanceOf(AuthenticationComponent::class));
+        $this->appBuilder->method('getComponent')
+            ->with(AuthenticationComponent::class)
+            ->willReturn($this->createMock(AuthenticationComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, AuthenticationScheme $scheme): void
+            {
+                $this->withAuthenticationScheme($appBuilder, $scheme);
+            }
+        };
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
+        $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
+        $component->build($this->appBuilder, $scheme);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithAuthenticationSchemeWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, AuthenticationScheme $scheme): void
+            {
+                $this->withAuthenticationScheme($appBuilder, $scheme, true);
+            }
+        };
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
+        $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
+        $component->build($this->appBuilder, $scheme);
+    }
+
+    public function testWithAuthorizationPolicyRegistersPolicyToComponent(): void
+    {
+        $policy = new AuthorizationPolicy('foo', $this);
+        $expectedComponent = $this->createMock(AuthorizationComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withPolicy')
+            ->with($policy);
+        $this->appBuilder->method('hasComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->method('getComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, AuthorizationPolicy $policy): void
+            {
+                $this->withAuthorizationPolicy($appBuilder, $policy);
+            }
+        };
+        $component->build($this->appBuilder, $policy);
+    }
+
+    public function testWithAuthorizationPolicyWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, AuthorizationPolicy $policy): void
+            {
+                $this->withAuthorizationPolicy($appBuilder, $policy);
+            }
+        };
+        $component->build($this->appBuilder, new AuthorizationPolicy('foo', $this));
+    }
+
+    public function testWithAuthorizationPolicyRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->method('hasComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->method('withComponent')
+            ->with($this->isInstanceOf(AuthorizationComponent::class));
+        $this->appBuilder->method('getComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn($this->createMock(AuthorizationComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, AuthorizationPolicy $policy): void
+            {
+                $this->withAuthorizationPolicy($appBuilder, $policy);
+            }
+        };
+        $component->build($this->appBuilder, new AuthorizationPolicy('foo', $this));
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithAuthorizationRequirementHandlerRegistersRequirementHandlerToComponent(): void
+    {
+        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
+        $expectedComponent = $this->createMock(AuthorizationComponent::class);
+        $expectedComponent->expects($this->once())
+            ->method('withRequirementHandler')
+            ->with(RolesRequirement::class, $requirementHandler);
+        $this->appBuilder->method('hasComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn(true);
+        $this->appBuilder->method('getComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $requirementType,
+                IAuthorizationRequirementHandler $requirementHandler
+            ): void {
+                $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
+            }
+        };
+        $component->build($this->appBuilder, RolesRequirement::class, $requirementHandler);
+    }
+
+    public function testWithAuthorizationRequirementHandlerRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder->method('hasComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn(false);
+        $this->appBuilder->method('withComponent')
+            ->with($this->isInstanceOf(AuthorizationComponent::class));
+        $this->appBuilder->method('getComponent')
+            ->with(AuthorizationComponent::class)
+            ->willReturn($this->createMock(AuthorizationComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $requirementType,
+                IAuthorizationRequirementHandler $requirementHandler
+            ): void {
+                $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
+            }
+        };
+        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
+        $component->build($this->appBuilder, RolesRequirement::class, $requirementHandler);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithAuthorizationRequirementHandlerWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(
+                IApplicationBuilder $appBuilder,
+                string $requirementType,
+                IAuthorizationRequirementHandler $requirementHandler
+            ): void {
+                $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
+            }
+        };
+        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
+        $component->build($this->appBuilder, RolesRequirement::class, $requirementHandler);
     }
 
     public function testWithBinderDispatcherRegisterBinderDispatcherToComponent(): void

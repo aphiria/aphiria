@@ -7,7 +7,10 @@
         "rest",
         "http",
         "content negotiation",
-        "router"
+        "router",
+        "authentication",
+        "authorization",
+        "pbac"
     ],
     "authors": [
         {
@@ -34,6 +37,8 @@
         "psr-4": {
             "Aphiria\\Api\\": "src/Api/src",
             "Aphiria\\Application\\": "src/Application/src",
+            "Aphiria\\Authentication\\": "src/Authentication/src",
+            "Aphiria\\Authorization\\": "src/Authorization/src",
             "Aphiria\\Collections\\": "src/Collections/src",
             "Aphiria\\Console\\": "src/Console/src",
             "Aphiria\\ContentNegotiation\\": "src/ContentNegotiation/src",
@@ -46,6 +51,7 @@
             "Aphiria\\PsrAdapters\\": "src/PsrAdapters/src",
             "Aphiria\\Reflection\\": "src/Reflection/src",
             "Aphiria\\Routing\\": "src/Router/src",
+            "Aphiria\\Security\\": "src/Security/src",
             "Aphiria\\Sessions\\": "src/Sessions/src",
             "Aphiria\\Validation\\": "src/Validation/src"
         }
@@ -54,6 +60,8 @@
         "psr-4": {
             "Aphiria\\Api\\Tests\\": "src/Api/tests",
             "Aphiria\\Application\\Tests\\": "src/Application/tests",
+            "Aphiria\\Authentication\\Tests\\": "src/Authentication/tests",
+            "Aphiria\\Authorization\\Tests\\": "src/Authorization/tests",
             "Aphiria\\Collections\\Tests\\": "src/Collections/tests",
             "Aphiria\\Console\\Tests\\": "src/Console/tests",
             "Aphiria\\ContentNegotiation\\Tests\\": "src/ContentNegotiation/tests",
@@ -66,6 +74,7 @@
             "Aphiria\\PsrAdapters\\Tests\\": "src/PsrAdapters/tests",
             "Aphiria\\Reflection\\Tests\\": "src/Reflection/tests",
             "Aphiria\\Routing\\Tests\\": "src/Router/tests",
+            "Aphiria\\Secuirty\\Tests\\": "src/Security/tests",
             "Aphiria\\Sessions\\Tests\\": "src/Sessions/tests",
             "Aphiria\\Validation\\Tests\\": "src/Validation/tests"
         }

@@ -18,6 +18,8 @@ Aphiria is a suite of small, decoupled PHP libraries that make up a REST API fra
 * <a href="https://www.aphiria.com/docs/1.x/content-negotiation.html" target="_blank">Automatic content negotiation</a> of your POPOs
 * <a href="https://www.aphiria.com/docs/1.x/routing.html" target="_blank">One of the fastest, most feature-full routers in PHP</a>
 * <a href="https://www.aphiria.com/docs/1.x/configuration.html#application-builders" target="_blank">A modular way of building your apps from reusable components</a>
+* <a href="https://www.aphiria.com/docs/1.x/authentication.html" target="_blank">An extensible authentication scheme</a>
+* <a href="https://www.aphiria.com/docs/1.x/authorization.html" target="_blank">A policy-based authorization control system</a>
 * <a href="https://www.aphiria.com/docs/1.x/dependency-injection.html" target="_blank">A DI container with binders to simplify configuring your app</a>
 * <a href="https://www.aphiria.com/docs/1.x/validation.html" target="_blank">A model validator for your POPOs</a>
 * Support for <a href="https://www.aphiria.com/docs/1.x/routing.html#route-attributes" target="_blank">route</a> and <a href="https://www.aphiria.com/docs/1.x/validation.html" target="_blank">validation</a> attributes
@@ -38,6 +40,7 @@ class UserController extends Controller
     }
 
     #[Get('/:id')]
+    #[AuthorizeRoles('admin')]
     public function getById(int $id): User
     {
         return $this->users->getById($id);
