@@ -15,6 +15,12 @@ namespace Aphiria\Framework\Application;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
+use Aphiria\Authentication\AuthenticationScheme;
+use Aphiria\Authentication\AuthenticationSchemeRegistry;
+use Aphiria\Authorization\AuthorizationPolicy;
+use Aphiria\Authorization\AuthorizationPolicyRegistry;
+use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
+use Aphiria\Authorization\IAuthorizationRequirementHandler;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
@@ -22,6 +28,8 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
+use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommand;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommandHandler;
 use Aphiria\Framework\Console\Commands\ServeCommand;
@@ -60,6 +68,107 @@ trait AphiriaComponents
 
         return $this;
     }
+
+    /**
+     * Adds an authentication scheme to the authenticator
+     *
+     * @template T of AuthenticationSchemeOptions
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param AuthenticationScheme<T> $scheme The scheme to register
+     * @param bool $isDefault Whether or not the scheme is the default scheme
+     * @return static For chaining
+     */
+    protected function withAuthenticationScheme(
+        IApplicationBuilder $appBuilder,
+        AuthenticationScheme $scheme,
+        bool $isDefault = false
+    ): static {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(AuthenticationComponent::class)) {
+            if (Container::$globalInstance === null) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            // Bind the authentication scheme registry here so that it can be used in the component
+            if (!Container::$globalInstance->hasBinding(AuthenticationSchemeRegistry::class)) {
+                Container::$globalInstance->bindInstance(AuthenticationSchemeRegistry::class, new AuthenticationSchemeRegistry());
+            }
+
+            $appBuilder->withComponent(new AuthenticationComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(AuthenticationComponent::class)
+            ->withScheme($scheme, $isDefault);
+
+        return $this;
+    }
+
+    /**
+     * Adds a policy to the authority
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param AuthorizationPolicy $policy The policy to add
+     * @return static For chaining
+     */
+    protected function withAuthorizationPolicy(IApplicationBuilder $appBuilder, AuthorizationPolicy $policy): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
+            if (Container::$globalInstance === null) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            // Bind the authorization policy registry here so that it can be used in the component
+            if (!Container::$globalInstance->hasBinding(AuthorizationPolicyRegistry::class)) {
+                Container::$globalInstance->bindInstance(AuthorizationPolicyRegistry::class, new AuthorizationPolicyRegistry());
+            }
+
+            $appBuilder->withComponent(new AuthorizationComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(AuthorizationComponent::class)
+            ->withPolicy($policy);
+
+        return $this;
+    }
+
+    /**
+     * Adds a requirement handler to the authority
+     *
+     * @template T of object
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param class-string<T> $requirementType
+     * @param IAuthorizationRequirementHandler<T> $requirementHandler
+     * @return static For chaining
+     */
+    protected function withAuthorizationRequirementHandler(
+        IApplicationBuilder $appBuilder,
+        string $requirementType,
+        IAuthorizationRequirementHandler $requirementHandler
+    ): static {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
+            if (Container::$globalInstance === null) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            // Bind the authorization requirement handler registry here so that it can be used in the component
+            if (!Container::$globalInstance->hasBinding(AuthorizationRequirementHandlerRegistry::class)) {
+                Container::$globalInstance->bindInstance(
+                    AuthorizationRequirementHandlerRegistry::class,
+                    new AuthorizationRequirementHandlerRegistry()
+                );
+            }
+
+            $appBuilder->withComponent(new AuthorizationComponent(Container::$globalInstance));
+        }
+
+        $appBuilder->getComponent(AuthorizationComponent::class)
+            ->withRequirementHandler($requirementType, $requirementHandler);
+
+        return $this;
+    }
+
     /**
      * Registers the binder dispatcher to use
      *
