@@ -18,6 +18,7 @@
 - Added the Authentication library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added the Authorization library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added the Security library ([#191](https://github.com/aphiria/aphiria/pull/191))
+- Added the `route:list` console command ([#200](https://github.com/aphiria/aphiria/pull/200))
 - Added ability to search for middleware attributes that extend `Aphiria\Routing\Attributes\Middleware` ([#187](https://github.com/aphiria/aphiria/pull/187))
 
 ## [v1.0.0-alpha5](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha4...v1.0.0-alpha5) (2021-11-14)

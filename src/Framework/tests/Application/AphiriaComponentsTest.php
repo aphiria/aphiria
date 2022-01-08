@@ -652,7 +652,8 @@ class AphiriaComponentsTest extends TestCase
                 $callback($commands);
 
                 return $commands->tryGetCommand('framework:flushcaches', $flushCommandHandler)
-                    && $commands->tryGetCommand('app:serve', $serveCommandHandler);
+                    && $commands->tryGetCommand('app:serve', $serveCommandHandler)
+                    && $commands->tryGetCommand('route:list', $routeCommandHandler);
             }));
         $this->appBuilder->method('hasComponent')
             ->with(CommandComponent::class)
