@@ -235,9 +235,11 @@ final class RouteCollectionBuilder
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 
-        $path = empty($groupPath)
-            ? $path
-            : $groupPath . '/' . \ltrim($path, '/');
+        if (!empty($groupPath)) {
+            // Remove any trailing slash in the case that the route path was empty
+            $path = \rtrim($groupPath . '/' . \ltrim($path, '/'), '/');
+        }
+
         $host = \rtrim($host ?? '', '.');
 
         if (!empty($groupHost)) {

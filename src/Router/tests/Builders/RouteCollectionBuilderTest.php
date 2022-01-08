@@ -193,6 +193,23 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
 
+    public function testGroupPathWithEmptyPathForRouteDoesNotAppendSlashToEnd(): void
+    {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('foo'), function (RouteCollectionBuilder $registry) {
+            $controller = new class () {
+                public function bar(): void
+                {
+                }
+            };
+            $registry->route('GET', '')
+                ->mapsToMethod($controller::class, 'bar');
+        });
+        $routes = $registry->build()->getAll();
+        $this->assertCount(1, $routes);
+        $this->assertSame('/foo', $routes[0]->uriTemplate->pathTemplate);
+    }
+
     public function testGroupPathWithNoSlashAndRoutePathWithLeadingSlashHaveSlashBetweenThem(): void
     {
         $registry = new RouteCollectionBuilder();
