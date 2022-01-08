@@ -39,6 +39,8 @@ use Aphiria\Framework\Console\Components\CommandComponent;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use Aphiria\Framework\Exceptions\Components\ExceptionHandlerComponent;
 use Aphiria\Framework\Middleware\Components\MiddlewareComponent;
+use Aphiria\Framework\Routing\Commands\RouteListCommand;
+use Aphiria\Framework\Routing\Commands\RouteListCommandHandler;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
@@ -347,7 +349,8 @@ trait AphiriaComponents
             ->withCommands(static function (CommandRegistry $commands) use ($commandNamesToExclude) {
                 $commandBindings = [
                     new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class),
-                    new CommandBinding(new ServeCommand(), ServeCommandHandler::class)
+                    new CommandBinding(new ServeCommand(), ServeCommandHandler::class),
+                    new CommandBinding(new RouteListCommand(), RouteListCommandHandler::class)
                 ];
 
                 foreach ($commandBindings as $commandBinding) {
