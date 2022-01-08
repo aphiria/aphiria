@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Authentication\Attributes;
 
 use Aphiria\Authentication\Middleware\Authenticate as AuthenticateMiddleware;
-use Aphiria\Routing\Attributes\Middleware;
+use Aphiria\Middleware\Attributes\Middleware;
 use Attribute;
 
 /**

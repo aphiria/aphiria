@@ -15,7 +15,7 @@ namespace Aphiria\Authorization\Attributes;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\Middleware\Authorize;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
-use Aphiria\Routing\Attributes\Middleware;
+use Aphiria\Middleware\Attributes\Middleware;
 use Attribute;
 
 /**
