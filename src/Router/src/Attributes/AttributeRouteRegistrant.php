@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Attributes;
 
 use Aphiria\Api\Controllers\Controller;
+use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
@@ -93,13 +94,21 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         $middlewareBindings = [];
         /** @var list<IRouteConstraint> $routeConstraints */
         $routeConstraints = [];
+        /** @var list<Middleware|MiddlewareLibraryMiddleware> $middlewareAttributeClasses */
+        $middlewareAttributeClasses = [Middleware::class];
 
-        foreach ($controller->getAttributes(Middleware::class, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
-            $middlewareAttributeInstance = $middlewareAttribute->newInstance();
-            $middlewareBindings[] = new MiddlewareBinding(
-                $middlewareAttributeInstance->className,
-                $middlewareAttributeInstance->parameters
-            );
+        if (\class_exists(MiddlewareLibraryMiddleware::class)) {
+            $middlewareAttributeClasses[] = MiddlewareLibraryMiddleware::class;
+        }
+
+        foreach ($middlewareAttributeClasses as $middlewareAttributeClass) {
+            foreach ($controller->getAttributes($middlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
+                $middlewareAttributeInstance = $middlewareAttribute->newInstance();
+                $middlewareBindings[] = new MiddlewareBinding(
+                    $middlewareAttributeInstance->className,
+                    $middlewareAttributeInstance->parameters
+                );
+            }
         }
 
         foreach ($controller->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
@@ -147,13 +156,21 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             $middlewareBindings = [];
             /** @var list<IRouteConstraint> $routeConstraints */
             $routeConstraints = [];
+            /** @var list<Middleware|MiddlewareLibraryMiddleware> $middlewareAttributeClasses */
+            $middlewareAttributeClasses = [Middleware::class];
 
-            foreach ($method->getAttributes(Middleware::class, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
-                $middlewareAttributeInstance = $middlewareAttribute->newInstance();
-                $middlewareBindings[] = new MiddlewareBinding(
-                    $middlewareAttributeInstance->className,
-                    $middlewareAttributeInstance->parameters
-                );
+            if (\class_exists(MiddlewareLibraryMiddleware::class)) {
+                $middlewareAttributeClasses[] = MiddlewareLibraryMiddleware::class;
+            }
+
+            foreach ($middlewareAttributeClasses as $middlewareAttributeClass) {
+                foreach ($method->getAttributes($middlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
+                    $middlewareAttributeInstance = $middlewareAttribute->newInstance();
+                    $middlewareBindings[] = new MiddlewareBinding(
+                        $middlewareAttributeInstance->className,
+                        $middlewareAttributeInstance->parameters
+                    );
+                }
             }
 
             foreach ($method->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
