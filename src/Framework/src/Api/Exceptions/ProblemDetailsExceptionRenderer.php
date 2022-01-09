@@ -105,7 +105,10 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {
             if (\is_callable($status)) {
                 $status = $status($ex);
-            } elseif ($status instanceof HttpStatusCode) {
+            }
+
+            // The callable could have resulted in an enum, in which case grab its value
+            if ($status instanceof HttpStatusCode) {
                 $status = $status->value;
             }
 
