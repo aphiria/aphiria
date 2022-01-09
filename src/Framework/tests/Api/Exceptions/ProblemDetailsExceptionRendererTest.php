@@ -52,6 +52,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
             ['detail', fn (Exception $ex) => 'foo', 'foo'],
             ['status', 404, 404],
             ['status', fn (Exception $ex) => 404, 404],
+            ['status', fn (Exception $ex) => HttpStatusCode::NotFound, 404],
             ['instance', 'foo', 'foo'],
             ['instance', fn (Exception $ex) => 'foo', 'foo'],
             ['extensions', ['foo' => 'bar'], ['foo' => 'bar']],
