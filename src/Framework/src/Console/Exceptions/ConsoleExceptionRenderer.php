@@ -24,7 +24,7 @@ use Exception;
  */
 class ConsoleExceptionRenderer implements IExceptionRenderer
 {
-    /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int> The mapping of exception types to callbacks that write output and return status codes */
+    /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int|Closure(Exception, IOutput): StatusCode> The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
     /**
@@ -52,7 +52,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
         if ($this->shouldExit) {
             // We cannot actually call exit() from a test, even from a separate process
             // @codeCoverageIgnoreStart
-            exit($statusCode);
+            exit($statusCode instanceof StatusCode ? $statusCode->value : $statusCode);
             // @codeCoverageIgnoreEnd
         }
     }
