@@ -89,7 +89,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      * @param string|null|Closure(T): string $type The optional problem details type, or a closure that takes in the exception and returns a type, or null
      * @param string|null|Closure(T): string $title The optional problem details title, or a closure that takes in the exception and returns a title, or null
      * @param string|null|Closure(T): string $detail The optional problem details detail, or a closure that takes in the exception and returns a detail, or null
-     * @param HttpStatusCode|int|Closure(T): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
+     * @param HttpStatusCode|int|Closure(T): HttpStatusCode|Closure(T): int $status The optional problem details status, or a closure that takes in the exception and returns a type, or null
      * @param string|null|Closure(T): string $instance The optional problem details instance, or a closure that takes in the exception and returns an instance, or null
      * @param array|null|Closure(T): array $extensions The optional problem details extensions, or a closure that takes in the exception and returns an exception, or null
      */
