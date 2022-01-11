@@ -81,11 +81,7 @@ class XmlMediaTypeFormatterTest extends TestCase
 
     public function testWritingToStreamSetsStreamContentsFromSerializedValue(): void
     {
-        $xml = <<<XML
-<?xml version="1.0"?>
-<response><id>123</id><email>foo@bar.com</email></response>
-
-XML;
+        $xml = '<?xml version="1.0"?>' . \PHP_EOL . '<response><id>123</id><email>foo@bar.com</email></response>' . \PHP_EOL;
         $stream = $this->createStreamThatExpectsBody($xml);
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream($user, $stream, 'utf-8');
@@ -103,11 +99,7 @@ XML;
     {
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
-        $xml = <<<XML
-<?xml version="1.0"?>
-<response><id>123</id><email>foo@bar.com</email></response>
-
-XML;
+        $xml = '<?xml version="1.0"?>' . \PHP_EOL . '<response><id>123</id><email>foo@bar.com</email></response>' . \PHP_EOL;
         $expectedEncodedValue = \mb_convert_encoding($xml, 'utf-8');
         $stream->expects($this->once())
             ->method('write')
