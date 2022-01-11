@@ -73,11 +73,7 @@ class XmlMediaTypeFormatterTest extends TestCase
 
     public function testWritingArrayOfObjectsIsSuccessful(): void
     {
-        $xml = <<<XML
-<?xml version="1.0"?>
-<response><item key="0"><id>123</id><email>foo@bar.com</email></item></response>
-
-XML;
+        $xml = '<?xml version="1.0"?>' . \PHP_EOL . '<response><item key="0"><id>123</id><email>foo@bar.com</email></item></response>' . \PHP_EOL;
         $stream = $this->createStreamThatExpectsBody($xml);
         $user = new User(123, 'foo@bar.com');
         $this->formatter->writeToStream([$user], $stream, 'utf-8');
