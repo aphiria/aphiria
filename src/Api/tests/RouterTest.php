@@ -18,6 +18,7 @@ use Aphiria\Api\Router;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints as ControllerMock;
 use Aphiria\Api\Tests\Mocks\MiddlewareThatIncrementsHeader;
 use Aphiria\Api\Tests\Mocks\ParameterizedMiddleware;
+use Aphiria\Authentication\IUserAccessor;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\Middleware\IMiddleware;
@@ -45,6 +46,7 @@ class RouterTest extends TestCase
     private IServiceResolver&MockObject $serviceResolver;
     private IContentNegotiator&MockObject $contentNegotiator;
     private IRouteActionInvoker&MockObject $routeActionInvoker;
+    private IUserAccessor&MockObject $userAccessor;
 
     protected function setUp(): void
     {
@@ -52,11 +54,13 @@ class RouterTest extends TestCase
         $this->serviceResolver = $this->createMock(IServiceResolver::class);
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
+        $this->userAccessor = $this->createMock(IUserAccessor::class);
         $this->router = new Router(
             $this->routeMatcher,
             $this->serviceResolver,
             $this->contentNegotiator,
-            $this->routeActionInvoker
+            $this->routeActionInvoker,
+            $this->userAccessor
         );
     }
 

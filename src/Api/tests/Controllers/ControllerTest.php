@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\Controller;
+use Aphiria\Authentication\IUserAccessor;
 use Aphiria\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
@@ -27,6 +28,7 @@ use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use Aphiria\Security\IPrincipal;
 use LogicException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -69,6 +71,11 @@ class ControllerTest extends TestCase
             public function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
             {
                 return parent::found($uri, $body, $headers);
+            }
+
+            public function getUser(): IPrincipal
+            {
+                return parent::getUser();
             }
 
             public function internalServerError(object|string|int|float|array $body = null, Headers $headers = null): IResponse
@@ -208,6 +215,35 @@ class ControllerTest extends TestCase
         $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
         $this->assertSame($expectedHeaders, $response->getHeaders());
+    }
+
+    public function testGetUserGetsUserFromUserAccessor(): void
+    {
+        $this->controller->setRequest($this->request);
+        $user = $this->createMock(IPrincipal::class);
+        $userAccessor = $this->createMock(IUserAccessor::class);
+        $userAccessor->expects($this->once())
+            ->method('getUser')
+            ->with($this->request)
+            ->willReturn($user);
+        $this->controller->setUserAccessor($userAccessor);
+        $this->assertSame($user, $this->controller->getUser());
+    }
+
+    public function testGetUserWithoutRequestSetThrowsException(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Request is not set');
+        $this->controller->setUserAccessor($this->createMock(IUserAccessor::class));
+        $this->controller->getUser();
+    }
+
+    public function testGetUserWithoutUserSetThrowsException(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('User accessor is not set');
+        $this->controller->setRequest($this->createMock(IRequest::class));
+        $this->controller->getUser();
     }
 
     public function testHelperMethodsWithoutSetRequestThrowsException(): void

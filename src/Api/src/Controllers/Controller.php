@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
+use Aphiria\Authentication\IUserAccessor;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\RequestParser;
@@ -23,6 +24,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Uri;
+use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
 use LogicException;
 
@@ -41,6 +43,8 @@ class Controller
     protected ?IContentNegotiator $contentNegotiator = null;
     /** @var IResponseFactory|null The response factory */
     protected ?IResponseFactory $responseFactory = null;
+    /** @var IUserAccessor|null The user accessor */
+    protected ?IUserAccessor $userAccessor = null;
 
     /**
      * Sets the content negotiator
@@ -95,6 +99,17 @@ class Controller
     public function setResponseFormatter(ResponseFormatter $responseFormatter): void
     {
         $this->responseFormatter = $responseFormatter;
+    }
+
+    /**
+     * Sets the user accessor
+     *
+     * @param IUserAccessor $userAccessor The user accessor
+     * @internal
+     */
+    public function setUserAccessor(IUserAccessor $userAccessor): void
+    {
+        $this->userAccessor = $userAccessor;
     }
 
     /**
@@ -232,6 +247,25 @@ class Controller
     protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
     {
         return $this->redirect(HttpStatusCode::Found, $uri, $body, $headers);
+    }
+
+    /**
+     * Gets the current authenticated user
+     *
+     * @return IPrincipal|null The current user if one was set, otherwise null
+     * @throws LogicException Thrown if the request or user accessor are not set
+     */
+    protected function getUser(): ?IPrincipal
+    {
+        if (!$this->userAccessor instanceof IUserAccessor) {
+            throw new LogicException('User accessor is not set');
+        }
+
+        if (!$this->request instanceof IRequest) {
+            throw new LogicException('Request is not set');
+        }
+
+        return $this->userAccessor->getUser($this->request);
     }
 
     /**
