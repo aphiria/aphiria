@@ -20,6 +20,7 @@
 - Added the Authentication library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added the Authorization library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added the Security library ([#191](https://github.com/aphiria/aphiria/pull/191))
+- Added `Controller::getUser()` to grab the current authenticated user ([#208](https://github.com/aphiria/aphiria/pull/208))
 - Added the `route:list` console command ([#200](https://github.com/aphiria/aphiria/pull/200))
 - Added ability to search for middleware attributes that extend `Aphiria\Routing\Attributes\Middleware` ([#187](https://github.com/aphiria/aphiria/pull/187))
 
