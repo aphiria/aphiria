@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
+use Aphiria\Authentication\IUserAccessor;
+use Aphiria\Authentication\RequestPropertyUserAccessor;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
@@ -33,13 +35,15 @@ final class ControllerRequestHandler implements IRequestHandler
      * @param array<string, mixed> $routeVariables The route variables
      * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param IRouteActionInvoker|null $routeActionInvoker The route action invoker to use
+     * @param IUserAccessor $userAccessor The user accessor to use
      */
     public function __construct(
         private readonly Controller $controller,
         private readonly Closure $routeActionDelegate,
         private readonly array $routeVariables,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
-        IRouteActionInvoker $routeActionInvoker = null
+        IRouteActionInvoker $routeActionInvoker = null,
+        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
@@ -54,6 +58,7 @@ final class ControllerRequestHandler implements IRequestHandler
         $this->controller->setResponseFormatter(new ResponseFormatter());
         $this->controller->setContentNegotiator($this->contentNegotiator);
         $this->controller->setResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
+        $this->controller->setUserAccessor($this->userAccessor);
 
         return $this->routeActionInvoker->invokeRouteAction(
             $this->routeActionDelegate,

@@ -16,6 +16,8 @@ use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\Authentication\IUserAccessor;
+use Aphiria\Authentication\RequestPropertyUserAccessor;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -54,7 +56,8 @@ class Router implements IRequestHandler
         private readonly IRouteMatcher $routeMatcher,
         private readonly IServiceResolver $serviceResolver,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
-        IRouteActionInvoker $routeActionInvoker = null
+        IRouteActionInvoker $routeActionInvoker = null,
+        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
@@ -75,7 +78,8 @@ class Router implements IRequestHandler
             $routeActionDelegate,
             $matchingResult->routeVariables,
             $this->contentNegotiator,
-            $this->routeActionInvoker
+            $this->routeActionInvoker,
+            $this->userAccessor
         );
         $middlewarePipeline = (new MiddlewarePipelineFactory())->createPipeline(
             $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),

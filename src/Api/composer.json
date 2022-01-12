@@ -38,6 +38,7 @@
         }
     },
     "require": {
+        "aphiria/authentication": "1.x-dev",
         "aphiria/content-negotiation": "1.x-dev",
         "aphiria/dependency-injection": "1.x-dev",
         "aphiria/middleware": "1.x-dev",

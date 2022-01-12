@@ -5,6 +5,8 @@
 ### Fixed
 
 - Fixed `RouteCollectionBuilder` to remove trailing slashes when the group path is not empty but the route path is ([#198](https://github.com/aphiria/aphiria/pull/198))
+- Fixed bug that caused console drivers to incorrectly detect the OS ([#207](https://github.com/aphiria/aphiria/pull/207))
+- Fixed bug that failed to handle problem detail factories that used an `HttpStatusCode` enum value for the status ([#202](https://github.com/aphiria/aphiria/pull/202))
 - Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178)), ([#180](https://github.com/aphiria/aphiria/pull/180))
 - Fixed `Aphiria\Net\Http\Formatting\ResponseFormatter::redirectToUri()` to accept an `HttpStatusCode` as well as an `int` status code ([#184](https://github.com/aphiria/aphiria/pull/184))
 - Re-enabled PHP-CS-Fixer in CI ([#188](https://github.com/aphiria/aphiria/pull/188))
@@ -18,6 +20,7 @@
 - Added the Authentication library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added the Authorization library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added the Security library ([#191](https://github.com/aphiria/aphiria/pull/191))
+- Added `Controller::getUser()` to grab the current authenticated user ([#208](https://github.com/aphiria/aphiria/pull/208))
 - Added the `route:list` console command ([#200](https://github.com/aphiria/aphiria/pull/200))
 - Added ability to search for middleware attributes that extend `Aphiria\Routing\Attributes\Middleware` ([#187](https://github.com/aphiria/aphiria/pull/187))
 

@@ -15,6 +15,7 @@ namespace Aphiria\Api\Tests\Controllers;
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
+use Aphiria\Authentication\IUserAccessor;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -26,11 +27,13 @@ class ControllerRequestHandlerTest extends TestCase
 {
     private IRouteActionInvoker&MockObject $routeActionInvoker;
     private IContentNegotiator&MockObject $contentNegotiator;
+    private IUserAccessor&MockObject $userAccessor;
 
     protected function setUp(): void
     {
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
+        $this->userAccessor = $this->createMock(IUserAccessor::class);
     }
 
     public function testHandlingRequestSetsControllerProperties(): void
@@ -49,6 +52,8 @@ class ControllerRequestHandlerTest extends TestCase
             ->with($this->contentNegotiator);
         $controller->expects($this->once())
             ->method('setResponseFactory');
+        $controller->expects($this->once())
+            ->method('setUserAccessor');
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
@@ -60,7 +65,8 @@ class ControllerRequestHandlerTest extends TestCase
             $controllerClosure,
             [],
             $this->contentNegotiator,
-            $this->routeActionInvoker
+            $this->routeActionInvoker,
+            $this->userAccessor
         );
         $requestHandler->handle($request);
     }
