@@ -93,7 +93,7 @@ class WindowsDriverTest extends TestCase
 
         $sttyOutput = \exec('(stty -a | grep columns) 2>&1', $output, $statusCode);
 
-        if ($statusCode !== StatusCode::Ok) {
+        if ($statusCode !== StatusCode::Ok->value) {
             $this->markTestSkipped('This test can only be run on Windows with STTY support');
         }
 

@@ -23,9 +23,9 @@ abstract class Driver implements IDriver
     protected const DEFAULT_HEIGHT = 60;
     /** @var int The default width */
     protected const DEFAULT_WIDTH = 80;
-    /** @var int|null The determine height of the CLI */
+    /** @var int|null The determined height of the CLI */
     protected ?int $height = null;
-    /** @var int|null The determine width of the CLI */
+    /** @var int|null The determined width of the CLI */
     protected ?int $width = null;
     /** @var bool|null Whether or not the CLI support STTY, or null if we haven't checked */
     protected ?bool $supportsStty = null;
@@ -153,6 +153,6 @@ abstract class Driver implements IDriver
 
         \exec('stty 2>&1', $output, $sttyCheckStatusCode);
 
-        return $this->supportsStty = (StatusCode::Ok === $sttyCheckStatusCode);
+        return $this->supportsStty = (StatusCode::Ok->value === $sttyCheckStatusCode);
     }
 }
