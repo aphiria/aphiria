@@ -41,7 +41,7 @@ class UserController extends Controller
 
     #[Get('/:id')]
     #[AuthorizeRoles('admin')]
-    public function getById(int $id): User
+    public function getUserById(int $id): User
     {
         return $this->users->getById($id);
     }
