@@ -14,6 +14,7 @@
 ### Changed
 
 - Changed to using templatized CI workflows for DRY ([#183](https://github.com/aphiria/aphiria/pull/183))
+- Removed PhpStorm meta files now that we're using generics ([#210](https://github.com/aphiria/aphiria/pull/210))
 
 ### Added
 
