@@ -56,7 +56,7 @@ class RouteListCommandHandler implements ICommandHandler
         }
 
         $this->paddingFormatter->setPaddingString(' ');
-        $output->write($this->paddingFormatter->format($rows, fn (array $row): string => \implode(' ', $row)));
+        $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode(' ', $row)));
 
         return StatusCode::Ok;
     }
