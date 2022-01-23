@@ -82,8 +82,8 @@
     "require": {
         "ext-ctype": "*",
         "ext-fileinfo": "*",
-        "ext-json": "*",
         "ext-intl": "*",
+        "ext-json": "*",
         "ext-mbstring": "*",
         "monolog/monolog": "~2.3",
         "php": "^8.1",
