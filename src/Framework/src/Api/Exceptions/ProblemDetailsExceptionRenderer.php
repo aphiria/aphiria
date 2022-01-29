@@ -32,16 +32,16 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
+    /** @var IRequest|null The current request, if one is set, otherwise null */
+    protected ?IRequest $request = null;
     /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
 
     /**
-     * @param IRequest|null $request The current request, if there is one
      * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter $responseWriter What is used to write the response
      */
     public function __construct(
-        protected ?IRequest $request = null,
         protected ?IResponseFactory $responseFactory = null,
         protected readonly IResponseWriter $responseWriter = new StreamResponseWriter()
     ) {
