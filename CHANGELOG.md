@@ -13,6 +13,7 @@
 
 ### Changed
 
+- Removed `IRequest` parameter from `ProblemDetailsExceptionRenderer::__construct()` and changed `RequestBinder` to bind the request as a factory instead of a singleton ([214](https://github.com/aphiria/aphiria/pull/214))
 - Changed to using templatized CI workflows for DRY ([#183](https://github.com/aphiria/aphiria/pull/183))
 - Removed PhpStorm meta files now that we're using generics ([#210](https://github.com/aphiria/aphiria/pull/210))
 
