@@ -43,7 +43,8 @@ class RequestBinder extends Binder
     public function bind(IContainer $container): void
     {
         // Integration tests might have overridden the request to use
-        $container->bindInstance(IRequest::class, self::$overridingRequest ?? $this->getRequest());
+        // We use a factory so that a new instance is passed in whenever needed (allows support for handling concurrent requests)
+        $container->bindFactory(IRequest::class, fn (): IRequest => self::$overridingRequest ?? $this->getRequest());
     }
 
     /**
