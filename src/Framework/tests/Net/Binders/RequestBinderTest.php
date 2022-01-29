@@ -15,6 +15,7 @@ namespace Aphiria\Framework\Tests\Net\Binders;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Net\Binders\RequestBinder;
 use Aphiria\Net\Http\IRequest;
+use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
@@ -40,8 +41,8 @@ class RequestBinderTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $this->container->expects($this->once())
-            ->method('bindInstance')
-            ->with(IRequest::class, $request);
+            ->method('bindFactory')
+            ->with(IRequest::class, $this->callback(fn (Closure $factory) => $factory() === $request));
         RequestBinder::setOverridingRequest($request);
         (new RequestBinder())->bind($this->container);
     }
@@ -49,8 +50,11 @@ class RequestBinderTest extends TestCase
     public function testRequestDefaultsToLocalhostUriWhenRunningFromCli(): void
     {
         $this->container->expects($this->once())
-            ->method('bindInstance')
-            ->with(IRequest::class, $this->callback(function (IRequest $request) {
+            ->method('bindFactory')
+            ->with(IRequest::class, $this->callback(function (Closure $factory) {
+                /** @var IRequest $request */
+                $request = $factory();
+
                 return (string)$request->getUri() === 'http://localhost';
             }));
         (new RequestBinder())->bind($this->container);
@@ -59,8 +63,11 @@ class RequestBinderTest extends TestCase
     public function testRequestHasLocalhostUriWhenRunningFromCli(): void
     {
         $this->container->expects($this->once())
-            ->method('bindInstance')
-            ->with(IRequest::class, $this->callback(function (IRequest $request) {
+            ->method('bindFactory')
+            ->with(IRequest::class, $this->callback(function (Closure $factory) {
+                /** @var IRequest $request */
+                $request = $factory();
+
                 return (string)$request->getUri() === 'http://localhost';
             }));
         $binder = new class () extends RequestBinder {
@@ -78,8 +85,11 @@ class RequestBinderTest extends TestCase
         // argv was causing issues in the test
         unset($_SERVER['argv']);
         $this->container->expects($this->once())
-            ->method('bindInstance')
-            ->with(IRequest::class, $this->callback(function (IRequest $request) {
+            ->method('bindFactory')
+            ->with(IRequest::class, $this->callback(function (Closure $factory) {
+                /** @var IRequest $request */
+                $request = $factory();
+
                 return (string)$request->getUri() === 'http://example.com';
             }));
         $binder = new class () extends RequestBinder {

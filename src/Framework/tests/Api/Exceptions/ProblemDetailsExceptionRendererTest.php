@@ -257,10 +257,15 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         bool $setRequest,
         bool $setResponseFactory
     ): ProblemDetailsExceptionRenderer {
-        return new ProblemDetailsExceptionRenderer(
-            $setRequest ? $this->request : null,
+        $renderer = new ProblemDetailsExceptionRenderer(
             $setResponseFactory ? $this->responseFactory : null,
             $this->responseWriter
         );
+
+        if ($setRequest) {
+            $renderer->setRequest($this->request);
+        }
+
+        return $renderer;
     }
 }
