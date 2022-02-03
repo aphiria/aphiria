@@ -96,11 +96,11 @@
         "symfony/serializer": "^6.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.2",
+        "friendsofphp/php-cs-fixer": "^3.5",
         "mockery/mockery": "^1.4",
         "nyholm/psr7": "^1.4",
         "phpunit/phpunit": "~9.5",
-        "vimeo/psalm": "^4.11"
+        "vimeo/psalm": "dev-master"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

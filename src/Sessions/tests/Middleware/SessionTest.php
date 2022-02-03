@@ -25,7 +25,7 @@ use SessionHandlerInterface;
 class SessionTest extends TestCase
 {
     private ISession&MockObject $session;
-    private \SessionHandlerInterface&MockObject $sessionHandler;
+    private SessionHandlerInterface&MockObject $sessionHandler;
     private Headers $requestHeaders;
     private IRequest&MockObject $request;
     private Headers $responseHeaders;

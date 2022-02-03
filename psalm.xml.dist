@@ -101,16 +101,6 @@
                 <file name="src/Application/tests/Configuration/GlobalConfigurationTest.php" />
             </errorLevel>
         </TypeDoesNotContainNull>
-        <UndefinedClass>
-            <errorLevel type="suppress">
-                <file name="src/**/.phpstorm.meta.php" />
-            </errorLevel>
-        </UndefinedClass>
-        <UndefinedFunction>
-            <errorLevel type="suppress">
-                <file name="src/**/.phpstorm.meta.php" />
-            </errorLevel>
-        </UndefinedFunction>
         <UndefinedInterfaceMethod>
             <errorLevel type="suppress">
                 <!-- The elevated visibilities in the mocks triggers a false positive -->
