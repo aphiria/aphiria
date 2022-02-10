@@ -2,11 +2,6 @@ name: ci
 on:
   workflow_call:
     inputs:
-      run-psalm-static-analysis:
-        description: Whether or not to run Psalm static analysis
-        required: false
-        type: boolean
-        default: false
       split-subtrees:
         description: Whether or not to split subtrees
         required: false
@@ -45,7 +40,6 @@ jobs:
       - name: Run Linter
         run: composer phpcs-test
       - name: Run Psalm Static Analysis
-        if: inputs.run-psalm-static-analysis
         run: composer psalm -- --shepherd
       - name: Upload Coverage Results To Coveralls
         env:
