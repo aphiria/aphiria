@@ -23,6 +23,8 @@ use RuntimeException;
  *
  * @template TKey
  * @template TValue
+ * @extends ArrayAccess<TKey, TValue>
+ * @extends IteratorAggregate<TKey, TValue>
  */
 interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
 {

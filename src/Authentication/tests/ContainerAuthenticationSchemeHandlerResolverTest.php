@@ -38,14 +38,16 @@ class ContainerAuthenticationSchemeHandlerResolverTest extends TestCase
 
     public function testResolveRethrowsContainerResolutionException(): void
     {
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
+        $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Failed to resolve ' . $this::class);
+        $this->expectExceptionMessage('Failed to resolve ' . $schemeHandler::class);
         $container = $this->createMock(IContainer::class);
         $container->expects($this->once())
             ->method('resolve')
-            ->with($this::class)
-            ->willThrowException(new ResolutionException($this::class, new UniversalContext()));
+            ->with($schemeHandler::class)
+            ->willThrowException(new ResolutionException($schemeHandler::class, new UniversalContext()));
         $resolver = new ContainerAuthenticationSchemeHandlerResolver($container);
-        $resolver->resolve($this::class);
+        $resolver->resolve($schemeHandler::class);
     }
 }

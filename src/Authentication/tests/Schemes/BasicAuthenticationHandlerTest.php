@@ -14,6 +14,7 @@ namespace Aphiria\Authentication\Tests\Schemes;
 
 use Aphiria\Authentication\AuthenticationResult;
 use Aphiria\Authentication\AuthenticationScheme;
+use Aphiria\Authentication\AuthenticationSchemeOptions;
 use Aphiria\Authentication\Schemes\BasicAuthenticationHandler;
 use Aphiria\Authentication\Schemes\BasicAuthenticationOptions;
 use Aphiria\Net\Http\Headers;
@@ -22,6 +23,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
 use PHPUnit\Framework\TestCase;
+use Psalm\Issue\UndefinedPropertyAssignment;
 use RuntimeException;
 
 class BasicAuthenticationHandlerTest extends TestCase
@@ -53,6 +55,7 @@ class BasicAuthenticationHandlerTest extends TestCase
 
     public function getChallengeSchemesAndWwwAuthenticateHeaderValues(): array
     {
+        /** @var BasicAuthenticationHandler $schemeHandler */
         $schemeHandler = $this->createMock(BasicAuthenticationHandler::class);
 
         return [
@@ -87,6 +90,8 @@ class BasicAuthenticationHandlerTest extends TestCase
      * @dataProvider getValidBasicAuthorizationValues
      *
      * @param string $authorizationHeaderValue The authorization header value to test
+     * @psalm-suppress UndefinedPropertyAssignment The properties do actually exist on the anonymous class
+     * @psalm-suppress UndefinedPropertyFetch Ditto
      */
     public function testAuthenticatingWithValidBase64CredentialsReturnsPassingResult(string $authorizationHeaderValue): void
     {

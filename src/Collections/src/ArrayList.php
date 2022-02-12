@@ -140,7 +140,7 @@ class ArrayList implements IList
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($offset);
+        return $this->get((int)$offset);
     }
 
     /**
@@ -148,7 +148,7 @@ class ArrayList implements IList
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->insert($offset, $value);
+        $this->insert((int)$offset, $value);
     }
 
     /**
@@ -156,7 +156,7 @@ class ArrayList implements IList
      */
     public function offsetUnset(mixed $offset): void
     {
-        $this->removeIndex($offset);
+        $this->removeIndex((int)$offset);
     }
 
     /**

@@ -25,7 +25,7 @@ class AuthenticationResultTest extends TestCase
     {
         $result = AuthenticationResult::fail('foo');
         $this->assertInstanceOf(Exception::class, $result->failure);
-        $this->assertSame('foo', $result->failure?->getMessage());
+        $this->assertSame('foo', $result->failure->getMessage());
     }
 
     public function testFailingWithoutFailureSetThrowsException(): void

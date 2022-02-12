@@ -21,6 +21,7 @@ use RuntimeException;
  * Defines the interface for sets to implement
  *
  * @template T
+ * @extends IteratorAggregate<array-key, T>
  */
 interface ISet extends Countable, IteratorAggregate
 {

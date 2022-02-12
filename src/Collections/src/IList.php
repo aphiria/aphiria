@@ -22,6 +22,8 @@ use OutOfRangeException;
  * Defines the interface for lists to implement
  *
  * @template T
+ * @extends ArrayAccess<array-key, T>
+ * @extends IteratorAggregate<array-key, T>
  */
 interface IList extends ArrayAccess, Countable, IteratorAggregate
 {

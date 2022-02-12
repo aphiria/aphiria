@@ -120,6 +120,14 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator(\array_values($this->hashKeysToKvps));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getKeys(): array
     {
         $keys = [];
@@ -143,14 +151,6 @@ class HashTable implements IDictionary
         }
 
         return $values;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator(\array_values($this->hashKeysToKvps));
     }
 
     /**

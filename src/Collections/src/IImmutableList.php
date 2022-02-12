@@ -21,6 +21,8 @@ use OutOfRangeException;
  * Defines the interface for immutable lists to implement
  *
  * @template T
+ * @extends ArrayAccess<array-key, T>
+ * @extends IteratorAggregate<array-key, T>
  */
 interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
 {

@@ -20,6 +20,7 @@ use RuntimeException;
  * Defines the interface for immutable sets to implement
  *
  * @template T
+ * @extends IteratorAggregate<array-key, T>
  */
 interface IImmutableSet extends Countable, IteratorAggregate
 {
