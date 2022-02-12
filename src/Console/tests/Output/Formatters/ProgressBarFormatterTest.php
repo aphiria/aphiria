@@ -59,6 +59,9 @@ class ProgressBarFormatterTest extends TestCase
         ];
     }
 
+    /**
+     * @psalm-suppress UndefinedMagicMethod This method does actually exist - bug
+     */
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
         // Use a redraw frequency of 0 so that it redraws every time
@@ -69,6 +72,7 @@ class ProgressBarFormatterTest extends TestCase
             ->with(
                 fn (mixed $value): bool => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true)
             );
+        /** @psalm-suppress InvalidArgument Output is going to be the correct type here */
         $formatter = new ProgressBarFormatter($output, 12, redrawFrequency: 0);
         $formatter->onProgressChanged(0, 1, 10);
         $formatter->onProgressChanged(1, 2, 10);

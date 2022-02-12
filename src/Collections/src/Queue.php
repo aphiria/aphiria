@@ -21,6 +21,7 @@ use Traversable;
  * Defines a stack
  *
  * @template T
+ * @implements IteratorAggregate<array-key, T>
  */
 class Queue implements Countable, IteratorAggregate
 {
