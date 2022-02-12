@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 
@@ -71,17 +70,16 @@ class StreamResponseWriter implements IResponseWriter
 
         $this->header($startLine);
 
-        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
-        foreach ($response->getHeaders() as $kvp) {
-            $headerName = (string)$kvp->key;
+        foreach ($response->getHeaders() as $key => $value) {
+            $headerName = (string)$key;
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
                 /** @var string $headerValue */
-                foreach ($kvp->value as $headerValue) {
+                foreach ($value as $headerValue) {
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$kvp->value)));
+                $this->header("$headerName: " . \implode(', ', \array_map(static fn (mixed $value) => (string)$value, (array)$value)));
             }
         }
 

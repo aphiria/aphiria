@@ -41,20 +41,20 @@ class ResponseHeaderParser extends HeaderParser
         $numSetCookieHeaders = \count($setCookieHeaders);
 
         for ($i = 0;$i < $numSetCookieHeaders;$i++) {
-            $name = $value = $maxAge = $path = $domain = $sameSite = null;
+            $name = $cookieValue = $maxAge = $path = $domain = $sameSite = null;
             $isSecure = $isHttpOnly = false;
 
             /** @var KeyValuePair<string, string> $kvp */
-            foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $kvp) {
-                switch ($kvp->key) {
+            foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $key => $value) {
+                switch ($key) {
                     case 'Max-Age':
-                        $maxAge = (int)$kvp->value;
+                        $maxAge = (int)$value;
                         break;
                     case 'Path':
-                        $path = (string)$kvp->value;
+                        $path = (string)$value;
                         break;
                     case 'Domain':
-                        $domain = (string)$kvp->value;
+                        $domain = (string)$value;
                         break;
                     case 'Secure':
                         $isSecure = true;
@@ -63,12 +63,12 @@ class ResponseHeaderParser extends HeaderParser
                         $isHttpOnly = true;
                         break;
                     case 'SameSite':
-                        $sameSite = SameSiteMode::tryFrom((string)$kvp->value);
+                        $sameSite = SameSiteMode::tryFrom((string)$value);
                         break;
                     default:
                         // Treat the default value as the cookie name
-                        $name = (string)$kvp->key;
-                        $value = $kvp->value;
+                        $name = (string)$key;
+                        $cookieValue = $value;
                         break;
                 }
             }
@@ -79,7 +79,7 @@ class ResponseHeaderParser extends HeaderParser
 
             $cookies[] = new Cookie(
                 $name,
-                $value,
+                $cookieValue,
                 $maxAge,
                 $path,
                 $domain,

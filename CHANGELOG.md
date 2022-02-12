@@ -14,6 +14,7 @@
 ### Changed
 
 - Removed `IRequest` parameter from `ProblemDetailsExceptionRenderer::__construct()` and changed `RequestBinder` to bind the request as a factory instead of a singleton ([214](https://github.com/aphiria/aphiria/pull/214))
+- `Aphiria\Collections\HashTable::getIterator()` and `ImmutableHashTable::getIterator()` now return `KeyValuePairIterator`, which allows you to grab the key and value directly from a `foreach` loop rather than iterating over a list of `KeyValuePair` objects ([#215](https://github.com/aphiria/aphiria/pull/215))
 - Changed to using templatized CI workflows for DRY ([#183](https://github.com/aphiria/aphiria/pull/183))
 - Removed PhpStorm meta files now that we're using generics ([#210](https://github.com/aphiria/aphiria/pull/210))
 

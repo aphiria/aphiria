@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\PsrAdapters\Psr7;
 
-use Aphiria\Collections\KeyValuePair;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
@@ -176,10 +175,9 @@ class Psr7Factory implements IPsr7Factory
             (string)$aphiriaRequest->getUri()
         );
 
-        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
-        foreach ($aphiriaRequest->getHeaders() as $kvp) {
-            foreach ($kvp->value as $headerValue) {
-                $psr7Request = $psr7Request->withHeader((string)$kvp->key, (string)$headerValue);
+        foreach ($aphiriaRequest->getHeaders() as $key => $value) {
+            foreach ((array)$value as $headerValue) {
+                $psr7Request = $psr7Request->withHeader((string)$key, (string)$headerValue);
             }
         }
 
@@ -190,14 +188,12 @@ class Psr7Factory implements IPsr7Factory
         $psr7Request = $psr7Request->withUploadedFiles($this->createPsr7UploadedFiles($aphiriaRequest));
         $psr7CookieParams = $psr7QueryParams = [];
 
-        /** @var KeyValuePair<string, string> $kvp */
-        foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $kvp) {
-            $psr7CookieParams[$kvp->key] = $kvp->value;
+        foreach ($this->aphiriaRequestParser->parseCookies($aphiriaRequest) as $key => $value) {
+            $psr7CookieParams[$key] = $value;
         }
 
-        /** @var KeyValuePair<string, string> $kvp */
-        foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $kvp) {
-            $psr7QueryParams[$kvp->key] = $kvp->value;
+        foreach ($this->aphiriaRequestParser->parseQueryString($aphiriaRequest) as $key => $value) {
+            $psr7QueryParams[$key] = $value;
         }
 
         $psr7Request = $psr7Request->withCookieParams($psr7CookieParams)
@@ -210,9 +206,8 @@ class Psr7Factory implements IPsr7Factory
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
-        /** @var KeyValuePair<string, mixed> $kvp */
-        foreach ($aphiriaRequest->getProperties() as $kvp) {
-            $psr7Request = $psr7Request->withAttribute((string)$kvp->key, $kvp->value);
+        foreach ($aphiriaRequest->getProperties() as $key => $value) {
+            $psr7Request = $psr7Request->withAttribute((string)$key, $value);
         }
 
         return $psr7Request;
@@ -229,10 +224,9 @@ class Psr7Factory implements IPsr7Factory
         )
             ->withProtocolVersion($aphiriaResponse->getProtocolVersion());
 
-        /** @var KeyValuePair<string, list<string|int|float>> $kvp */
-        foreach ($aphiriaResponse->getHeaders() as $kvp) {
-            foreach ((array)$kvp->value as $headerValue) {
-                $psr7Response = $psr7Response->withHeader((string)$kvp->key, (string)$headerValue);
+        foreach ($aphiriaResponse->getHeaders() as $key => $value) {
+            foreach ((array)$value as $headerValue) {
+                $psr7Response = $psr7Response->withHeader((string)$key, (string)$headerValue);
             }
         }
 

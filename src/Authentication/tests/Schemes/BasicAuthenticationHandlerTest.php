@@ -14,7 +14,6 @@ namespace Aphiria\Authentication\Tests\Schemes;
 
 use Aphiria\Authentication\AuthenticationResult;
 use Aphiria\Authentication\AuthenticationScheme;
-use Aphiria\Authentication\AuthenticationSchemeOptions;
 use Aphiria\Authentication\Schemes\BasicAuthenticationHandler;
 use Aphiria\Authentication\Schemes\BasicAuthenticationOptions;
 use Aphiria\Net\Http\Headers;
