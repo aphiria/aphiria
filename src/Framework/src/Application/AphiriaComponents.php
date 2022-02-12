@@ -89,7 +89,7 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthenticationComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -118,7 +118,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -152,7 +152,7 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -185,7 +185,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -215,7 +215,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -244,7 +244,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -274,7 +274,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -309,7 +309,7 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -334,7 +334,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -382,7 +382,7 @@ trait AphiriaComponents
         int $priority = null
     ): static {
         if (!$appBuilder->hasComponent(MiddlewareComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -416,7 +416,7 @@ trait AphiriaComponents
     ): static {
         //Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -461,7 +461,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -501,7 +501,7 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -525,7 +525,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -550,7 +550,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
@@ -574,7 +574,7 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {
-            if (Container::$globalInstance === null) {
+            if (!isset(Container::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 

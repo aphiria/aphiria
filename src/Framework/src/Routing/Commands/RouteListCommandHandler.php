@@ -56,6 +56,7 @@ class RouteListCommandHandler implements ICommandHandler
         }
 
         $this->paddingFormatter->setPaddingString(' ');
+        /** @psalm-suppress MixedArgumentTypeCoercion Row will always be the right type */
         $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode(' ', $row)));
 
         return StatusCode::Ok;
