@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections;
 
-use ArrayIterator;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
@@ -100,7 +99,7 @@ class ImmutableHashTable implements IImmutableDictionary
      */
     public function getIterator(): Traversable
     {
-        return new ArrayIterator(\array_values($this->hashKeysToKvps));
+        return new KeyValuePairIterator(\array_values($this->hashKeysToKvps));
     }
 
     /**

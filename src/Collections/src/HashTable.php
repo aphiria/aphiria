@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections;
 
-use ArrayIterator;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
@@ -120,6 +119,14 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
+    public function getIterator(): Traversable
+    {
+        return new KeyValuePairIterator(\array_values($this->hashKeysToKvps));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getKeys(): array
     {
         $keys = [];
@@ -143,14 +150,6 @@ class HashTable implements IDictionary
         }
 
         return $values;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator(\array_values($this->hashKeysToKvps));
     }
 
     /**
