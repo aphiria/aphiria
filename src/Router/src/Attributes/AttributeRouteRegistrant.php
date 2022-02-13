@@ -94,15 +94,11 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         $middlewareBindings = [];
         /** @var list<IRouteConstraint> $routeConstraints */
         $routeConstraints = [];
-        /** @var list<Middleware|MiddlewareLibraryMiddleware> $middlewareAttributeClasses */
-        $middlewareAttributeClasses = [Middleware::class];
-
-        if (\class_exists(MiddlewareLibraryMiddleware::class)) {
-            $middlewareAttributeClasses[] = MiddlewareLibraryMiddleware::class;
-        }
+        $middlewareAttributeClasses = [Middleware::class, MiddlewareLibraryMiddleware::class];
 
         foreach ($middlewareAttributeClasses as $middlewareAttributeClass) {
             foreach ($controller->getAttributes($middlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
+                /** @var Middleware|MiddlewareLibraryMiddleware $middlewareAttributeInstance */
                 $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                 $middlewareBindings[] = new MiddlewareBinding(
                     $middlewareAttributeInstance->className,
@@ -114,13 +110,11 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         foreach ($controller->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
             $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
             $routeConstraintClassName = $routeConstraintAttributeInstance->className;
-            /** @psalm-suppress MixedMethodCall We're purposely instantiating the route constraint class */
             $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
         }
 
         foreach ($controller->getAttributes(RouteGroup::class) as $routeGroupAttribute) {
             $routeGroupAttributeInstance = $routeGroupAttribute->newInstance();
-            /** @psalm-suppress ArgumentTypeCoercion The route constraints will always be a list of route constraints - bug */
             $routeGroupOptions = new RouteGroupOptions(
                 $routeGroupAttributeInstance->path,
                 $routeGroupAttributeInstance->host,
@@ -134,7 +128,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         // If there was no route group options attributes, but there were constraints or middleware, then create some route group options and add them
         if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings))) {
             $routeGroupOptions = new RouteGroupOptions('');
-            /** @psalm-suppress PropertyTypeCoercion This will always be a list of route constraints - bug */
             $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
             $routeGroupOptions->middlewareBindings = [...$routeGroupOptions->middlewareBindings, ...$middlewareBindings];
         }
@@ -156,15 +149,11 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             $middlewareBindings = [];
             /** @var list<IRouteConstraint> $routeConstraints */
             $routeConstraints = [];
-            /** @var list<Middleware|MiddlewareLibraryMiddleware> $middlewareAttributeClasses */
-            $middlewareAttributeClasses = [Middleware::class];
-
-            if (\class_exists(MiddlewareLibraryMiddleware::class)) {
-                $middlewareAttributeClasses[] = MiddlewareLibraryMiddleware::class;
-            }
+            $middlewareAttributeClasses = [Middleware::class, MiddlewareLibraryMiddleware::class];
 
             foreach ($middlewareAttributeClasses as $middlewareAttributeClass) {
                 foreach ($method->getAttributes($middlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
+                    /** @var Middleware|MiddlewareLibraryMiddleware $middlewareAttributeInstance */
                     $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                     $middlewareBindings[] = new MiddlewareBinding(
                         $middlewareAttributeInstance->className,
@@ -176,7 +165,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             foreach ($method->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
                 $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
                 $routeConstraintClassName = $routeConstraintAttributeInstance->className;
-                /** @psalm-suppress MixedMethodCall We're purposely instantiating the route constraint class */
                 $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
             }
 
@@ -195,7 +183,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 }
 
                 if (!empty($routeConstraints)) {
-                    /** @psalm-suppress ArgumentTypeCoercion This is always a list of route constraints - bug */
                     $routeBuilder->withManyConstraints($routeConstraints);
                 }
 

@@ -52,6 +52,11 @@ final class TypeFinder implements ITypeFinder
 
     /**
      * @inheritdoc
+     * @template T of object
+     * @param class-string<T> $parentType The type whose sub-types we're searching for
+     * @param string|list<string> $directories The path or list of paths of directories to search
+     * @param bool $recursive Whether or not we want to recurse through all directories
+     * @return list<class-string<T>> The list of all types that are sub-types of the input class/interface
      */
     public function findAllSubtypesOfType(string $parentType, string|array $directories, bool $recursive = false): array
     {
@@ -61,6 +66,7 @@ final class TypeFinder implements ITypeFinder
             $reflectionType = new ReflectionClass($type);
 
             if ($reflectionType->isSubclassOf($parentType)) {
+                /** @var class-string<T> $type */
                 $subTypes[] = $type;
             }
         }

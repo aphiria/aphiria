@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\Attributes;
 
 use Aphiria\Routing\Attributes\RouteConstraint;
+use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
+use Aphiria\Routing\Matchers\MatchedRouteCandidate;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +33,11 @@ class RouteConstraintTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $constraint = new class () {
+        $constraint = new class () implements IRouteConstraint {
+            public function passes(MatchedRouteCandidate $matchedRouteCandidate, string $httpMethod, string $host, string $path, array $headers): bool
+            {
+                return true;
+            }
         };
         $constraintAttribute = new RouteConstraint($constraint::class, ['bar']);
         $this->assertSame($constraint::class, $constraintAttribute->className);
