@@ -17,6 +17,7 @@ use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
+use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteCollection;
@@ -29,10 +30,12 @@ class RouteListCommandHandler implements ICommandHandler
 {
     /**
      * @param RouteCollection $routes The list of routes registered to the application
+     * @param MiddlewareCollection $middleware The global list of middleware
      * @param PaddingFormatter $paddingFormatter The padding formatter to use when outputting the routes
      */
     public function __construct(
         private readonly RouteCollection $routes,
+        private readonly MiddlewareCollection $middleware,
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
     ) {
     }
@@ -43,20 +46,43 @@ class RouteListCommandHandler implements ICommandHandler
      */
     public function handle(Input $input, IOutput $output)
     {
+        $useFqn = \array_key_exists('fqn', $input->options);
+        $showMiddleware = isset($input->options['middleware']);
+        $middlewareOptions = $input->options['middleware'] ?? [];
         $sortedRoutes = $this->routes->getAll();
         \usort($sortedRoutes, fn (Route $routeA, Route $routeB) => $this->compareRoutes($routeA, $routeB));
-        $rows = [['Method', 'Path', 'Action']];
+        $rows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>']];
 
         foreach ($sortedRoutes as $route) {
+            $formattedMiddlewareText = '';
+
+            if ($showMiddleware) {
+                $formattedMiddlewareClassNames = [];
+
+                if (\in_array('global', $middlewareOptions)) {
+                    foreach ($this->middleware->getAll() as $middleware) {
+                        $formattedMiddlewareClassNames[] = "<comment>{$this->formatClassName($middleware::class, $useFqn)}</comment>";
+                    }
+                }
+
+                foreach ($route->middlewareBindings as $middlewareBinding) {
+                    $formattedMiddlewareClassNames[] = "<comment>{$this->formatClassName($middlewareBinding->className, $useFqn)}</comment>";
+                }
+
+                if (\count($formattedMiddlewareClassNames) > 0) {
+                    $formattedMiddlewareText = \implode(' → ', $formattedMiddlewareClassNames) . ' → ';
+                }
+            }
+
             $rows[] = [
                 $this->formatHttpMethodString($route),
-                $route->uriTemplate->pathTemplate,
-                "{$route->action->className}::{$route->action->methodName}"
+                $this->formatUriTemplate($route->uriTemplate->pathTemplate),
+                "$formattedMiddlewareText<comment>{$this->formatClassName($route->action->className, $useFqn)}::{$route->action->methodName}</comment>"
             ];
         }
 
         $this->paddingFormatter->setPaddingString(' ');
-        $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode(' ', $row)));
+        $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode('    ', $row)));
 
         return StatusCode::Ok;
     }
@@ -76,6 +102,22 @@ class RouteListCommandHandler implements ICommandHandler
         }
 
         return \strcasecmp($routeA->uriTemplate->pathTemplate, $routeB->uriTemplate->pathTemplate);
+    }
+
+    /**
+     * Formats a class name for output
+     *
+     * @param class-string $className The name of the class to format
+     * @param bool $useFullyQualifiedName Whether or not to use the fully qualified class name
+     * @return string The formatted class name
+     */
+    private function formatClassName(string $className, bool $useFullyQualifiedName): string
+    {
+        if ($useFullyQualifiedName) {
+            return $className;
+        }
+
+        return \substr($className, \strrpos($className, '\\') + 1);
     }
 
     /**
@@ -103,5 +145,16 @@ class RouteListCommandHandler implements ICommandHandler
         \sort($httpMethods);
 
         return \implode('|', $httpMethods);
+    }
+
+    /**
+     * Formats a URI template
+     *
+     * @param string $uriTemplate The URI template to format
+     * @return string The formatted URI template
+     */
+    private function formatUriTemplate(string $uriTemplate): string
+    {
+        return \preg_replace('/\/(:[^\/$\[\]]+)/', '/<info>\1</info>', $uriTemplate);
     }
 }
