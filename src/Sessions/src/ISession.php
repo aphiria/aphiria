@@ -16,6 +16,8 @@ use ArrayAccess;
 
 /**
  * Defines the interface for sessions to implement
+ *
+ * @extends ArrayAccess<string, mixed>
  */
 interface ISession extends ArrayAccess
 {
