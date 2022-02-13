@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Fixed bug that caused padding to be incorrectly applied to formatted strings in the console ([#218](https://github.com/aphiria/aphiria/pull/218))
 - Fixed `RouteCollectionBuilder` to remove trailing slashes when the group path is not empty but the route path is ([#198](https://github.com/aphiria/aphiria/pull/198))
 - Fixed bug that caused console drivers to incorrectly detect the OS ([#207](https://github.com/aphiria/aphiria/pull/207))
 - Fixed bug that failed to handle problem detail factories that used an `HttpStatusCode` enum value for the status ([#202](https://github.com/aphiria/aphiria/pull/202))
@@ -24,7 +25,7 @@
 - Added the Security library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added `Controller::getUser()` to grab the current authenticated user ([#208](https://github.com/aphiria/aphiria/pull/208))
 - Added the `route:list` console command ([#200](https://github.com/aphiria/aphiria/pull/200))
-- Added the ability to specify middleware and whether to show class names as FQN in `route:list` (TBD)
+- Added the ability to specify middleware and whether to show class names as FQN in `route:list` ([#218](https://github.com/aphiria/aphiria/pull/218))
 - Added ability to search for middleware attributes that extend `Aphiria\Routing\Attributes\Middleware` ([#187](https://github.com/aphiria/aphiria/pull/187))
 
 ## [v1.0.0-alpha5](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha4...v1.0.0-alpha5) (2021-11-14)
