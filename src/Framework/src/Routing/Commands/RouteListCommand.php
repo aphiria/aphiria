@@ -25,7 +25,7 @@ final class RouteListCommand extends Command
     {
         $options = [
             new Option('fqn', OptionType::NoValue, description: 'Shows the fully-qualified class names of controllers and middleware'),
-            new Option('middleware', OptionType::NoValue, description: 'Shows the middleware for each route')
+            new Option('middleware', OptionType::IsArray, description: 'Shows the middleware for each route (set the value to "global" to include global middleware)')
         ];
         parent::__construct('route:list', [], $options, 'Lists the routes in your app');
     }

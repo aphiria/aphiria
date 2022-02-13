@@ -17,6 +17,7 @@ use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
+use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteCollection;
@@ -29,10 +30,12 @@ class RouteListCommandHandler implements ICommandHandler
 {
     /**
      * @param RouteCollection $routes The list of routes registered to the application
+     * @param MiddlewareCollection $middleware The global list of middleware
      * @param PaddingFormatter $paddingFormatter The padding formatter to use when outputting the routes
      */
     public function __construct(
         private readonly RouteCollection $routes,
+        private readonly MiddlewareCollection $middleware,
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
     ) {
     }
@@ -44,33 +47,42 @@ class RouteListCommandHandler implements ICommandHandler
     public function handle(Input $input, IOutput $output)
     {
         $useFqn = \array_key_exists('fqn', $input->options);
-        $showMiddleware = \array_key_exists('middleware', $input->options);
+        $showMiddleware = isset($input->options['middleware']);
+        $middlewareOptions = $input->options['middleware'] ?? [];
         $sortedRoutes = $this->routes->getAll();
         \usort($sortedRoutes, fn (Route $routeA, Route $routeB) => $this->compareRoutes($routeA, $routeB));
         $rows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>']];
 
         foreach ($sortedRoutes as $route) {
-            $rows[] = [
-                $this->formatHttpMethodString($route),
-                $this->formatUriTemplate($route->uriTemplate->pathTemplate),
-                "<comment>{$this->formatClassName($route->action->className, $useFqn)}::{$route->action->methodName}</comment>"
-            ];
+            $formattedMiddlewareText = '';
 
             if ($showMiddleware) {
                 $formattedMiddlewareClassNames = [];
 
+                if (\in_array('global', $middlewareOptions)) {
+                    foreach ($this->middleware->getAll() as $middleware) {
+                        $formattedMiddlewareClassNames[] = "<comment>{$this->formatClassName($middleware::class, $useFqn)}</comment>";
+                    }
+                }
+
                 foreach ($route->middlewareBindings as $middlewareBinding) {
-                    $formattedMiddlewareClassNames[] = $this->formatClassName($middlewareBinding->className, $useFqn);
+                    $formattedMiddlewareClassNames[] = "<comment>{$this->formatClassName($middlewareBinding->className, $useFqn)}</comment>";
                 }
 
                 if (\count($formattedMiddlewareClassNames) > 0) {
-                    $rows[] = ['', '', '↳ ' . \implode(' → ', $formattedMiddlewareClassNames)];
+                    $formattedMiddlewareText = \implode(' → ', $formattedMiddlewareClassNames) . ' → ';
                 }
             }
+
+            $rows[] = [
+                $this->formatHttpMethodString($route),
+                $this->formatUriTemplate($route->uriTemplate->pathTemplate),
+                "$formattedMiddlewareText<comment>{$this->formatClassName($route->action->className, $useFqn)}::{$route->action->methodName}</comment>"
+            ];
         }
 
         $this->paddingFormatter->setPaddingString(' ');
-        $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode(' ', $row)));
+        $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode('    ', $row)));
 
         return StatusCode::Ok;
     }

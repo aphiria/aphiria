@@ -19,6 +19,7 @@ use Aphiria\Console\StatusCode;
 use Aphiria\Framework\Routing\Commands\RouteListCommandHandler;
 use Aphiria\Framework\Tests\Routing\Commands\Mocks\MiddlewareA;
 use Aphiria\Framework\Tests\Routing\Commands\Mocks\MiddlewareB;
+use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\Route;
@@ -35,13 +36,15 @@ class RouteListCommandHandlerTest extends TestCase
     private IOutput&MockObject $output;
     private Input $input;
     private RouteCollection $routes;
+    private MiddlewareCollection $middleware;
     private PaddingFormatter $paddingFormatter;
 
     protected function setUp(): void
     {
         $this->routes = new RouteCollection();
+        $this->middleware = new MiddlewareCollection();
         $this->paddingFormatter = new PaddingFormatter();
-        $this->commandHandler = new RouteListCommandHandler($this->routes, $this->paddingFormatter);
+        $this->commandHandler = new RouteListCommandHandler($this->routes, $this->middleware, $this->paddingFormatter);
         $this->input = new Input('route:list', [], []);
         $this->output = $this->createMock(IOutput::class);
     }
@@ -71,8 +74,8 @@ class RouteListCommandHandlerTest extends TestCase
             [new MiddlewareBinding(MiddlewareA::class)]
         );
         $this->routes->add($route);
-        $this->setUpOutputExpectations([['POST', '/', '<comment>' . self::class . '::foo</comment>'], ['', '', '↳ ' . MiddlewareA::class]]);
-        $input = new Input('route:list', [], ['fqn' => null, 'middleware' => null]);
+        $this->setUpOutputExpectations([['POST', '/', '<comment>' . MiddlewareA::class . '</comment> → <comment>' . self::class . '::foo</comment>']]);
+        $input = new Input('route:list', [], ['fqn' => null, 'middleware' => []]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($input, $this->output));
     }
 
@@ -97,7 +100,7 @@ class RouteListCommandHandlerTest extends TestCase
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($this->input, $this->output));
     }
 
-    public function testMiddlewareOptionConcatenatesMiddlewareClassNamesBelowRouteData(): void
+    public function testMiddlewareOptionConcatenatesMiddlewareClassNamesBeforeController(): void
     {
         $route = new Route(
             new UriTemplate(''),
@@ -106,12 +109,12 @@ class RouteListCommandHandlerTest extends TestCase
             [new MiddlewareBinding(MiddlewareA::class), new MiddlewareBinding(MiddlewareB::class)]
         );
         $this->routes->add($route);
-        $this->setUpOutputExpectations([['POST', '/', '<comment>RouteListCommandHandlerTest::foo</comment>'], ['', '', '↳ MiddlewareA → MiddlewareB']]);
-        $input = new Input('route:list', [], ['middleware' => null]);
+        $this->setUpOutputExpectations([['POST', '/', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']]);
+        $input = new Input('route:list', [], ['middleware' => []]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($input, $this->output));
     }
 
-    public function testMiddlewareOptionDoesNotAddRowForRoutesWithNoMiddleware(): void
+    public function testMiddlewareOptionDoesNotAddAnythingForRoutesWithNoMiddleware(): void
     {
         $route1 = new Route(
             new UriTemplate('/bar'),
@@ -127,10 +130,24 @@ class RouteListCommandHandlerTest extends TestCase
         $this->routes->addMany([$route1, $route2]);
         $this->setUpOutputExpectations([
             ['POST', '/bar', '<comment>RouteListCommandHandlerTest::bar</comment>'],
-            ['POST', '/foo', '<comment>RouteListCommandHandlerTest::foo</comment>'],
-            ['', '', '↳ MiddlewareA → MiddlewareB']
+            ['POST', '/foo', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']
         ]);
-        $input = new Input('route:list', [], ['middleware' => null]);
+        $input = new Input('route:list', [], ['middleware' => []]);
+        $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($input, $this->output));
+    }
+
+    public function testMiddlewareOptionWithGlobalValueIncludesGlobalMiddleware(): void
+    {
+        $this->middleware->add(new MiddlewareA());
+        $route = new Route(
+            new UriTemplate(''),
+            new RouteAction(self::class, 'foo'),
+            [new HttpMethodRouteConstraint(['POST'])],
+            [new MiddlewareBinding(MiddlewareB::class)]
+        );
+        $this->routes->add($route);
+        $this->setUpOutputExpectations([['POST', '/', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']]);
+        $input = new Input('route:list', [], ['middleware' => ['global']]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($input, $this->output));
     }
 
@@ -203,8 +220,8 @@ class RouteListCommandHandlerTest extends TestCase
             [new MiddlewareBinding(MiddlewareA::class)]
         );
         $this->routes->add($route);
-        $input = new Input('route:list', [], ['middleware' => null]);
-        $this->setUpOutputExpectations([['POST', '/', '<comment>RouteListCommandHandlerTest::foo</comment>'], ['', '', '↳ MiddlewareA']]);
+        $input = new Input('route:list', [], ['middleware' => []]);
+        $this->setUpOutputExpectations([['POST', '/', '<comment>MiddlewareA</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($input, $this->output));
     }
 
@@ -220,6 +237,6 @@ class RouteListCommandHandlerTest extends TestCase
 
         $this->output->expects($this->once())
             ->method('writeln')
-            ->with($this->paddingFormatter->format($expectedRows, fn (array $row): string => \implode(' ', $row)));
+            ->with($this->paddingFormatter->format($expectedRows, fn (array $row): string => \implode('    ', $row)));
     }
 }

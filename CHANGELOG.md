@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed bug that caused padding to be incorrectly applied to formatted strings in the console ([#218](https://github.com/aphiria/aphiria/pull/218))
+- Fixed bug that caused console options whose values are arrays to not be an array when a single value is specified ([#218](https://github.com/aphiria/aphiria/pull/218))
 - Fixed `RouteCollectionBuilder` to remove trailing slashes when the group path is not empty but the route path is ([#198](https://github.com/aphiria/aphiria/pull/198))
 - Fixed bug that caused console drivers to incorrectly detect the OS ([#207](https://github.com/aphiria/aphiria/pull/207))
 - Fixed bug that failed to handle problem detail factories that used an `HttpStatusCode` enum value for the status ([#202](https://github.com/aphiria/aphiria/pull/202))
