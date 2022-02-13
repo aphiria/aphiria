@@ -79,6 +79,17 @@ class PaddingFormatterTest extends TestCase
         $this->assertSame('a  <br>cd <br>fg <br>ijk', $formattedText);
     }
 
+    public function testFormattingDoesNotAffectPadding(): void
+    {
+        $rows = [
+            ['<b>a</b>'],
+            ['aaa']
+        ];
+        $formattedRows = $this->formatter->format($rows, fn (array $row) => $row[0]);
+        // Without the bold formatting, we should expect two padding spaces so that the widths of the texts are equal
+        $this->assertEquals('<b>a</b>  ' . \PHP_EOL . 'aaa', $formattedRows);
+    }
+
     public function testNormalizingColumns(): void
     {
         $rows = [

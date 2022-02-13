@@ -43,16 +43,30 @@ class RouteListCommandHandler implements ICommandHandler
      */
     public function handle(Input $input, IOutput $output)
     {
+        $useFqn = \array_key_exists('fqn', $input->options);
+        $showMiddleware = \array_key_exists('middleware', $input->options);
         $sortedRoutes = $this->routes->getAll();
         \usort($sortedRoutes, fn (Route $routeA, Route $routeB) => $this->compareRoutes($routeA, $routeB));
-        $rows = [['Method', 'Path', 'Action']];
+        $rows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>']];
 
         foreach ($sortedRoutes as $route) {
             $rows[] = [
                 $this->formatHttpMethodString($route),
-                $route->uriTemplate->pathTemplate,
-                "{$route->action->className}::{$route->action->methodName}"
+                $this->formatUriTemplate($route->uriTemplate->pathTemplate),
+                "<comment>{$this->formatClassName($route->action->className, $useFqn)}::{$route->action->methodName}</comment>"
             ];
+
+            if ($showMiddleware) {
+                $formattedMiddlewareClassNames = [];
+
+                foreach ($route->middlewareBindings as $middlewareBinding) {
+                    $formattedMiddlewareClassNames[] = $this->formatClassName($middlewareBinding->className, $useFqn);
+                }
+
+                if (\count($formattedMiddlewareClassNames) > 0) {
+                    $rows[] = ['', '', '↳ ' . \implode(' → ', $formattedMiddlewareClassNames)];
+                }
+            }
         }
 
         $this->paddingFormatter->setPaddingString(' ');
@@ -76,6 +90,22 @@ class RouteListCommandHandler implements ICommandHandler
         }
 
         return \strcasecmp($routeA->uriTemplate->pathTemplate, $routeB->uriTemplate->pathTemplate);
+    }
+
+    /**
+     * Formats a class name for output
+     *
+     * @param class-string $className The name of the class to format
+     * @param bool $useFullyQualifiedName Whether or not to use the fully qualified class name
+     * @return string The formatted class name
+     */
+    private function formatClassName(string $className, bool $useFullyQualifiedName): string
+    {
+        if ($useFullyQualifiedName) {
+            return $className;
+        }
+
+        return \substr($className, \strrpos($className, '\\') + 1);
     }
 
     /**
@@ -103,5 +133,16 @@ class RouteListCommandHandler implements ICommandHandler
         \sort($httpMethods);
 
         return \implode('|', $httpMethods);
+    }
+
+    /**
+     * Formats a URI template
+     *
+     * @param string $uriTemplate The URI template to format
+     * @return string The formatted URI template
+     */
+    private function formatUriTemplate(string $uriTemplate): string
+    {
+        return \preg_replace('/\/(:[^\/$\[\]]+)/', '/<info>\1</info>', $uriTemplate);
     }
 }

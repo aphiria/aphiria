@@ -24,6 +24,7 @@
 - Added the Security library ([#191](https://github.com/aphiria/aphiria/pull/191))
 - Added `Controller::getUser()` to grab the current authenticated user ([#208](https://github.com/aphiria/aphiria/pull/208))
 - Added the `route:list` console command ([#200](https://github.com/aphiria/aphiria/pull/200))
+- Added the ability to specify middleware and whether to show class names as FQN in `route:list` (TBD)
 - Added ability to search for middleware attributes that extend `Aphiria\Routing\Attributes\Middleware` ([#187](https://github.com/aphiria/aphiria/pull/187))
 
 ## [v1.0.0-alpha5](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha4...v1.0.0-alpha5) (2021-11-14)

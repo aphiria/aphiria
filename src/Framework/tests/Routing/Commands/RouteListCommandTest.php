@@ -22,5 +22,8 @@ class RouteListCommandTest extends TestCase
         $command = new RouteListCommand();
         $this->assertSame('route:list', $command->name);
         $this->assertSame('Lists the routes in your app', $command->description);
+        $this->assertCount(2, $command->options);
+        $this->assertSame('fqn', $command->options[0]->name);
+        $this->assertSame('middleware', $command->options[1]->name);
     }
 }
