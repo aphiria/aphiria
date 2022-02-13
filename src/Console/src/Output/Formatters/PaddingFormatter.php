@@ -51,7 +51,10 @@ class PaddingFormatter
         for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             /** @psalm-suppress MixedAssignment Each item could be a mixed value */
             foreach ($rows[$rowIndex] as $itemIndex => $item) {
-                $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex], $this->paddingString, $paddingType);
+                // The formatting tags will be compiled and disappear from the string
+                // So, we want additional padding equal to the length of the formatting so that the widths come out right
+                $formattingWidth = $this->getStringWidth((string)$item, true) - $this->getStringWidth((string)$item, false);
+                $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex] + $formattingWidth, $this->paddingString, $paddingType);
             }
         }
 
@@ -62,9 +65,7 @@ class PaddingFormatter
         }
 
         // Trim the excess separator
-        $formattedText = \preg_replace('/' . \preg_quote($this->eolChar, '/') . '$/', '', $formattedText);
-
-        return $formattedText;
+        return \preg_replace('/' . \preg_quote($this->eolChar, '/') . '$/', '', $formattedText);
     }
 
     /**
@@ -96,7 +97,7 @@ class PaddingFormatter
             /** @psalm-suppress MixedAssignment The value could be a mixed type */
             foreach ($rows[$rowIndex] as $columnIndex => $value) {
                 $rows[$rowIndex][$columnIndex] = \trim((string)$value);
-                $maxLengths[$columnIndex] = \max($maxLengths[$columnIndex], \mb_strlen($rows[$rowIndex][$columnIndex]));
+                $maxLengths[$columnIndex] = \max($maxLengths[$columnIndex], $this->getStringWidth($rows[$rowIndex][$columnIndex], false));
             }
         }
 
@@ -122,5 +123,21 @@ class PaddingFormatter
     public function setPaddingString(string $paddingString): void
     {
         $this->paddingString = $paddingString;
+    }
+
+    /**
+     * Gets the width of a string
+     *
+     * @param string $string The string whose width we want
+     * @param bool $includeFormatting Whether or not to include any uncompiled formatting tags
+     * @return int The string width
+     */
+    private function getStringWidth(string $string, bool $includeFormatting): int
+    {
+        if ($includeFormatting) {
+            return \mb_strwidth($string);
+        }
+
+        return \mb_strwidth(\strip_tags($string));
     }
 }

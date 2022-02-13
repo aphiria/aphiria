@@ -173,6 +173,11 @@ final class InputCompiler implements IInputCompiler
                     $value = $option->defaultValue;
                 }
 
+                // Make sure the value is always treated as an array
+                if ($option->valueIsArray()) {
+                    $value = (array)$value;
+                }
+
                 /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $options[$option->name] = $value;
             } elseif ($option->valueIsPermitted()) {

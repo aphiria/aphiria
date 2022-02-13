@@ -206,6 +206,30 @@ class InputCompilerTest extends TestCase
         $this->assertEquals(['dave', 'young'], $input->options['opt']);
     }
 
+    public function testCompilingArrayLongOptionWithNoValueSetsValueToAnEmptyArray(): void
+    {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [],
+                [
+                    new Option('opt', OptionType::IsArray, null, '')
+                ],
+                ''
+            ),
+            $commandHandler::class
+        );
+        $input = $this->compiler->compile('foo --opt');
+        $this->assertSame('foo', $input->commandName);
+        $this->assertEquals([], $input->arguments);
+        $this->assertEquals([], $input->options['opt']);
+    }
+
     public function testCompilingArrayLongOptionWithoutEqualsSign(): void
     {
         $commandHandler = new class () implements ICommandHandler {
@@ -228,6 +252,30 @@ class InputCompilerTest extends TestCase
         $this->assertSame('foo', $input->commandName);
         $this->assertEquals([], $input->arguments);
         $this->assertEquals(['dave', 'young'], $input->options['opt']);
+    }
+
+    public function testCompilingArrayLongOptionWithSingleValueConvertsValueToAnArray(): void
+    {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [],
+                [
+                    new Option('opt', OptionType::IsArray, null, '')
+                ],
+                ''
+            ),
+            $commandHandler::class
+        );
+        $input = $this->compiler->compile('foo --opt=dave');
+        $this->assertSame('foo', $input->commandName);
+        $this->assertEquals([], $input->arguments);
+        $this->assertEquals(['dave'], $input->options['opt']);
     }
 
     public function testCompilingCommandName(): void
