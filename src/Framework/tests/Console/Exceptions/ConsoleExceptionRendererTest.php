@@ -38,6 +38,7 @@ class ConsoleExceptionRendererTest extends TestCase
 
     public function testRenderingExceptionWithManyRegisteredOutputWritersWritesMessagesAndReturnsStatusCodes(): void
     {
+        /** @psalm-suppress ArgumentTypeCoercion We're purposely adding mixed exception types here */
         $this->exceptionRenderer->registerManyOutputWriters([
             Exception::class => function (Exception $ex, IOutput $output): int {
                 $output->writeln('foo');

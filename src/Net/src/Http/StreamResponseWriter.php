@@ -75,7 +75,7 @@ class StreamResponseWriter implements IResponseWriter
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
                 /** @var string $headerValue */
-                foreach ($value as $headerValue) {
+                foreach ((array)$value as $headerValue) {
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
