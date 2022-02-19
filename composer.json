@@ -124,10 +124,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "composer/package-versions-deprecated": false
-        }
+        "sort-packages": true
     },
     "prefer-stable": true,
     "minimum-stability": "dev"
