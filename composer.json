@@ -100,7 +100,7 @@
         "mockery/mockery": "^1.4",
         "nyholm/psr7": "^1.4",
         "phpunit/phpunit": "9.5.14",
-        "phpunit/php-code-coverage": "9.2.11",
+        "phpunit/php-code-coverage": "9.2.10",
         "vimeo/psalm": "^4.11"
     },
     "scripts": {
