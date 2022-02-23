@@ -8,7 +8,7 @@
             <html outputDirectory="./.coverage"/>
         </report>
     </coverage>
-    <testsuite name="Authorization">
+    <testsuite name="Security">
         <directory>tests</directory>
     </testsuite>
 </phpunit>
