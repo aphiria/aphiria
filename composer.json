@@ -99,7 +99,7 @@
         "friendsofphp/php-cs-fixer": "^3.5",
         "mockery/mockery": "^1.4",
         "nyholm/psr7": "^1.4",
-        "phpunit/phpunit": "~9.5",
+        "phpunit/phpunit": "^9.5",
         "vimeo/psalm": "dev-master"
     },
     "scripts": {
@@ -124,10 +124,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "allow-plugins": {
-            "composer/package-versions-deprecated": false
-        }
+        "sort-packages": true
     },
     "prefer-stable": true,
     "minimum-stability": "dev"
