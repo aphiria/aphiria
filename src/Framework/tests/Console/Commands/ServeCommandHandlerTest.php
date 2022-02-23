@@ -44,6 +44,6 @@ class ServeCommandHandlerTest extends TestCase
             }
         };
         $handler->handle($input, $output);
-        $this->assertSame(PHP_BINARY . ' -S localhost.app:443 -t "public" "router"', $handler->ranCommand);
+        $this->assertSame('"' . PHP_BINARY . '" -S localhost.app:443 -t "public" "router"', $handler->ranCommand);
     }
 }

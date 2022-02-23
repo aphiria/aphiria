@@ -33,7 +33,7 @@ class ServeCommandHandler implements ICommandHandler
         $output->writeln("<info>Running at http://$domain:$port</info>");
         $command = \sprintf(
             '%s -S %s:%d -t %s %s',
-            PHP_BINARY,
+            '"' . PHP_BINARY . '"',
             $domain,
             $port,
             '"' . (string)$input->options['docroot'] . '"',

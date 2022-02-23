@@ -114,10 +114,7 @@ final class Validator implements IValidator
     public function validateMethod(object $object, string $methodName): void
     {
         $this->validateMethodWithContext($object, $methodName, new ValidationContext($object, null, $methodName));
-        // For some reason, this is being picked up as missing coverage
-        // @codeCoverageIgnoreStart
     }
-    // @codeCoverageIgnoreEnd
 
     /**
      * @inheritdoc
@@ -126,10 +123,7 @@ final class Validator implements IValidator
     public function validateObject(object $object): void
     {
         $this->validateObjectWithContext($object, new ValidationContext($object));
-        // For some reason, this is being picked up as missing coverage
-        // @codeCoverageIgnoreStart
     }
-    // @codeCoverageIgnoreEnd
 
     /**
      * @inheritdoc
@@ -138,10 +132,7 @@ final class Validator implements IValidator
     public function validateProperty(object $object, string $propertyName): void
     {
         $this->validatePropertyWithContext($object, $propertyName, new ValidationContext($object, $propertyName));
-        // For some reason, this is being picked up as missing coverage
-        // @codeCoverageIgnoreStart
     }
-    // @codeCoverageIgnoreEnd
 
     /**
      * @inheritdoc
@@ -150,10 +141,7 @@ final class Validator implements IValidator
     public function validateValue(mixed $value, array $constraints): void
     {
         $this->validateValueWithContext($value, $constraints, new ValidationContext($value));
-        // For some reason, this is being picked up as missing coverage
-        // @codeCoverageIgnoreStart
     }
-    // @codeCoverageIgnoreEnd
 
     /**
      * Tries to validate a method in an object in a context
