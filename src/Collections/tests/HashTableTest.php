@@ -123,19 +123,15 @@ class HashTableTest extends TestCase
     {
         $this->hashTable->add('foo', 'bar');
         $this->hashTable->add('baz', 'blah');
-        $expectedArray = [
-            new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'blah')
-        ];
-        $actualValues = [];
+        /** @var list<array{0: string, 1: string}> $expectedValues */
+        $expectedValues = [['foo', 'bar'], ['baz', 'blah']];
+        $expectedValuesIndex = 0;
 
         foreach ($this->hashTable as $key => $value) {
-            // Make sure the hash keys aren't returned by the iterator
-            $this->assertIsInt($key);
-            $actualValues[] = $value;
+            $this->assertSame($expectedValues[$expectedValuesIndex][0], $key);
+            $this->assertSame($expectedValues[$expectedValuesIndex][1], $value);
+            $expectedValuesIndex++;
         }
-
-        $this->assertEquals($expectedArray, $actualValues);
     }
 
     /**
