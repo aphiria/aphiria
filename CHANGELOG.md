@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.0-alpha6](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha5...v1.0.0-alpha6) (?)
+## [v1.0.0-alpha6](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha5...v1.0.0-alpha6) (2022-02-26)
 
 ### Fixed
 
@@ -9,7 +9,7 @@
 - Fixed `RouteCollectionBuilder` to remove trailing slashes when the group path is not empty but the route path is ([#198](https://github.com/aphiria/aphiria/pull/198))
 - Fixed bug that caused console drivers to incorrectly detect the OS ([#207](https://github.com/aphiria/aphiria/pull/207))
 - Fixed bug that failed to handle problem detail factories that used an `HttpStatusCode` enum value for the status ([#202](https://github.com/aphiria/aphiria/pull/202))
-- Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178)), ([#180](https://github.com/aphiria/aphiria/pull/180))
+- Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178), [#180](https://github.com/aphiria/aphiria/pull/180))
 - Fixed `Aphiria\Net\Http\Formatting\ResponseFormatter::redirectToUri()` to accept an `HttpStatusCode` as well as an `int` status code ([#184](https://github.com/aphiria/aphiria/pull/184))
 - Re-enabled Psalm in CI ([#215](https://github.com/aphiria/aphiria/pull/215))
 - Re-enabled PHP-CS-Fixer in CI ([#188](https://github.com/aphiria/aphiria/pull/188))
@@ -17,7 +17,7 @@
 ### Changed
 
 - Removed `IRequest` parameter from `ProblemDetailsExceptionRenderer::__construct()` and changed `RequestBinder` to bind the request as a factory instead of a singleton ([214](https://github.com/aphiria/aphiria/pull/214))
-- `Aphiria\Collections\HashTable::getIterator()` and `ImmutableHashTable::getIterator()` now return `KeyValuePairIterator`, which allows you to grab the key and value directly from a `foreach` loop rather than iterating over a list of `KeyValuePair` objects ([#215](https://github.com/aphiria/aphiria/pull/215))
+- `Aphiria\Collections\HashTable::getIterator()` and `ImmutableHashTable::getIterator()` now return `KeyValuePairIterator`, which allows you to grab the key and value directly from a `foreach` loop rather than iterating over a list of `KeyValuePair` objects ([#221](https://github.com/aphiria/aphiria/pull/221))
 - Changed to using templatized CI workflows for DRY ([#183](https://github.com/aphiria/aphiria/pull/183))
 - Removed PhpStorm meta files now that we're using generics ([#210](https://github.com/aphiria/aphiria/pull/210))
 
