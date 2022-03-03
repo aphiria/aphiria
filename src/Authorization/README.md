@@ -8,7 +8,7 @@
 <a href="https://packagist.org/packages/aphiria/authorization"><img src="https://poser.pugx.org/aphiria/authorization/license.svg"></a>
 </p>
 
-# Application
+# Authorization
 
 > **Note:** This library is not stable yet.
 
