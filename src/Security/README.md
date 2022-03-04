@@ -8,7 +8,7 @@
 <a href="https://packagist.org/packages/aphiria/security"><img src="https://poser.pugx.org/aphiria/security/license.svg"></a>
 </p>
 
-# Application
+# Security
 
 > **Note:** This library is not stable yet.
 
