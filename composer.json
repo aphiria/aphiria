@@ -97,7 +97,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
-        "mockery/mockery": "^1.4",
+        "mockery/mockery": "^1.5",
         "nyholm/psr7": "^1.5",
         "phpunit/phpunit": "^9.5",
         "vimeo/psalm": "dev-master"
