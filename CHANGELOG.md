@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.0.0-alpha7](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha6...v1.0.0-alpha7) (?)
+
+### Fixed
+
+Nothing
+
+### Changed
+
+- Updated linter rules to place enum cases above most other elements ([#222](https://github.com/aphiria/aphiria/pull/222))
+
+### Added
+
+Nothing
+
 ## [v1.0.0-alpha6](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha5...v1.0.0-alpha6) (2022-02-26)
 
 ### Fixed
