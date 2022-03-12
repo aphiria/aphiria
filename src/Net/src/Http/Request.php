@@ -47,7 +47,7 @@ class Request implements IRequest
      * @param IDictionary<string, mixed> $properties The request properties
      * @param string $protocolVersion The HTTP protocol version
      * @param RequestTargetType $requestTargetType The type of request target URI this request uses
-     * @throws InvalidArgumentException Thrown if the any of the properties are not valid
+     * @throws InvalidArgumentException Thrown if any of the properties are not valid
      * @throws RuntimeException Thrown if any of the headers' hash keys could not be calculated
      */
     public function __construct(
