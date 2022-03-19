@@ -170,6 +170,7 @@ class ProgressBarFormatter implements IProgressBarObserver
         }
 
         $secondsRemaining = $this->getSecondsRemaining($progress, $maxSteps);
+        /** @var list<array{0: int, 1: string}|array{0: int, 1: string, 2: int}> $timeFormats */
         $timeFormats = [
             [0, 'less than 1 sec'],
             [1, '1 sec'],
@@ -184,6 +185,7 @@ class ProgressBarFormatter implements IProgressBarObserver
 
         foreach ($timeFormats as $index => $timeFormat) {
             if ($secondsRemaining >= $timeFormat[0]) {
+                /** @psalm-suppress InvalidArrayOffset The offset we're checking is always valid */
                 if ((isset($timeFormats[$index + 1]) && $secondsRemaining < $timeFormats[$index + 1][0])
                     || $index === \count($timeFormats) - 1
                 ) {

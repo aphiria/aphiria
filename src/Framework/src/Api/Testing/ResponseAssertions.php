@@ -35,7 +35,7 @@ class ResponseAssertions
 {
     /**
      * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
-     * @param ResponseHeaderParser|null $responseHeaderParser The response header parser
+     * @param ResponseHeaderParser $responseHeaderParser The response header parser
      */
     public function __construct(
         private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([

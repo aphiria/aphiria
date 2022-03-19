@@ -26,7 +26,7 @@ class AuthorizationComponent implements IComponent
 {
     /** @var list<AuthorizationPolicy> The list of authorization policies */
     private array $policies = [];
-    /** @var array{class-string, IAuthorizationRequirementHandler<object>} The list of requirement types to instances of their handlers */
+    /** @var array<class-string, IAuthorizationRequirementHandler<object>> The list of requirement types to instances of their handlers */
     private array $requirementHandlerTypesToHandlers = [];
 
     /**

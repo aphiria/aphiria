@@ -605,6 +605,7 @@ class ContainerTest extends TestCase
         $container = new class () extends Container {
             public function bindUnsupported(): void
             {
+                /** @psalm-suppress MissingTemplateParam Psalm does not support template params on anonymous classes */
                 $unsupportedBinding = new class () implements IContainerBinding {
                     public function resolveAsSingleton(): bool
                     {

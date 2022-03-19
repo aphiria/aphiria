@@ -69,6 +69,7 @@ class CookieAuthenticationHandlerTest extends TestCase
         $request->method('getHeaders')
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
+        /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
         $this->schemeHandler->expectedAuthenticationResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
         $this->assertSame(
             $this->schemeHandler->expectedAuthenticationResult,
@@ -146,6 +147,7 @@ class CookieAuthenticationHandlerTest extends TestCase
             cookieSameSite: SameSiteMode::Strict
         );
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, $options);
+        /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
         $this->schemeHandler->expectedCookieValue = 'abc';
         $this->schemeHandler->logIn($this->createMock(IPrincipal::class), $this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame(
@@ -170,6 +172,7 @@ class CookieAuthenticationHandlerTest extends TestCase
             cookieSameSite: SameSiteMode::Strict
         );
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, $options);
+        /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
         $this->schemeHandler->expectedCookieValue = 'abc';
         $this->schemeHandler->logOut($this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame(

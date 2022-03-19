@@ -69,7 +69,6 @@ class Application implements ICommandBus
                 throw new InvalidArgumentException("Command \"{$compiledInput->commandName}\" is not registered");
             }
 
-            /** @var ICommandHandler $commandHandler */
             $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
             $statusCode = $commandHandler->handle($compiledInput, $output);
 
@@ -87,7 +86,6 @@ class Application implements ICommandBus
                 }
 
                 $output = $output ?? new ConsoleOutput();
-                /** @var ICommandHandler $commandHandler */
                 $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
                 $commandHandler->handle(new Input('about', [], []), $output);
 

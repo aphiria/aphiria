@@ -73,6 +73,7 @@ class RolesRequirementHandlerTest extends TestCase
         $this->expectExceptionMessage('Requirement must be of type ' . RolesRequirement::class . ', ' . $this::class . ' given');
         $user = $this->createMock(IPrincipal::class);
         $context = new AuthorizationContext($user, [$this], null);
+        /** @psalm-suppress InvalidArgument We're explicitly testing an invalid value */
         $this->requirementHandler->handle($user, $this, $context);
     }
 

@@ -73,7 +73,7 @@ class ControllerTest extends TestCase
                 return parent::found($uri, $body, $headers);
             }
 
-            public function getUser(): IPrincipal
+            public function getUser(): ?IPrincipal
             {
                 return parent::getUser();
             }

@@ -25,6 +25,7 @@ Nothing
 - Fixed bug that failed to handle problem detail factories that used an `HttpStatusCode` enum value for the status ([#202](https://github.com/aphiria/aphiria/pull/202))
 - Fixed some PHPDoc to use generics where applicable ([#178](https://github.com/aphiria/aphiria/pull/178), [#180](https://github.com/aphiria/aphiria/pull/180))
 - Fixed `Aphiria\Net\Http\Formatting\ResponseFormatter::redirectToUri()` to accept an `HttpStatusCode` as well as an `int` status code ([#184](https://github.com/aphiria/aphiria/pull/184))
+- Re-enabled Psalm in CI ([#215](https://github.com/aphiria/aphiria/pull/215))
 - Re-enabled PHP-CS-Fixer in CI ([#188](https://github.com/aphiria/aphiria/pull/188))
 
 ### Changed

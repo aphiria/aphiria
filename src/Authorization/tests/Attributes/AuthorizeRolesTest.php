@@ -48,7 +48,7 @@ class AuthorizeRolesTest extends TestCase
         $policy = $attribute->parameters['policy'] ?? null;
 
         if ($authenticationSchemeNames === null) {
-            $this->assertNull($policy->authenticationSchemeNames);
+            $this->assertNull($policy?->authenticationSchemeNames);
         } else {
             $this->assertSame((array)$authenticationSchemeNames, $policy?->authenticationSchemeNames);
         }

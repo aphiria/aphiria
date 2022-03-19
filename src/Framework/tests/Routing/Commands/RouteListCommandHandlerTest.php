@@ -235,6 +235,7 @@ class RouteListCommandHandlerTest extends TestCase
         // Prepend the header row
         $expectedRows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>'], ...$expectedRows];
 
+        /** @psalm-suppress MixedArgumentTypeCoercion The row will always be implode-able */
         $this->output->expects($this->once())
             ->method('writeln')
             ->with($this->paddingFormatter->format($expectedRows, fn (array $row): string => \implode('    ', $row)));

@@ -83,6 +83,7 @@ class RequestFactory
      */
     public function __construct(protected readonly array $trustedProxyIPAddresses = [], array $trustedHeaderNames = [])
     {
+        /** @psalm-suppress InvalidPropertyAssignmentValue - Bug (https://github.com/vimeo/psalm/issues/7297) */
         $this->trustedHeaderNames = [...self::$defaultTrustedHeaderNames, ...$trustedHeaderNames];
     }
 

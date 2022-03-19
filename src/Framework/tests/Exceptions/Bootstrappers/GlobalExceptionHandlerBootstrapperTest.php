@@ -150,6 +150,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['exceptions']['apiExceptionRenderer'] = self::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid argument */
         $this->addBootstrapAssertions(self::class);
         $this->container->method('resolve')
             ->with(self::class)

@@ -206,10 +206,12 @@ class Psr7FactoryTest extends TestCase
         /** @var list<UploadedFileInterface> $psr7UploadedFiles */
         $psr7UploadedFiles = $psr7Request->getUploadedFiles();
         $this->assertCount(2, $psr7UploadedFiles);
+        /** @psalm-suppress InvalidArrayOffset The PSR-7 stub just uses a generic "array" type rather than array<string, StreamInterface> */
         $this->assertSame('file1contents', (string)$psr7UploadedFiles['file1']->getStream());
         $this->assertSame('foo.png', $psr7UploadedFiles['file1']->getClientFilename());
         $this->assertSame('image/png', $psr7UploadedFiles['file1']->getClientMediaType());
         $this->assertSame(\UPLOAD_ERR_OK, $psr7UploadedFiles['file1']->getError());
+        /** @psalm-suppress InvalidArrayOffset The PSR-7 stub just uses a generic "array" type rather than array<string, StreamInterface> */
         $this->assertSame('file2contents', (string)$psr7UploadedFiles['file2']->getStream());
         $this->assertSame('bar.png', $psr7UploadedFiles['file2']->getClientFilename());
         $this->assertSame('image/png', $psr7UploadedFiles['file2']->getClientMediaType());

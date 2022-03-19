@@ -36,6 +36,7 @@ class AuthorizationBinder extends Binder
         $container->bindInstance(AuthorizationRequirementHandlerRegistry::class, $requirementHandlers);
         $continueOnError = null;
         GlobalConfiguration::tryGetBool('authorization.continueOnFailure', $continueOnError);
+        /** @var bool|null $continueOnError */
         $authority = new Authority($policies, $requirementHandlers, $continueOnError ?? true);
         $container->bindInstance(IAuthority::class, $authority);
     }

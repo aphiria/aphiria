@@ -206,6 +206,7 @@ class Psr7Factory implements IPsr7Factory
             $psr7Request = $psr7Request->withParsedBody($parsedBody);
         }
 
+        /** @psalm-suppress MixedAssignment - The value really could be any type */
         foreach ($aphiriaRequest->getProperties() as $key => $value) {
             $psr7Request = $psr7Request->withAttribute((string)$key, $value);
         }

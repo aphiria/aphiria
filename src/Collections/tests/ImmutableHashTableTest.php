@@ -89,6 +89,7 @@ class ImmutableHashTableTest extends TestCase
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $this->assertTrue(isset($hashTable['foo']));
+        /** @psalm-suppress InvalidArgument We're purposely testing that an exception is thrown */
         $this->assertFalse(isset($hashTable['baz']));
     }
 

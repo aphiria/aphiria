@@ -7,133 +7,132 @@
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
     <projectFiles>
-        <directory name="src/" />
+        <directory name="src/"/>
         <ignoreFiles>
-            <directory name="vendor" />
-            <file name="src/Router/bin/benchmarks.php" />
+            <directory name="vendor"/>
+            <file name="src/Router/bin/benchmarks.php"/>
         </ignoreFiles>
     </projectFiles>
+    <plugins>
+        <pluginClass class="Psalm\MockeryPlugin\Plugin"/>
+    </plugins>
     <issueHandlers>
         <InaccessibleMethod>
             <errorLevel type="suppress">
-                <file name="src/Api/tests/Controllers/ControllerTest.php" />
-                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
+                <file name="src/Api/tests/Controllers/ControllerTest.php"/>
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php"/>
             </errorLevel>
         </InaccessibleMethod>
+        <InvalidParamDefault>
+            <errorLevel type="suppress">
+                <!-- Setting a default, empty generic value for a generic property trips Psalm up -->
+                <file name="src/Net/src/Http/Request.php"/>
+            </errorLevel>
+        </InvalidParamDefault>
         <MixedArgument>
             <errorLevel type="suppress">
                 <!-- We don't care about mixed arguments in tests -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
                 <!-- Collections are dealing with lots of mixed types -->
-                <file name="src/Collections/src/ArrayList.php" />
-                <file name="src/Collections/src/HashSet.php" />
-                <file name="src/Collections/src/HashTable.php" />
-                <file name="src/Collections/src/ImmutableArrayList.php" />
-                <file name="src/Collections/src/ImmutableHashSet.php" />
-                <file name="src/Collections/src/ImmutableHashTable.php" />
+                <file name="src/Collections/src/ArrayList.php"/>
+                <file name="src/Collections/src/HashSet.php"/>
+                <file name="src/Collections/src/HashTable.php"/>
+                <file name="src/Collections/src/ImmutableArrayList.php"/>
+                <file name="src/Collections/src/ImmutableHashSet.php"/>
+                <file name="src/Collections/src/ImmutableHashTable.php"/>
             </errorLevel>
         </MixedArgument>
         <MixedArrayAssignment>
             <errorLevel type="suppress">
                 <!-- We don't care about mixed array assignments in tests -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
             </errorLevel>
         </MixedArrayAssignment>
         <MixedAssignment>
             <errorLevel type="suppress">
                 <!-- We don't care about mixed assignments in tests -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
             </errorLevel>
         </MixedAssignment>
         <MixedMethodCall>
             <errorLevel type="suppress">
                 <!-- Psalm gets tripped up on mocked methods -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
             </errorLevel>
         </MixedMethodCall>
         <PossiblyInvalidArgument>
             <errorLevel type="suppress">
                 <!-- Tests use union types with mocks, which trips up Psalm a lot -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
             </errorLevel>
         </PossiblyInvalidArgument>
         <PossiblyNullReference>
             <errorLevel type="suppress">
                 <!-- Properties such as the current request are guaranteed to be set by the framework in the wild -->
-                <file name="src/Api/src/Controllers/Controller.php" />
+                <file name="src/Api/src/Controllers/Controller.php"/>
             </errorLevel>
         </PossiblyNullReference>
         <PossiblyUndefinedMethod>
             <errorLevel type="suppress">
                 <!-- Tests use union types with mocks, which trips up Psalm a lot -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
             </errorLevel>
         </PossiblyUndefinedMethod>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
-                <directory name="src/**/tests" />
-                <file name="src/Framework/src/Serialization/Normalizers/ProblemDetailsNormalizer.php" />
+                <directory name="src/**/tests"/>
+                <file name="src/Framework/src/Serialization/Normalizers/ProblemDetailsNormalizer.php"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
         <RedundantCastGivenDocblockType>
             <errorLevel type="suppress">
                 <!-- We usually want to double-check types at runtime, and not just rely on PHPDoc -->
-                <directory name="src" />
+                <directory name="src"/>
             </errorLevel>
         </RedundantCastGivenDocblockType>
         <RedundantConditionGivenDocblockType>
             <errorLevel type="suppress">
                 <!-- We usually want to double-check types at runtime, and not just rely on PHPDoc -->
-                <directory name="src" />
+                <directory name="src"/>
             </errorLevel>
         </RedundantConditionGivenDocblockType>
         <ReferenceConstraintViolation>
             <errorLevel type="suppress">
                 <!-- Psalm gets tripped up on try*() patterns with out-params - bug -->
-                <file name="src/Application/src/Configuration/GlobalConfiguration.php" />
-                <file name="src/Application/src/Configuration/IConfiguration.php" />
-                <file name="src/DependencyInjection/src/IServiceResolver.php" />
+                <file name="src/Application/src/Configuration/GlobalConfiguration.php"/>
+                <file name="src/Application/src/Configuration/IConfiguration.php"/>
+                <file name="src/DependencyInjection/src/IServiceResolver.php"/>
             </errorLevel>
         </ReferenceConstraintViolation>
         <TypeDoesNotContainNull>
             <errorLevel type="suppress">
                 <!-- We get a lot of false positives with the try*() pattern and out parameters -->
-                <file name="src/Application/tests/Configuration/GlobalConfigurationTest.php" />
+                <file name="src/Application/tests/Configuration/GlobalConfigurationTest.php"/>
             </errorLevel>
         </TypeDoesNotContainNull>
-        <UndefinedClass>
-            <errorLevel type="suppress">
-                <file name="src/**/.phpstorm.meta.php" />
-            </errorLevel>
-        </UndefinedClass>
-        <UndefinedFunction>
-            <errorLevel type="suppress">
-                <file name="src/**/.phpstorm.meta.php" />
-            </errorLevel>
-        </UndefinedFunction>
         <UndefinedInterfaceMethod>
             <errorLevel type="suppress">
                 <!-- The elevated visibilities in the mocks triggers a false positive -->
-                <file name="src/DependencyInjection/tests/Binders/LazyBinderDispatcherTest.php" />
-                <file name="src/Framework/tests/Exceptions/Binders/ExceptionHandlerBinderTest.php" />
+                <file name="src/DependencyInjection/tests/Binders/LazyBinderDispatcherTest.php"/>
+                <file name="src/Framework/tests/Exceptions/Binders/ExceptionHandlerBinderTest.php"/>
                 <!-- The PhpStorm meta files give us intellisense that Psalm does not pick up on -->
-                <file name="src/Framework/src/Application/AphiriaComponents.php" />
+                <file name="src/Framework/src/Application/AphiriaComponents.php"/>
             </errorLevel>
         </UndefinedInterfaceMethod>
         <UndefinedMethod>
             <errorLevel type="suppress">
                 <!-- The elevated visibilities in the mocks triggers a false positive -->
-                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
-                <file name="src/Framework/tests/Console/Components/CommandComponentTest.php" />
-                <file name="src/Framework/tests/Exceptions/Bootstrappers/GlobalExceptionHandlerBootstrapperTest.php" />
-                <file name="src/Framework/tests/Routing/Components/RouterComponentTest.php" />
-                <file name="src/Framework/tests/Validation/Components/ValidationComponentTest.php" />
+                <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php"/>
+                <file name="src/Framework/tests/Console/Components/CommandComponentTest.php"/>
+                <file name="src/Framework/tests/Exceptions/Bootstrappers/GlobalExceptionHandlerBootstrapperTest.php"/>
+                <file name="src/Framework/tests/Routing/Components/RouterComponentTest.php"/>
+                <file name="src/Framework/tests/Validation/Components/ValidationComponentTest.php"/>
             </errorLevel>
         </UndefinedMethod>
         <UnusedClosureParam>
             <errorLevel type="suppress">
                 <!-- Tests use regularly use closures whose params are not used -->
-                <directory name="src/**/tests" />
+                <directory name="src/**/tests"/>
             </errorLevel>
         </UnusedClosureParam>
     </issueHandlers>

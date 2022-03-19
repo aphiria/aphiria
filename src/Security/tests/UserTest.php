@@ -15,6 +15,7 @@ namespace Aphiria\Security\Tests;
 use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\Identity;
+use Aphiria\Security\IIdentity;
 use Aphiria\Security\User;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +24,11 @@ class UserTest extends TestCase
     public function testAddingIdentityCanResetPrimaryIdentity(): void
     {
         // This will return the last one
-        $primaryIdentitySelector = static fn (array $identities) => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
+        /**
+         * @psalm-suppress MixedInferredReturnType The closure will always return an identity
+         * @psalm-suppress MixedReturnStatement Ditto
+         */
+        $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->getPrimaryIdentity());
         $identity1 = new Identity([], 'http://example.com');
@@ -48,7 +53,11 @@ class UserTest extends TestCase
     public function testAddingManyIdentitiesCanResetPrimaryIdentity(): void
     {
         // This will return the last one
-        $primaryIdentitySelector = static fn (array $identities) => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
+        /**
+         * @psalm-suppress MixedInferredReturnType The closure will always return an identity
+         * @psalm-suppress MixedReturnStatement Ditto
+         */
+        $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->getPrimaryIdentity());
         $identity1 = new Identity([], 'http://example.com');
@@ -152,7 +161,11 @@ class UserTest extends TestCase
     public function testPrimaryIdentityRespectsSelectorIfSpecified(): void
     {
         // This will return the last one
-        $primaryIdentitySelector = static fn (array $identities) => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
+        /**
+         * @psalm-suppress MixedInferredReturnType The closure will always return an identity
+         * @psalm-suppress MixedReturnStatement Ditto
+         */
+        $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->getPrimaryIdentity());
         $identity1 = new Identity([], 'http://example.com');

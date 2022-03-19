@@ -218,6 +218,13 @@ class AphiriaComponentsTest extends TestCase
         $component = new class () {
             use AphiriaComponents;
 
+            /**
+             * @template T of object
+             *
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string<T> $requirementType
+             * @param IAuthorizationRequirementHandler<T> $requirementHandler
+             */
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $requirementType,
@@ -242,6 +249,12 @@ class AphiriaComponentsTest extends TestCase
         $component = new class () {
             use AphiriaComponents;
 
+            /**
+             * @template T of object
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string<T> $requirementType
+             * @param IAuthorizationRequirementHandler<T> $requirementHandler
+             */
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $requirementType,
@@ -265,6 +278,12 @@ class AphiriaComponentsTest extends TestCase
         $component = new class () {
             use AphiriaComponents;
 
+            /**
+             * @template T of object
+             * @param IApplicationBuilder $appBuilder
+             * @param class-string<T> $requirementType
+             * @param IAuthorizationRequirementHandler<T> $requirementHandler
+             */
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $requirementType,

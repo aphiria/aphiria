@@ -122,7 +122,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {
-        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
+        /** @psalm-suppress PropertyTypeCoercion Psalm doesn't like mixing generics of different types */
         $this->exceptionProblemDetailMappings[$exceptionType] = [
             'type' => $type,
             'title' => $title,

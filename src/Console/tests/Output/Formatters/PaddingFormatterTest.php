@@ -85,7 +85,7 @@ class PaddingFormatterTest extends TestCase
             ['<b>a</b>'],
             ['aaa']
         ];
-        $formattedRows = $this->formatter->format($rows, fn (array $row) => $row[0]);
+        $formattedRows = $this->formatter->format($rows, fn (array $row): string => (string)$row[0]);
         // Without the bold formatting, we should expect two padding spaces so that the widths of the texts are equal
         $this->assertEquals('<b>a</b>  ' . \PHP_EOL . 'aaa', $formattedRows);
     }

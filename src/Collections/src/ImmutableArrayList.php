@@ -93,7 +93,7 @@ class ImmutableArrayList implements IImmutableList
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get($offset);
+        return $this->get((int)$offset);
     }
 
     /**

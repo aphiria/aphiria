@@ -27,6 +27,7 @@ use Aphiria\Security\IPrincipal;
  * Defines a authentication scheme handler for reading auth data from cookies
  *
  * @implements ILoginAuthenticationSchemeHandler<CookieAuthenticationOptions>
+ * @implements IAuthenticationSchemeHandler<CookieAuthenticationOptions>
  */
 abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandler, ILoginAuthenticationSchemeHandler
 {

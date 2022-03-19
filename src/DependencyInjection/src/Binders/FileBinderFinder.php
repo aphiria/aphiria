@@ -37,6 +37,7 @@ final class FileBinderFinder
      * @return list<class-string<Binder>> The list of all binder class names
      * @throws InvalidArgumentException Thrown if the paths are not a string or array
      * @throws ReflectionException Thrown if a class could not be reflected
+     * @psalm-suppress MoreSpecificReturnType This will always return a list of binder names - bug
      */
     public function findAll(string|array $paths): array
     {

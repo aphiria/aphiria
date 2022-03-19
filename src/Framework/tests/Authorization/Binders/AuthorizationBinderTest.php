@@ -14,6 +14,8 @@ namespace Aphiria\Framework\Tests\Authorization\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
+use Aphiria\Authentication\IUserAccessor;
+use Aphiria\Authentication\RequestPropertyUserAccessor;
 use Aphiria\Authorization\Authority;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;

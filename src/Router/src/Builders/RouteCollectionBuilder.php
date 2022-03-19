@@ -206,6 +206,7 @@ final class RouteCollectionBuilder
             $groupParameters = [...$groupParameters, ...$groupOptions->parameters];
         }
 
+        /** @psalm-suppress InvalidArgument - Bug (https://github.com/vimeo/psalm/issues/7297) */
         $routeBuilder->withManyParameters($groupParameters);
     }
 

@@ -50,6 +50,7 @@ class ApiApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
+        /** @psalm-suppress UnusedVariable These variables are used by reference */
         $module = new class ($builtParts) implements IModule {
             private array $builtParts;
 
@@ -63,6 +64,7 @@ class ApiApplicationBuilderTest extends TestCase
                 $this->builtParts[] = $this::class;
             }
         };
+        /** @psalm-suppress UnusedVariable These variables are used by reference */
         $component = new class ($builtParts) implements IComponent {
             private array $builtParts;
 

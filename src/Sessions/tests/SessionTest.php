@@ -274,6 +274,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $session = new Session();
+        /** @psalm-suppress NullArgument We're purposely testing a null offset */
         $session[] = 'foo';
     }
 

@@ -202,7 +202,7 @@ class AuthenticatorTest extends TestCase
         $this->expectException(UnsupportedAuthenticationHandlerException::class);
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
-        [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
+        [, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $this->expectExceptionMessage($schemeHandler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
         $identity = $this->createMock(IIdentity::class);
         $identity->method('isAuthenticated')
@@ -251,7 +251,7 @@ class AuthenticatorTest extends TestCase
         $this->expectException(UnsupportedAuthenticationHandlerException::class);
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
-        [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
+        [, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $this->expectExceptionMessage($schemeHandler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
         $this->authenticator->logOut($request, $response, 'foo');
     }
