@@ -7,6 +7,11 @@ on:
         required: false
         type: boolean
         default: false
+      run-psalm:
+        description: Whether or not to run Psalm static analysis
+        required: false
+        type: boolean
+        default: false
     secrets:
       ci-ssh-key:
         description: The SSH key for splitting subtrees
@@ -40,6 +45,7 @@ jobs:
       - name: Run Linter
         run: composer phpcs-test
       - name: Run Psalm Static Analysis
+        if: inputs.run-psalm == true
         run: composer psalm -- --shepherd
       - name: Upload Coverage Results To Coveralls
         env:
