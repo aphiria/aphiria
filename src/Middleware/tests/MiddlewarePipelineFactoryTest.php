@@ -51,7 +51,6 @@ class MiddlewarePipelineFactoryTest extends TestCase
         /** @var IMiddleware&MockObject $middleware2 */
         $middleware2 = $this->createMock(IMiddleware::class);
 
-        /** @psalm-suppress InvalidArgument Psalm doesn't handle union types yet - bug */
         $pipeline = $this->pipelineFactory->createPipeline([$middleware1, $middleware2], $controllerHandler);
         $this->assertSame($response, $pipeline->handle($request));
     }
@@ -80,7 +79,6 @@ class MiddlewarePipelineFactoryTest extends TestCase
             ->with($request, $controllerHandler)
             ->willReturn($response);
 
-        /** @psalm-suppress InvalidArgument Psalm doesn't handle union types yet - bug */
         $pipeline = $this->pipelineFactory->createPipeline([$middleware], $controllerHandler);
         $this->assertSame($response, $pipeline->handle($request));
     }

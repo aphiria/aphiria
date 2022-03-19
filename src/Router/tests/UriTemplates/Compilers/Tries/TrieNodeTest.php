@@ -145,7 +145,6 @@ class TrieNodeTest extends TestCase
     {
         $literalChild = new LiteralTrieNode('FOO', []);
         $this->node->addChild($literalChild);
-        /** @psalm-suppress NoInterfaceProperties This is being incorrectly flagged as an interface */
         $this->assertSame($literalChild, $this->node->literalChildrenByValue['foo']);
     }
 

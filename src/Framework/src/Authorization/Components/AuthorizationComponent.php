@@ -50,7 +50,6 @@ class AuthorizationComponent implements IComponent
         $requirementHandlers = $this->serviceResolver->resolve(AuthorizationRequirementHandlerRegistry::class);
 
         foreach ($this->requirementHandlerTypesToHandlers as $requirementType => $requirementHandler) {
-            /** @psalm-suppress InvalidArgument Psalm has no good way of storing a mixed collection of generics */
             $requirementHandlers->registerRequirementHandler($requirementType, $requirementHandler);
         }
     }
@@ -78,7 +77,6 @@ class AuthorizationComponent implements IComponent
      */
     public function withRequirementHandler(string $requirementType, IAuthorizationRequirementHandler $requirementHandler): static
     {
-        /** @psalm-suppress InvalidPropertyAssignmentValue Psalm has no good way of storing a mixed collection of generics */
         $this->requirementHandlerTypesToHandlers[$requirementType] = $requirementHandler;
 
         return $this;

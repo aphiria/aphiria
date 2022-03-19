@@ -106,9 +106,6 @@ class Container implements IContainer
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType Instance will always be an instance of interface(s) - bug
-     * @psalm-suppress MixedArgumentTypeCoercion Template types are not passed through via inheritdoc - bug
      */
     public function bindInstance(string|array $interfaces, object $instance): void
     {
@@ -200,8 +197,6 @@ class Container implements IContainer
      * @template T of object
      * @param class-string<T> $interface The interface to resolve
      * @return T The resolved instance
-     * @psalm-suppress InvalidReturnType This method will always return the correct type
-     * @psalm-suppress InvalidReturnStatement Ditto
      */
     public function resolve(string $interface): object
     {

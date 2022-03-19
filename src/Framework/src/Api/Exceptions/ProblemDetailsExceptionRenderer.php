@@ -116,7 +116,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
             if (\is_callable($type)) {
                 $type = $type($ex);
             } elseif ($type === null) {
-                /** @psalm-suppress PossiblyInvalidArgument The status will always be an int */
                 $type = $this->getTypeFromException($ex, $status);
             }
 
@@ -142,7 +141,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
                 $extensions = $extensions($ex);
             }
 
-            /** @psalm-suppress PossiblyInvalidArgument The types here are all correct */
             return new ProblemDetails($type, $title, $detail, $status, $instance, $extensions);
         };
     }

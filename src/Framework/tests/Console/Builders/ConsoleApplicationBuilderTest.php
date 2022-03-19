@@ -46,7 +46,6 @@ class ConsoleApplicationBuilderTest extends TestCase
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
     {
         $builtParts = [];
-        /** @psalm-suppress UnusedVariable The properties are set by reference */
         $module = new class ($builtParts) implements IModule {
             private array $builtParts;
 
@@ -60,7 +59,6 @@ class ConsoleApplicationBuilderTest extends TestCase
                 $this->builtParts[] = $this::class;
             }
         };
-        /** @psalm-suppress UnusedVariable The properties are set by reference */
         $component = new class ($builtParts) implements IComponent {
             private array $builtParts;
 

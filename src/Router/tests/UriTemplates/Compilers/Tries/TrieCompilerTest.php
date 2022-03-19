@@ -236,15 +236,12 @@ class TrieCompilerTest extends TestCase
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
         /** @var IRouteVariableConstraint&MockObject $constraint2 */
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        /** @psalm-suppress InvalidArgument Psalm does not handle union types well - bug */
         $this->constraintFactory->registerConstraintFactory('r1', fn (string $p1, string $p2) => $constraint1);
-        /** @psalm-suppress InvalidArgument Psalm does not handle union types well - bug */
         $this->constraintFactory->registerConstraintFactory('r2', fn (string $p1, string $p2) => $constraint1);
 
         // Test compiling
         $pathTemplate = '/:foo(r1(p1,p2),r2(p3,p4))';
         $expectedRoute = $this->createRoute($pathTemplate);
-        /** @psalm-suppress InvalidArgument Psalm doesn't properly detect union types */
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo', [$constraint1, $constraint2]),
             [],
@@ -287,13 +284,11 @@ class TrieCompilerTest extends TestCase
         // Set up constraint factory
         /** @var IRouteVariableConstraint&MockObject $constraint */
         $constraint = $this->createMock(IRouteVariableConstraint::class);
-        /** @psalm-suppress InvalidArgument Psalm does not handle union types well - bug */
         $this->constraintFactory->registerConstraintFactory('r1', fn () => $constraint);
 
         // Test compiling
         $pathTemplate = '/:foo(r1)';
         $expectedRoute = $this->createRoute($pathTemplate);
-        /** @psalm-suppress InvalidArgument Psalm doesn't properly detect union types */
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo', [$constraint]),
             [],

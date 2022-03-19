@@ -185,7 +185,6 @@ class ProgressBarFormatter implements IProgressBarObserver
 
         foreach ($timeFormats as $index => $timeFormat) {
             if ($secondsRemaining >= $timeFormat[0]) {
-                /** @psalm-suppress InvalidArrayOffset The offset we're checking is always valid */
                 if ((isset($timeFormats[$index + 1]) && $secondsRemaining < $timeFormats[$index + 1][0])
                     || $index === \count($timeFormats) - 1
                 ) {

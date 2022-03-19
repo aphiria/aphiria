@@ -43,7 +43,6 @@ class ApplicationBuilderTest extends TestCase
          * When I initialize those components, I'm adding them to an array so that I can check the initialization order.
          */
         $initializedComponents = [];
-        /** @psalm-suppress UnusedVariable These variables are used by reference */
         $lowPriorityComponent = new class ($initializedComponents) implements IComponent {
             private array $builtComponentsBuilders;
 
@@ -57,7 +56,6 @@ class ApplicationBuilderTest extends TestCase
                 $this->builtComponentsBuilders[] = $this;
             }
         };
-        /** @psalm-suppress UnusedVariable These variables are used by reference */
         $highPriorityComponent = new class ($initializedComponents) implements IComponent {
             private array $builtComponentsBuilders;
 
