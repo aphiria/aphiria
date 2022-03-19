@@ -35,13 +35,13 @@ abstract class Constraint implements IConstraint
     /**
      * @inheritdoc
      *
-     * @psalm-suppress InvalidReturnType The return type is correct
-     * @psalm-suppress InvalidReturnStatement Ditto
+     * @psalm-suppress InvalidReturnType - Bug (https://github.com/vimeo/psalm/issues/7297)
+     * @psalm-suppress InvalidReturnStatement - Bug (https://github.com/vimeo/psalm/issues/7297)
      */
     public function getErrorMessagePlaceholders($value): array
     {
         if (\is_scalar($value)) {
-            $serializedValue = $value;
+            $serializedValue = (string)$value;
         } elseif (\is_object($value)) {
             if (\method_exists($value, '__toString')) {
                 $serializedValue = (string)$value;

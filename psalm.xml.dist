@@ -20,6 +20,12 @@
                 <file name="src/Framework/tests/Api/Testing/PhpUnit/IntegrationTestCaseTest.php" />
             </errorLevel>
         </InaccessibleMethod>
+        <InvalidParamDefault>
+            <errorLevel type="suppress">
+                <!-- Setting a default, empty generic value for a generic property trips Psalm up -->
+                <file name="src/Net/src/Http/Request.php" />
+            </errorLevel>
+        </InvalidParamDefault>
         <MixedArgument>
             <errorLevel type="suppress">
                 <!-- We don't care about mixed arguments in tests -->

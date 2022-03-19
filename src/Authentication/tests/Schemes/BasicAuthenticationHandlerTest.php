@@ -100,7 +100,7 @@ class BasicAuthenticationHandlerTest extends TestCase
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
         $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
-        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $this->assertSame($this->schemeHandler->expectedResult, $this->schemeHandler->authenticate($request, $scheme));
         $this->assertSame('foo', $this->schemeHandler->actualUsername);
         $this->assertSame('bar', $this->schemeHandler->actualPassword);
@@ -120,7 +120,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         $request->method('getHeaders')
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
-        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $result = $this->schemeHandler->authenticate($request, $scheme);
         $this->assertFalse($result->passed);
         $this->assertSame($expectedFailureMessage, $result->failure?->getMessage());
@@ -132,7 +132,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $request->method('getHeaders')
             ->willReturn($headers);
-        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $result = $this->schemeHandler->authenticate($request, $scheme);
         $this->assertFalse($result->passed);
         $this->assertSame('Missing authorization header', $result->failure?->getMessage());

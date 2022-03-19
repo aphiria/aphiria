@@ -48,6 +48,7 @@ class RouteListCommandHandler implements ICommandHandler
     {
         $useFqn = \array_key_exists('fqn', $input->options);
         $showMiddleware = isset($input->options['middleware']);
+        /** @var array $middlewareOptions */
         $middlewareOptions = $input->options['middleware'] ?? [];
         $sortedRoutes = $this->routes->getAll();
         \usort($sortedRoutes, fn (Route $routeA, Route $routeB) => $this->compareRoutes($routeA, $routeB));
@@ -82,6 +83,7 @@ class RouteListCommandHandler implements ICommandHandler
         }
 
         $this->paddingFormatter->setPaddingString(' ');
+        /** @psalm-suppress MixedArgumentTypeCoercion The row parameter will be implode-able */
         $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode('    ', $row)));
 
         return StatusCode::Ok;

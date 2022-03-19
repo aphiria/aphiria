@@ -205,6 +205,7 @@ class Session implements ISession
 
     /**
      * @inheritdoc
+     * @psalm-suppress InvalidPropertyAssignmentValue - Bug (https://github.com/vimeo/psalm/issues/7297)
      */
     public function setMany(array $variables): void
     {
