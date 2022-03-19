@@ -119,7 +119,9 @@ class RouteListCommandHandler implements ICommandHandler
             return $className;
         }
 
-        return \substr($className, \strrpos($className, '\\') + 1);
+        $lastSlashIndex = \strrpos($className, '\\');
+
+        return \substr($className, $lastSlashIndex === false ? 0 : $lastSlashIndex + 1);
     }
 
     /**
