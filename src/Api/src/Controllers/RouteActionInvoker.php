@@ -151,7 +151,6 @@ class RouteActionInvoker implements IRouteActionInvoker
      */
     protected function reflectRouteActionDelegate(Closure $routeActionDelegate): ReflectionFunctionAbstract
     {
-        /** @psalm-suppress ArgumentTypeCoercion Psalm is being a little strict here with what's allowed */
         return new ReflectionFunction($routeActionDelegate);
     }
 }

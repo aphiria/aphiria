@@ -70,8 +70,6 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress MoreSpecificImplementedParamType Instance will always be an instance of interface(s) - bug
      */
     public function bindInstance(string|array $interfaces, object $instance): void
     {

@@ -99,7 +99,6 @@ class ContentNegotiatorTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $this->headers->add('Content-Type', 'text/html');
-        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
         $this->assertNull($result->formatter);
@@ -116,7 +115,6 @@ class ContentNegotiatorTest extends TestCase
             ->with(User::class)
             ->willReturn(true);
         $this->headers->add('Accept', 'application/json');
-        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertNull($result->formatter);
@@ -144,7 +142,6 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn(true);
         $this->headers->add('Content-Type', 'text/html; charset=utf-16');
         $this->headers->add('Content-Language', 'en-US');
-        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
         $this->assertSame($formatter, $result->formatter);
@@ -175,7 +172,6 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn(true);
         $this->headers->add('Content-Type', 'text/html; charset=utf-8');
         $this->headers->add('Content-Language', 'en-US');
-        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateRequestContent(User::class, $this->request);
         $this->assertSame($formatter, $result->formatter);
@@ -275,7 +271,6 @@ class ContentNegotiatorTest extends TestCase
             ->willReturn(true);
         $this->headers->add('Accept', 'application/json');
         $this->headers->add('Accept-Charset', 'utf-8');
-        /** @psalm-suppress InvalidArgument Psalm does not support union types yet - bug */
         $negotiator = new ContentNegotiator([$formatter]);
         $result = $negotiator->negotiateResponseContent(User::class, $this->request);
         $this->assertSame($formatter, $result->formatter);
