@@ -4,7 +4,7 @@
 
 ### Fixed
 
-Nothing
+- Fixed Psalm static analysis and re-enabled it during CI ([#215](https://github.com/aphiria/aphiria/pull/215), [#224](https://github.com/aphiria/aphiria/pull/224), [#225](https://github.com/aphiria/aphiria/pull/225))
 
 ### Changed
 
