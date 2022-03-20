@@ -203,7 +203,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithAuthorizationRequirementHandlerRegistersRequirementHandlerToComponent(): void
     {
-        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        /** @var IAuthorizationRequirementHandler<RolesRequirement, null>&MockObject $requirementHandler */
         $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
         $expectedComponent = $this->createMock(AuthorizationComponent::class);
         $expectedComponent->expects($this->once())
@@ -219,11 +219,11 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
-             * @template T of object
-             *
+             * @template TRequirement of object
+             * @template TResource of ?object
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<T> $requirementType
-             * @param IAuthorizationRequirementHandler<T> $requirementHandler
+             * @param class-string<TRequirement> $requirementType
+             * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -250,10 +250,11 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
-             * @template T of object
+             * @template TRequirement of object
+             * @template TResource of ?object
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<T> $requirementType
-             * @param IAuthorizationRequirementHandler<T> $requirementHandler
+             * @param class-string<TRequirement, TResource> $requirementType
+             * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -263,7 +264,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
             }
         };
-        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        /** @var IAuthorizationRequirementHandler<RolesRequirement, null>&MockObject $requirementHandler */
         $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
         $component->build($this->appBuilder, RolesRequirement::class, $requirementHandler);
         // Dummy assertion
@@ -279,10 +280,11 @@ class AphiriaComponentsTest extends TestCase
             use AphiriaComponents;
 
             /**
-             * @template T of object
+             * @template TRequirement of object
+             * @template TResource of ?object
              * @param IApplicationBuilder $appBuilder
-             * @param class-string<T> $requirementType
-             * @param IAuthorizationRequirementHandler<T> $requirementHandler
+             * @param class-string<TRequirement> $requirementType
+             * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
              */
             public function build(
                 IApplicationBuilder $appBuilder,
@@ -292,7 +294,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
             }
         };
-        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        /** @var IAuthorizationRequirementHandler<RolesRequirement, null>&MockObject $requirementHandler */
         $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
         $component->build($this->appBuilder, RolesRequirement::class, $requirementHandler);
     }

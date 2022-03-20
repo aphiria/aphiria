@@ -17,6 +17,8 @@ use Aphiria\Security\IPrincipal;
 
 /**
  * Defines the context for authorizing a user
+ *
+ * @template TResource of ?object
  */
 final class AuthorizationContext
 {
@@ -28,7 +30,7 @@ final class AuthorizationContext
     /**
      * @param IPrincipal $user The current user being authorized
      * @param list<object> $requirements The list of requirements to pass
-     * @param object|null $resource The resource whose use we're authorizing
+     * @param TResource $resource The resource whose use we're authorizing
      */
     public function __construct(
         public readonly IPrincipal $user,

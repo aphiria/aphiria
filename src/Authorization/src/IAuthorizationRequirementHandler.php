@@ -18,7 +18,8 @@ use InvalidArgumentException;
 /**
  * Defines the interface for authorization requirement handlers to implement
  *
- * @template T of object
+ * @template TRequirement of object
+ * @template TResource of ?object
  */
 interface IAuthorizationRequirementHandler
 {
@@ -26,8 +27,8 @@ interface IAuthorizationRequirementHandler
      * Handles an authorization requirement
      *
      * @param IPrincipal $user The user to authorize
-     * @param T $requirement The requirement to handle
-     * @param AuthorizationContext $authorizationContext The current authorization context
+     * @param TRequirement $requirement The requirement to handle
+     * @param AuthorizationContext<TResource> $authorizationContext The current authorization context
      * @throws InvalidArgumentException Thrown if the requirement was of the incorrect type
      */
     public function handle(IPrincipal $user, object $requirement, AuthorizationContext $authorizationContext): void;

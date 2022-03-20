@@ -59,7 +59,7 @@ class AuthorityTest extends TestCase
     {
         $policy = new AuthorizationPolicy('policy', [new RolesRequirement('admin')]);
         $user = $this->createMock(IPrincipal::class);
-        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler */
+        /** @var IAuthorizationRequirementHandler<RolesRequirement, AuthorityTest>&MockObject $requirementHandler */
         $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
         $requirementHandler->expects($this->once())
             ->method('handle')

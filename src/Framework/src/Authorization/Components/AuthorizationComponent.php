@@ -26,7 +26,7 @@ class AuthorizationComponent implements IComponent
 {
     /** @var list<AuthorizationPolicy> The list of authorization policies */
     private array $policies = [];
-    /** @var array<class-string, IAuthorizationRequirementHandler<object>> The list of requirement types to instances of their handlers */
+    /** @var array<class-string, IAuthorizationRequirementHandler<object, ?object>> The list of requirement types to instances of their handlers */
     private array $requirementHandlerTypesToHandlers = [];
 
     /**
@@ -70,9 +70,10 @@ class AuthorizationComponent implements IComponent
     /**
      * Adds a requirement handler to the authority
      *
-     * @template T of object
-     * @param class-string<T> $requirementType
-     * @param IAuthorizationRequirementHandler<T> $requirementHandler
+     * @template TRequirement of object
+     * @template TResource of ?object
+     * @param class-string<TRequirement> $requirementType
+     * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
      * @return static For chaining
      */
     public function withRequirementHandler(string $requirementType, IAuthorizationRequirementHandler $requirementHandler): static

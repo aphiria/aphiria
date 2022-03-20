@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Authorization;
 
 use OutOfBoundsException;
+use Psalm\Type\Atomic\TResource;
 
 /**
  * Defines the authorization requirement handler registry
@@ -20,8 +21,9 @@ use OutOfBoundsException;
 final class AuthorizationRequirementHandlerRegistry
 {
     /**
-     * @template T of object
-     * @param array<class-string<T>, IAuthorizationRequirementHandler<T>> $requirementTypesToHandlers The requirement types to handlers
+     * @template TRequirement of object
+     * @template TResource of ?object
+     * @param array<class-string<TRequirement>, IAuthorizationRequirementHandler<TRequirement, TResource>> $requirementTypesToHandlers The requirement types to handlers
      */
     public function __construct(private array $requirementTypesToHandlers = [])
     {
@@ -30,9 +32,10 @@ final class AuthorizationRequirementHandlerRegistry
     /**
      * Gets a handler for a requirement
      *
-     * @template T of object
-     * @param class-string<T> $requirementType
-     * @return IAuthorizationRequirementHandler<T>
+     * @template TRequirement of object
+     * @template TResource of ?object
+     * @param class-string<TRequirement> $requirementType
+     * @return IAuthorizationRequirementHandler<TRequirement, TResource>
      * @throws OutOfBoundsException Thrown if no authorization requirement handler could be found
      */
     public function getRequirementHandler(string $requirementType): IAuthorizationRequirementHandler
@@ -43,9 +46,10 @@ final class AuthorizationRequirementHandlerRegistry
     /**
      * Registers a handler for a requirement
      *
-     * @template T of object
-     * @param class-string<T> $requirementType
-     * @param IAuthorizationRequirementHandler<T> $requirementHandler
+     * @template TRequirement of object
+     * @template TResource of ?object
+     * @param class-string<TRequirement> $requirementType
+     * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
      */
     public function registerRequirementHandler(string $requirementType, IAuthorizationRequirementHandler $requirementHandler): void
     {
