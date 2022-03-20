@@ -51,7 +51,6 @@ use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
-use Psalm\Type\Atomic\TResource;
 use RuntimeException;
 
 /**

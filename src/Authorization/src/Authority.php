@@ -14,7 +14,6 @@ namespace Aphiria\Authorization;
 
 use Aphiria\Security\IPrincipal;
 use OutOfBoundsException;
-use Psalm\Type\Atomic\TResource;
 
 /**
  * Defines the default authority

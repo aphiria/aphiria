@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization;
 
-use Psalm\Type\Atomic\TResource;
-
 /**
  * Defines the authority builder
  */

@@ -18,7 +18,6 @@ use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
-use Psalm\Type\Atomic\TResource;
 
 /**
  * Defines the required roles requirement handler
