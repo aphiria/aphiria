@@ -35,7 +35,7 @@ class Authority implements IAuthority
     /**
      * @inheritdoc
      * @template TResource of ?object
-     * @param TResource $object
+     * @param TResource $resource
      */
     public function authorize(IPrincipal $user, AuthorizationPolicy|string $policy, object $resource = null): AuthorizationResult
     {
