@@ -42,7 +42,7 @@ final class AuthorizationContext
 
     /**
      * Gets whether or not all requirements have passed
-     * Unlike anyRequirementsFailed(), this requires all requirements to explicitly succeed
+     * @see AuthorizationContext::anyRequirementsFailed() Unlike that method, this requires all requirements to explicitly succeed
      *
      * @return bool True if authorization was successful, otherwise false
      */
@@ -53,6 +53,7 @@ final class AuthorizationContext
 
     /**
      * Gets whether or not any requirements failed
+     *
      *
      * @return bool True if any requirements have failed, otherwise false
      */
