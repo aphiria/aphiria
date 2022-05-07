@@ -139,10 +139,11 @@ trait AphiriaComponents
     /**
      * Adds a requirement handler to the authority
      *
-     * @template T of object
+     * @template TRequirement of object
+     * @template TResource of ?object
      * @param IApplicationBuilder $appBuilder The app builder to decorate
-     * @param class-string<T> $requirementType
-     * @param IAuthorizationRequirementHandler<T> $requirementHandler
+     * @param class-string<TRequirement> $requirementType
+     * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
      * @return static For chaining
      */
     protected function withAuthorizationRequirementHandler(

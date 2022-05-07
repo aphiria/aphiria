@@ -34,6 +34,8 @@ class Authority implements IAuthority
 
     /**
      * @inheritdoc
+     * @template TResource of ?object
+     * @param TResource $resource
      */
     public function authorize(IPrincipal $user, AuthorizationPolicy|string $policy, object $resource = null): AuthorizationResult
     {
@@ -51,6 +53,7 @@ class Authority implements IAuthority
 
         foreach ($policy->requirements as $requirement) {
             try {
+                /** @var IAuthorizationRequirementHandler<object, TResource> $requirementHandler */
                 $requirementHandler = $this->requirementHandlers->getRequirementHandler($requirement::class);
             } catch (OutOfBoundsException $ex) {
                 throw new RequirementHandlerNotFoundException('No requirement handler for requirement type ' . $requirement::class . ' found', 0, $ex);

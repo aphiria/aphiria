@@ -53,9 +53,9 @@ class AuthorizationComponentTest extends TestCase
 
     public function testBuildRegistersRequirementHandlers(): void
     {
-        /** @var IAuthorizationRequirementHandler<RolesRequirement>&MockObject $requirementHandler1 */
+        /** @var IAuthorizationRequirementHandler<RolesRequirement, null>&MockObject $requirementHandler1 */
         $requirementHandler1 = $this->createMock(IAuthorizationRequirementHandler::class);
-        /** @var IAuthorizationRequirementHandler<DateTime>&MockObject $requirementHandler2 */
+        /** @var IAuthorizationRequirementHandler<DateTime, null>&MockObject $requirementHandler2 */
         $requirementHandler2 = $this->createMock(IAuthorizationRequirementHandler::class);
         $this->authorizationComponent->withRequirementHandler(RolesRequirement::class, $requirementHandler1);
         $this->authorizationComponent->withRequirementHandler(DateTime::class, $requirementHandler2);

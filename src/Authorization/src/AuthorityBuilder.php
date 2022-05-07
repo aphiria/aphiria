@@ -69,9 +69,10 @@ class AuthorityBuilder
     /**
      * Adds a requirement handler to the authority
      *
-     * @template T of object
-     * @param class-string<T> $requirementType
-     * @param IAuthorizationRequirementHandler<T> $requirementHandler
+     * @template TRequirement of object
+     * @template TResource of ?object
+     * @param class-string<TRequirement> $requirementType
+     * @param IAuthorizationRequirementHandler<TRequirement, TResource> $requirementHandler
      * @return static For chaining
      */
     public function withRequirementHandler(string $requirementType, IAuthorizationRequirementHandler $requirementHandler): static

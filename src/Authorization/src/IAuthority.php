@@ -22,9 +22,10 @@ interface IAuthority
     /**
      * Authorizes a user against a policy
      *
+     * @template TResource of ?object
      * @param IPrincipal $user The user being authorized
      * @param AuthorizationPolicy|string $policy The policy or name of the policy to authorize against
-     * @param object|null $resource The resource whose use is being authorized, or null if not authorizing the use of a resource
+     * @param TResource $resource The resource whose use is being authorized, or null if not authorizing the use of a resource
      * @return AuthorizationResult The result of authorization
      * @throws PolicyNotFoundException Thrown if the policy could not be found
      * @throws RequirementHandlerNotFoundException Thrown if the requirement handler could not be found

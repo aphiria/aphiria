@@ -22,7 +22,8 @@ use InvalidArgumentException;
 /**
  * Defines the required roles requirement handler
  *
- * @implements IAuthorizationRequirementHandler<RolesRequirement>
+ * @template TResource of ?object
+ * @implements IAuthorizationRequirementHandler<RolesRequirement, TResource>
  */
 final class RolesRequirementHandler implements IAuthorizationRequirementHandler
 {
