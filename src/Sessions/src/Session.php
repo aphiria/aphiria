@@ -148,7 +148,6 @@ class Session implements ISession
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        /** @psalm-suppress DocblockTypeContradiction We want to enforce type checking */
         if ($offset === null) {
             throw new InvalidArgumentException('Key cannot be empty');
         }

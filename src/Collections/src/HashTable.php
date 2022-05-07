@@ -177,6 +177,7 @@ class HashTable implements IDictionary
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
+        /** @psalm-suppress PossiblyNullArgument This is a bug - null is just fine */
         $this->add($offset, $value);
     }
 
