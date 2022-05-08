@@ -26,10 +26,14 @@ final class ProgressBar
     /**
      * @param int $maxSteps The max number of steps
      * @param IProgressBarObserver $observer The observer that will draw the progress bar
+     * @param ProgressBarFormatterOptions $options The options to use
      * @throws InvalidArgumentException Thrown if the max steps are invalid
      */
-    public function __construct(private int $maxSteps, private IProgressBarObserver $observer)
-    {
+    public function __construct(
+        private readonly int $maxSteps,
+        private readonly IProgressBarObserver $observer,
+        private readonly ProgressBarFormatterOptions $options = new ProgressBarFormatterOptions()
+    ) {
         if ($this->maxSteps <= 0) {
             throw new InvalidArgumentException('Max steps must be greater than 0');
         }
@@ -80,7 +84,7 @@ final class ProgressBar
 
         // Don't call the observers if no progress was actually made
         if ($prevProgress !== $this->progress) {
-            $this->observer->onProgressChanged($prevProgress, $this->progress, $this->maxSteps);
+            $this->observer->onProgressChanged($prevProgress, $this->progress, $this->maxSteps, $this->options);
         }
     }
 }

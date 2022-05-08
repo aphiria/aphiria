@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Output\Formatters;
 
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
+use Aphiria\Console\Output\Formatters\PaddingFormatterOptions;
 use PHPUnit\Framework\TestCase;
 
 class PaddingFormatterTest extends TestCase
@@ -32,8 +33,8 @@ class PaddingFormatterTest extends TestCase
             [' fg ', 'hhh'],
             ['ijk', 'll ']
         ];
-        $this->formatter->setPaddingString('+');
-        $formattedText = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}");
+        $options = new PaddingFormatterOptions(paddingString: '+');
+        $formattedText = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}", $options);
         $this->assertSame(
             'a++-b++' . PHP_EOL . 'cd+-ee+' . PHP_EOL . 'fg+-hhh' . PHP_EOL . 'ijk-ll+',
             $formattedText
@@ -48,8 +49,8 @@ class PaddingFormatterTest extends TestCase
             ' fg ',
             'ijk'
         ];
-        $this->formatter->setPaddingString('+');
-        $formattedText = $this->formatter->format($rows, fn (array $row): string => (string)$row[0]);
+        $options = new PaddingFormatterOptions(paddingString: '+');
+        $formattedText = $this->formatter->format($rows, fn (array $row): string => (string)$row[0], $options);
         $this->assertSame('a++' . PHP_EOL . 'cd+' . PHP_EOL . 'fg+' . PHP_EOL . 'ijk', $formattedText);
     }
 
@@ -61,8 +62,8 @@ class PaddingFormatterTest extends TestCase
             [' fg ', 'hhh'],
             ['ijk', ' ll']
         ];
-        $this->formatter->eolChar = '<br>';
-        $formattedText = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}");
+        $options = new PaddingFormatterOptions(eolChar: '<br>');
+        $formattedText = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}", $options);
         $this->assertSame('a  -b  <br>cd -ee <br>fg -hhh<br>ijk-ll ', $formattedText);
     }
 
@@ -74,8 +75,8 @@ class PaddingFormatterTest extends TestCase
             ' fg ',
             'ijk'
         ];
-        $this->formatter->eolChar = '<br>';
-        $formattedText = $this->formatter->format($rows, fn (array $row): string => (string)$row[0]);
+        $options = new PaddingFormatterOptions(eolChar: '<br>');
+        $formattedText = $this->formatter->format($rows, fn (array $row): string => (string)$row[0], $options);
         $this->assertSame('a  <br>cd <br>fg <br>ijk', $formattedText);
     }
 
@@ -117,15 +118,15 @@ class PaddingFormatterTest extends TestCase
             ['ijk', ' ll']
         ];
         // Format with the padding after the string
-        $this->formatter->setPadAfter(true);
-        $formattedRows = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}");
+        $options = new PaddingFormatterOptions(padAfter: true);
+        $formattedRows = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}", $options);
         $this->assertSame(
             'a  -b  ' . PHP_EOL . 'cd -ee ' . PHP_EOL . 'fg -hhh' . PHP_EOL . 'ijk-ll ',
             $formattedRows
         );
         // Format with the padding before the string
-        $this->formatter->setPadAfter(false);
-        $formattedRows = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}");
+        $options = new PaddingFormatterOptions(padAfter: false);
+        $formattedRows = $this->formatter->format($rows, fn (array $row): string => "{$row[0]}-{$row[1]}", $options);
         $this->assertSame(
             '  a-  b' . PHP_EOL . ' cd- ee' . PHP_EOL . ' fg-hhh' . PHP_EOL . 'ijk- ll',
             $formattedRows
@@ -159,12 +160,12 @@ class PaddingFormatterTest extends TestCase
             'ijk'
         ];
         // Format with the padding after the string
-        $this->formatter->setPadAfter(true);
-        $formattedRows = $this->formatter->format($rows, fn (array $row): string => (string)$row[0]);
+        $options = new PaddingFormatterOptions(padAfter: true);
+        $formattedRows = $this->formatter->format($rows, fn (array $row): string => (string)$row[0], $options);
         $this->assertSame('a  ' . PHP_EOL . 'cd ' . PHP_EOL . 'fg ' . PHP_EOL . 'ijk', $formattedRows);
         // Format with the padding before the string
-        $this->formatter->setPadAfter(false);
-        $formattedRows = $this->formatter->format($rows, fn (array $row): string => (string)$row[0]);
+        $options = new PaddingFormatterOptions(padAfter: false);
+        $formattedRows = $this->formatter->format($rows, fn (array $row): string => (string)$row[0], $options);
         $this->assertSame('  a' . PHP_EOL . ' cd' . PHP_EOL . ' fg' . PHP_EOL . 'ijk', $formattedRows);
     }
 }

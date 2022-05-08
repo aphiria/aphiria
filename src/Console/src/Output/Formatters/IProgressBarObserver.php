@@ -23,6 +23,12 @@ interface IProgressBarObserver
      * @param int|null $prevProgress The previous progress if there was one, otherwise null
      * @param int $currProgress The current progress
      * @param int $maxSteps The max number of steps that can be taken
+     * @param ProgressBarFormatterOptions $options The options to use
      */
-    public function onProgressChanged(?int $prevProgress, int $currProgress, int $maxSteps): void;
+    public function onProgressChanged(
+        ?int $prevProgress,
+        int $currProgress,
+        int $maxSteps,
+        ProgressBarFormatterOptions $options
+    ): void;
 }

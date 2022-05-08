@@ -17,20 +17,14 @@ namespace Aphiria\Console\Output\Formatters;
  */
 class TableFormatter
 {
-    /** @var string The padding string */
-    private string $cellPaddingString = ' ';
-    /** @var string The character to use for vertical borders */
-    private string $verticalBorderChar = '|';
-    /** @var string The character to use for horizontal borders */
-    private string $horizontalBorderChar = '-';
-    /** @var string The character to use for row/column intersections */
-    private string $intersectionChar = '+';
-
     /**
+     * @param TableFormatterOptions $defaultOptions The default options to use
      * @param PaddingFormatter $padding The padding formatter
      */
-    public function __construct(private readonly PaddingFormatter $padding = new PaddingFormatter())
-    {
+    public function __construct(
+        private readonly TableFormatterOptions $defaultOptions = new TableFormatterOptions(),
+        private readonly PaddingFormatter $padding = new PaddingFormatter()
+    ) {
     }
 
     /**
@@ -38,10 +32,12 @@ class TableFormatter
      *
      * @param array<int, mixed> $rows The list of rows
      * @param list<mixed> $headers The list of headers
+     * @param TableFormatterOptions|null $options The options to use, or null if using the default options
      * @return string The formatted table
      */
-    public function format(array $rows, array $headers = []): string
+    public function format(array $rows, array $headers = [], TableFormatterOptions $options = null): string
     {
+        $options ??= $this->defaultOptions;
         $numRows = \count($rows);
 
         if ($numRows === 0) {
@@ -57,19 +53,19 @@ class TableFormatter
         /** @var array<int, array> $headersAndRows */
         $headersAndRows = \count($headers) === 0 ? $rows : [...[$headers], ...$rows];
         $maxLengths = $this->padding->normalizeColumns($headersAndRows);
-        $eolChar = $this->padding->eolChar;
         $rowText = \explode(
-            $eolChar,
+            $options->eolChar,
             $this->padding->format(
                 $headersAndRows,
                 fn (array $row): string => \sprintf(
                     '%s%s%s%s%s',
-                    $this->verticalBorderChar,
-                    $this->cellPaddingString,
-                    \implode($this->cellPaddingString . $this->verticalBorderChar . $this->cellPaddingString, \array_map(static fn (mixed $value) => (string)$value, $row)),
-                    $this->cellPaddingString,
-                    $this->verticalBorderChar
-                )
+                    $options->verticalBorderChar,
+                    $options->cellPaddingString,
+                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn (mixed $value) => (string)$value, $row)),
+                    $options->cellPaddingString,
+                    $options->verticalBorderChar
+                ),
+                new PaddingFormatterOptions($options->cellPaddingString, $options->padAfter, $options->eolChar)
             )
         );
 
@@ -77,60 +73,12 @@ class TableFormatter
         $borders = [];
 
         foreach ($maxLengths as $maxLength) {
-            $borders[] = \str_repeat($this->horizontalBorderChar, $maxLength + 2 * \mb_strlen($this->cellPaddingString));
+            $borders[] = \str_repeat($options->horizontalBorderChar, $maxLength + 2 * \mb_strlen($options->cellPaddingString));
         }
 
-        $borderText = $this->intersectionChar . \implode($this->intersectionChar, $borders) . $this->intersectionChar;
-        $headerText = \count($headers) > 0 ? \array_shift($rowText) . $eolChar . $borderText . $eolChar : '';
+        $borderText = $options->intersectionChar . \implode($options->intersectionChar, $borders) . $options->intersectionChar;
+        $headerText = \count($headers) > 0 ? \array_shift($rowText) . $options->eolChar . $borderText . $options->eolChar : '';
 
-        return $borderText . $eolChar . $headerText . \implode($eolChar, $rowText) . $eolChar . $borderText;
-    }
-
-    /**
-     * @param string $cellPaddingString
-     */
-    public function setCellPaddingString(string $cellPaddingString): void
-    {
-        $this->cellPaddingString = $cellPaddingString;
-    }
-
-    /**
-     * @param string $eolChar
-     */
-    public function setEolChar(string $eolChar): void
-    {
-        $this->padding->eolChar = $eolChar;
-    }
-
-    /**
-     * @param string $horizontalBorderChar
-     */
-    public function setHorizontalBorderChar(string $horizontalBorderChar): void
-    {
-        $this->horizontalBorderChar = $horizontalBorderChar;
-    }
-
-    /**
-     * @param string $intersectionChar
-     */
-    public function setIntersectionChar(string $intersectionChar): void
-    {
-        $this->intersectionChar = $intersectionChar;
-    }
-
-    /**
-     * @param bool $padAfter
-     */
-    public function setPadAfter(bool $padAfter): void
-    {
-        $this->padding->setPadAfter($padAfter);
-    }
-
-    /**
-     * @param string $verticalBorderChar
-     */
-    public function setVerticalBorderChar(string $verticalBorderChar): void
-    {
-        $this->verticalBorderChar = $verticalBorderChar;
+        return $borderText . $options->eolChar . $headerText . \implode($options->eolChar, $rowText) . $options->eolChar . $borderText;
     }
 }

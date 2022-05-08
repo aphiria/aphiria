@@ -82,7 +82,6 @@ class RouteListCommandHandler implements ICommandHandler
             ];
         }
 
-        $this->paddingFormatter->setPaddingString(' ');
         /** @psalm-suppress MixedArgumentTypeCoercion The row parameter will be implode-able */
         $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode('    ', $row)));
 

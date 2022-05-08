@@ -14,6 +14,7 @@ namespace Aphiria\Console\Tests\Output\Formatters;
 
 use Aphiria\Console\Output\Formatters\IProgressBarObserver;
 use Aphiria\Console\Output\Formatters\ProgressBar;
+use Aphiria\Console\Output\Formatters\ProgressBarFormatterOptions;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -72,11 +73,12 @@ class ProgressBarTest extends TestCase
     public function testSettingProgressToValueLessThanZeroBoundsItToZero(): void
     {
         $formatter = Mockery::mock(IProgressBarObserver::class);
+        $options = new ProgressBarFormatterOptions();
         $formatter->shouldReceive('onProgressChanged')
-            ->with(0, 1, 100);
+            ->with(0, 1, 100, $options);
         $formatter->shouldReceive('onProgressChanged')
-            ->with(1, 0, 100);
-        $progressBar = new ProgressBar(100, $formatter);
+            ->with(1, 0, 100, $options);
+        $progressBar = new ProgressBar(100, $formatter, $options);
         // Note: We're advancing at least once so that the update is sent to the formatter
         $progressBar->advance();
         $progressBar->setProgress(-1);
