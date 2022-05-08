@@ -19,22 +19,24 @@ use Closure;
  */
 class PaddingFormatter
 {
-    /** @var string The end-of-line character */
-    public string $eolChar = PHP_EOL;
-    /** @var bool Whether or not to pad after the string */
-    private bool $padAfter = true;
-    /** @var string The padding string */
-    private string $paddingString = ' ';
+    /**
+     * @param PaddingFormatterOptions $defaultOptions The default options to use
+     */
+    public function __construct(private readonly PaddingFormatterOptions $defaultOptions = new PaddingFormatterOptions())
+    {
+    }
 
     /**
      * Formats rows of text so that each column is the same width
      *
      * @param array<int, mixed> $rows The rows to pad
      * @param Closure(array<mixed>): string $callback The callback that returns a formatted row of text
+     * @param PaddingFormatterOptions|null $options The options to use, or null if using the default ones
      * @return string A list of formatted rows
      */
-    public function format(array $rows, Closure $callback): string
+    public function format(array $rows, Closure $callback, PaddingFormatterOptions $options = null): string
     {
+        $options ??= $this->defaultOptions;
         // Normalize all rows to be an array
         $numRows = \count($rows);
 
@@ -44,7 +46,7 @@ class PaddingFormatter
 
         /** @var array<int, array> $rows */
         $maxLengths = $this->normalizeColumns($rows);
-        $paddingType = $this->padAfter ? STR_PAD_RIGHT : STR_PAD_LEFT;
+        $paddingType = $options->padAfter ? STR_PAD_RIGHT : STR_PAD_LEFT;
         $numRows = \count($rows);
 
         // Format the rows
@@ -54,18 +56,18 @@ class PaddingFormatter
                 // The formatting tags will be compiled and disappear from the string
                 // So, we want additional padding equal to the length of the formatting so that the widths come out right
                 $formattingWidth = $this->getStringWidth((string)$item, true) - $this->getStringWidth((string)$item, false);
-                $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex] + $formattingWidth, $this->paddingString, $paddingType);
+                $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex] + $formattingWidth, $options->paddingString, $paddingType);
             }
         }
 
         $formattedText = '';
 
         for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
-            $formattedText .= $callback($rows[$rowIndex]) . $this->eolChar;
+            $formattedText .= $callback($rows[$rowIndex]) . $options->eolChar;
         }
 
         // Trim the excess separator
-        return \preg_replace('/' . \preg_quote($this->eolChar, '/') . '$/', '', $formattedText);
+        return \preg_replace('/' . \preg_quote($options->eolChar, '/') . '$/', '', $formattedText);
     }
 
     /**
@@ -103,26 +105,6 @@ class PaddingFormatter
 
         /** @var array<int, int> $maxLengths */
         return $maxLengths;
-    }
-
-    /**
-     * Sets whether or not we pad after or before
-     *
-     * @param bool $padAfter True if we want to pad after, otherwise false and we'll pad before
-     */
-    public function setPadAfter(bool $padAfter): void
-    {
-        $this->padAfter = $padAfter;
-    }
-
-    /**
-     * Sets the padding string
-     *
-     * @param string $paddingString The string to use for padding
-     */
-    public function setPaddingString(string $paddingString): void
-    {
-        $this->paddingString = $paddingString;
     }
 
     /**

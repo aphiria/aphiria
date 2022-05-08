@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Output\Formatters;
 
-use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\Formatters\TableFormatter;
+use Aphiria\Console\Output\Formatters\TableFormatterOptions;
 use PHPUnit\Framework\TestCase;
 
 class TableFormatterTest extends TestCase
@@ -22,7 +22,7 @@ class TableFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->formatter = new TableFormatter(new PaddingFormatter());
+        $this->formatter = new TableFormatter();
     }
 
     public function testFormattingEmptyTable(): void
@@ -71,32 +71,34 @@ class TableFormatterTest extends TestCase
             ['aa', 'bb'],
             ['aaa', 'bbb', 'ccc']
         ];
-        $this->formatter->setPadAfter(false);
-        $this->formatter->setCellPaddingString('_');
-        $this->formatter->setEolChar('<br>');
-        $this->formatter->setVerticalBorderChar('I');
-        $this->formatter->setHorizontalBorderChar('=');
-        $this->formatter->setIntersectionChar('*');
+        $options = new TableFormatterOptions(
+            cellPaddingString: '_',
+            verticalBorderChar: 'I',
+            horizontalBorderChar: '=',
+            intersectionChar: '*',
+            padAfter: false,
+            eolChar: '<br>'
+        );
         $expected =
             '*=====*=====*=====*<br>' .
-            'I_foo_I_bar_I_   _I<br>' .
+            'I_foo_I_bar_I_____I<br>' .
             '*=====*=====*=====*<br>' .
-            'I_  a_I_   _I_   _I<br>' .
-            'I_ aa_I_ bb_I_   _I<br>' .
+            'I___a_I_____I_____I<br>' .
+            'I__aa_I__bb_I_____I<br>' .
             'I_aaa_I_bbb_I_ccc_I<br>' .
             '*=====*=====*=====*';
-        $this->assertSame($expected, $this->formatter->format($rows, $headers));
+        $this->assertSame($expected, $this->formatter->format($rows, $headers, $options));
     }
 
     public function testFormattingTableWithCustomPaddingString(): void
     {
         $rows = [['a']];
-        $this->formatter->setCellPaddingString('__');
+        $options = new TableFormatterOptions(cellPaddingString: '__');
         $expected =
             '+-----+' . PHP_EOL .
             '|__a__|' . PHP_EOL .
             '+-----+';
-        $this->assertSame($expected, $this->formatter->format($rows));
+        $this->assertSame($expected, $this->formatter->format($rows, options: $options));
     }
 
     public function testFormattingTableWithHeadersButWithoutRows(): void

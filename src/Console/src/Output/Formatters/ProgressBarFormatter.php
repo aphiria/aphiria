@@ -22,12 +22,6 @@ use InvalidArgumentException;
  */
 class ProgressBarFormatter implements IProgressBarObserver
 {
-    /** @const The default width of the progress bar (including delimiters) */
-    private const DEFAULT_PROGRESS_BAR_WIDTH = 80;
-    /** @var string The completed progress character */
-    public string $completedProgressChar = '=';
-    /** @var string The remaining progress character */
-    public string $remainingProgressChar = '-';
     /** @var DateTimeImmutable The start time of the progress bar */
     private readonly DateTimeImmutable $startTime;
     /** @var bool Whether or not this is the first time we've output the progress bar */
@@ -35,26 +29,18 @@ class ProgressBarFormatter implements IProgressBarObserver
 
     /**
      * @param IOutput $output The output to draw to
-     * @param int $progressBarWidth The width of the progress bar (including delimiters)
-     * @param string $outputFormat The output format to use
-     *      Acceptable placeholders are 'progress', 'maxSteps', 'bar', 'percent', and 'timeRemaining'
-     * @param int $redrawFrequency The frequency in seconds we redraw the progress bar
      * @throws InvalidArgumentException Thrown if the max steps are invalid
      * @throws Exception Thrown if we could not create the start time
      */
-    public function __construct(
-        private readonly IOutput $output,
-        private readonly int $progressBarWidth = self::DEFAULT_PROGRESS_BAR_WIDTH,
-        private readonly string $outputFormat = '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%',
-        private readonly int $redrawFrequency = 1
-    ) {
+    public function __construct(private readonly IOutput $output)
+    {
         $this->startTime = new DateTimeImmutable();
     }
 
     /**
      * @inheritdoc
      */
-    public function onProgressChanged(?int $prevProgress, int $currProgress, int $maxSteps): void
+    public function onProgressChanged(?int $prevProgress, int $currProgress, int $maxSteps, ProgressBarFormatterOptions $options): void
     {
         /**
          * Only redraw if we've completed the progress, we've made our first progress, or if it has been at least the
@@ -62,11 +48,11 @@ class ProgressBarFormatter implements IProgressBarObserver
          */
         $shouldRedraw = $currProgress === $maxSteps
             || ($prevProgress === null)
-            || $this->redrawFrequency === 0
-            || \floor($currProgress / $this->redrawFrequency) !== \floor(($prevProgress) / $this->redrawFrequency);
+            || $options->redrawFrequency === 0
+            || \floor($currProgress / $options->redrawFrequency) !== \floor(($prevProgress) / $options->redrawFrequency);
 
         if ($shouldRedraw) {
-            $this->output->write($this->compileOutput($currProgress, $maxSteps));
+            $this->output->write($this->compileOutput($currProgress, $maxSteps, $options));
         }
 
         // Give ourselves a new line if the progress bar is finished
@@ -80,23 +66,24 @@ class ProgressBarFormatter implements IProgressBarObserver
      *
      * @param int $progress The current progress
      * @param int $maxSteps The max steps that can be taken
+     * @param ProgressBarFormatterOptions $options The options to use
      * @return string The bar
      */
-    protected function compileBar(int $progress, int $maxSteps): string
+    protected function compileBar(int $progress, int $maxSteps, ProgressBarFormatterOptions $options): string
     {
         if ($progress === $maxSteps) {
             // Don't show the percentage anymore
-            $completedProgressString = \str_repeat($this->completedProgressChar, $this->progressBarWidth - 2);
+            $completedProgressString = \str_repeat($options->completedProgressChar, $options->progressBarWidth - 2);
             $progressLeftString = '';
         } else {
             $percentCompleteString = $this->compilePercent($progress, $maxSteps);
             $completedProgressString = \str_repeat(
-                $this->completedProgressChar,
-                (int)\max(0, \floor($progress / $maxSteps * ($this->progressBarWidth - 2) - \strlen($percentCompleteString)))
+                $options->completedProgressChar,
+                (int)\max(0, \floor($progress / $maxSteps * ($options->progressBarWidth - 2) - \strlen($percentCompleteString)))
             ) . $percentCompleteString;
             $progressLeftString = \str_repeat(
-                $this->remainingProgressChar,
-                \max(0, $this->progressBarWidth - 2 - \strlen($completedProgressString))
+                $options->remainingProgressChar,
+                \max(0, $options->progressBarWidth - 2 - \strlen($completedProgressString))
             );
         }
 
@@ -108,9 +95,10 @@ class ProgressBarFormatter implements IProgressBarObserver
      *
      * @param int $progress The current progress
      * @param int $maxSteps The max steps that can be taken
+     * @param ProgressBarFormatterOptions $options The options to use
      * @return string The formatted output string
      */
-    protected function compileOutput(int $progress, int $maxSteps): string
+    protected function compileOutput(int $progress, int $maxSteps, ProgressBarFormatterOptions $options): string
     {
         // Before sending the output through sprintf(), we have to encode literal '%' by replacing them with '%%'
         $compiledOutput = \str_replace(
@@ -118,12 +106,12 @@ class ProgressBarFormatter implements IProgressBarObserver
             [
                 $progress,
                 $maxSteps,
-                $this->compileBar($progress, $maxSteps),
+                $this->compileBar($progress, $maxSteps, $options),
                 $this->compileTimeRemaining($progress, $maxSteps),
                 $this->compilePercent($progress, $maxSteps),
                 '%%'
             ],
-            $this->outputFormat
+            $options->outputFormat
         );
 
         if ($this->isFirstOutput) {
@@ -134,7 +122,7 @@ class ProgressBarFormatter implements IProgressBarObserver
         }
 
         // Clear previous output
-        $newLineCount = \substr_count($this->outputFormat, PHP_EOL);
+        $newLineCount = \substr_count($options->outputFormat, PHP_EOL);
 
         return \sprintf("\033[2K\033[0G\033[{$newLineCount}A\033[2K$compiledOutput", '', '');
     }

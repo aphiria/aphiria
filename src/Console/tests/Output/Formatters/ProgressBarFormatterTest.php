@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Output\Formatters;
 
 use Aphiria\Console\Output\Formatters\ProgressBarFormatter;
+use Aphiria\Console\Output\Formatters\ProgressBarFormatterOptions;
 use Aphiria\Console\Output\IOutput;
 use Exception;
 use Mockery;
@@ -69,38 +70,41 @@ class ProgressBarFormatterTest extends TestCase
             ->with(
                 fn (mixed $value): bool => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true)
             );
-        $formatter = new ProgressBarFormatter($output, 12, redrawFrequency: 0);
-        $formatter->onProgressChanged(0, 1, 10);
-        $formatter->onProgressChanged(1, 2, 10);
+        $formatter = new ProgressBarFormatter($output);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 12, redrawFrequency: 0);
+        $formatter->onProgressChanged(0, 1, 10, $options);
+        $formatter->onProgressChanged(1, 2, 10, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
 
     public function testOnProgressThatReachesMaxStepsDrawsCompleteProgressBar(): void
     {
-        $formatter = new ProgressBarFormatter($this->output, 12);
+        $formatter = new ProgressBarFormatter($this->output);
         $this->output->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[==========] 10/10' . \PHP_EOL . 'Time remaining: Complete', $value, false)));
         $this->output->method('writeln')
             ->with('');
-        $formatter->onProgressChanged(0, 10, 10);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
+        $formatter->onProgressChanged(0, 10, 10, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
 
     public function testOnProgressWithFormatThatIncludesPercentPopulatesPercent(): void
     {
-        $formatter = new ProgressBarFormatter($this->output, 10, '%percent%');
+        $formatter = new ProgressBarFormatter($this->output);
         $this->output->method('write')
             ->with('50%');
-        $formatter->onProgressChanged(0, 5, 10);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 10, outputFormat: '%percent%');
+        $formatter->onProgressChanged(0, 5, 10, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
 
     public function testOnProgressWithImpossiblyLowTimeLeftShowsCorrectTime(): void
     {
-        $formatter = new class ($this->output, 12) extends ProgressBarFormatter {
+        $formatter = new class ($this->output) extends ProgressBarFormatter {
             protected function getSecondsRemaining(int $progress, int $maxSteps): float
             {
                 return -1;
@@ -108,14 +112,15 @@ class ProgressBarFormatterTest extends TestCase
         };
         $this->output->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[10%-------] 1/10' . \PHP_EOL . 'Time remaining: Estimating...', $value, false)));
-        $formatter->onProgressChanged(0, 1, 10);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
+        $formatter->onProgressChanged(0, 1, 10, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
 
     public function testOnProgressWithVeryLongTimeLeftShowsCorrectTime(): void
     {
-        $formatter = new class ($this->output, 12) extends ProgressBarFormatter {
+        $formatter = new class ($this->output) extends ProgressBarFormatter {
             protected function getSecondsRemaining(int $progress, int $maxSteps): float
             {
                 return 172800;
@@ -123,17 +128,19 @@ class ProgressBarFormatterTest extends TestCase
         };
         $this->output->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[10%-------] 1/10' . \PHP_EOL . 'Time remaining: 2 days', $value, false)));
-        $formatter->onProgressChanged(0, 1, 10);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
+        $formatter->onProgressChanged(0, 1, 10, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
 
     public function testOnProgressWithZeroProgressIndicatesThatTheTimeRemainingIsStillBeingEstimated(): void
     {
-        $formatter = new ProgressBarFormatter($this->output, 12);
+        $formatter = new ProgressBarFormatter($this->output);
         $this->output->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[0%--------] 0/10' . \PHP_EOL . 'Time remaining: Estimating...', $value, false)));
-        $formatter->onProgressChanged(null, 0, 10);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
+        $formatter->onProgressChanged(null, 0, 10, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -146,10 +153,11 @@ class ProgressBarFormatterTest extends TestCase
      */
     public function testOnProgressWritesCorrectStringsForBaseCases(int $percentComplete, string $expectedString): void
     {
-        $formatter = new ProgressBarFormatter($this->output, 12);
+        $formatter = new ProgressBarFormatter($this->output);
         $this->output->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue($expectedString . " $percentComplete/100" . \PHP_EOL . 'Time remaining:', $value, true)));
-        $formatter->onProgressChanged(0, $percentComplete, 100);
+        $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
+        $formatter->onProgressChanged(0, $percentComplete, 100, $options);
         // Dummy assertion
         $this->assertTrue(true);
     }
