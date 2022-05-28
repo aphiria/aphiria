@@ -85,15 +85,15 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "monolog/monolog": "~2.3",
+        "monolog/monolog": "~2.6",
         "php": "^8.1",
         "psr/container": "^1.1",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^1.0",
         "psr/log": "~1.1",
-        "symfony/dotenv": "^6.0",
-        "symfony/property-access": "^6.0",
-        "symfony/serializer": "^6.0"
+        "symfony/dotenv": "^6.1",
+        "symfony/property-access": "^6.1",
+        "symfony/serializer": "^6.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.6",
