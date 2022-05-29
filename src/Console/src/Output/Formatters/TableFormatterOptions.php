@@ -18,7 +18,7 @@ namespace Aphiria\Console\Output\Formatters;
 class TableFormatterOptions
 {
     /**
-     * @param string $cellPaddingString The padding string
+     * @param string $cellPaddingString The cell padding string
      * @param string $verticalBorderChar The character to use for vertical borders
      * @param string $horizontalBorderChar The character to use for horizontal borders
      * @param string $intersectionChar The character to use for row/column intersections

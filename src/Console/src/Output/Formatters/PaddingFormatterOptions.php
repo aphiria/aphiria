@@ -18,9 +18,9 @@ namespace Aphiria\Console\Output\Formatters;
 class PaddingFormatterOptions
 {
     /**
-     * @param string $paddingString The end-of-line character
+     * @param string $paddingString The padding string
      * @param bool $padAfter Whether or not to pad after the string
-     * @param string $eolChar The padding string
+     * @param string $eolChar The end-of-line character
      */
     public function __construct(
         public readonly string $paddingString = ' ',
