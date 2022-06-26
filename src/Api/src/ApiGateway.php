@@ -19,9 +19,9 @@ use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 
 /**
- * Defines the top-level request handler that makes up an application
+ * Defines the top-level request handler acts as a gateway to an API
  */
-class Application implements IRequestHandler
+class ApiGateway implements IRequestHandler
 {
     /**
      * @param IRequestHandler $router The request handler that will be the last to be executed in the middleware pipeline and performs routing

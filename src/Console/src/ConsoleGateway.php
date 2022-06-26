@@ -32,9 +32,9 @@ use InvalidArgumentException;
 use Throwable;
 
 /**
- * Defines a console application
+ * Defines the gateway into a console application
  */
-class Application implements ICommandBus
+class ConsoleGateway implements ICommandBus
 {
     /** @var IInputCompiler The input compiler to use */
     private readonly IInputCompiler $inputCompiler;

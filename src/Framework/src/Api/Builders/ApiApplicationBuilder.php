@@ -12,13 +12,16 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Builders;
 
-use Aphiria\Api\Application;
+use Aphiria\Api\ApiGateway;
 use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
+use Aphiria\Framework\Api\ApiApplication;
 use Aphiria\Middleware\MiddlewareCollection;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
+use Aphiria\Net\Http\IResponseWriter;
 use RuntimeException;
 
 /**
@@ -36,28 +39,28 @@ final class ApiApplicationBuilder extends ApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function build(): IRequestHandler
+    public function build(): ApiApplication
     {
         $this->configureModules();
         $this->buildComponents();
 
         try {
-            $apiApp = new Application(
+            $apiGateway = new ApiGateway(
                 $this->container->for(
-                    new TargetedContext(Application::class),
+                    new TargetedContext(ApiGateway::class),
                     fn (IContainer $container) => $container->resolve(IRequestHandler::class)
                 ),
                 $this->container->for(
-                    new TargetedContext(Application::class),
+                    new TargetedContext(ApiGateway::class),
                     fn (IContainer $container) => $container->resolve(MiddlewareCollection::class)
                 )
             );
+
+            $this->container->bindInstance(IRequestHandler::class, $apiGateway);
+
+            return new ApiApplication($apiGateway, $this->container->resolve(IRequest::class), $this->container->resolve(IResponseWriter::class));
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the API application', 0, $ex);
         }
-
-        $this->container->bindInstance(IRequestHandler::class, $apiApp);
-
-        return $apiApp;
     }
 }

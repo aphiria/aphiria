@@ -13,11 +13,12 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Console\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
-use Aphiria\Console\Application;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\ConsoleGateway;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Framework\Console\ConsoleApplication;
 use RuntimeException;
 
 /**
@@ -35,19 +36,19 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function build(): ICommandBus
+    public function build(): ConsoleApplication
     {
+        global $argv;
         $this->configureModules();
         $this->buildComponents();
 
         try {
-            $consoleApp = new Application($this->container->resolve(CommandRegistry::class), $this->container);
+            $consoleGateway = new ConsoleGateway($this->container->resolve(CommandRegistry::class), $this->container);
+            $this->container->bindInstance(ICommandBus::class, $consoleGateway);
+
+            return new ConsoleApplication($consoleGateway, $argv);
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the console application', 0, $ex);
         }
-
-        $this->container->bindInstance(ICommandBus::class, $consoleApp);
-
-        return $consoleApp;
     }
 }

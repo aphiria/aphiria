@@ -22,6 +22,7 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\UniversalContext;
 use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
+use Aphiria\Framework\Console\ConsoleApplication;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -39,8 +40,10 @@ class ConsoleApplicationBuilderTest extends TestCase
 
     public function testBuildBindsConsoleApplicationToContainer(): void
     {
-        $app = $this->appBuilder->build();
-        $this->assertSame($app, $this->container->resolve(ICommandBus::class));
+        global $argv;
+        $actualApp = $this->appBuilder->build();
+        $expectedApp = new ConsoleApplication($this->container->resolve(ICommandBus::class), $argv);
+        $this->assertEquals($expectedApp, $actualApp);
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
