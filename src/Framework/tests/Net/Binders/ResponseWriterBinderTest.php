@@ -16,8 +16,8 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Net\Binders\ResponseWriterBinder;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\StreamResponseWriter;
-use Monolog\Test\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 class ResponseWriterBinderTest extends TestCase
 {
