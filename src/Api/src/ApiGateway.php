@@ -19,7 +19,7 @@ use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 
 /**
- * Defines the top-level request handler acts as a gateway to an API
+ * Defines the top-level request handler that acts as a gateway to an API
  */
 class ApiGateway implements IRequestHandler
 {
