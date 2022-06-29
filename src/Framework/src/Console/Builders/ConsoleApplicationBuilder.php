@@ -38,7 +38,6 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
      */
     public function build(): ConsoleApplication
     {
-        global $argv;
         $this->configureModules();
         $this->buildComponents();
 
@@ -46,7 +45,8 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
             $consoleGateway = new ConsoleGateway($this->container->resolve(CommandRegistry::class), $this->container);
             $this->container->bindInstance(ICommandBus::class, $consoleGateway);
 
-            return new ConsoleApplication($consoleGateway, $argv);
+            /** @var array{"argv": array} $_SERVER */
+            return new ConsoleApplication($consoleGateway, $_SERVER['argv']);
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the console application', 0, $ex);
         }
