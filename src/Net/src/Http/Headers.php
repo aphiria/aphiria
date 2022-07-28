@@ -60,7 +60,7 @@ final class Headers extends HashTable
         } else {
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
-            parent::add($normalizedName, [...$currentValues, ...(array)$value]);
+            parent::add($normalizedName, [...(array)$currentValues, ...(array)$value]);
         }
     }
 

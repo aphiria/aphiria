@@ -19,7 +19,7 @@ final class BinderMetadataCollection
 {
     /** @var array<class-string, list<BinderMetadata>> The mapping of interfaces to binder metadata that universally resolve those interfaces */
     private array $universalResolutions = [];
-    /** @var array<class-string, array{class-string, list<BinderMetadata>}> The mapping of targets to interfaces to binder metadata that resolve the interface for the target */
+    /** @var array<class-string, array<class-string, list<BinderMetadata>>> The mapping of targets to interfaces to binder metadata that resolve the interface for the target */
     private array $targetedResolutions = [];
 
     /**
