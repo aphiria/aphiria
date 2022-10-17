@@ -25,8 +25,8 @@ class AuthorityBuilder
      * @param AuthorizationRequirementHandlerRegistry $requirementHandlers The requirement handlers
      */
     public function __construct(
-        private AuthorizationPolicyRegistry $policies = new AuthorizationPolicyRegistry(),
-        private AuthorizationRequirementHandlerRegistry $requirementHandlers = new AuthorizationRequirementHandlerRegistry()
+        private readonly AuthorizationPolicyRegistry $policies = new AuthorizationPolicyRegistry(),
+        private readonly AuthorizationRequirementHandlerRegistry $requirementHandlers = new AuthorizationRequirementHandlerRegistry()
     ) {
     }
 
@@ -37,7 +37,7 @@ class AuthorityBuilder
      */
     public function build(): IAuthority
     {
-        return new Authority($this->policies, $this->requirementHandlers);
+        return new Authority($this->policies, $this->requirementHandlers, $this->continueOnFailure);
     }
 
     /**
