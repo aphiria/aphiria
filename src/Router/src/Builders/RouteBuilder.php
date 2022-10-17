@@ -143,7 +143,6 @@ class RouteBuilder
      */
     public function withManyParameters(array $parameters): static
     {
-        /** @psalm-suppress InvalidPropertyAssignmentValue - Bug (https://github.com/vimeo/psalm/issues/7297) */
         $this->parameters = [...$this->parameters, ...$parameters];
 
         return $this;
