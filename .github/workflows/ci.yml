@@ -9,6 +9,6 @@ jobs:
     uses: aphiria/aphiria/.github/workflows/ci-template.yml@1.x
     with:
       split-subtrees: true
-      run-psalm: true
+      run-psalm: false # Disabled until the following is fixed:  https://github.com/vimeo/psalm/issues/8333
     secrets:
       ci-ssh-key: ${{ secrets.CI_SSH_KEY }}

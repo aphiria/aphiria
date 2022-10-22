@@ -22,6 +22,7 @@ final class ArrayListInputTokenizer implements IInputTokenizer
 {
     /**
      * @inheritdoc
+     * @param array{name: string, arguments: list<mixed>, options: list<mixed>} $input
      */
     public function tokenize(string|array $input): array
     {
