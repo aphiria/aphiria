@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Api\Testing\PhpUnit;
 
+use Aphiria\Application\IApplication;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
@@ -39,25 +40,29 @@ use RuntimeException;
 
 class IntegrationTestCaseTest extends TestCase
 {
-    private IRequestHandler $app;
+    private IApplication $app;
+    private IRequestHandler $apiGateway;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;
 
     protected function setUp(): void
     {
         $this->prevAppUrl = \getenv('APP_URL') ?: '';
-        $this->app = $this->createMock(IRequestHandler::class);
-        $this->integrationTests = new class ($this->app) extends IntegrationTestCase {
+        $this->app = $this->createMock(IApplication::class);
+        $this->apiGateway = $this->createMock(IRequestHandler::class);
+        $this->integrationTests = new class ($this->app, $this->apiGateway) extends IntegrationTestCase {
             private static ?string $failMessage = null;
-            private IRequestHandler $app;
+            private IApplication $app;
+            private IRequestHandler $apiGateway;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
 
-            public function __construct(IRequestHandler $app)
+            public function __construct(IApplication $app, IRequestHandler $apiGateway)
             {
                 /** @psalm-suppress InternalMethod We need to call this internal method */
                 parent::__construct();
 
                 $this->app = $app;
+                $this->apiGateway = $apiGateway;
                 $this->mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
                     new JsonMediaTypeFormatter(),
                     new XmlMediaTypeFormatter(),
@@ -133,8 +138,11 @@ class IntegrationTestCaseTest extends TestCase
                 parent::setUp();
             }
 
-            protected function createApplication(IContainer $container): IRequestHandler
+            protected function createApplication(IContainer $container): IApplication
             {
+                // Ensure that the API gateway is resolvable after this method is invoked
+                $container->bindInstance(IRequestHandler::class, $this->apiGateway);
+
                 return $this->app;
             }
 
@@ -277,7 +285,7 @@ class IntegrationTestCaseTest extends TestCase
             new Headers([new KeyValuePair('Foo', 'bar')]),
             new StringBody('{"foo":"bar"}')
         );
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -292,7 +300,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $response = new Response(200);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -326,7 +334,7 @@ class IntegrationTestCaseTest extends TestCase
         $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -342,7 +350,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $response = new Response(200);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -384,7 +392,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testDeleteSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->getMethod() === 'DELETE'
@@ -404,7 +412,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testGetSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->getMethod() === 'GET'
@@ -422,7 +430,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testOptionsSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->getMethod() === 'OPTIONS'
@@ -442,7 +450,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testPatchSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->getMethod() === 'PATCH'
@@ -462,7 +470,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testPostSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->getMethod() === 'POST'
@@ -482,7 +490,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testPutSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->getMethod() === 'PUT'
@@ -505,7 +513,7 @@ class IntegrationTestCaseTest extends TestCase
      */
     public function testSendingRequestWithFullyQualifiedUrisUseThoseUris(string $expectedUri): void
     {
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) use ($expectedUri) {
                 return (string)$request->getUri() === $expectedUri;
@@ -521,7 +529,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testSendingRequestWithRelativeUriCreatesCorrectUri(string $appUrl, string $path): void
     {
         \putenv("APP_URL=$appUrl");
-        $this->app->expects($this->once())
+        $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return (string)$request->getUri() === 'http://localhost/path';
