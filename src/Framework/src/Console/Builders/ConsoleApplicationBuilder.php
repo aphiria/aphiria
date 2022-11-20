@@ -24,9 +24,9 @@ use RuntimeException;
 final class ConsoleApplicationBuilder extends ApplicationBuilder
 {
     /**
-     * @param IServiceResolver $container The DI container
+     * @param IServiceResolver $serviceResolver The resolver to use
      */
-    public function __construct(private readonly IServiceResolver $container)
+    public function __construct(private readonly IServiceResolver $serviceResolver)
     {
     }
 
@@ -39,7 +39,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
         $this->buildComponents();
 
         try {
-            return $this->container->resolve(ConsoleApplication::class);
+            return $this->serviceResolver->resolve(ConsoleApplication::class);
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the console application', 0, $ex);
         }
