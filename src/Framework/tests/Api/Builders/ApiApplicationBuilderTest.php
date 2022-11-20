@@ -19,8 +19,8 @@ use Aphiria\Application\IModule;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\Framework\Api\ApiApplication;
-use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
+use Aphiria\Framework\Api\SynchronousApiApplication;
+use Aphiria\Framework\Api\Builders\SynchronousApiApplicationBuilder;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
@@ -32,7 +32,7 @@ use RuntimeException;
 class ApiApplicationBuilderTest extends TestCase
 {
     private Container $container;
-    private ApiApplicationBuilder $appBuilder;
+    private SynchronousApiApplicationBuilder $appBuilder;
 
     protected function setUp(): void
     {
@@ -41,7 +41,7 @@ class ApiApplicationBuilderTest extends TestCase
         // Several tests rely on a request and response writer being bound
         $this->container->bindInstance(IRequest::class, $this->createMock(IRequest::class));
         $this->container->bindInstance(IResponseWriter::class, $this->createMock(IResponseWriter::class));
-        $this->appBuilder = new ApiApplicationBuilder($this->container);
+        $this->appBuilder = new SynchronousApiApplicationBuilder($this->container);
     }
 
     public function testBuildBindsApiGatewayToContainer(): void
@@ -102,10 +102,10 @@ class ApiApplicationBuilderTest extends TestCase
             $container->bindInstance(IRequestHandler::class, $router);
         });
         $actualApplication = $this->appBuilder->build();
-        $this->assertInstanceOf(ApiApplication::class, $actualApplication);
-        $expectedApplication = new ApiApplication(
+        $this->assertInstanceOf(SynchronousApiApplication::class, $actualApplication);
+        $expectedApplication = new SynchronousApiApplication(
             new ApiGateway($router, new MiddlewareCollection()),
-            fn (): IRequest => $this->container->resolve(IRequest::class),
+            $this->container->resolve(IRequest::class),
             $this->container->resolve(IResponseWriter::class)
         );
         $this->assertEquals($expectedApplication, $actualApplication);

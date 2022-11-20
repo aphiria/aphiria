@@ -17,23 +17,22 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\StreamResponseWriter;
-use Closure;
 use Exception;
 use RuntimeException;
 
 /**
- * Defines an application that runs an API
+ * Defines an API application that processes requests synchronously
  */
-class ApiApplication implements IApplication
+class SynchronousApiApplication implements IApplication
 {
     /**
      * @param IRequestHandler $apiGateway The top-most request handler for the API
-     * @param Closure(): IRequest $requestFactory The factory that will return the current request
+     * @param IRequest $request The current request
      * @param IResponseWriter $responseWriter The response writer
      */
     public function __construct(
         private readonly IRequestHandler $apiGateway,
-        private readonly Closure $requestFactory,
+        private readonly IRequest $request,
         private readonly IResponseWriter $responseWriter = new StreamResponseWriter()
     ) {
     }
@@ -45,7 +44,7 @@ class ApiApplication implements IApplication
     public function run(): int
     {
         try {
-            $response = $this->apiGateway->handle(($this->requestFactory)());
+            $response = $this->apiGateway->handle($this->request);
             $this->responseWriter->writeResponse($response);
 
             return 0;

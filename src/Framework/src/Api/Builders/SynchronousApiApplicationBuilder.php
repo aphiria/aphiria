@@ -17,7 +17,7 @@ use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\Framework\Api\ApiApplication;
+use Aphiria\Framework\Api\SynchronousApiApplication;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
@@ -25,9 +25,9 @@ use Aphiria\Net\Http\IResponseWriter;
 use RuntimeException;
 
 /**
- * Defines the application builder for API applications
+ * Defines the application builder for synchronous API applications
  */
-final class ApiApplicationBuilder extends ApplicationBuilder
+final class SynchronousApiApplicationBuilder extends ApplicationBuilder
 {
     /**
      * @param IContainer $container The DI container
@@ -39,7 +39,7 @@ final class ApiApplicationBuilder extends ApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function build(): ApiApplication
+    public function build(): SynchronousApiApplication
     {
         $this->configureModules();
         $this->buildComponents();
@@ -55,12 +55,12 @@ final class ApiApplicationBuilder extends ApplicationBuilder
                     static fn (IContainer $container): MiddlewareCollection => $container->resolve(MiddlewareCollection::class)
                 )
             );
-
+            // Bind the gateway for use in integration tests
             $this->container->bindInstance(IRequestHandler::class, $apiGateway);
 
-            return new ApiApplication(
+            return new SynchronousApiApplication(
                 $apiGateway,
-                fn (): IRequest => $this->container->resolve(IRequest::class),
+                $this->container->resolve(IRequest::class),
                 $this->container->resolve(IResponseWriter::class)
             );
         } catch (ResolutionException $ex) {

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Api;
 
-use Aphiria\Framework\Api\ApiApplication;
+use Aphiria\Framework\Api\SynchronousApiApplication;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
@@ -22,15 +22,15 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class ApiApplicationTest extends TestCase
+class SynchronousApiApplicationTest extends TestCase
 {
-    private ApiApplication $app;
+    private SynchronousApiApplication $app;
     private IRequestHandler&MockObject $apiGateway;
 
     protected function setUp(): void
     {
         $this->apiGateway = $this->createMock(IRequestHandler::class);
-        $this->app = new ApiApplication($this->apiGateway, fn (): IRequest => $this->createMock(IRequest::class));
+        $this->app = new SynchronousApiApplication($this->apiGateway, $this->createMock(IRequest::class));
     }
 
     public function testRunReturnsZero(): void
@@ -50,7 +50,7 @@ class ApiApplicationTest extends TestCase
         $responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($response);
-        $app = new ApiApplication($apiGateway, fn (): IRequest => $request, $responseWriter);
+        $app = new SynchronousApiApplication($apiGateway, $request, $responseWriter);
         $app->run();
     }
 
