@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Console;
 
-use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
 use Aphiria\Framework\Console\ConsoleApplication;
 use Exception;
@@ -23,12 +25,23 @@ use RuntimeException;
 class ConsoleApplicationTest extends TestCase
 {
     private ConsoleApplication $app;
-    private ICommandBus&MockObject $consoleGateway;
+    private ICommandHandler&MockObject $consoleGateway;
+    private Input $input;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {
-        $this->consoleGateway = $this->createMock(ICommandBus::class);
-        $this->app = new ConsoleApplication($this->consoleGateway, fn (): array => []);
+        $this->consoleGateway = $this->createMock(ICommandHandler::class);
+        $this->input = new Input('foo', [], []);
+        $this->output = $this->createMock(IOutput::class);
+        $this->app = new ConsoleApplication($this->consoleGateway, $this->input, $this->output);
+    }
+
+    public function testRunReturnsOkStatusCodeValueIfGatewayReturnsVoid(): void
+    {
+        $this->consoleGateway->method('handle')
+            ->willReturn(null);
+        $this->assertSame(StatusCode::Ok->value, $this->app->run());
     }
 
     public function testRunReturnsStatusCodeValueIfGatewayReturnsInt(): void

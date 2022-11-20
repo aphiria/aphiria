@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Console;
 
 use Aphiria\Application\IApplication;
-use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\ConsoleOutput;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
-use Closure;
 use Exception;
 use RuntimeException;
 
@@ -25,11 +27,15 @@ use RuntimeException;
 class ConsoleApplication implements IApplication
 {
     /**
-     * @param ICommandBus $consoleGateway The top-most command bus that acts as a gateway into the console application
-     * @param Closure(): array $argvFactory The factory that will return the raw arguments passed into the application
+     * @param ICommandHandler $consoleGateway The top-most command handler that acts as a gateway into the console application
+     * @param Input $input The input to the console application
+     * @param IOutput $output The output of the console application
      */
-    public function __construct(private readonly ICommandBus $consoleGateway, private readonly Closure $argvFactory)
-    {
+    public function __construct(
+        private readonly ICommandHandler $consoleGateway,
+        private readonly Input $input,
+        private readonly IOutput $output = new ConsoleOutput()
+    ) {
     }
 
     /**
@@ -38,7 +44,11 @@ class ConsoleApplication implements IApplication
     public function run(): int
     {
         try {
-            $statusCode = $this->consoleGateway->handle(($this->argvFactory)());
+            $statusCode = $this->consoleGateway->handle($this->input, $this->output);
+
+            if ($statusCode === null) {
+                return StatusCode::Ok->value;
+            }
 
             return $statusCode instanceof StatusCode ? $statusCode->value : $statusCode;
         } catch (Exception $ex) {

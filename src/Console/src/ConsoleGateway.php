@@ -18,59 +18,45 @@ use Aphiria\Console\Commands\Defaults\AboutCommand;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
-use Aphiria\Console\Commands\ICommandBus;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Compilers\CommandNotFoundException;
-use Aphiria\Console\Input\Compilers\IInputCompiler;
-use Aphiria\Console\Input\Compilers\InputCompiler;
 use Aphiria\Console\Input\Input;
-use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Exception;
-use InvalidArgumentException;
 use Throwable;
 
 /**
  * Defines the gateway into a console application
  */
-class ConsoleGateway implements ICommandBus
+class ConsoleGateway implements ICommandHandler
 {
-    /** @var IInputCompiler The input compiler to use */
-    private readonly IInputCompiler $inputCompiler;
-
     /**
-     * @param CommandRegistry $commands The commands
+     * @param CommandRegistry $commands The commands the application accepts
      * @param IServiceResolver $commandHandlerResolver The resolver of command handlers
-     * @param IInputCompiler|null $inputCompiler The input compiler, or null if using the default one
      */
     public function __construct(
         private readonly CommandRegistry $commands,
-        private readonly IServiceResolver $commandHandlerResolver,
-        IInputCompiler $inputCompiler = null
+        private readonly IServiceResolver $commandHandlerResolver
     ) {
         $this->registerDefaultCommands();
-        $this->inputCompiler = $inputCompiler ?? new InputCompiler($this->commands);
     }
 
     /**
      * @inheritdoc
      */
-    public function handle(Input|string|array $rawInput, IOutput $output = null): StatusCode|int
+    public function handle(Input $input, IOutput $output)
     {
-        $output = $output ?? new ConsoleOutput();
-
         try {
-            $compiledInput = $rawInput instanceof Input ? $rawInput : $this->inputCompiler->compile($rawInput);
             /** @var CommandBinding|null $binding */
             $binding = null;
 
-            if (!$this->commands->tryGetBinding($compiledInput->commandName, $binding)) {
-                throw new InvalidArgumentException("Command \"{$compiledInput->commandName}\" is not registered");
+            if (!$this->commands->tryGetBinding($input->commandName, $binding)) {
+                throw new CommandNotFoundException($input->commandName);
             }
 
             $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
-            $statusCode = $commandHandler->handle($compiledInput, $output);
+            $statusCode = $commandHandler->handle($input, $output);
 
             return $statusCode ?? StatusCode::Ok;
         } catch (CommandNotFoundException $ex) {
@@ -85,17 +71,12 @@ class ConsoleGateway implements ICommandBus
                     return StatusCode::Fatal;
                 }
 
-                $output = $output ?? new ConsoleOutput();
                 $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
                 $commandHandler->handle(new Input('about', [], []), $output);
 
                 return StatusCode::Ok;
             }
 
-            $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
-
-            return StatusCode::Error;
-        } catch (InvalidArgumentException $ex) {
             $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
 
             return StatusCode::Error;

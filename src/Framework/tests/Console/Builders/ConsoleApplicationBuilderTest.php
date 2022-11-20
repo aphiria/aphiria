@@ -16,7 +16,9 @@ use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -30,19 +32,26 @@ class ConsoleApplicationBuilderTest extends TestCase
 {
     private Container $container;
     private ConsoleApplicationBuilder $appBuilder;
+    private Input $input;
 
     protected function setUp(): void
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
         $this->appBuilder = new ConsoleApplicationBuilder($this->container);
+        $this->input = new Input('foo');
+        $this->container->bindInstance(Input::class, $this->input);
+        $this->container->bindInstance(IOutput::class, $this->createMock(IOutput::class));
     }
 
     public function testBuildBindsConsoleApplicationToContainer(): void
     {
-        global $argv;
         $actualApp = $this->appBuilder->build();
-        $expectedApp = new ConsoleApplication($this->container->resolve(ICommandBus::class), fn (): array => $argv);
+        $expectedApp = new ConsoleApplication(
+            $this->container->resolve(ICommandHandler::class),
+            $this->input,
+            $this->container->resolve(IOutput::class)
+        );
         $this->assertEquals($expectedApp, $actualApp);
     }
 

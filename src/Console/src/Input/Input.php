@@ -24,8 +24,8 @@ final class Input
      */
     public function __construct(
         public readonly string $commandName,
-        public readonly array $arguments,
-        public readonly array $options
+        public readonly array $arguments = [],
+        public readonly array $options = []
     ) {
     }
 }

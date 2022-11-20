@@ -525,6 +525,27 @@ class InputCompilerTest extends TestCase
         $this->assertSame('bar', $input->arguments['arg']);
     }
 
+    public function testCompilingOptionWithOptionalValueWithDefaultValueUsesDefaultValueWhenNoValueIsPassedIn(): void
+    {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [],
+                [new Option('opt', OptionType::OptionalValue, defaultValue: 'bar')],
+                '',
+                ''
+            ),
+            $commandHandler::class
+        );
+        $input = $this->compiler->compile('foo --opt');
+        $this->assertSame('bar', $input->options['opt']);
+    }
+
     public function testCompilingRequiredArgumentsWithoutSpecifyingAllValuesThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
