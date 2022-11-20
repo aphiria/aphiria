@@ -47,30 +47,6 @@ class ConsoleGatewayTest extends TestCase
         $this->output = new Output();
     }
 
-    public function testHandlingAboutCommandWithNoHandlerThrowsException(): void
-    {
-        $output = $this->createMock(IOutput::class);
-        $output->expects($this->once())
-            ->method('writeln')
-            ->with('<fatal>About command not registered</fatal>')
-            ->willReturnArgument(0);
-        // Purposely use new commands that don't have anything registered to them
-        $app = new class (new CommandRegistry(), $this->commandHandlerResolver) extends ConsoleGateway {
-            protected function formatExceptionMessage(Exception|Throwable $ex): string
-            {
-                // Simplify testing
-                return $ex->getMessage();
-            }
-
-            protected function registerDefaultCommands(): void
-            {
-                // Simulate overriding and not registering any commands
-            }
-        };
-        $status = $app->handle(new Input(''), $output);
-        $this->assertSame(StatusCode::Fatal, $status);
-    }
-
     public function testHandlingCommandWithNoHandlerThrowsException(): void
     {
         $output = $this->createMock(IOutput::class);

@@ -300,12 +300,6 @@ class InputCompilerTest extends TestCase
         $this->assertEquals([], $input->options);
     }
 
-    public function testCompilingEmptyCommandNameThrowsException(): void
-    {
-        $this->expectException(CommandNotFoundException::class);
-        $this->compiler->compile('');
-    }
-
     public function testCompilingLongOptionWithEqualsSign(): void
     {
         $commandHandler = new class () implements ICommandHandler {

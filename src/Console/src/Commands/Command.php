@@ -14,7 +14,6 @@ namespace Aphiria\Console\Commands;
 
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
-use InvalidArgumentException;
 
 /**
  * Defines a console command
@@ -35,8 +34,5 @@ class Command
         public readonly ?string $description = null,
         public readonly ?string $helpText = null
     ) {
-        if (empty($this->name)) {
-            throw new InvalidArgumentException('Command name cannot be empty');
-        }
     }
 }

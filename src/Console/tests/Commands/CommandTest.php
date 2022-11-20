@@ -17,17 +17,10 @@ use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentType;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionType;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class CommandTest extends TestCase
 {
-    public function testEmptyNameThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Command('', [], [], '', '');
-    }
-
     public function testPropertiesAreSetInConstructor(): void
     {
         $expectedName = 'foo';

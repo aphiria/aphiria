@@ -51,23 +51,6 @@ class ConsoleGateway implements ICommandHandler
             $binding = null;
 
             if (!$this->commands->tryGetBinding($input->commandName, $binding)) {
-                // If there was no entered command, treat it like invoking the about command
-                if ($input->commandName === '') {
-                    /** @var class-string<ICommandHandler>|null $aboutCommandHandlerClassName */
-                    $aboutCommandHandlerClassName = null;
-
-                    if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {
-                        $output->writeln('<fatal>About command not registered</fatal>');
-
-                        return StatusCode::Fatal;
-                    }
-
-                    $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
-                    $commandHandler->handle(new Input('about', [], []), $output);
-
-                    return StatusCode::Ok;
-                }
-
                 $output->writeln("<error>No command found with name \"{$input->commandName}\"</error>");
 
                 return StatusCode::Error;
