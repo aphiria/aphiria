@@ -20,6 +20,7 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\ConsoleGateway;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentType;
+use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionType;
@@ -30,7 +31,6 @@ use Aphiria\DependencyInjection\IServiceResolver;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Throwable;
 
 class ConsoleGatewayTest extends TestCase
 {
@@ -50,18 +50,14 @@ class ConsoleGatewayTest extends TestCase
     public function testHandlingCommandWithNoHandlerThrowsException(): void
     {
         $output = $this->createMock(IOutput::class);
-        $output->expects($this->once())
+        $output->expects($this->exactly(3))
             ->method('writeln')
-            ->with('<error>No command found with name "foo"</error>')
-            ->willReturnArgument(0);
-        $app = new class ($this->commands, $this->commandHandlerResolver) extends ConsoleGateway {
-            protected function formatExceptionMessage(Exception|Throwable $ex): string
-            {
-                // Simplify testing
-                return $ex->getMessage();
-            }
-        };
-        $status = $app->handle(new Input('foo'), $output);
+            ->withConsecutive(
+                ['<fatal>' . CommandNotFoundException::class . '</fatal>: <info>No command found with name "foo"</info>'],
+                ['Stack trace:'],
+                [$this->anything()]
+            );
+        $status = $this->consoleGateway->handle(new Input('foo'), $output);
         $this->assertSame(StatusCode::Error, $status);
     }
 

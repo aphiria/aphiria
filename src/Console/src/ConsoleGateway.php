@@ -19,6 +19,7 @@ use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -51,7 +52,7 @@ class ConsoleGateway implements ICommandHandler
             $binding = null;
 
             if (!$this->commands->tryGetBinding($input->commandName, $binding)) {
-                $output->writeln("<error>No command found with name \"{$input->commandName}\"</error>");
+                $this->writeExceptionMessage(new CommandNotFoundException($input->commandName), $output);
 
                 return StatusCode::Error;
             }
@@ -61,21 +62,10 @@ class ConsoleGateway implements ICommandHandler
 
             return $statusCode ?? StatusCode::Ok;
         } catch (Exception | Throwable $ex) {
-            $output->writeln("<fatal>{$this->formatExceptionMessage($ex)}</fatal>");
+            $this->writeExceptionMessage($ex, $output);
 
             return StatusCode::Fatal;
         }
-    }
-
-    /**
-     * Formats an exception message to be more readable
-     *
-     * @param Exception|Throwable $ex The exception to format
-     * @return string The formatted exception message
-     */
-    protected function formatExceptionMessage(Exception|Throwable $ex): string
-    {
-        return $ex->getMessage() . \PHP_EOL . $ex->getTraceAsString();
     }
 
     /**
@@ -87,5 +77,18 @@ class ConsoleGateway implements ICommandHandler
             new CommandBinding(new HelpCommand(), HelpCommandHandler::class),
             new CommandBinding(new AboutCommand(), AboutCommandHandler::class)
         ]);
+    }
+
+    /**
+     * Writes an exception message to the console output
+     *
+     * @param Exception|Throwable $ex The exception that was thrown
+     * @param IOutput $output The output to write to
+     */
+    protected function writeExceptionMessage(Exception|Throwable $ex, IOutput $output): void
+    {
+        $output->writeln('<fatal>' . $ex::class . "</fatal>: <info>{$ex->getMessage()}</info>");
+        $output->writeln('Stack trace:');
+        $output->writeln($ex->getTraceAsString());
     }
 }
