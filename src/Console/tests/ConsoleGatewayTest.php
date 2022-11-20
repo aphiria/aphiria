@@ -113,7 +113,9 @@ class ConsoleGatewayTest extends TestCase
             new Command('foo'),
             $commandHandler::class
         );
+        \ob_start();
         $status = $this->consoleGateway->handle(new Input('foo'), $this->output);
+        \ob_end_clean();
         $this->assertSame(StatusCode::Fatal, $status);
     }
 

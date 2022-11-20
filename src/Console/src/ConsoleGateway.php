@@ -19,7 +19,6 @@ use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommand;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandHandler;
-use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -52,34 +51,32 @@ class ConsoleGateway implements ICommandHandler
             $binding = null;
 
             if (!$this->commands->tryGetBinding($input->commandName, $binding)) {
-                throw new CommandNotFoundException($input->commandName);
+                // If there was no entered command, treat it like invoking the about command
+                if ($input->commandName === '') {
+                    /** @var class-string<ICommandHandler>|null $aboutCommandHandlerClassName */
+                    $aboutCommandHandlerClassName = null;
+
+                    if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {
+                        $output->writeln('<fatal>About command not registered</fatal>');
+
+                        return StatusCode::Fatal;
+                    }
+
+                    $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
+                    $commandHandler->handle(new Input('about', [], []), $output);
+
+                    return StatusCode::Ok;
+                }
+
+                $output->writeln("<error>No command found with name \"{$input->commandName}\"</error>");
+
+                return StatusCode::Error;
             }
 
             $commandHandler = $this->commandHandlerResolver->resolve($binding->commandHandlerClassName);
             $statusCode = $commandHandler->handle($input, $output);
 
             return $statusCode ?? StatusCode::Ok;
-        } catch (CommandNotFoundException $ex) {
-            // If there was no entered command, treat it like invoking the about command
-            if ($ex->commandName === '') {
-                /** @var class-string<ICommandHandler>|null $aboutCommandHandlerClassName */
-                $aboutCommandHandlerClassName = null;
-
-                if (!$this->commands->tryGetHandlerClassName('about', $aboutCommandHandlerClassName)) {
-                    $output->writeln('<fatal>About command not registered</fatal>');
-
-                    return StatusCode::Fatal;
-                }
-
-                $commandHandler = $this->commandHandlerResolver->resolve($aboutCommandHandlerClassName);
-                $commandHandler->handle(new Input('about', [], []), $output);
-
-                return StatusCode::Ok;
-            }
-
-            $output->writeln("<error>{$this->formatExceptionMessage($ex)}</error>");
-
-            return StatusCode::Error;
         } catch (Exception | Throwable $ex) {
             $output->writeln("<fatal>{$this->formatExceptionMessage($ex)}</fatal>");
 
