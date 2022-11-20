@@ -26,6 +26,7 @@ final class ArrayListInputTokenizer implements IInputTokenizer
      */
     public function tokenize(string|array $input): array
     {
+        /** @psalm-suppress TypeDoesNotContainType The interface accepts wider types than this class */
         if (!\is_array($input)) {
             throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
         }

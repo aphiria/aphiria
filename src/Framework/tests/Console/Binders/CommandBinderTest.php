@@ -136,7 +136,7 @@ class CommandBinderTest extends TestCase
     {
         $inputCompiler = Mockery::mock(IInputCompiler::class);
         $inputCompiler->shouldReceive('compile')
-            ->with($_SERVER['argv'])
+            ->with($_SERVER['argv'] ?? '')
             ->andReturn(new Input('foo'));
         $this->container->shouldReceive('resolve')
             ->with(IInputCompiler::class)

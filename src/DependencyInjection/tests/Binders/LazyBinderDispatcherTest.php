@@ -83,9 +83,7 @@ class LazyBinderDispatcherTest extends TestCase
         $this->assertFalse($binderA->binderDispatched);
         $this->assertFalse($binderB->binderDispatched);
         $this->container->resolve(IFoo::class);
-        /** @psalm-suppress DocblockTypeContradiction Psalm is incorrectly flagging this as always being false due to the assertion above */
         $this->assertTrue($binderA->binderDispatched);
-        /** @psalm-suppress DocblockTypeContradiction Psalm is incorrectly flagging this as always being false due to the assertion above */
         $this->assertTrue($binderB->binderDispatched);
     }
 

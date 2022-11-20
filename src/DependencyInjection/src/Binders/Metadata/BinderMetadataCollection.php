@@ -24,7 +24,6 @@ final class BinderMetadataCollection
 
     /**
      * @param list<BinderMetadata> $binderMetadatas The list of all binder metadata
-     * @psalm-suppress InvalidPropertyAssignmentValue Psalm is getting confused about assigning arrays with keys - bug
      */
     public function __construct(public readonly array $binderMetadatas)
     {
@@ -62,7 +61,6 @@ final class BinderMetadataCollection
      *
      * @param BoundInterface $boundInterface The bound interface to check for
      * @return list<BinderMetadata> The list of binder metadata that resolve the input interface
-     * @psalm-suppress InvalidArrayOffset Psalm is getting confused about accessing arrays with keys - bug
      */
     public function getBinderMetadataThatResolveInterface(BoundInterface $boundInterface): array
     {

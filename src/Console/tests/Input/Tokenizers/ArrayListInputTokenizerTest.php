@@ -29,6 +29,7 @@ class ArrayListInputTokenizerTest extends TestCase
     public function testNotPassingCommandName(): void
     {
         $this->expectException(RuntimeException::class);
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid argument */
         $this->tokenizer->tokenize([
             'foo' => 'bar'
         ]);
@@ -47,6 +48,7 @@ class ArrayListInputTokenizerTest extends TestCase
     public function testTokenizingNonArrayThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid argument */
         $this->tokenizer->tokenize('foo');
     }
 }

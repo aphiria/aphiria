@@ -85,7 +85,6 @@ final class InputCompiler implements IInputCompiler
              */
             $options[$name][] = $value;
         } else {
-            /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
             $options[$name] = $value;
         }
     }
