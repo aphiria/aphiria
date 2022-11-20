@@ -48,17 +48,21 @@ final class ApiApplicationBuilder extends ApplicationBuilder
             $apiGateway = new ApiGateway(
                 $this->container->for(
                     new TargetedContext(ApiGateway::class),
-                    fn (IContainer $container) => $container->resolve(IRequestHandler::class)
+                    static fn (IContainer $container): IRequestHandler => $container->resolve(IRequestHandler::class)
                 ),
                 $this->container->for(
                     new TargetedContext(ApiGateway::class),
-                    fn (IContainer $container) => $container->resolve(MiddlewareCollection::class)
+                    static fn (IContainer $container): MiddlewareCollection => $container->resolve(MiddlewareCollection::class)
                 )
             );
 
             $this->container->bindInstance(IRequestHandler::class, $apiGateway);
 
-            return new ApiApplication($apiGateway, $this->container->resolve(IRequest::class), $this->container->resolve(IResponseWriter::class));
+            return new ApiApplication(
+                $apiGateway,
+                fn (): IRequest => $this->container->resolve(IRequest::class),
+                $this->container->resolve(IResponseWriter::class)
+            );
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the API application', 0, $ex);
         }

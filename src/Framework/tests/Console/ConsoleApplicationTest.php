@@ -28,7 +28,7 @@ class ConsoleApplicationTest extends TestCase
     protected function setUp(): void
     {
         $this->consoleGateway = $this->createMock(ICommandBus::class);
-        $this->app = new ConsoleApplication($this->consoleGateway, []);
+        $this->app = new ConsoleApplication($this->consoleGateway, fn (): array => []);
     }
 
     public function testRunReturnsStatusCodeValueIfGatewayReturnsInt(): void

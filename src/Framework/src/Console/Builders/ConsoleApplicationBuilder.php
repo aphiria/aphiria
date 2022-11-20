@@ -46,7 +46,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
             $this->container->bindInstance(ICommandBus::class, $consoleGateway);
 
             /** @var array{"argv": array} $_SERVER */
-            return new ConsoleApplication($consoleGateway, $_SERVER['argv'] ?? []);
+            return new ConsoleApplication($consoleGateway, static fn (): array => $_SERVER['argv'] ?? []);
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to build the console application', 0, $ex);
         }

@@ -105,7 +105,7 @@ class ApiApplicationBuilderTest extends TestCase
         $this->assertInstanceOf(ApiApplication::class, $actualApplication);
         $expectedApplication = new ApiApplication(
             new ApiGateway($router, new MiddlewareCollection()),
-            $this->container->resolve(IRequest::class),
+            fn (): IRequest => $this->container->resolve(IRequest::class),
             $this->container->resolve(IResponseWriter::class)
         );
         $this->assertEquals($expectedApplication, $actualApplication);

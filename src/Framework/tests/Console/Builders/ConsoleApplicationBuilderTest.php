@@ -42,7 +42,7 @@ class ConsoleApplicationBuilderTest extends TestCase
     {
         global $argv;
         $actualApp = $this->appBuilder->build();
-        $expectedApp = new ConsoleApplication($this->container->resolve(ICommandBus::class), $argv);
+        $expectedApp = new ConsoleApplication($this->container->resolve(ICommandBus::class), fn (): array => $argv);
         $this->assertEquals($expectedApp, $actualApp);
     }
 
