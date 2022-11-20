@@ -15,6 +15,7 @@ namespace Aphiria\Framework\Tests\Routing\Components;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
+use Aphiria\Routing\Builders\RouteBuilder;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
@@ -50,7 +51,7 @@ class RouterComponentTest extends TestCase
             {
             }
         };
-        $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders) => $routeBuilders->get('/foo')->mapsToMethod($controller::class, 'bar'));
+        $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders): RouteBuilder => $routeBuilders->get('/foo')->mapsToMethod($controller::class, 'bar'));
         $this->routerComponent->build();
         $this->assertCount(1, $this->routes->getAll());
         $this->assertSame('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);

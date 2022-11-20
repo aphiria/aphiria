@@ -139,7 +139,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function hasBinding(string $interface): bool
     {
-        return $this->container->for($this->currentContext, fn (IContainer $container) => $container->hasBinding($interface));
+        return $this->container->for($this->currentContext, fn (IContainer $container): bool => $container->hasBinding($interface));
     }
 
     /**
@@ -149,7 +149,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     {
         $this->addResolvedInterface($interface);
 
-        return $this->container->for($this->currentContext, fn (IContainer $container) => $container->resolve($interface));
+        return $this->container->for($this->currentContext, fn (IContainer $container): object => $container->resolve($interface));
     }
 
     /**

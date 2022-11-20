@@ -98,7 +98,7 @@ class ContainerTest extends TestCase
 
     public function testBindingUniversalFactory(): void
     {
-        $this->container->bindFactory(IFoo::class, fn () => new Bar());
+        $this->container->bindFactory(IFoo::class, fn (): IFoo => new Bar());
         $instance1 = $this->container->resolve(IFoo::class);
         $instance2 = $this->container->resolve(IFoo::class);
         $this->assertInstanceOf(Bar::class, $instance1);
@@ -107,7 +107,7 @@ class ContainerTest extends TestCase
 
     public function testBindingUniversalSingletonFactory(): void
     {
-        $this->container->bindFactory(IFoo::class, fn () => new Bar(), true);
+        $this->container->bindFactory(IFoo::class, fn (): IFoo => new Bar(), true);
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
         $this->assertInstanceOf(ConstructorWithInterface::class, $instance1);
@@ -155,7 +155,7 @@ class ContainerTest extends TestCase
         $instance = new ConstructorWithSetters();
         $this->container->callMethod($instance, 'setInterface');
         $this->assertInstanceOf(Bar::class, $instance->getInterface());
-        $response = $this->container->callClosure(fn (IFoo $interface) => $interface::class);
+        $response = $this->container->callClosure(fn (IFoo $interface): string => $interface::class);
         $this->assertSame(Bar::class, $response);
     }
 

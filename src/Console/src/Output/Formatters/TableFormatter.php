@@ -61,7 +61,7 @@ class TableFormatter
                     '%s%s%s%s%s',
                     $options->verticalBorderChar,
                     $options->cellPaddingString,
-                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn (mixed $value) => (string)$value, $row)),
+                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn (mixed $value): string => (string)$value, $row)),
                     $options->cellPaddingString,
                     $options->verticalBorderChar
                 ),

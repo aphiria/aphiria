@@ -59,7 +59,7 @@ class AuthenticateTest extends TestCase
             ->willReturn(AuthenticationResult::fail('foo'));
         $this->authenticator->expects($this->once())
             ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response) => $response->getStatusCode() === HttpStatusCode::Unauthorized), $schemeName);
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), $schemeName);
         $next->expects($this->never())
             ->method('handle')
             ->willReturn($response);

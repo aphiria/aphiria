@@ -71,6 +71,10 @@ class Router implements IRequestHandler
     public function handle(IRequest $request): IResponse
     {
         $matchingResult = $this->matchRoute($request);
+        /**
+         * @var Controller $controller
+         * @var Closure $routeActionDelegate
+         */
         $controller = $routeActionDelegate = null;
         $this->createController($matchingResult->route->action, $controller, $routeActionDelegate);
         $controllerRequestHandler = new ControllerRequestHandler(

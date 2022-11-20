@@ -22,6 +22,7 @@ use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteCollectionBuilderRouteRegistrant;
+use Aphiria\Routing\IRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteRegistrantCollection;
 use Closure;
@@ -53,6 +54,7 @@ class RouterComponent implements IComponent
         $routeRegistrants = $this->container->resolve(RouteRegistrantCollection::class);
 
         if ($this->attributesEnabled) {
+            /** @var IRouteRegistrant $attributeRouteRegistrant */
             $attributeRouteRegistrant = null;
 
             if (!$this->container->tryResolve(AttributeRouteRegistrant::class, $attributeRouteRegistrant)) {
@@ -66,7 +68,7 @@ class RouterComponent implements IComponent
         $routeRegistrants->registerRoutes($this->container->resolve(RouteCollection::class));
         $this->container->for(
             new TargetedContext(ApiGateway::class),
-            fn (IContainer $container) => $container->bindFactory(IRequestHandler::class, fn () => $this->container->resolve(Router::class))
+            fn (IContainer $container) => $container->bindFactory(IRequestHandler::class, fn (): IRequestHandler => $this->container->resolve(Router::class))
         );
     }
 

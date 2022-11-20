@@ -408,7 +408,7 @@ class Container implements IContainer
                     } elseif ($className !== null && $this->hasTargetedBinding($parameterClassName, $className)) {
                         $resolvedParameter = $this->for(
                             new TargetedContext($className),
-                            fn (IContainer $container) => $container->resolve($parameterClassName)
+                            fn (IContainer $container): object => $container->resolve($parameterClassName)
                         );
                     } else {
                         try {

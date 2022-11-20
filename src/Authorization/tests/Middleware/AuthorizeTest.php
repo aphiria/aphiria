@@ -135,7 +135,7 @@ class AuthorizeTest extends TestCase
             ->willReturn(AuthorizationResult::fail([$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response) => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
@@ -157,7 +157,7 @@ class AuthorizeTest extends TestCase
             ->willReturn(AuthorizationResult::fail([$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response) => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
         $this->middleware->setParameters(['policyName' => $policy->name]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
@@ -178,7 +178,7 @@ class AuthorizeTest extends TestCase
         $policy = new AuthorizationPolicy('policy', [$this], 'scheme');
         $this->authenticator->expects($this->once())
             ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response) => $response->getStatusCode() === HttpStatusCode::Unauthorized), 'scheme');
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), 'scheme');
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
