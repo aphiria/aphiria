@@ -20,10 +20,12 @@
 
 ### Added
 
-- Added `Aphiria\Framework\Api\SynchronousApiApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
-- Added `Aphiria\Framework\Console\ConsoleApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
 - Added `Aphiria\Framework\Api\Binders\RequestHandlerBinder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Api\Builders\SynchronousApiApplicationBuilder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Api\SynchronousApiApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
 - Added `Aphiria\Framework\Console\Binders\CommandHandlerBinder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Console\ConsoleApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
 - Added `Aphiria\Framework\Net\Binders\ResponseWriterBinder` ([#231](https://github.com/aphiria/aphiria/pull/231))
 
 ### Removed
