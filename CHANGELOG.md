@@ -10,6 +10,7 @@
 
 - Changed `TableFormatter`, `PaddingFormatter`, `IProgressBarObserver`, and `ProgressBarFormatter` to take in an options parameter in their format methods and added the concept of default options ([#228](https://github.com/aphiria/aphiria/pull/228))
 - Updated linter rules to place enum cases above most other elements ([#222](https://github.com/aphiria/aphiria/pull/222))
+- Added support for `Input` objects as `$rawInput` parameter in `ICommandBus::handle()` ([#???](https://github.com/aphiria/aphiria/pull/???)
 
 ### Added
 
