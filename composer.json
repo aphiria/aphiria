@@ -101,7 +101,7 @@
         "nyholm/psr7": "^1.5",
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-mockery": "^1.1",
-        "vimeo/psalm": "dev-master as 4.5.x-dev"
+        "vimeo/psalm": "^5.1"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",
