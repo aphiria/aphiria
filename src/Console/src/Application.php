@@ -56,12 +56,12 @@ class Application implements ICommandBus
     /**
      * @inheritdoc
      */
-    public function handle(string|array $rawInput, IOutput $output = null): StatusCode|int
+    public function handle(Input|string|array $rawInput, IOutput $output = null): StatusCode|int
     {
         $output = $output ?? new ConsoleOutput();
 
         try {
-            $compiledInput = $this->inputCompiler->compile($rawInput);
+            $compiledInput = $rawInput instanceof Input ? $rawInput : $this->inputCompiler->compile($rawInput);
             /** @var CommandBinding|null $binding */
             $binding = null;
 
