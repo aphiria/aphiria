@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Tests\Validation\Components;
 
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
+use Aphiria\Validation\Builders\ObjectConstraintsBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
@@ -48,7 +49,7 @@ class ValidationComponentTest extends TestCase
         $class = new class () {
         };
         $this->validationComponent->withObjectConstraints(
-            fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders) => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())
+            fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders): ObjectConstraintsBuilder => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())
         );
         $this->validationComponent->build();
         $classConstraints = $this->objectConstraints->getConstraintsForClass($class::class);

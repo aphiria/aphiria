@@ -12,39 +12,32 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Api\Builders;
 
-use Aphiria\Api\Application;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\DependencyInjection\IContainer;
-use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\Framework\Api\Builders\ApiApplicationBuilder;
+use Aphiria\Framework\Api\Builders\SynchronousApiApplicationBuilder;
+use Aphiria\Framework\Api\SynchronousApiApplication;
+use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
+use Aphiria\Net\Http\IResponseWriter;
+use Aphiria\Net\Http\Request;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class ApiApplicationBuilderTest extends TestCase
 {
     private Container $container;
-    private ApiApplicationBuilder $appBuilder;
+    private SynchronousApiApplicationBuilder $appBuilder;
 
     protected function setUp(): void
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
-        $this->appBuilder = new ApiApplicationBuilder($this->container);
-    }
-
-    public function testBuildBindsApiApplicationToContainer(): void
-    {
-        // Bind the router to the container
-        $router = $this->createMock(IRequestHandler::class);
-        $this->container->for(new TargetedContext(Application::class), function (IContainer $container) use ($router) {
-            $container->bindInstance(IRequestHandler::class, $router);
-        });
-        $this->appBuilder->build();
-        $this->assertNotSame($router, $this->container->resolve(IRequestHandler::class));
+        // Several tests rely on a request and response writer being bound
+        $this->container->bindInstance(IRequest::class, $this->createMock(IRequest::class));
+        $this->container->bindInstance(IResponseWriter::class, $this->createMock(IResponseWriter::class));
+        $this->appBuilder = new SynchronousApiApplicationBuilder($this->container);
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
@@ -79,14 +72,23 @@ class ApiApplicationBuilderTest extends TestCase
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
         $this->appBuilder->withModule($module);
-        $this->container->for(new TargetedContext(Application::class), function (IContainer $container) {
-            $container->bindInstance(IRequestHandler::class, $this->createMock(IRequestHandler::class));
-        });
+        $app = new SynchronousApiApplication(
+            $this->createMock(IRequestHandler::class),
+            $this->createMock(IRequest::class)
+        );
+        $this->container->bindInstance(SynchronousApiApplication::class, $app);
         $this->appBuilder->build();
         $this->assertEquals([$module::class, $component::class], $builtParts);
     }
 
-    public function testBuildWithoutHavingRouterBoundToContainerThrowsException(): void
+    public function testBuildCreatesApiApplicationFromServiceResolver(): void
+    {
+        $app = new SynchronousApiApplication($this->createMock(IRequestHandler::class), $this->createMock(IRequest::class));
+        $this->container->bindInstance(SynchronousApiApplication::class, $app);
+        $this->assertSame($app, $this->appBuilder->build());
+    }
+
+    public function testBuildWithoutHavingApiGatewayBoundToContainerThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to build the API application');

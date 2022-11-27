@@ -300,12 +300,6 @@ class InputCompilerTest extends TestCase
         $this->assertEquals([], $input->options);
     }
 
-    public function testCompilingEmptyCommandNameThrowsException(): void
-    {
-        $this->expectException(CommandNotFoundException::class);
-        $this->compiler->compile('');
-    }
-
     public function testCompilingLongOptionWithEqualsSign(): void
     {
         $commandHandler = new class () implements ICommandHandler {
@@ -523,6 +517,27 @@ class InputCompilerTest extends TestCase
         );
         $input = $this->compiler->compile('foo');
         $this->assertSame('bar', $input->arguments['arg']);
+    }
+
+    public function testCompilingOptionWithOptionalValueWithDefaultValueUsesDefaultValueWhenNoValueIsPassedIn(): void
+    {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [],
+                [new Option('opt', OptionType::OptionalValue, defaultValue: 'bar')],
+                '',
+                ''
+            ),
+            $commandHandler::class
+        );
+        $input = $this->compiler->compile('foo --opt');
+        $this->assertSame('bar', $input->options['opt']);
     }
 
     public function testCompilingRequiredArgumentsWithoutSpecifyingAllValuesThrowsException(): void

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Builders;
 
+use Aphiria\Application\IApplication;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use OutOfBoundsException;
@@ -25,10 +26,10 @@ interface IApplicationBuilder
     /**
      * Builds an application
      *
-     * @return object The built application
+     * @return IApplication The built application
      * @throws RuntimeException Thrown if there was an error building the application
      */
-    public function build(): object;
+    public function build(): IApplication;
 
     /**
      * Gets a component by its type

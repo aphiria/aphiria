@@ -46,12 +46,12 @@ class CallbackConstraintTest extends TestCase
 
     public function testGettingErrorMessageId(): void
     {
-        $constraint = new CallbackConstraint(fn () => true, 'foo');
+        $constraint = new CallbackConstraint(fn (): bool => true, 'foo');
         $this->assertSame('foo', $constraint->getErrorMessageId());
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new CallbackConstraint(fn (mixed $value) => true))->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], (new CallbackConstraint(fn (mixed $value): bool => true))->getErrorMessagePlaceholders('val'));
     }
 }

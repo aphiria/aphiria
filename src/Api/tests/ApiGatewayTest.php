@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests;
 
-use Aphiria\Api\Application;
+use Aphiria\Api\ApiGateway;
 use Aphiria\Middleware\IMiddleware;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\IRequest;
@@ -21,9 +21,9 @@ use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class ApplicationTest extends TestCase
+class ApiGatewayTest extends TestCase
 {
-    private Application $app;
+    private ApiGateway $apiGateway;
     private IRequestHandler&MockObject $router;
     private MiddlewareCollection $middleware;
 
@@ -31,7 +31,7 @@ class ApplicationTest extends TestCase
     {
         $this->router = $this->createMock(IRequestHandler::class);
         $this->middleware = new MiddlewareCollection();
-        $this->app = new Application($this->router, $this->middleware);
+        $this->apiGateway = new ApiGateway($this->router, $this->middleware);
     }
 
     public function testHandleWillSendRequestThroughMiddlewarePipeline(): void
@@ -42,7 +42,7 @@ class ApplicationTest extends TestCase
             ->method('handle')
             ->with($request, $this->router);
         $this->middleware->add($middleware);
-        $this->app->handle($request);
+        $this->apiGateway->handle($request);
     }
 
     public function testHandleWithNoMiddlewareStillSendsRequestToRouter(): void
@@ -53,6 +53,6 @@ class ApplicationTest extends TestCase
             ->method('handle')
             ->with($request)
             ->willReturn($response);
-        $this->assertSame($response, $this->app->handle($request));
+        $this->assertSame($response, $this->apiGateway->handle($request));
     }
 }

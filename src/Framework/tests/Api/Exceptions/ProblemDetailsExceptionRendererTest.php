@@ -45,18 +45,18 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     {
         return [
             ['type', 'foo', 'foo'],
-            ['type', fn (Exception $ex) => 'foo', 'foo'],
+            ['type', fn (Exception $ex): string => 'foo', 'foo'],
             ['title', 'foo', 'foo'],
-            ['title', fn (Exception $ex) => 'foo', 'foo'],
+            ['title', fn (Exception $ex): string => 'foo', 'foo'],
             ['detail', 'foo', 'foo'],
-            ['detail', fn (Exception $ex) => 'foo', 'foo'],
+            ['detail', fn (Exception $ex): string => 'foo', 'foo'],
             ['status', 404, 404],
-            ['status', fn (Exception $ex) => 404, 404],
-            ['status', fn (Exception $ex) => HttpStatusCode::NotFound, 404],
+            ['status', fn (Exception $ex): int => 404, 404],
+            ['status', fn (Exception $ex): HttpStatusCode => HttpStatusCode::NotFound, 404],
             ['instance', 'foo', 'foo'],
-            ['instance', fn (Exception $ex) => 'foo', 'foo'],
+            ['instance', fn (Exception $ex): string => 'foo', 'foo'],
             ['extensions', ['foo' => 'bar'], ['foo' => 'bar']],
-            ['extensions', fn (Exception $ex) => ['foo' => 'bar'], ['foo' => 'bar']]
+            ['extensions', fn (Exception $ex): array => ['foo' => 'bar'], ['foo' => 'bar']]
         ];
     }
 

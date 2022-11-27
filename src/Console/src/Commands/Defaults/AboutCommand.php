@@ -22,7 +22,7 @@ final class AboutCommand extends Command
     public function __construct()
     {
         parent::__construct(
-            'about',
+            '',
             [],
             [],
             'Describes the Aphiria console application'

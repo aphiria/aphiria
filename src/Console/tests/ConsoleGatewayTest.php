@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests;
 
-use Aphiria\Console\Application;
 use Aphiria\Console\Commands\Command;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\Defaults\AboutCommandHandler;
 use Aphiria\Console\Commands\Defaults\HelpCommandHandler;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\ConsoleGateway;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentType;
-use Aphiria\Console\Input\Compilers\IInputCompiler;
+use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionType;
@@ -31,69 +31,33 @@ use Aphiria\DependencyInjection\IServiceResolver;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Throwable;
 
-class ApplicationTest extends TestCase
+class ConsoleGatewayTest extends TestCase
 {
     private CommandRegistry $commands;
     private IServiceResolver&MockObject $commandHandlerResolver;
     private Output $output;
-    private Application $app;
+    private ConsoleGateway $consoleGateway;
 
     protected function setUp(): void
     {
         $this->commands = new CommandRegistry();
         $this->commandHandlerResolver = $this->createMock(IServiceResolver::class);
-        $this->app = new Application($this->commands, $this->commandHandlerResolver);
+        $this->consoleGateway = new ConsoleGateway($this->commands, $this->commandHandlerResolver);
         $this->output = new Output();
-    }
-
-    public function testHandlingAboutCommandWithNoHandlerThrowsException(): void
-    {
-        $output = $this->createMock(IOutput::class);
-        $output->expects($this->once())
-            ->method('writeln')
-            ->with('<fatal>About command not registered</fatal>')
-            ->willReturnArgument(0);
-        // Purposely use new commands that don't have anything registered to them
-        $app = new class (new CommandRegistry(), $this->commandHandlerResolver) extends Application {
-            protected function formatExceptionMessage(Exception|Throwable $ex): string
-            {
-                // Simplify testing
-                return $ex->getMessage();
-            }
-
-            protected function registerDefaultCommands(): void
-            {
-                // Simulate overriding and not registering any commands
-            }
-        };
-        $status = $app->handle('', $output);
-        $this->assertSame(StatusCode::Fatal, $status);
     }
 
     public function testHandlingCommandWithNoHandlerThrowsException(): void
     {
-        // The default input compiler protects us from compiling commands without handlers
-        // So, use a custom one for this test
-        $inputCompiler = $this->createMock(IInputCompiler::class);
-        $inputCompiler->expects($this->once())
-            ->method('compile')
-            ->with('foo')
-            ->willReturn(new Input('foo', [], []));
         $output = $this->createMock(IOutput::class);
-        $output->expects($this->once())
+        $output->expects($this->exactly(3))
             ->method('writeln')
-            ->with('<error>Command "foo" is not registered</error>')
-            ->willReturnArgument(0);
-        $app = new class ($this->commands, $this->commandHandlerResolver, $inputCompiler) extends Application {
-            protected function formatExceptionMessage(Exception|Throwable $ex): string
-            {
-                // Simplify testing
-                return $ex->getMessage();
-            }
-        };
-        $status = $app->handle('foo', $output);
+            ->withConsecutive(
+                ['<fatal>' . CommandNotFoundException::class . '</fatal>: <info>No command found with name "foo"</info>'],
+                ['Stack trace:'],
+                [$this->anything()]
+            );
+        $status = $this->consoleGateway->handle(new Input('foo'), $output);
         $this->assertSame(StatusCode::Error, $status);
     }
 
@@ -104,15 +68,25 @@ class ApplicationTest extends TestCase
             ->with(AboutCommandHandler::class)
             ->willReturn(new AboutCommandHandler($this->commands));
         \ob_start();
-        $status = $this->app->handle('', $this->output);
+        $status = $this->consoleGateway->handle(new Input(''), $this->output);
         \ob_get_clean();
         $this->assertSame(StatusCode::Ok, $status);
     }
 
-    public function testHandlingException(): void
+    public function testHandlingExceptionReturnsFatalStatusCode(): void
     {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output)
+            {
+                throw new Exception();
+            }
+        };
+        $this->commands->registerCommand(
+            new Command('foo'),
+            $commandHandler::class
+        );
         \ob_start();
-        $status = $this->app->handle("unclosed quote '", $this->output);
+        $status = $this->consoleGateway->handle(new Input('foo'), $this->output);
         \ob_end_clean();
         $this->assertSame(StatusCode::Fatal, $status);
     }
@@ -131,13 +105,13 @@ class ApplicationTest extends TestCase
         };
         $this->commands->registerCommand(new Command('holiday', [], [], ''), $commandHandler::class);
         \ob_start();
-        $status = $this->app->handle('help holiday', $this->output);
+        $status = $this->consoleGateway->handle(new Input('help', ['command' => 'holiday']), $this->output);
         \ob_get_clean();
         $this->assertSame(StatusCode::Ok, $status);
 
         // Try with command name with no argument
         \ob_start();
-        $status = $this->app->handle('help', $this->output);
+        $status = $this->consoleGateway->handle(new Input('help'), $this->output);
         \ob_get_clean();
         $this->assertSame(StatusCode::Ok, $status);
     }
@@ -149,7 +123,7 @@ class ApplicationTest extends TestCase
             ->with(HelpCommandHandler::class)
             ->willReturn(new HelpCommandHandler($this->commands));
         \ob_start();
-        $status = $this->app->handle('help fake', $this->output);
+        $status = $this->consoleGateway->handle(new Input('help', ['command' => 'fake']), $this->output);
         \ob_end_clean();
         $this->assertSame(StatusCode::Error, $status);
     }
@@ -189,13 +163,13 @@ class ApplicationTest extends TestCase
             $commandHandler::class
         );
         \ob_start();
-        $status = $this->app->handle('holiday birthday -y', $this->output);
+        $status = $this->consoleGateway->handle(new Input('holiday', ['holiday' => 'birthday'], ['yell' => 'yes']), $this->output);
         $this->assertSame('Happy birthday!', \ob_get_clean());
         $this->assertSame(StatusCode::Ok, $status);
 
         // Test with long option
         \ob_start();
-        $status = $this->app->handle('holiday Easter --yell=no', $this->output);
+        $status = $this->consoleGateway->handle(new Input('holiday', ['holiday' => 'Easter'], ['yell' => 'no']), $this->output);
         $this->assertSame('Happy Easter', \ob_get_clean());
         $this->assertSame(StatusCode::Ok, $status);
     }
@@ -203,7 +177,7 @@ class ApplicationTest extends TestCase
     public function testHandlingMissingCommandReturnsError(): void
     {
         \ob_start();
-        $status = $this->app->handle('fake', $this->output);
+        $status = $this->consoleGateway->handle(new Input('fake'), $this->output);
         \ob_get_clean();
         $this->assertSame(StatusCode::Error, $status);
     }
@@ -227,7 +201,7 @@ class ApplicationTest extends TestCase
             ->willReturn($commandHandler);
         $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
         \ob_start();
-        $status = $this->app->handle('foo', $this->output);
+        $status = $this->consoleGateway->handle(new Input('foo'), $this->output);
         $this->assertSame('foo', \ob_get_clean());
         $this->assertSame(StatusCode::Ok, $status);
     }
@@ -250,7 +224,7 @@ class ApplicationTest extends TestCase
             ->with($commandHandler::class)
             ->willReturn($commandHandler);
         $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
-        $statusCode = $this->app->handle('foo', $this->output);
+        $statusCode = $this->consoleGateway->handle(new Input('foo'), $this->output);
         $this->assertSame(StatusCode::Ok, $statusCode);
     }
 }

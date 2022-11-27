@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Testing;
 
+use Aphiria\Application\IApplication;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
@@ -50,9 +51,9 @@ trait IntegrationTest
      * Gets the built application that will handle requests
      *
      * @param IContainer $container The DI container
-     * @return IRequestHandler The application
+     * @return IApplication The application
      */
-    abstract protected function createApplication(IContainer $container): IRequestHandler;
+    abstract protected function createApplication(IContainer $container): IApplication;
 
     /**
      * Initializes dependencies before each test
@@ -70,14 +71,30 @@ trait IntegrationTest
     }
 
     /**
+     * Creates the API gateway that will handle requests
+     *
+     * @param IContainer $container The DI container
+     * @return IRequestHandler The API gateway
+     * @throws ResolutionException Thrown if the API gateway could not be resolved
+     */
+    protected function createApiGateway(IContainer $container): IRequestHandler
+    {
+        return $container->resolve(IRequestHandler::class);
+    }
+
+    /**
      * Creates an HTTP client for use in integration tests
      *
      * @param IContainer $container The DI container
      * @return IHttpClient The HTTP client to be used
+     * @throws ResolutionException Thrown if the API gateway could not be resolved
      */
     protected function createClient(IContainer $container): IHttpClient
     {
-        return new ApplicationClient($this->createApplication($container), $container);
+        // Create the application so that the API gateway is resolvable
+        $this->createApplication($container);
+
+        return new ApplicationClient($this->createApiGateway($container), $container);
     }
 
     /**

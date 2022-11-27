@@ -28,43 +28,43 @@ final class RouteVariableConstraintFactoryRegistrant
     ): RouteVariableConstraintFactory {
         $constraintFactory->registerConstraintFactory(
             AlphaConstraint::getSlug(),
-            fn () => new AlphaConstraint()
+            fn (): AlphaConstraint => new AlphaConstraint()
         );
         $constraintFactory->registerConstraintFactory(
             AlphanumericConstraint::getSlug(),
-            fn () => new AlphanumericConstraint()
+            fn (): AlphanumericConstraint => new AlphanumericConstraint()
         );
         $constraintFactory->registerConstraintFactory(
             BetweenConstraint::getSlug(),
-            fn (int|float $min, int|float $max, bool $isInclusive = true) => new BetweenConstraint($min, $max, $isInclusive)
+            fn (int|float $min, int|float $max, bool $isInclusive = true): BetweenConstraint => new BetweenConstraint($min, $max, $isInclusive)
         );
         $constraintFactory->registerConstraintFactory(
             DateConstraint::getSlug(),
-            fn (string|array $formats) => new DateConstraint($formats)
+            fn (string|array $formats): DateConstraint => new DateConstraint($formats)
         );
         $constraintFactory->registerConstraintFactory(
             InConstraint::getSlug(),
-            fn (array $acceptableValues) => new InConstraint($acceptableValues)
+            fn (array $acceptableValues): InConstraint => new InConstraint($acceptableValues)
         );
         $constraintFactory->registerConstraintFactory(
             IntegerConstraint::getSlug(),
-            fn () => new IntegerConstraint()
+            fn (): IntegerConstraint => new IntegerConstraint()
         );
         $constraintFactory->registerConstraintFactory(
             NotInConstraint::getSlug(),
-            fn (array $unacceptableValues) => new NotInConstraint($unacceptableValues)
+            fn (array $unacceptableValues): NotInConstraint => new NotInConstraint($unacceptableValues)
         );
         $constraintFactory->registerConstraintFactory(
             NumericConstraint::getSlug(),
-            fn () => new NumericConstraint()
+            fn (): NumericConstraint => new NumericConstraint()
         );
         $constraintFactory->registerConstraintFactory(
             RegexConstraint::getSlug(),
-            fn (string $regex) => new RegexConstraint($regex)
+            fn (string $regex): RegexConstraint => new RegexConstraint($regex)
         );
         $constraintFactory->registerConstraintFactory(
             UuidV4Constraint::getSlug(),
-            fn () => new UuidV4Constraint()
+            fn (): UuidV4Constraint => new UuidV4Constraint()
         );
 
         return $constraintFactory;

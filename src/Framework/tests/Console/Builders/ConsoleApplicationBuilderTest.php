@@ -15,13 +15,16 @@ namespace Aphiria\Framework\Tests\Console\Builders;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
-use Aphiria\Console\Commands\CommandRegistry;
-use Aphiria\Console\Commands\ICommandBus;
+use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\UniversalContext;
 use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
+use Aphiria\Framework\Console\ConsoleApplication;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -29,18 +32,24 @@ class ConsoleApplicationBuilderTest extends TestCase
 {
     private Container $container;
     private ConsoleApplicationBuilder $appBuilder;
+    private Input $input;
 
     protected function setUp(): void
     {
         // To simplify testing, we'll use a real container
         $this->container = new Container();
         $this->appBuilder = new ConsoleApplicationBuilder($this->container);
+        $this->input = new Input('foo');
+        $this->container->bindInstance(IServiceResolver::class, $this->container);
+        $this->container->bindInstance(Input::class, $this->input);
+        $this->container->bindInstance(IOutput::class, $this->createMock(IOutput::class));
     }
 
-    public function testBuildBindsConsoleApplicationToContainer(): void
+    public function testBuildResolvesConsoleApplicationFromServiceResolver(): void
     {
-        $app = $this->appBuilder->build();
-        $this->assertSame($app, $this->container->resolve(ICommandBus::class));
+        $app = new ConsoleApplication($this->createMock(ICommandHandler::class), new Input('foo'));
+        $this->container->bindInstance(ConsoleApplication::class, $app);
+        $this->assertSame($app, $this->appBuilder->build());
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
@@ -75,6 +84,8 @@ class ConsoleApplicationBuilderTest extends TestCase
         // Purposely registering out of order to ensure that order does not matter
         $this->appBuilder->withComponent($component);
         $this->appBuilder->withModule($module);
+        $app = new ConsoleApplication($this->createMock(ICommandHandler::class), new Input('foo'));
+        $this->container->bindInstance(ConsoleApplication::class, $app);
         $this->appBuilder->build();
         $this->assertEquals([$module::class, $component::class], $builtParts);
     }
@@ -86,8 +97,8 @@ class ConsoleApplicationBuilderTest extends TestCase
         $container = $this->createMock(IContainer::class);
         $container->expects($this->once())
             ->method('resolve')
-            ->with(CommandRegistry::class)
-            ->willThrowException(new ResolutionException(CommandRegistry::class, new UniversalContext()));
+            ->with(ConsoleApplication::class)
+            ->willThrowException(new ResolutionException(ConsoleApplication::class, new UniversalContext()));
         $appBuilder = new ConsoleApplicationBuilder($container);
         $appBuilder->build();
     }

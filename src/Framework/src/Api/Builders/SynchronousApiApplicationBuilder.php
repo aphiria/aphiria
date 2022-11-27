@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Console\Builders;
+namespace Aphiria\Framework\Api\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Framework\Console\ConsoleApplication;
+use Aphiria\Framework\Api\SynchronousApiApplication;
 use RuntimeException;
 
 /**
- * Defines the application builder for console applications
+ * Defines the application builder for synchronous API applications
  */
-final class ConsoleApplicationBuilder extends ApplicationBuilder
+final class SynchronousApiApplicationBuilder extends ApplicationBuilder
 {
     /**
      * @param IServiceResolver $serviceResolver The resolver to use
@@ -33,15 +33,15 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     /**
      * @inheritdoc
      */
-    public function build(): ConsoleApplication
+    public function build(): SynchronousApiApplication
     {
         $this->configureModules();
         $this->buildComponents();
 
         try {
-            return $this->serviceResolver->resolve(ConsoleApplication::class);
+            return $this->serviceResolver->resolve(SynchronousApiApplication::class);
         } catch (ResolutionException $ex) {
-            throw new RuntimeException('Failed to build the console application', 0, $ex);
+            throw new RuntimeException('Failed to build the API application', 0, $ex);
         }
     }
 }

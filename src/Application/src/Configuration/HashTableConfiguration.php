@@ -95,7 +95,7 @@ class HashTableConfiguration implements IConfiguration
             if (!isset($value[$pathPart])) {
                 $fullPathToThisPart = \implode(
                     $this->pathDelimiter,
-                    \array_map(static fn (mixed $value) => (string)$value, \array_slice($explodedPath, 0, $i + 1))
+                    \array_map(static fn (mixed $value): string => (string)$value, \array_slice($explodedPath, 0, $i + 1))
                 );
 
                 throw new MissingConfigurationValueException($fullPathToThisPart);

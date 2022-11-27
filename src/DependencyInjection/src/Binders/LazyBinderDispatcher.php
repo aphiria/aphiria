@@ -152,7 +152,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
         if ($boundInterface->context->isTargeted) {
             return $container->for(
                 $boundInterface->context,
-                fn (IContainer $container) => $container->resolve($boundInterface->interface)
+                fn (IContainer $container): object => $container->resolve($boundInterface->interface)
             );
         }
 

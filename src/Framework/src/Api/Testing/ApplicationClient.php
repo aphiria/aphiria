@@ -26,10 +26,10 @@ use Aphiria\Net\Http\IResponse;
 class ApplicationClient implements IHttpClient
 {
     /**
-     * @param IRequestHandler$app The application
+     * @param IRequestHandler $apiGateway The API gateway that will handle requests
      * @param IContainer $container The DI container
      */
-    public function __construct(protected readonly IRequestHandler $app, private readonly IContainer $container)
+    public function __construct(protected readonly IRequestHandler $apiGateway, private readonly IContainer $container)
     {
     }
 
@@ -51,6 +51,6 @@ class ApplicationClient implements IHttpClient
             $this->container->bindInstance(IRequest::class, $request);
         }
 
-        return $this->app->handle($request);
+        return $this->apiGateway->handle($request);
     }
 }

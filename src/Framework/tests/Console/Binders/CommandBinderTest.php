@@ -19,8 +19,14 @@ use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Input\Compilers\IInputCompiler;
+use Aphiria\Console\Input\Compilers\InputCompiler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\ConsoleOutput;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Console\Binders\CommandBinder;
+use Closure;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +43,7 @@ class CommandBinderTest extends TestCase
         $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         $this->currEnvironment = \getenv('APP_ENV') ?: null;
+        $this->setUpContainer();
     }
 
     protected function tearDown(): void
@@ -53,7 +60,6 @@ class CommandBinderTest extends TestCase
 
     public function testAttributeRegistrantIsRegistered(): void
     {
-        $this->setUpContainerMockBindInstance();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -62,7 +68,6 @@ class CommandBinderTest extends TestCase
 
     public function testCommandCacheIsUsedInProd(): void
     {
-        $this->setUpContainerMockBindInstance();
         // Basically just ensuring we cover the production case in this test
         \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -88,11 +93,35 @@ class CommandBinderTest extends TestCase
         ];
     }
 
+    private function setUpContainer(): void
+    {
+        $this->setUpContainerResolutions();
+        $this->setUpContainerMockBindInstance();
+        $this->setUpContainerMockBindFactory();
+    }
+
+    private function setUpContainerMockBindFactory(): void
+    {
+        $parameters = [
+            [Input::class, Input::class],
+            [IOutput::class, ConsoleOutput::class]
+        ];
+
+        foreach ($parameters as $parameter) {
+            $this->container->shouldReceive('bindFactory')
+                ->withArgs(function (string $interface, Closure $factory) use ($parameter) {
+                    return $interface === $parameter[0]
+                        && ($factory)() instanceof $parameter[1];
+                });
+        }
+    }
+
     private function setUpContainerMockBindInstance(): void
     {
         $parameters = [
             [CommandRegistry::class, CommandRegistry::class],
             [ICommandRegistryCache::class, FileCommandRegistryCache::class],
+            [IInputCompiler::class, InputCompiler::class],
             [CommandRegistrantCollection::class, CommandRegistrantCollection::class],
             [AttributeCommandRegistrant::class, AttributeCommandRegistrant::class]
         ];
@@ -101,5 +130,16 @@ class CommandBinderTest extends TestCase
             $this->container->shouldReceive('bindInstance')
                 ->with($parameter[0], Mockery::type($parameter[1]));
         }
+    }
+
+    private function setUpContainerResolutions(): void
+    {
+        $inputCompiler = Mockery::mock(IInputCompiler::class);
+        $inputCompiler->shouldReceive('compile')
+            ->with($_SERVER['argv'])
+            ->andReturn(new Input('foo'));
+        $this->container->shouldReceive('resolve')
+            ->with(IInputCompiler::class)
+            ->andReturn($inputCompiler);
     }
 }

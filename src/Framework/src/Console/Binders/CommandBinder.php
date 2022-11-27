@@ -19,8 +19,14 @@ use Aphiria\Console\Commands\Caching\FileCommandRegistryCache;
 use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Input\Compilers\IInputCompiler;
+use Aphiria\Console\Input\Compilers\InputCompiler;
+use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\ConsoleOutput;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
 
 /**
  * Defines the console command binder
@@ -37,6 +43,10 @@ final class CommandBinder extends Binder
         $container->bindInstance(CommandRegistry::class, $commands);
         $commandCache = new FileCommandRegistryCache(GlobalConfiguration::getString('aphiria.console.commandCachePath'));
         $container->bindInstance(ICommandRegistryCache::class, $commandCache);
+        $inputCompiler = new InputCompiler($commands);
+        $container->bindInstance(IInputCompiler::class, $inputCompiler);
+        $container->bindFactory(Input::class, fn (): Input => $this->getInput($container));
+        $container->bindFactory(IOutput::class, fn (): IOutput => $this->getOutput($container));
 
         if (\getenv('APP_ENV') === 'production') {
             $commandRegistrants = new CommandRegistrantCollection($commandCache);
@@ -51,5 +61,29 @@ final class CommandBinder extends Binder
         $attributePaths = GlobalConfiguration::getArray('aphiria.console.attributePaths');
         $commandAttributeRegistrant = new AttributeCommandRegistrant($attributePaths);
         $container->bindInstance(AttributeCommandRegistrant::class, $commandAttributeRegistrant);
+    }
+
+    /**
+     * Gets the compiled input to the console application
+     *
+     * @param IContainer $container The DI container
+     * @return Input The compiled input
+     * @throws ResolutionException Thrown if the input compiler could not be resolved
+     */
+    protected function getInput(IContainer $container): Input
+    {
+        /** @var array{"argv": array} $_SERVER */
+        return $container->resolve(IInputCompiler::class)->compile($_SERVER['argv'] ?? []);
+    }
+
+    /**
+     * Gets the console application's output
+     *
+     * @param IContainer $container The DI container
+     * @return IOutput The console application output
+     */
+    protected function getOutput(IContainer $container): IOutput
+    {
+        return new ConsoleOutput();
     }
 }

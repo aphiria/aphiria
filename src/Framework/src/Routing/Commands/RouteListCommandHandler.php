@@ -51,7 +51,7 @@ class RouteListCommandHandler implements ICommandHandler
         /** @var array $middlewareOptions */
         $middlewareOptions = $input->options['middleware'] ?? [];
         $sortedRoutes = $this->routes->getAll();
-        \usort($sortedRoutes, fn (Route $routeA, Route $routeB) => $this->compareRoutes($routeA, $routeB));
+        \usort($sortedRoutes, fn (Route $routeA, Route $routeB): int => $this->compareRoutes($routeA, $routeB));
         $rows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>']];
 
         foreach ($sortedRoutes as $route) {

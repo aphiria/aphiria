@@ -47,11 +47,6 @@ final class InputCompiler implements IInputCompiler
     public function compile(string|array $rawInput): Input
     {
         $tokens = $this->selectTokenizer($rawInput)->tokenize($rawInput);
-
-        if (\count($tokens) === 0) {
-            throw new CommandNotFoundException('');
-        }
-
         $commandName = '';
         $argumentValues = [];
         $options = [];

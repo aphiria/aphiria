@@ -53,7 +53,7 @@ class ExceptionHandlerTest extends TestCase
             ->with($request);
         $this->exceptionRenderer->method('createResponse')
             ->willReturn($expectedResponse);
-        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
+        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex): string => LogLevel::EMERGENCY);
         $this->logger->expects($this->once())
             ->method('emergency')
             ->with($expectedException);

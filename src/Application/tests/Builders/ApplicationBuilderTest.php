@@ -14,6 +14,7 @@ namespace Aphiria\Application\Tests\Builders;
 
 use Aphiria\Application\Builders\ApplicationBuilder;
 use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\IApplication;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use OutOfBoundsException;
@@ -25,13 +26,17 @@ class ApplicationBuilderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->appBuilder = new class () extends ApplicationBuilder {
-            public function build(): object
+        $this->appBuilder = new class ($this->createMock(IApplication::class)) extends ApplicationBuilder {
+            public function __construct(private readonly IApplication $application)
+            {
+            }
+
+            public function build(): IApplication
             {
                 $this->configureModules();
                 $this->buildComponents();
 
-                return $this;
+                return $this->application;
             }
         };
     }

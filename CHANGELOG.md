@@ -1,20 +1,36 @@
 # Changelog
 
-## [v1.0.0-alpha7](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha6...v1.0.0-alpha7) (?)
+## [v1.0.0-alpha7](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha6...v1.0.0-alpha7) (2022-11-27)
 
 ### Fixed
 
-- Fixed Psalm static analysis and re-enabled it during CI ([#215](https://github.com/aphiria/aphiria/pull/215), [#224](https://github.com/aphiria/aphiria/pull/224), [#225](https://github.com/aphiria/aphiria/pull/225))
+- Fixed Psalm static analysis ([#215](https://github.com/aphiria/aphiria/pull/215), [#224](https://github.com/aphiria/aphiria/pull/224), [#225](https://github.com/aphiria/aphiria/pull/225))
+- Improved typing of short closures ([#231](https://github.com/aphiria/aphiria/pull/231))
 
 ### Changed
 
+- Created a new application abstraction that will make it much easier to support asynchronous PHP runtimes such as Swoole and ReactPHP ([#231](https://github.com/aphiria/aphiria/pull/231))
+  - Changed `IApplicationBuilder::build()` to return an `IApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
+  - Renamed `Aphiria\Api\Application` to `ApiGateway` ([#231](https://github.com/aphiria/aphiria/pull/231))
+  - Renamed `Aphiria\Console\Application` to `ConsoleGateway` and made it implement `ICommandHandler` instead of `ICommandBus` ([#231](https://github.com/aphiria/aphiria/pull/231))
+  - Changed `Command` and `InputCompiler` to accept empty command names (used for the "about" command) ([#231](https://github.com/aphiria/aphiria/pull/231))
+  - Updated `IntegrationTestCase::createApplication()` to return an `IApplication` instance ([#231](https://github.com/aphiria/aphiria/pull/231))
 - Changed `TableFormatter`, `PaddingFormatter`, `IProgressBarObserver`, and `ProgressBarFormatter` to take in an options parameter in their format methods and added the concept of default options ([#228](https://github.com/aphiria/aphiria/pull/228))
 - Updated linter rules to place enum cases above most other elements ([#222](https://github.com/aphiria/aphiria/pull/222))
-- Added support for `Input` objects as `$rawInput` parameter in `ICommandBus::handle()` ([236](https://github.com/aphiria/aphiria/pull/236)
 
 ### Added
 
-Nothing
+- Added `Aphiria\Framework\Api\Binders\RequestHandlerBinder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Api\Builders\SynchronousApiApplicationBuilder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Api\SynchronousApiApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Console\Binders\CommandHandlerBinder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Console\ConsoleApplication` ([#231](https://github.com/aphiria/aphiria/pull/231))
+- Added `Aphiria\Framework\Net\Binders\ResponseWriterBinder` ([#231](https://github.com/aphiria/aphiria/pull/231))
+
+### Removed
+
+- Removed `Aphiria\Console\Commands\ICommandBus` ([#231](https://github.com/aphiria/aphiria/pull/231))
 
 ## [v1.0.0-alpha6](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha5...v1.0.0-alpha6) (2022-02-26)
 
