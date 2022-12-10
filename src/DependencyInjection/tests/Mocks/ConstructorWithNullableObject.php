@@ -15,9 +15,9 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 /**
  * Mocks a class with a nullable object parameter
  */
-final class ConstructorWithNullableObject
+final readonly class ConstructorWithNullableObject
 {
-    public function __construct(public readonly ?IFoo $foo)
+    public function __construct(public ?IFoo $foo)
     {
     }
 }

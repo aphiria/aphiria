@@ -15,13 +15,13 @@ namespace Aphiria\Net\Tests\Http\Formatting\Mocks;
 /**
  * Mocks a user object for use in tests
  */
-class User
+readonly class User
 {
     /**
      * @param int $id The user's ID
      * @param string $email The user's email address
      */
-    public function __construct(public readonly int $id, public readonly string $email)
+    public function __construct(public int $id, public string $email)
     {
     }
 }

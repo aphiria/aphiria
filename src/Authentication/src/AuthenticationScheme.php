@@ -17,9 +17,9 @@ use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
 /**
  * Defines a scheme used for authentication
  *
- * @template T of AuthenticationSchemeOptions
+ * @template  T of AuthenticationSchemeOptions
  */
-final class AuthenticationScheme
+final readonly class AuthenticationScheme
 {
     /**
      * @param string $name The name of this scheme
@@ -27,9 +27,9 @@ final class AuthenticationScheme
      * @param T $options The options for this scheme
      */
     public function __construct(
-        public readonly string $name,
-        public readonly string $handlerClassName,
-        public readonly AuthenticationSchemeOptions $options = new AuthenticationSchemeOptions()
+        public string $name,
+        public string $handlerClassName,
+        public AuthenticationSchemeOptions $options = new AuthenticationSchemeOptions()
     ) {
     }
 }

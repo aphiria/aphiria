@@ -17,12 +17,12 @@ use InvalidArgumentException;
 /**
  * Defines an authorization policy
  */
-class AuthorizationPolicy
+readonly class AuthorizationPolicy
 {
     /** @var list<object> The list of requirements */
-    public readonly array $requirements;
+    public array $requirements;
     /** @var list<string>|null The list of authentication schemes the requirements are evaluated against, or null if using the default scheme */
-    public readonly ?array $authenticationSchemeNames;
+    public ?array $authenticationSchemeNames;
 
     /**
      * @param string $name The name of the policy
@@ -31,7 +31,7 @@ class AuthorizationPolicy
      * @throws InvalidArgumentException Thrown if the requirements were empty
      */
     public function __construct(
-        public readonly string $name,
+        public string $name,
         array|object $requirements,
         array|string $authenticationSchemeNames = null
     ) {

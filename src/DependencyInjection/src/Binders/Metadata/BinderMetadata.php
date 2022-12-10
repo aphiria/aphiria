@@ -17,7 +17,7 @@ use Aphiria\DependencyInjection\Binders\Binder;
 /**
  * Defines metadata about a binder
  */
-final class BinderMetadata
+final readonly class BinderMetadata
 {
     /**
      * @param Binder $binder The binder whose metadata this is
@@ -25,9 +25,9 @@ final class BinderMetadata
      * @param list<ResolvedInterface> $resolvedInterfaces The list of resolved interfaces in the binder
      */
     public function __construct(
-        public readonly Binder $binder,
-        public readonly array $boundInterfaces,
-        public readonly array $resolvedInterfaces
+        public Binder $binder,
+        public array $boundInterfaces,
+        public array $resolvedInterfaces
     ) {
     }
 }

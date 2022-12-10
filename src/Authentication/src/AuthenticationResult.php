@@ -21,7 +21,7 @@ use InvalidArgumentException;
  *
  * @psalm-consistent-constructor
  */
-class AuthenticationResult
+readonly class AuthenticationResult
 {
     /**
      * @param bool $passed Whether or not authentication passed
@@ -30,9 +30,9 @@ class AuthenticationResult
      * @throws InvalidArgumentException Thrown if the result is in an invalid state
      */
     public function __construct(
-        public readonly bool $passed,
-        public readonly ?IPrincipal $user = null,
-        public readonly ?Exception $failure = null
+        public bool $passed,
+        public ?IPrincipal $user = null,
+        public ?Exception $failure = null
     ) {
         if (!$this->passed && $this->failure === null) {
             throw new InvalidArgumentException('Failed authentication results must specify a failure reason');

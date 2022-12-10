@@ -15,13 +15,13 @@ namespace Aphiria\Console\Commands;
 /**
  * Defines the binding between a command and its handler
  */
-final class CommandBinding
+final readonly class CommandBinding
 {
     /**
      * @param Command $command The command handler
      * @param class-string<ICommandHandler> $commandHandlerClassName The name of the command handler class
      */
-    public function __construct(public readonly Command $command, public readonly string $commandHandlerClassName)
+    public function __construct(public Command $command, public string $commandHandlerClassName)
     {
     }
 }

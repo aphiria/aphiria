@@ -17,7 +17,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 /**
  * Defines the results of content negotiation
  */
-final class ContentNegotiationResult
+final readonly class ContentNegotiationResult
 {
     /**
      * @param IMediaTypeFormatter|null $formatter The matched media type formatter if there was one, otherwise null
@@ -26,10 +26,10 @@ final class ContentNegotiationResult
      * @param string|null $language The matched language if there was one, otherwise null
      */
     public function __construct(
-        public readonly ?IMediaTypeFormatter $formatter,
-        public readonly ?string $mediaType,
-        public readonly ?string $encoding,
-        public readonly ?string $language
+        public ?IMediaTypeFormatter $formatter,
+        public ?string $mediaType,
+        public ?string $encoding,
+        public ?string $language
     ) {
     }
 }

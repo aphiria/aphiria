@@ -42,7 +42,7 @@
         "aphiria/reflection": "1.x-dev",
         "ext-ctype": "*",
         "ext-mbstring": "*",
-        "php": ">=8.1"
+        "php": "^8.2"
     },
     "require-dev": {
         "aphiria/api": "1.x-dev",

@@ -18,7 +18,7 @@ use Aphiria\Net\Http\Headers\MediaTypeHeaderValue;
 /**
  * Defines a media type formatter match
  */
-final class MediaTypeFormatterMatch
+final readonly class MediaTypeFormatterMatch
 {
     /**
      * @param IMediaTypeFormatter $formatter The matched media type formatter
@@ -26,9 +26,9 @@ final class MediaTypeFormatterMatch
      * @param MediaTypeHeaderValue $mediaTypeHeaderValue The matched media type header value, eg 'Accept: application/json'
      */
     public function __construct(
-        public readonly IMediaTypeFormatter $formatter,
-        public readonly string $mediaType,
-        public readonly MediaTypeHeaderValue $mediaTypeHeaderValue
+        public IMediaTypeFormatter $formatter,
+        public string $mediaType,
+        public MediaTypeHeaderValue $mediaTypeHeaderValue
     ) {
     }
 }

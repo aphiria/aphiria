@@ -15,7 +15,7 @@ namespace Aphiria\Console\Output\Formatters;
 /**
  * Defines the options for the table formatter
  */
-class TableFormatterOptions
+readonly class TableFormatterOptions
 {
     /**
      * @param string $cellPaddingString The cell padding string
@@ -27,12 +27,12 @@ class TableFormatterOptions
      * @see PaddingFormatterOptions The EOL char and whether we pad after should be kept identical between the two options classes
      */
     public function __construct(
-        public readonly string $cellPaddingString = ' ',
-        public readonly string $verticalBorderChar = '|',
-        public readonly string $horizontalBorderChar = '-',
-        public readonly string $intersectionChar = '+',
+        public string $cellPaddingString = ' ',
+        public string $verticalBorderChar = '|',
+        public string $horizontalBorderChar = '-',
+        public string $intersectionChar = '+',
         public bool $padAfter = true,
-        public readonly string $eolChar = PHP_EOL
+        public string $eolChar = PHP_EOL
     ) {
     }
 }

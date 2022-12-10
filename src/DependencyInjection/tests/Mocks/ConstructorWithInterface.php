@@ -15,12 +15,12 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 /**
  * Mocks a class that takes in an interface in its constructor
  */
-class ConstructorWithInterface
+readonly class ConstructorWithInterface
 {
     /**
      * @param IFoo $foo The object to use
      */
-    public function __construct(public readonly IFoo $foo)
+    public function __construct(public IFoo $foo)
     {
     }
 }

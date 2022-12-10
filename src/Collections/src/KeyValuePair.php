@@ -18,13 +18,13 @@ namespace Aphiria\Collections;
  * @template TKey
  * @template TValue
  */
-class KeyValuePair
+readonly class KeyValuePair
 {
     /**
      * @param TKey $key The key
      * @param TValue $value The value
      */
-    public function __construct(public readonly mixed $key, public readonly mixed $value)
+    public function __construct(public mixed $key, public mixed $value)
     {
     }
 }

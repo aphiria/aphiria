@@ -15,12 +15,12 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 /**
  * Mocks a class with a union type
  */
-final class ConstructorWithUnionType
+final readonly class ConstructorWithUnionType
 {
     /**
      * @param string|IFoo $foo The union type parameter
      */
-    public function __construct(public readonly string|IFoo $foo)
+    public function __construct(public string|IFoo $foo)
     {
     }
 }

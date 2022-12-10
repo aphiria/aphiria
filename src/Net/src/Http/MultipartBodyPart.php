@@ -15,13 +15,13 @@ namespace Aphiria\Net\Http;
 /**
  * Defines a multipart body part
  */
-class MultipartBodyPart
+readonly class MultipartBodyPart
 {
     /**
      * @param Headers $headers The headers of this body part
      * @param IBody|null $body The body of this body part if one is set, otherwise null
      */
-    public function __construct(public readonly Headers $headers, public readonly ?IBody $body)
+    public function __construct(public Headers $headers, public ?IBody $body)
     {
     }
 

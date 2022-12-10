@@ -17,13 +17,13 @@ use Aphiria\DependencyInjection\Context;
 /**
  * Defines an interface that was bound in a binder
  */
-final class BoundInterface
+final readonly class BoundInterface
 {
     /**
      * @param class-string $interface The interface that was bound
      * @param Context $context The context that the binding occurred in
      */
-    public function __construct(public readonly string $interface, public readonly Context $context)
+    public function __construct(public string $interface, public Context $context)
     {
     }
 }

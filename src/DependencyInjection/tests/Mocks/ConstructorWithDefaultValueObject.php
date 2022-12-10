@@ -17,9 +17,9 @@ use DateTime;
 /**
  * Defines a class with a default value object
  */
-final class ConstructorWithDefaultValueObject
+final readonly class ConstructorWithDefaultValueObject
 {
-    public function __construct(public readonly DateTime $foo = new DateTime())
+    public function __construct(public DateTime $foo = new DateTime())
     {
     }
 }

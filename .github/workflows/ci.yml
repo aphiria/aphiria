@@ -6,7 +6,7 @@ on:
     - cron: '0 0 * * *'
 jobs:
   ci:
-    uses: aphiria/aphiria/.github/workflows/ci-template.yml@1.x
+    uses: ./.github/workflows/ci-template.yml
     with:
       split-subtrees: true
       run-psalm: false # Disabled until the following is fixed:  https://github.com/vimeo/psalm/issues/8333

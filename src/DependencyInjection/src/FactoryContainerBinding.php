@@ -20,13 +20,13 @@ use Closure;
  * @implements IContainerBinding<T>
  * @internal
  */
-class FactoryContainerBinding implements IContainerBinding
+readonly class FactoryContainerBinding implements IContainerBinding
 {
     /**
      * @param Closure(): T $factory The factory
      * @param bool $resolveAsSingleton Whether or not the factory should be resolved as a singleton
      */
-    public function __construct(public readonly Closure $factory, private readonly bool $resolveAsSingleton)
+    public function __construct(public Closure $factory, private bool $resolveAsSingleton)
     {
     }
 
