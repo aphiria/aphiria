@@ -17,15 +17,15 @@ namespace Aphiria\Authorization;
  *
  * @psalm-consistent-constructor
  */
-class AuthorizationResult
+readonly class AuthorizationResult
 {
     /**
      * @param bool $passed Whether or not the authorization was successful
      * @param list<object> $failedRequirements The list of requirements that failed
      */
     public function __construct(
-        public readonly bool $passed,
-        public readonly array $failedRequirements = []
+        public bool $passed,
+        public array $failedRequirements = []
     ) {
     }
 

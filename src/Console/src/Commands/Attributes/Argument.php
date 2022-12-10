@@ -19,10 +19,10 @@ use Attribute;
  * Defines the attribute for command arguments
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-final class Argument
+final readonly class Argument
 {
     /** @var list<ArgumentType> The type of argument this is */
-    public readonly array $type;
+    public array $type;
 
     /**
      * @param string $name The name of the argument
@@ -31,10 +31,10 @@ final class Argument
      * @param mixed|null $defaultValue The default value for the argument if it's optional
      */
     public function __construct(
-        public readonly string $name,
+        public string $name,
         array|ArgumentType $type,
-        public readonly ?string $description = null,
-        public readonly mixed $defaultValue = null
+        public ?string $description = null,
+        public mixed $defaultValue = null
     ) {
         $this->type = \is_array($type) ? $type : [$type];
     }

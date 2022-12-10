@@ -17,24 +17,24 @@ use InvalidArgumentException;
 /**
  * Defines a URI
  */
-class Uri
+readonly class Uri
 {
     /** @var string|null The URI scheme if set, otherwise null */
-    public readonly ?string $scheme;
+    public ?string $scheme;
     /** @var string|null The URI user if set, otherwise null */
-    public readonly ?string $user;
+    public ?string $user;
     /** @var string|null The URI password if set, otherwise null */
-    public readonly ?string $password;
+    public ?string $password;
     /** @var string|null The URI host if set, otherwise null */
-    public readonly ?string $host;
+    public ?string $host;
     /** @var int|null The URI port if set, otherwise null */
-    public readonly ?int $port;
+    public ?int $port;
     /** @var string|null The URI path if set, otherwise null */
-    public readonly ?string $path;
+    public ?string $path;
     /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    public readonly ?string $queryString;
+    public ?string $queryString;
     /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    public readonly ?string $fragment;
+    public ?string $fragment;
 
     /**
      * @param string $uri The raw URI

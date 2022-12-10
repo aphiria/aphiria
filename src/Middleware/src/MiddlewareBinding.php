@@ -15,13 +15,13 @@ namespace Aphiria\Middleware;
 /**
  * Defines a middleware binding, which is a wrapper around the name of the middleware + any parameters
  */
-final class MiddlewareBinding
+final readonly class MiddlewareBinding
 {
     /**
      * @param class-string $className The name of the middleware class
      * @param array<string, mixed> $parameters The name => value mapping of parameters bound to the middleware
      */
-    public function __construct(public readonly string $className, public readonly array $parameters = [])
+    public function __construct(public string $className, public array $parameters = [])
     {
     }
 }

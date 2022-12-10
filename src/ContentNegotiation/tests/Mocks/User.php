@@ -15,13 +15,13 @@ namespace Aphiria\ContentNegotiation\Tests\Mocks;
 /**
  * Defines a simple use model for use in tests
  */
-class User
+readonly class User
 {
     /**
      * @param int $id The user's ID
      * @param string $email The user's email
      */
-    public function __construct(public readonly int $id, public readonly string $email)
+    public function __construct(public int $id, public string $email)
     {
     }
 }

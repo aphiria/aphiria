@@ -15,13 +15,13 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
 /**
  * Defines a token created by a lexer
  */
-final class Token
+final readonly class Token
 {
     /**
      * @param TokenType $type The token type
      * @param mixed $value The token value
      */
-    public function __construct(public readonly TokenType $type, public readonly mixed $value)
+    public function __construct(public TokenType $type, public mixed $value)
     {
     }
 }

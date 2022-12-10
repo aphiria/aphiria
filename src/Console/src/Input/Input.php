@@ -15,7 +15,7 @@ namespace Aphiria\Console\Input;
 /**
  * Defines the input for a command
  */
-final class Input
+final readonly class Input
 {
     /**
      * @param string $commandName The name of the command that was invoked
@@ -23,9 +23,9 @@ final class Input
      * @param array<string, mixed> $options The option names to values
      */
     public function __construct(
-        public readonly string $commandName,
-        public readonly array $arguments = [],
-        public readonly array $options = []
+        public string $commandName,
+        public array $arguments = [],
+        public array $options = []
     ) {
     }
 }

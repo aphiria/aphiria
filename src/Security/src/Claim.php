@@ -17,10 +17,10 @@ namespace Aphiria\Security;
  *
  * @template T
  */
-class Claim
+readonly class Claim
 {
     /** @var string The type of claim this is */
-    public readonly string $type;
+    public string $type;
 
     /**
      * @param ClaimType|string $type The type of claim this is
@@ -29,8 +29,8 @@ class Claim
      */
     public function __construct(
         ClaimType|string $type,
-        public readonly mixed $value,
-        public readonly string $issuer
+        public mixed $value,
+        public string $issuer
     ) {
         if ($type instanceof ClaimType) {
             $this->type = $type->value;

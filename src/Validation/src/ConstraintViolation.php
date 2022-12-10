@@ -17,7 +17,7 @@ use Aphiria\Validation\Constraints\IConstraint;
 /**
  * Defines a constraint violation
  */
-final class ConstraintViolation
+final readonly class ConstraintViolation
 {
     /**
      * @param string $errorMessage The error message
@@ -28,12 +28,12 @@ final class ConstraintViolation
      * @param string|null $methodName The name of the method that was being validated
      */
     public function __construct(
-        public readonly string $errorMessage,
-        public readonly IConstraint $constraint,
-        public readonly mixed $invalidValue,
-        public readonly mixed $rootValue,
-        public readonly ?string $propertyName = null,
-        public readonly ?string $methodName = null
+        public string $errorMessage,
+        public IConstraint $constraint,
+        public mixed $invalidValue,
+        public mixed $rootValue,
+        public ?string $propertyName = null,
+        public ?string $methodName = null
     ) {
     }
 }

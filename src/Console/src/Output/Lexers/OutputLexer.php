@@ -123,6 +123,7 @@ final class OutputLexer implements IOutputLexer
 
         return $tokens;
     }
+
     /**
      * Gets text around a certain position for use in exceptions
      *

@@ -19,10 +19,10 @@ use Attribute;
  * Defines the attribute for command options
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-final class Option
+final readonly class Option
 {
     /** @var list<OptionType> The type of option this is */
-    public readonly array $type;
+    public array $type;
 
     /**
      * @param string $name The name of the option
@@ -32,11 +32,11 @@ final class Option
      * @param mixed|null $defaultValue The default value for the option if it's optional
      */
     public function __construct(
-        public readonly string $name,
+        public string $name,
         array|OptionType $type,
-        public readonly ?string $shortName = null,
-        public readonly ?string $description = null,
-        public readonly mixed $defaultValue = null
+        public ?string $shortName = null,
+        public ?string $description = null,
+        public mixed $defaultValue = null
     ) {
         $this->type = \is_array($type) ? $type : [$type];
     }
