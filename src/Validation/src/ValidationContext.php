@@ -33,12 +33,9 @@ final class ValidationContext
         public readonly mixed $value,
         public readonly ?string $propertyName = null,
         public readonly ?string $methodName = null,
-        private ?ValidationContext $parentContext = null
+        private readonly ?ValidationContext $parentContext = null
     ) {
-        if ($this->parentContext !== null) {
-            $this->parentContext->addChildContext($this);
-        }
-
+        $this->parentContext?->addChildContext($this);
         $this->validateNoCircularDependencies();
     }
 

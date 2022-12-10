@@ -15,7 +15,7 @@ namespace Aphiria\Console\Output\Formatters;
 /**
  * Defines the options for the padding formatter
  */
-class PaddingFormatterOptions
+readonly class PaddingFormatterOptions
 {
     /**
      * @param string $paddingString The padding string
@@ -23,9 +23,9 @@ class PaddingFormatterOptions
      * @param string $eolChar The end-of-line character
      */
     public function __construct(
-        public readonly string $paddingString = ' ',
-        public readonly bool $padAfter = true,
-        public readonly string $eolChar = PHP_EOL
+        public string $paddingString = ' ',
+        public bool $padAfter = true,
+        public string $eolChar = PHP_EOL
     ) {
     }
 }

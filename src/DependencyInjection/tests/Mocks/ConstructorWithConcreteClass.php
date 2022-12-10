@@ -15,12 +15,12 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 /**
  * Mocks a class that takes in a concrete class in its constructor
  */
-class ConstructorWithConcreteClass
+readonly class ConstructorWithConcreteClass
 {
     /**
      * @param Bar $foo The object to use
      */
-    public function __construct(public readonly Bar $foo)
+    public function __construct(public Bar $foo)
     {
     }
 }

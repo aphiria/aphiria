@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Console\Output\Lexers;
 
 /**
- * Defines a output token
+ * Defines an output token
  */
-final class OutputToken
+final readonly class OutputToken
 {
     /**
      * @param OutputTokenType $type The token type
@@ -23,9 +23,9 @@ final class OutputToken
      * @param int $position The position of the token in the original text
      */
     public function __construct(
-        public readonly OutputTokenType $type,
-        public readonly mixed $value,
-        public readonly int $position
+        public OutputTokenType $type,
+        public mixed $value,
+        public int $position
     ) {
     }
 }

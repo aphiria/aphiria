@@ -15,12 +15,12 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 /**
  * Mocks a class with a constructor that contains typed primitive parameters
  */
-final class ConstructorWithTypedPrimitives
+final readonly class ConstructorWithTypedPrimitives
 {
     /**
      * @param string $foo A primitive to store in this class
      */
-    public function __construct(public readonly string $foo)
+    public function __construct(public string $foo)
     {
     }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
+
+### Changed
+
+- Updated to require PHP 8.2 ([#240](https://github.com/aphiria/aphiria/pull/240))
+- Made classes with only `public readonly` properties to be `readonly class` instead ([#240](https://github.com/aphiria/aphiria/pull/240))
+
 ## [v1.0.0-alpha7](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha6...v1.0.0-alpha7) (2022-11-27)
 
 ### Fixed

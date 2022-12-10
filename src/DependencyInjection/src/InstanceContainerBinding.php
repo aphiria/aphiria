@@ -18,12 +18,12 @@ namespace Aphiria\DependencyInjection;
  * @implements IContainerBinding<T>
  * @internal
  */
-class InstanceContainerBinding implements IContainerBinding
+readonly class InstanceContainerBinding implements IContainerBinding
 {
     /**
      * @param T $instance The instance
      */
-    public function __construct(public readonly object $instance)
+    public function __construct(public object $instance)
     {
     }
 

@@ -18,7 +18,7 @@ use Attribute;
  * Defines the attribute for a list of options for a group of routes
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class RouteGroup
+final readonly class RouteGroup
 {
     /**
      * @param string $path The path prefix to apply to all the routes (defaults to an empty path)
@@ -27,10 +27,10 @@ final class RouteGroup
      * @param array<string, mixed> $parameters The mapping of custom parameter names to values for all the routes
      */
     public function __construct(
-        public readonly string $path = '',
-        public readonly ?string $host = null,
-        public readonly bool $isHttpsOnly = false,
-        public readonly array $parameters = []
+        public string $path = '',
+        public ?string $host = null,
+        public bool $isHttpsOnly = false,
+        public array $parameters = []
     ) {
     }
 }

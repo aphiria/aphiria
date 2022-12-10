@@ -17,13 +17,13 @@ use Aphiria\Routing\Route;
 /**
  * Defines a matched route candidate
  */
-final class MatchedRouteCandidate
+final readonly class MatchedRouteCandidate
 {
     /**
      * @param Route $route The route that was matched
      * @param array<string, mixed> $routeVariables The mapping of route variable names to values
      */
-    public function __construct(public readonly Route $route, public readonly array $routeVariables)
+    public function __construct(public Route $route, public array $routeVariables)
     {
     }
 }

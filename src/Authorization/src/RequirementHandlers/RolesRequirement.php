@@ -15,10 +15,10 @@ namespace Aphiria\Authorization\RequirementHandlers;
 /**
  * Defines the required roles requirement
  */
-final class RolesRequirement
+final readonly class RolesRequirement
 {
     /** @var list<string> The list of required roles, OR'd together */
-    public readonly array $requiredRoles;
+    public array $requiredRoles;
 
     /**
      * @param list<string>|string $requiredRoles The role or list of required roles, OR'd together

@@ -18,7 +18,7 @@ namespace Aphiria\DependencyInjection;
  * @implements IContainerBinding<T>
  * @internal
  */
-class ClassContainerBinding implements IContainerBinding
+readonly class ClassContainerBinding implements IContainerBinding
 {
     /**
      * @param class-string<T> $concreteClass The name of the concrete class
@@ -26,9 +26,9 @@ class ClassContainerBinding implements IContainerBinding
      * @param bool $resolveAsSingleton Whether or not to resolve as a singleton
      */
     public function __construct(
-        public readonly string $concreteClass,
-        public readonly array $constructorPrimitives,
-        private readonly bool $resolveAsSingleton
+        public string $concreteClass,
+        public array $constructorPrimitives,
+        private bool $resolveAsSingleton
     ) {
     }
 
