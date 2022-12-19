@@ -71,6 +71,7 @@ class AphiriaComponentsTest extends TestCase
     {
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
         $expectedComponent = $this->createMock(AuthenticationComponent::class);
         $expectedComponent->expects($this->once())
@@ -113,6 +114,7 @@ class AphiriaComponentsTest extends TestCase
         };
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
         $component->build($this->appBuilder, $scheme);
         // Dummy assertion
@@ -134,6 +136,7 @@ class AphiriaComponentsTest extends TestCase
         };
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
         $component->build($this->appBuilder, $scheme);
     }

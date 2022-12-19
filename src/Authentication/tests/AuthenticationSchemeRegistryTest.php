@@ -37,6 +37,7 @@ class AuthenticationSchemeRegistryTest extends TestCase
     {
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $expectedScheme = new AuthenticationScheme('foo', $schemeHandler::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($expectedScheme);
         $this->assertSame($expectedScheme, $this->schemes->getScheme('foo'));
@@ -53,11 +54,13 @@ class AuthenticationSchemeRegistryTest extends TestCase
     {
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $expectedScheme = new AuthenticationScheme('foo', $schemeHandler::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($expectedScheme, true);
         $this->assertSame($expectedScheme, $this->schemes->getDefaultScheme());
 
         // Test registering another non-default scheme to make sure it's not just marking the first one as default
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $nonDefaultScheme = new AuthenticationScheme('bar', $schemeHandler::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($nonDefaultScheme);
         $this->assertSame($expectedScheme, $this->schemes->getDefaultScheme());

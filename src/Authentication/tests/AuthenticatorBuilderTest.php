@@ -54,6 +54,7 @@ class AuthenticatorBuilderTest extends TestCase
         $instance1 = $this->authenticatorBuilder->withHandlerResolver($this->createMock(IAuthenticationSchemeHandlerResolver::class));
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $instance2 = $this->authenticatorBuilder->withScheme(new AuthenticationScheme('foo', $schemeHandler::class));
         $instance3 = $this->authenticatorBuilder->withUserAccessor($this->createMock(IUserAccessor::class));
         $this->assertTrue($instance1 === $instance2 && $instance2 === $instance3);
@@ -64,6 +65,7 @@ class AuthenticatorBuilderTest extends TestCase
         $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
         $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
             ->withScheme($scheme, true)
@@ -79,6 +81,7 @@ class AuthenticatorBuilderTest extends TestCase
         $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
         $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
             ->withScheme($scheme)
