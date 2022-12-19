@@ -140,6 +140,7 @@ class HashTableTest extends TestCase
     public function testNonKeyValuePairInAddRangeThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
         $this->hashTable->addRange(['foo' => 'bar']);
     }
 
@@ -149,6 +150,7 @@ class HashTableTest extends TestCase
     public function testNonKeyValuePairInConstructorThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
         new HashTable(['foo' => 'bar']);
     }
 
