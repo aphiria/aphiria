@@ -90,9 +90,8 @@ final class Headers extends HashTable
 
     /**
      * @inheritdoc
-     * @return string|int|float Need to specify this so that Psalm remembers the generic type that Headers implements
      */
-    public function get(mixed $key): mixed
+    public function get(mixed $key): string|int|float|array
     {
         return parent::get(self::normalizeHeaderName((string)$key));
     }
