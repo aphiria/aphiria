@@ -22,7 +22,7 @@ interface IInputTokenizer
     /**
      * Tokenizes an input string
      *
-     * @param string|array<array-key, mixed> $input The input to tokenize
+     * @param string|array<array-key, mixed>|array{name: string, arguments: list<mixed>, options: list<mixed>} $input The input to tokenize
      * @return list<mixed> The list of tokens
      * @throws InvalidArgumentException Thrown if the input was invalid
      */

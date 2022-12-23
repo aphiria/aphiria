@@ -28,12 +28,11 @@ class ImmutableHashSetTest extends TestCase
 
     public function testAddingPrimitiveValuesIsAcceptable(): void
     {
-        $int = 1;
-        $string = 'foo';
-        $set = new ImmutableHashSet([$int, $string]);
-        $this->assertTrue($set->containsValue($int));
-        $this->assertTrue($set->containsValue($string));
-        $this->assertEquals([$int, $string], $set->toArray());
+        /** @var ImmutableHashSet<string> $set */
+        $set = new ImmutableHashSet(['foo', 'bar']);
+        $this->assertTrue($set->containsValue('foo'));
+        $this->assertTrue($set->containsValue('bar'));
+        $this->assertEquals(['foo', 'bar'], $set->toArray());
     }
 
     public function testAddingResourceValuesIsAcceptable(): void

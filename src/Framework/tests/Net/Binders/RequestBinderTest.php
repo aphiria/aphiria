@@ -33,7 +33,6 @@ class RequestBinderTest extends TestCase
     {
         // Make sure to reset the overriding request after each test
         $reflectionProperty = new ReflectionProperty(RequestBinder::class, 'overridingRequest');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue(null);
     }
 

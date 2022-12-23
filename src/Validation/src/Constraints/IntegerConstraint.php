@@ -31,7 +31,7 @@ final class IntegerConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return \filter_var($value, FILTER_VALIDATE_INT) !== false;
     }

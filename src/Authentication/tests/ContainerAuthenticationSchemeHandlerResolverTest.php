@@ -33,6 +33,7 @@ class ContainerAuthenticationSchemeHandlerResolverTest extends TestCase
             ->with($schemeHandler::class)
             ->willReturn($schemeHandler);
         $resolver = new ContainerAuthenticationSchemeHandlerResolver($container);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $this->assertSame($schemeHandler, $resolver->resolve($schemeHandler::class));
     }
 
@@ -48,6 +49,7 @@ class ContainerAuthenticationSchemeHandlerResolverTest extends TestCase
             ->with($schemeHandler::class)
             ->willThrowException(new ResolutionException($schemeHandler::class, new UniversalContext()));
         $resolver = new ContainerAuthenticationSchemeHandlerResolver($container);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $resolver->resolve($schemeHandler::class);
     }
 }

@@ -612,7 +612,6 @@ class ContainerTest extends TestCase
                         return true;
                     }
                 };
-                /** @psalm-suppress InvalidArgument We cannot add generics to anonymous classes */
                 $this->addBinding(IFoo::class, $unsupportedBinding);
             }
         };

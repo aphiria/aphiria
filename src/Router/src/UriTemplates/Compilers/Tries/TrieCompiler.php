@@ -101,6 +101,7 @@ final class TrieCompiler implements ITrieCompiler
         if ($segmentContainsVariable) {
             $node = new VariableTrieNode($segmentBuffer, [], $routes, $hostTrie);
         } else {
+            /** @var list<string> $segmentBuffer */
             $node = new LiteralTrieNode(\implode('', $segmentBuffer), [], $routes, $hostTrie);
         }
 

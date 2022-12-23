@@ -41,6 +41,7 @@ class Authenticator implements IAuthenticator
     public function authenticate(IRequest $request, string $schemeName = null): AuthenticationResult
     {
         $scheme = $this->getScheme($schemeName);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
         $authResult = $handler->authenticate($request, $scheme);
 
@@ -57,6 +58,7 @@ class Authenticator implements IAuthenticator
     public function challenge(IRequest $request, IResponse $response, string $schemeName = null): void
     {
         $scheme = $this->getScheme($schemeName);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
         $handler->challenge($request, $response, $scheme);
     }
@@ -67,6 +69,7 @@ class Authenticator implements IAuthenticator
     public function forbid(IRequest $request, IResponse $response, string $schemeName = null): void
     {
         $scheme = $this->getScheme($schemeName);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
         $handler->forbid($request, $response, $scheme);
     }
@@ -81,6 +84,7 @@ class Authenticator implements IAuthenticator
         }
 
         $scheme = $this->getScheme($schemeName);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
 
         if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
@@ -97,6 +101,7 @@ class Authenticator implements IAuthenticator
     public function logOut(IRequest $request, IResponse $response, string $schemeName = null): void
     {
         $scheme = $this->getScheme($schemeName);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
 
         if (!$handler instanceof ILoginAuthenticationSchemeHandler) {

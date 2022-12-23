@@ -91,7 +91,7 @@ final class Headers extends HashTable
     /**
      * @inheritdoc
      */
-    public function get(mixed $key): mixed
+    public function get(mixed $key): string|int|float|array
     {
         return parent::get(self::normalizeHeaderName((string)$key));
     }

@@ -54,6 +54,7 @@ class ControllerRequestHandlerTest extends TestCase
             ->method('setResponseFactory');
         $controller->expects($this->once())
             ->method('setUserAccessor');
+        /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')
@@ -79,6 +80,7 @@ class ControllerRequestHandlerTest extends TestCase
         $expectedResponse = $this->createMock(IResponse::class);
         /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
+        /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
             ->method('invokeRouteAction')

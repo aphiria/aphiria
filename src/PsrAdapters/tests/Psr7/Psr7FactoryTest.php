@@ -238,6 +238,7 @@ class Psr7FactoryTest extends TestCase
         /** @var list<UploadedFileInterface> $psr7UploadedFiles */
         $psr7UploadedFiles = $psr7Request->getUploadedFiles();
         $this->assertCount(1, $psr7UploadedFiles);
+        /** @psalm-suppress PossiblyUndefinedArrayOffset assertCount() above confirms that this index exists - bug */
         $this->assertSame('filecontents', (string)$psr7UploadedFiles['0']->getStream());
         $this->assertSame('foo.png', $psr7UploadedFiles['0']->getClientFilename());
         $this->assertSame('image/png', $psr7UploadedFiles['0']->getClientMediaType());

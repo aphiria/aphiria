@@ -9,6 +9,6 @@ jobs:
     uses: ./.github/workflows/ci-template.yml
     with:
       split-subtrees: true
-      run-psalm: false # Disabled until the following is fixed:  https://github.com/vimeo/psalm/issues/8333
+      run-psalm: true
     secrets:
       ci-ssh-key: ${{ secrets.CI_SSH_KEY }}

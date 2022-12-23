@@ -39,7 +39,7 @@ final class EachConstraint extends Constraint
      * @inheritdoc
      * @throws InvalidArgumentException Thrown if the value is not an
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         if (!\is_iterable($value)) {
             throw new InvalidArgumentException('Value must be iterable');

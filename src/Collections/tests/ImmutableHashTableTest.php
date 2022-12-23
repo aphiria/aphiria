@@ -114,7 +114,7 @@ class ImmutableHashTableTest extends TestCase
     public function testNonKeyValuePairInConstructorThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        /** @psalm-suppress InvalidArgument Purposely testing type checks at runtime */
+        /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
         new ImmutableHashTable(['foo' => 'bar']);
     }
 

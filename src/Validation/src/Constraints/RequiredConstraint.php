@@ -31,13 +31,13 @@ class RequiredConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         if ($value === null) {
             return false;
         }
 
-        if (\is_string($value) && $value === '') {
+        if ($value === '') {
             return false;
         }
 

@@ -104,6 +104,7 @@ class HashTable implements IDictionary
 
     /**
      * @inheritdoc
+     * @return TValue
      */
     public function get(mixed $key): mixed
     {

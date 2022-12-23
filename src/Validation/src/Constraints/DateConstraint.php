@@ -42,7 +42,7 @@ final class DateConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         foreach ($this->acceptableFormats as $format) {
             $dateTime = DateTime::createFromFormat($format, (string)$value);

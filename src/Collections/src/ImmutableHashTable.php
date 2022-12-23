@@ -82,6 +82,8 @@ class ImmutableHashTable implements IImmutableDictionary
 
     /**
      * @inheritdoc
+     * @param TKey $key
+     * @return TValue
      */
     public function get(mixed $key): mixed
     {

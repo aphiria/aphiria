@@ -89,7 +89,6 @@ class ImmutableArrayListTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $arrayList = new ImmutableArrayList([]);
-        /** @psalm-suppress InvalidArgument We're purposely testing that an exception is thrown */
         $arrayList[0] = 'foo';
     }
 

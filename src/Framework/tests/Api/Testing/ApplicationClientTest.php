@@ -49,7 +49,6 @@ class ApplicationClientTest extends TestCase
             ->willReturn($response);
         $this->assertSame($response, $this->appClient->send($request));
         $reflectionProperty = new ReflectionProperty(RequestBinder::class, 'overridingRequest');
-        $reflectionProperty->setAccessible(true);
         $this->assertSame($request, $reflectionProperty->getValue());
     }
 

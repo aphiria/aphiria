@@ -266,6 +266,7 @@ class AuthenticatorTest extends TestCase
     {
         /** @var ILoginAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
         $schemeHandler = $this->createMock(ILoginAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme($schemeName, $schemeHandler::class);
         $this->authenticationHandlerResolver->method('resolve')
             ->with($schemeHandler::class)
@@ -285,6 +286,7 @@ class AuthenticatorTest extends TestCase
     {
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme($schemeName, $schemeHandler::class);
         $this->authenticationHandlerResolver->method('resolve')
             ->with($schemeHandler::class)

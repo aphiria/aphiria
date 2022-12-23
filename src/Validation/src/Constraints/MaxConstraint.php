@@ -44,7 +44,7 @@ class MaxConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         if ($this->isInclusive) {
             return $value <= $this->max;

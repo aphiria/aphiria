@@ -237,6 +237,7 @@ class GlobalConfigurationTest extends TestCase
     public function testTryGetObjectForNonExistentValueSetsItToNullAndReturnsFalse(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
+        /** @var ConfigObject|null $object */
         $object = null;
         $this->assertFalse(
             GlobalConfiguration::tryGetObject(
@@ -245,6 +246,7 @@ class GlobalConfigurationTest extends TestCase
                 $object
             )
         );
+        /** @psalm-suppress DocblockTypeContradiction This should be perfectly valid - bug */
         $this->assertNull($object);
     }
 

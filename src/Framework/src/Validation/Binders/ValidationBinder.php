@@ -95,7 +95,7 @@ final class ValidationBinder extends Binder
         $container->bindInstance(IErrorMessageInterpolator::class, $errorMessageInterpolator);
 
         // Register some constraint attribute dependencies
-        /** @psalm-suppress MixedArgumentTypeCoercion We will assume this contains an array of strings */
+        /** @psalm-suppress ArgumentTypeCoercion We will assume this contains an array of strings */
         $constraintAttributeRegistrant = new AttributeObjectConstraintsRegistrant(
             GlobalConfiguration::getArray('aphiria.validation.attributePaths')
         );

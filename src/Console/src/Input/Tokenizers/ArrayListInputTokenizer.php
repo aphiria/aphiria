@@ -22,7 +22,6 @@ final class ArrayListInputTokenizer implements IInputTokenizer
 {
     /**
      * @inheritdoc
-     * @param array{name: string, arguments: list<mixed>, options: list<mixed>} $input
      */
     public function tokenize(string|array $input): array
     {
@@ -30,6 +29,7 @@ final class ArrayListInputTokenizer implements IInputTokenizer
             throw new InvalidArgumentException(self::class . ' only accepts arrays as input');
         }
 
+        /** @var array{name: string, arguments: list<mixed>, options: list<mixed>} $input */
         if (!isset($input['name'])) {
             throw new RuntimeException('No command name given');
         }
