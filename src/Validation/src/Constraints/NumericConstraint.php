@@ -31,7 +31,7 @@ class NumericConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return \is_numeric($value);
     }

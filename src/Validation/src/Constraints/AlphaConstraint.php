@@ -31,7 +31,7 @@ final class AlphaConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return \ctype_alpha((string)$value) && !\str_contains((string)$value, ' ');
     }

@@ -34,7 +34,7 @@ class CallbackConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return ($this->callback)($value);
     }

@@ -136,7 +136,6 @@ class Session implements ISession
 
     /**
      * @inheritdoc
-     * @psalm-suppress MixedReturnStatement This method is correctly returning a mixed type - bug
      */
     public function offsetGet(mixed $offset): mixed
     {

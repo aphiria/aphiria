@@ -31,7 +31,7 @@ final class AlphanumericConstraint extends Constraint
     /**
      * @inheritdoc
      */
-    public function passes($value): bool
+    public function passes(mixed $value): bool
     {
         return \ctype_alnum((string)$value) && !\str_contains((string)$value, ' ');
     }
