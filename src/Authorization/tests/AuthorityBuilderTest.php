@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization\Tests;
 
-use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorityBuilder;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
+use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirementHandler;

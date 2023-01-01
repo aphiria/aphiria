@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Authentication\Tests;
 
 use Aphiria\Authentication\AuthenticationScheme;
+use Aphiria\Authentication\AuthenticationSchemeHandlerAuthenticator;
 use Aphiria\Authentication\AuthenticationSchemeOptions;
 use Aphiria\Authentication\AuthenticationSchemeRegistry;
-use Aphiria\Authentication\AuthenticationSchemeHandlerAuthenticator;
 use Aphiria\Authentication\AuthenticatorBuilder;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IUserAccessor;

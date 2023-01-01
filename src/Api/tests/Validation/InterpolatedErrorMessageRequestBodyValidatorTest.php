@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Validation;
 
-use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Api\Validation\InterpolatedErrorMessageRequestBodyValidator;
+use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Validation\Constraints\IConstraint;

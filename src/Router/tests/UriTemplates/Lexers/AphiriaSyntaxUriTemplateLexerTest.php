@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates\Lexers;
 
+use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Lexers\TokenType;
-use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
 use PHPUnit\Framework\TestCase;
 
 class AphiriaSyntaxUriTemplateLexerTest extends TestCase

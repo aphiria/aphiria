@@ -20,14 +20,14 @@ use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
 use Aphiria\DependencyInjection\Binders\Metadata\Caching\IBinderMetadataCollectionCache;
 use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
 use Aphiria\DependencyInjection\ClassContainerBinding;
-use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\FactoryContainerBinding;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IContainerBinding;
 use Aphiria\DependencyInjection\InstanceContainerBinding;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeFoo;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
+use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeFoo;
 use Aphiria\DependencyInjection\UniversalContext;
 use PHPUnit\Framework\TestCase;
 

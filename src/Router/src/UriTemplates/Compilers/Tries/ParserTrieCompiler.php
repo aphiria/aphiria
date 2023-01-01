@@ -16,14 +16,14 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactoryRegistrant;
 use Aphiria\Routing\UriTemplates\InvalidUriTemplateException;
+use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
-use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Parsers\AphiriaSyntaxUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Parsers\AphiriaSyntaxUriTemplateParser;
 
 /**
  * Defines a compiler for a trie

@@ -14,8 +14,8 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;

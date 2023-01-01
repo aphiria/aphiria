@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\ContentNegotiation\Tests;
 
-use Aphiria\ContentNegotiation\RequestHeaderMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\RequestHeaderMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IRequest;

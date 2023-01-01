@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\Reflection\Tests;
 
+use Aphiria\Reflection\ReflectionTypeFinder;
 use Aphiria\Reflection\Tests\Mocks\Finder\AbstractClass;
 use Aphiria\Reflection\Tests\Mocks\Finder\ClassA;
 use Aphiria\Reflection\Tests\Mocks\Finder\ClassB;
 use Aphiria\Reflection\Tests\Mocks\Finder\IInterface;
 use Aphiria\Reflection\Tests\Mocks\Finder\Subdirectory\ClassC;
-use Aphiria\Reflection\ReflectionTypeFinder;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 

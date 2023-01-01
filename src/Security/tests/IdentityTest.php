@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Security\Tests;
 
 use Aphiria\Security\Claim;
-use Aphiria\Security\ClaimType;
 use Aphiria\Security\ClaimsIdentity;
+use Aphiria\Security\ClaimType;
 use PHPUnit\Framework\TestCase;
 
 class IdentityTest extends TestCase

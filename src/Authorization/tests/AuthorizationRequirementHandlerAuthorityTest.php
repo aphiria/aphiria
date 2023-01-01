@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization\Tests;
 
-use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationContext;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
+use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthorizationRequirementHandler;
 use Aphiria\Authorization\PolicyNotFoundException;

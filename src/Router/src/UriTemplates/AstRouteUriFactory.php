@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Aphiria\Routing\UriTemplates;
 
 use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
-use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Parsers\AphiriaSyntaxUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Parsers\AphiriaSyntaxUriTemplateParser;
 use OutOfBoundsException;
 
 /**

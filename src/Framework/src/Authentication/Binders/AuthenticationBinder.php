@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Authentication\Binders;
 
-use Aphiria\Authentication\AuthenticationSchemeRegistry;
 use Aphiria\Authentication\AuthenticationSchemeHandlerAuthenticator;
+use Aphiria\Authentication\AuthenticationSchemeRegistry;
 use Aphiria\Authentication\ContainerAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IAuthenticator;

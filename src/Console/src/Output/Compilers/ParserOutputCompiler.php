@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\Console\Output\Compilers;
 
 use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
-use Aphiria\Console\Output\Lexers\IOutputLexer;
 use Aphiria\Console\Output\Lexers\HtmlLikeOutputLexer;
+use Aphiria\Console\Output\Lexers\IOutputLexer;
 use Aphiria\Console\Output\Parsers\AstNode;
-use Aphiria\Console\Output\Parsers\IOutputParser;
 use Aphiria\Console\Output\Parsers\HtmlLikeOutputParser;
+use Aphiria\Console\Output\Parsers\IOutputParser;
 use InvalidArgumentException;
 use RuntimeException;
 

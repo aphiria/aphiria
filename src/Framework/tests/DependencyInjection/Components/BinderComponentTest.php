@@ -14,8 +14,8 @@ namespace Aphiria\Framework\Tests\DependencyInjection\Components;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
-use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

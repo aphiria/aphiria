@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Tests\Controllers;
 
-use Aphiria\Api\Controllers\NegotiatedContentControllerParameterResolver;
 use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
 use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
 use Aphiria\Api\Controllers\MissingControllerParameterValueException;
+use Aphiria\Api\Controllers\NegotiatedContentControllerParameterResolver;
 use Aphiria\Api\Controllers\RequestBodyDeserializationException;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Api\Tests\Controllers\Mocks\User;

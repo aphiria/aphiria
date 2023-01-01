@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Exceptions\Tests;
 
-use Aphiria\Exceptions\FatalErrorException;
 use Aphiria\Exceptions\ExceptionRendererGlobalExceptionHandler;
+use Aphiria\Exceptions\FatalErrorException;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;
 use ErrorException;

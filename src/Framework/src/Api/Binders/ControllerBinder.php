@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Binders;
 
-use Aphiria\Api\Controllers\NegotiatedContentControllerParameterResolver;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
+use Aphiria\Api\Controllers\NegotiatedContentControllerParameterResolver;
 use Aphiria\Api\Controllers\NegotiatedContentRouteActionInvoker;
 use Aphiria\Api\Validation\InterpolatedErrorMessageRequestBodyValidator;
 use Aphiria\ContentNegotiation\IContentNegotiator;

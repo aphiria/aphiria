@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Authorization\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
-use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
+use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthority;
 use Aphiria\DependencyInjection\Binders\Binder;

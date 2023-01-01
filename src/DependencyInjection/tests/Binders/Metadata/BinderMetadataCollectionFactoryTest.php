@@ -19,13 +19,13 @@ use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollectionFactory
 use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
 use Aphiria\DependencyInjection\Binders\Metadata\ImpossibleBindingException;
 use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
-use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeBar;
-use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeFoo;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IBar;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
+use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeBar;
+use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeFoo;
 use Aphiria\DependencyInjection\Tests\Mocks\Dave;
 use Aphiria\DependencyInjection\Tests\Mocks\IPerson;
 use Aphiria\DependencyInjection\UniversalContext;
