@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Constraints\Attributes;
 
 use Aphiria\Reflection\ITypeFinder;
-use Aphiria\Reflection\TypeFinder;
+use Aphiria\Reflection\ReflectionTypeFinder;
 use Aphiria\Validation\Constraints\IConstraint;
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraints;
@@ -36,7 +36,7 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
      * @param string|list<string> $paths The path or paths to check for constraints
      * @param ITypeFinder $typeFinder The type finder
      */
-    public function __construct(string|array $paths, private readonly ITypeFinder $typeFinder = new TypeFinder())
+    public function __construct(string|array $paths, private readonly ITypeFinder $typeFinder = new ReflectionTypeFinder())
     {
         $this->paths = \is_array($paths) ? $paths : [$paths];
     }

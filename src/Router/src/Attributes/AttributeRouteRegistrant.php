@@ -15,7 +15,7 @@ namespace Aphiria\Routing\Attributes;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Reflection\ITypeFinder;
-use Aphiria\Reflection\TypeFinder;
+use Aphiria\Reflection\ReflectionTypeFinder;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Builders\RouteGroupOptions;
@@ -40,7 +40,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
      * @param string|list<string> $paths The path or paths to check for controllers
      * @param ITypeFinder $typeFinder The type finder
      */
-    public function __construct(string|array $paths, private readonly ITypeFinder $typeFinder = new TypeFinder())
+    public function __construct(string|array $paths, private readonly ITypeFinder $typeFinder = new ReflectionTypeFinder())
     {
         $this->paths = \is_array($paths) ? $paths : [$paths];
     }

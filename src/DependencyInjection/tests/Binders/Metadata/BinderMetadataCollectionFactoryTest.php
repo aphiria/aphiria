@@ -19,11 +19,11 @@ use Aphiria\DependencyInjection\Binders\Metadata\BinderMetadataCollectionFactory
 use Aphiria\DependencyInjection\Binders\Metadata\BoundInterface;
 use Aphiria\DependencyInjection\Binders\Metadata\ImpossibleBindingException;
 use Aphiria\DependencyInjection\Binders\Metadata\ResolvedInterface;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Bar;
-use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
+use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeBar;
+use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeFoo;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IBar;
 use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\IFoo;
 use Aphiria\DependencyInjection\Tests\Mocks\Dave;
@@ -37,7 +37,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->factory = new BinderMetadataCollectionFactory(new Container());
+        $this->factory = new BinderMetadataCollectionFactory(new ReflectionContainer());
     }
 
     public function testCreatingCollectionCreatesBindingsFromWhatIsBoundInBinder(): void
@@ -45,7 +45,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $expectedCollection = new BinderMetadataCollection([
@@ -73,7 +73,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
@@ -102,7 +102,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
-                    $container->bindInstance(IFoo::class, new Foo());
+                    $container->bindInstance(IFoo::class, new SomeFoo());
                 });
             }
         };
@@ -122,7 +122,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
@@ -145,7 +145,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             {
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
                     $container->resolve(IFoo::class);
-                    $container->bindClass(IBar::class, Bar::class);
+                    $container->bindClass(IBar::class, SomeBar::class);
                 });
             }
         };
@@ -156,7 +156,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
-                    $container->bindInstance(IFoo::class, new Foo());
+                    $container->bindInstance(IFoo::class, new SomeFoo());
                 });
             }
         };
@@ -186,7 +186,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $this->expectExceptionMessage(
@@ -208,13 +208,13 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $binderB = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $binderC = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IBar::class, new Bar());
+                $container->bindInstance(IBar::class, new SomeBar());
             }
         };
         // Binder B will be before binder A because it isn't dependent on another binder's bindings
@@ -250,7 +250,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
                  * to them being bound
                  */
                 $container->resolve(IFoo::class);
-                $container->bindInstance(IBar::class, new Bar());
+                $container->bindInstance(IBar::class, new SomeBar());
             }
         };
         $binderB = new class () extends Binder {
@@ -258,7 +258,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             {
                 // Ditto about order being important
                 $container->resolve(IBar::class);
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $this->factory->createBinderMetadataCollection([$binderA, $binderB]);

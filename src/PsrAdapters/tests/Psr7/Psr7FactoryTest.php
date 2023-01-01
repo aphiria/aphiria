@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\PsrAdapters\Tests\Psr7;
 
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpStatusCode;
@@ -354,7 +354,7 @@ class Psr7FactoryTest extends TestCase
 
     public function testCreatePsr7StreamCreatesWorkingStream(): void
     {
-        $aphiriaStream = new Stream(\fopen('php://temp', 'r+b'));
+        $aphiriaStream = new ResourceStream(\fopen('php://temp', 'r+b'));
         $aphiriaStream->write('foo');
         $psr7Stream = $this->psr7Factory->createPsr7Stream($aphiriaStream);
         $psr7Stream->rewind();

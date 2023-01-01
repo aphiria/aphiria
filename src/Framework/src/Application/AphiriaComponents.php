@@ -28,7 +28,7 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
@@ -89,16 +89,16 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthenticationComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the authentication scheme registry here so that it can be used in the component
-            if (!Container::$globalInstance->hasBinding(AuthenticationSchemeRegistry::class)) {
-                Container::$globalInstance->bindInstance(AuthenticationSchemeRegistry::class, new AuthenticationSchemeRegistry());
+            if (!ReflectionContainer::$globalInstance->hasBinding(AuthenticationSchemeRegistry::class)) {
+                ReflectionContainer::$globalInstance->bindInstance(AuthenticationSchemeRegistry::class, new AuthenticationSchemeRegistry());
             }
 
-            $appBuilder->withComponent(new AuthenticationComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new AuthenticationComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(AuthenticationComponent::class)
@@ -118,16 +118,16 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the authorization policy registry here so that it can be used in the component
-            if (!Container::$globalInstance->hasBinding(AuthorizationPolicyRegistry::class)) {
-                Container::$globalInstance->bindInstance(AuthorizationPolicyRegistry::class, new AuthorizationPolicyRegistry());
+            if (!ReflectionContainer::$globalInstance->hasBinding(AuthorizationPolicyRegistry::class)) {
+                ReflectionContainer::$globalInstance->bindInstance(AuthorizationPolicyRegistry::class, new AuthorizationPolicyRegistry());
             }
 
-            $appBuilder->withComponent(new AuthorizationComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new AuthorizationComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(AuthorizationComponent::class)
@@ -153,19 +153,19 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the authorization requirement handler registry here so that it can be used in the component
-            if (!Container::$globalInstance->hasBinding(AuthorizationRequirementHandlerRegistry::class)) {
-                Container::$globalInstance->bindInstance(
+            if (!ReflectionContainer::$globalInstance->hasBinding(AuthorizationRequirementHandlerRegistry::class)) {
+                ReflectionContainer::$globalInstance->bindInstance(
                     AuthorizationRequirementHandlerRegistry::class,
                     new AuthorizationRequirementHandlerRegistry()
                 );
             }
 
-            $appBuilder->withComponent(new AuthorizationComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new AuthorizationComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(AuthorizationComponent::class)
@@ -186,13 +186,13 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             $appBuilder->withComponent(
                 new BinderComponent(
-                    Container::$globalInstance
+                    ReflectionContainer::$globalInstance
                 ),
                 0
             );
@@ -216,13 +216,13 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(BinderComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             $appBuilder->withComponent(
                 new BinderComponent(
-                    Container::$globalInstance
+                    ReflectionContainer::$globalInstance
                 ),
                 0
             );
@@ -245,16 +245,16 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the command registry here so that it can be used in the component
-            if (!Container::$globalInstance->hasBinding(CommandRegistry::class)) {
-                Container::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
+            if (!ReflectionContainer::$globalInstance->hasBinding(CommandRegistry::class)) {
+                ReflectionContainer::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
             }
 
-            $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new CommandComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(CommandComponent::class)
@@ -275,16 +275,16 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the command registry here so that it can be used in the component
-            if (!Container::$globalInstance->hasBinding(CommandRegistry::class)) {
-                Container::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
+            if (!ReflectionContainer::$globalInstance->hasBinding(CommandRegistry::class)) {
+                ReflectionContainer::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
             }
 
-            $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new CommandComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(CommandComponent::class)
@@ -310,11 +310,11 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new ExceptionHandlerComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
@@ -335,16 +335,16 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(CommandComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the command registry here so that it can be used in the component
-            if (!Container::$globalInstance->hasBinding(CommandRegistry::class)) {
-                Container::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
+            if (!ReflectionContainer::$globalInstance->hasBinding(CommandRegistry::class)) {
+                ReflectionContainer::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
             }
 
-            $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new CommandComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(CommandComponent::class)
@@ -383,15 +383,15 @@ trait AphiriaComponents
         int $priority = null
     ): static {
         if (!$appBuilder->hasComponent(MiddlewareComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
             // Bind the middleware collection here so that it can be used in the component
-            Container::$globalInstance->hasBinding(MiddlewareCollection::class)
-                ? Container::$globalInstance->resolve(MiddlewareCollection::class)
-                : Container::$globalInstance->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
-            $appBuilder->withComponent(new MiddlewareComponent(Container::$globalInstance));
+            ReflectionContainer::$globalInstance->hasBinding(MiddlewareCollection::class)
+                ? ReflectionContainer::$globalInstance->resolve(MiddlewareCollection::class)
+                : ReflectionContainer::$globalInstance->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
+            $appBuilder->withComponent(new MiddlewareComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(MiddlewareComponent::class)
@@ -417,11 +417,11 @@ trait AphiriaComponents
     ): static {
         //Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new ExceptionHandlerComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
@@ -462,11 +462,11 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new ValidationComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new ValidationComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(ValidationComponent::class)
@@ -502,11 +502,11 @@ trait AphiriaComponents
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new ExceptionHandlerComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
@@ -526,11 +526,11 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new RouterComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new RouterComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(RouterComponent::class)
@@ -551,11 +551,11 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(RouterComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new RouterComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new RouterComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(RouterComponent::class)
@@ -575,11 +575,11 @@ trait AphiriaComponents
     {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ValidationComponent::class)) {
-            if (!isset(Container::$globalInstance)) {
+            if (!isset(ReflectionContainer::$globalInstance)) {
                 throw new RuntimeException('Global container instance not set');
             }
 
-            $appBuilder->withComponent(new ValidationComponent(Container::$globalInstance));
+            $appBuilder->withComponent(new ValidationComponent(ReflectionContainer::$globalInstance));
         }
 
         $appBuilder->getComponent(ValidationComponent::class)

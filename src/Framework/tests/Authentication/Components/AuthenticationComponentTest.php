@@ -16,7 +16,7 @@ use Aphiria\Authentication\AuthenticationScheme;
 use Aphiria\Authentication\AuthenticationSchemeOptions;
 use Aphiria\Authentication\AuthenticationSchemeRegistry;
 use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -24,13 +24,13 @@ use PHPUnit\Framework\TestCase;
 class AuthenticationComponentTest extends TestCase
 {
     private AuthenticationComponent $authenticationComponent;
-    private Container $container;
+    private ReflectionContainer $container;
     private AuthenticationSchemeRegistry $schemes;
 
     protected function setUp(): void
     {
         // Using a real container to simplify testing
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->authenticationComponent = new AuthenticationComponent($this->container);
 
         $this->container->bindInstance(AuthenticationSchemeRegistry::class, $this->schemes = new AuthenticationSchemeRegistry());

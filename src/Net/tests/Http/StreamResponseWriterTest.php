@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
@@ -26,13 +26,13 @@ use PHPUnit\Framework\TestCase;
 class StreamResponseWriterTest extends TestCase
 {
     private StreamResponseWriter $writer;
-    private Stream $outputStream;
+    private ResourceStream $outputStream;
     private IResponse&MockObject $response;
     private IBody&MockObject $body;
 
     protected function setUp(): void
     {
-        $this->outputStream = new Stream(\fopen('php://temp', 'r+b'));
+        $this->outputStream = new ResourceStream(\fopen('php://temp', 'r+b'));
         $this->writer = new StreamResponseWriter($this->outputStream);
         $this->body = $this->createMock(IBody::class);
 

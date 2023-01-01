@@ -16,12 +16,12 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\ContentNegotiation\AcceptLanguageMatcher;
-use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatterContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\IEncodingMatcher;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\RequestHeaderMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -55,7 +55,7 @@ class ContentNegotiationBinder extends Binder
             },
             GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
         );
-        $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher($mediaTypeFormatters);
+        $mediaTypeFormatterMatcher = new RequestHeaderMediaTypeFormatterMatcher($mediaTypeFormatters);
         $container->bindInstance(IMediaTypeFormatterMatcher::class, $mediaTypeFormatterMatcher);
 
         /** @var class-string<IEncodingMatcher> $encodingMatcherName */
@@ -90,7 +90,7 @@ class ContentNegotiationBinder extends Binder
 
         $container->bindInstance(ILanguageMatcher::class, $languageMatcher);
 
-        $contentNegotiator = new ContentNegotiator(
+        $contentNegotiator = new MediaTypeFormatterContentNegotiator(
             $mediaTypeFormatters,
             $mediaTypeFormatterMatcher,
             $encodingMatcher,

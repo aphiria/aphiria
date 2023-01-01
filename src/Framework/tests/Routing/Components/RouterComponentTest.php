@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Routing\Components;
 
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Builders\RouteBuilder;
@@ -25,14 +25,14 @@ use RuntimeException;
 class RouterComponentTest extends TestCase
 {
     private RouterComponent $routerComponent;
-    private Container $container;
+    private ReflectionContainer $container;
     private RouteCollection $routes;
     private RouteRegistrantCollection $routeRegistrants;
 
     protected function setUp(): void
     {
         // Use a real container to simplify testing
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->routerComponent = new RouterComponent($this->container);
         $this->container->bindInstance(RouteCollection::class, $this->routes = new RouteCollection());
         $this->routeRegistrants = new class () extends RouteRegistrantCollection {

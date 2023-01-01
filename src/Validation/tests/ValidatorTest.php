@@ -19,14 +19,14 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\ConstraintViolation;
 use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ValidationException;
-use Aphiria\Validation\Validator;
+use Aphiria\Validation\ReflectionValidator;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase
 {
-    private Validator $validator;
+    private ReflectionValidator $validator;
     private ObjectConstraintsRegistry $objectConstraints;
     private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
 
@@ -34,7 +34,7 @@ class ValidatorTest extends TestCase
     {
         $this->objectConstraints = new ObjectConstraintsRegistry();
         $this->errorMessageInterpolator = $this->createMock(IErrorMessageInterpolator::class);
-        $this->validator = new Validator($this->objectConstraints, $this->errorMessageInterpolator);
+        $this->validator = new ReflectionValidator($this->objectConstraints, $this->errorMessageInterpolator);
     }
 
     public function testTryValidateMethodReturnsFalseForInvalidValue(): void

@@ -17,7 +17,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\RequestBuilder;
@@ -37,7 +37,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
      * @param string $defaultAccept The default Accept header value
      */
     public function __construct(
-        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
+        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new RequestHeaderMediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
             new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
@@ -82,7 +82,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
             }
 
             $encoding = $mediaTypeFormatterMatch->formatter->getDefaultEncoding();
-            $bodyStream = new Stream(\fopen('php://temp', 'w+b'));
+            $bodyStream = new ResourceStream(\fopen('php://temp', 'w+b'));
             $mediaTypeFormatterMatch->formatter->writeToStream($body, $bodyStream, $encoding);
             $new->body = new StreamBody($bodyStream);
             $new->headers->add('Content-Type', $mediaTypeFormatterMatch->mediaType);

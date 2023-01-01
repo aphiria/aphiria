@@ -22,7 +22,7 @@ use Aphiria\Console\Commands\ICommandRegistrant;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\Option;
 use Aphiria\Reflection\ITypeFinder;
-use Aphiria\Reflection\TypeFinder;
+use Aphiria\Reflection\ReflectionTypeFinder;
 use ReflectionClass;
 use ReflectionException;
 
@@ -40,7 +40,7 @@ final class AttributeCommandRegistrant implements ICommandRegistrant
      */
     public function __construct(
         string|array $paths,
-        private readonly ITypeFinder $typeFinder = new TypeFinder()
+        private readonly ITypeFinder $typeFinder = new ReflectionTypeFinder()
     ) {
         $this->paths = \is_array($paths) ? $paths : [$paths];
     }

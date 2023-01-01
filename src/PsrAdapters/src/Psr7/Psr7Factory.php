@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\PsrAdapters\Psr7;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\Formatting\RequestHeaderParser;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Headers;
@@ -147,7 +147,7 @@ class Psr7Factory implements IPsr7Factory
      */
     public function createAphiriaStream(StreamInterface $psr7Stream): IStream
     {
-        $aphiriaStream = new Stream(\fopen('php://temp', 'r+b'));
+        $aphiriaStream = new ResourceStream(\fopen('php://temp', 'r+b'));
         $psr7Stream->rewind();
 
         while (!$psr7Stream->eof()) {

@@ -20,7 +20,7 @@ use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
-use Aphiria\Console\Input\Compilers\InputCompiler;
+use Aphiria\Console\Input\Compilers\TokenizerInputCompiler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
@@ -121,7 +121,7 @@ class CommandBinderTest extends TestCase
         $parameters = [
             [CommandRegistry::class, CommandRegistry::class],
             [ICommandRegistryCache::class, FileCommandRegistryCache::class],
-            [IInputCompiler::class, InputCompiler::class],
+            [IInputCompiler::class, TokenizerInputCompiler::class],
             [CommandRegistrantCollection::class, CommandRegistrantCollection::class],
             [AttributeCommandRegistrant::class, AttributeCommandRegistrant::class]
         ];

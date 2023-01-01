@@ -20,7 +20,7 @@ use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
-use Aphiria\Console\Input\Compilers\InputCompiler;
+use Aphiria\Console\Input\Compilers\TokenizerInputCompiler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
@@ -43,7 +43,7 @@ final class CommandBinder extends Binder
         $container->bindInstance(CommandRegistry::class, $commands);
         $commandCache = new FileCommandRegistryCache(GlobalConfiguration::getString('aphiria.console.commandCachePath'));
         $container->bindInstance(ICommandRegistryCache::class, $commandCache);
-        $inputCompiler = new InputCompiler($commands);
+        $inputCompiler = new TokenizerInputCompiler($commands);
         $container->bindInstance(IInputCompiler::class, $inputCompiler);
         $container->bindFactory(Input::class, fn (): Input => $this->getInput($container));
         $container->bindFactory(IOutput::class, fn (): IOutput => $this->getOutput($container));

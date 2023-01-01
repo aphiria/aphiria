@@ -27,7 +27,7 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\IErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
-use Aphiria\Validation\Validator;
+use Aphiria\Validation\ReflectionValidator;
 use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
@@ -218,7 +218,7 @@ class ValidationBinderTest extends TestCase
     {
         $parameters = [
             [ObjectConstraintsRegistry::class, ObjectConstraintsRegistry::class],
-            [[IValidator::class, Validator::class], Validator::class],
+            [[IValidator::class, ReflectionValidator::class], ReflectionValidator::class],
             [IObjectConstraintsRegistryCache::class, FileObjectConstraintsRegistryCache::class],
             [ObjectConstraintsRegistrantCollection::class, ObjectConstraintsRegistrantCollection::class],
             [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class]

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\DependencyInjection\Binders;
 
 use Aphiria\Reflection\ITypeFinder;
-use Aphiria\Reflection\TypeFinder;
+use Aphiria\Reflection\ReflectionTypeFinder;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
@@ -26,7 +26,7 @@ final class FileBinderFinder
     /**
      * @param ITypeFinder $classFinder The class finder
      */
-    public function __construct(private readonly ITypeFinder $classFinder = new TypeFinder())
+    public function __construct(private readonly ITypeFinder $classFinder = new ReflectionTypeFinder())
     {
     }
 

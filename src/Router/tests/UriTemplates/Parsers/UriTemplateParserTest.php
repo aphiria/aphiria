@@ -18,16 +18,16 @@ use Aphiria\Routing\UriTemplates\Lexers\TokenType;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
-use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
+use Aphiria\Routing\UriTemplates\Parsers\AphiriaSyntaxUriTemplateParser;
 use PHPUnit\Framework\TestCase;
 
 class UriTemplateParserTest extends TestCase
 {
-    private UriTemplateParser $parser;
+    private AphiriaSyntaxUriTemplateParser $parser;
 
     protected function setUp(): void
     {
-        $this->parser = new UriTemplateParser();
+        $this->parser = new AphiriaSyntaxUriTemplateParser();
     }
 
     public function testParsingClosingBracketWhenNotParsingOptionalRoutePartTreatsBracketAsText(): void

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 
 /**
  * Defines the stream response writer
@@ -30,7 +30,7 @@ class StreamResponseWriter implements IResponseWriter
      */
     public function __construct(IStream $outputStream = null)
     {
-        $this->outputStream = $outputStream ?? new Stream(\fopen('php://output', 'wb'));
+        $this->outputStream = $outputStream ?? new ResourceStream(\fopen('php://output', 'wb'));
     }
 
     /**

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Authentication\Binders;
 
 use Aphiria\Authentication\AuthenticationSchemeRegistry;
-use Aphiria\Authentication\Authenticator;
+use Aphiria\Authentication\AuthenticationSchemeHandlerAuthenticator;
 use Aphiria\Authentication\ContainerAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IAuthenticator;
@@ -38,7 +38,7 @@ class AuthenticationBinder extends Binder
         $container->bindInstance(IAuthenticationSchemeHandlerResolver::class, $schemeHandlerResolver);
         $userAccessor = $this->getUserAccessor($container);
         $container->bindInstance(IUserAccessor::class, $userAccessor);
-        $authenticator = new Authenticator($schemes, $schemeHandlerResolver, $userAccessor);
+        $authenticator = new AuthenticationSchemeHandlerAuthenticator($schemes, $schemeHandlerResolver, $userAccessor);
         $container->bindInstance(IAuthenticator::class, $authenticator);
     }
 

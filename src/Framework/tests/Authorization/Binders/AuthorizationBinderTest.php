@@ -16,7 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\RequestPropertyUserAccessor;
-use Aphiria\Authorization\Authority;
+use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthority;
@@ -76,7 +76,7 @@ class AuthorizationBinderTest extends TestCase
             [AuthorizationPolicyRegistry::class, AuthorizationPolicyRegistry::class],
             [AuthorizationRequirementHandlerRegistry::class, AuthorizationRequirementHandlerRegistry::class],
             [IUserAccessor::class, RequestPropertyUserAccessor::class],
-            [IAuthority::class, Authority::class]
+            [IAuthority::class, AuthorizationRequirementHandlerAuthority::class]
         ];
 
         foreach ($parameters as $parameter) {

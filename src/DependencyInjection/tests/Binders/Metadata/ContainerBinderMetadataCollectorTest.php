@@ -15,10 +15,10 @@ namespace Aphiria\DependencyInjection\Tests\Binders\Metadata;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\Metadata\ContainerBinderMetadataCollector;
 use Aphiria\DependencyInjection\Binders\Metadata\FailedBinderMetadataCollectionException;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\TargetedContext;
-use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
+use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\SomeFoo;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Mocks\IFoo;
 use Exception;
@@ -31,7 +31,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     protected function setUp(): void
     {
         // Use a real container to simplify testing
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
     }
 
     public function getBinders(): array
@@ -39,19 +39,19 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder1 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindFactory(IFoo::class, fn () => new Foo());
+                $container->bindFactory(IFoo::class, fn () => new SomeFoo());
             }
         };
         $binder2 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $binder3 = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindClass(IFoo::class, Foo::class);
+                $container->bindClass(IFoo::class, SomeFoo::class);
             }
         };
         $target = new class () {
@@ -62,7 +62,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for($this->target::class, function (IContainer $container) {
-                    $container->bindFactory(IFoo::class, fn () => new Foo());
+                    $container->bindFactory(IFoo::class, fn () => new SomeFoo());
                 });
             }
         };
@@ -73,7 +73,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for($this->target::class, function (IContainer $container) {
-                    $container->bindInstance(IFoo::class, new Foo());
+                    $container->bindInstance(IFoo::class, new SomeFoo());
                 });
             }
         };
@@ -84,7 +84,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for($this->target::class, function (IContainer $container) {
-                    $container->bindClass(IFoo::class, Foo::class);
+                    $container->bindClass(IFoo::class, SomeFoo::class);
                 });
             }
         };
@@ -128,9 +128,9 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
-                    $container->bindInstance(IFoo::class, new Foo());
+                    $container->bindInstance(IFoo::class, new SomeFoo());
                 });
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $binder->target = $target;
@@ -154,10 +154,10 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             public function bind(IContainer $container): void
             {
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
-                    $container->bindInstance(IFoo::class, new Foo());
+                    $container->bindInstance(IFoo::class, new SomeFoo());
                 });
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
-                    $container->bindInstance(IFoo::class, new Foo());
+                    $container->bindInstance(IFoo::class, new SomeFoo());
                 });
             }
         };
@@ -175,8 +175,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
-                $container->bindInstance(IFoo::class, new Foo());
-                $container->bindInstance(IFoo::class, new Foo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
+                $container->bindInstance(IFoo::class, new SomeFoo());
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
@@ -234,7 +234,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertFalse($collector->hasBinding(IFoo::class));
         $target = new class () {
         };
-        $this->container->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $this->container->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new SomeFoo()));
         $this->assertFalse($collector->hasBinding(IFoo::class));
         $this->assertTrue($collector->for($target::class, fn (IContainer $container) => $container->hasBinding(IFoo::class)));
     }
@@ -265,8 +265,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $target = new class () {
         };
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
-            $container->bindInstance(IFoo::class, new Foo());
-            $container->bindInstance(Foo::class, new Foo());
+            $container->bindInstance(IFoo::class, new SomeFoo());
+            $container->bindInstance(SomeFoo::class, new SomeFoo());
         });
         $binder = new class () extends Binder {
             public object $target;
@@ -276,7 +276,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
                 $container->for(new TargetedContext($this->target::class), function (IContainer $container) {
                     $container->resolve(IFoo::class);
                     $foo = null;
-                    $container->tryResolve(Foo::class, $foo);
+                    $container->tryResolve(SomeFoo::class, $foo);
                 });
             }
         };
@@ -288,19 +288,19 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertSame($target::class, $actualResolvedInterfaces[0]->context->targetClass);
         $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->interface);
         $this->assertSame($target::class, $actualResolvedInterfaces[1]->context->targetClass);
-        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->interface);
+        $this->assertSame(SomeFoo::class, $actualResolvedInterfaces[1]->interface);
     }
 
     public function testResolvingMethodsCreatesUniversalResolvedInterfaces(): void
     {
-        $this->container->bindInstance(IFoo::class, new Foo());
-        $this->container->bindInstance(Foo::class, new Foo());
+        $this->container->bindInstance(IFoo::class, new SomeFoo());
+        $this->container->bindInstance(SomeFoo::class, new SomeFoo());
         $binder = new class () extends Binder {
             public function bind(IContainer $container): void
             {
                 $container->resolve(IFoo::class);
                 $foo = null;
-                $container->tryResolve(Foo::class, $foo);
+                $container->tryResolve(SomeFoo::class, $foo);
             }
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
@@ -309,7 +309,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->assertCount(2, $actualResolvedInterfaces);
         $this->assertSame(IFoo::class, $actualResolvedInterfaces[0]->interface);
         $this->assertFalse($actualResolvedInterfaces[0]->context->isTargeted);
-        $this->assertSame(Foo::class, $actualResolvedInterfaces[1]->interface);
+        $this->assertSame(SomeFoo::class, $actualResolvedInterfaces[1]->interface);
         $this->assertFalse($actualResolvedInterfaces[1]->context->isTargeted);
     }
 
@@ -317,8 +317,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     {
         $target = new class () {
         };
-        $this->container->for(new TargetedContext($target::class), fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
-        $this->container->bindInstance(IFoo::class, new Foo());
+        $this->container->for(new TargetedContext($target::class), fn (IContainer $container) => $container->bindInstance(IFoo::class, new SomeFoo()));
+        $this->container->bindInstance(IFoo::class, new SomeFoo());
         $binder = new class () extends Binder {
             public object $target;
 
@@ -345,7 +345,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     {
         $target = new class () {
         };
-        $this->container->for(new TargetedContext($target::class), fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $this->container->for(new TargetedContext($target::class), fn (IContainer $container) => $container->bindInstance(IFoo::class, new SomeFoo()));
         $binder = new class () extends Binder {
             public object $target;
             public function bind(IContainer $container): void
@@ -410,7 +410,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $target = new class () {
         };
         $collector = new ContainerBinderMetadataCollector($this->container);
-        $collector->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new Foo()));
+        $collector->for($target::class, fn (IContainer $container) => $container->bindInstance(IFoo::class, new SomeFoo()));
         $this->assertTrue($collector->for($target::class, fn (IContainer $container) => $container->hasBinding(IFoo::class)));
         $collector->for($target::class, fn (IContainer $container) => $container->unbind(IFoo::class));
         $this->assertFalse($collector->for($target::class, fn (IContainer $container) => $container->hasBinding(IFoo::class)));

@@ -20,7 +20,7 @@ use LogicException;
 /**
  * Defines a request builder
  */
-class RequestBuilder implements IRequestBuilder
+class RequestBuilder
 {
     /** @var Headers The request headers */
     protected readonly Headers $headers;

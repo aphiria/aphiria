@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\DependencyInjection\Components;
 
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\DependencyInjection\Components\BinderComponent;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +26,7 @@ class BinderComponentTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->binderComponent = new BinderComponent(new Container());
+        $this->binderComponent = new BinderComponent(new ReflectionContainer());
     }
 
     public function testBuildWithBindersAppendsToListOfBindersToBeDispatched(): void

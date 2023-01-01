@@ -19,7 +19,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCode;
@@ -235,7 +235,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $responseMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
-            ->with($rawBody, $this->isInstanceOf(Stream::class), null)
+            ->with($rawBody, $this->isInstanceOf(ResourceStream::class), null)
             ->willThrowException(new SerializationException());
         $request = $this->createRequest('http://foo.com');
         $this->setUpContentNegotiationMock(
@@ -258,7 +258,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $responseMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
-            ->with($rawBody, $this->isInstanceOf(Stream::class), 'utf-8');
+            ->with($rawBody, $this->isInstanceOf(ResourceStream::class), 'utf-8');
         $request = $this->createRequest('http://foo.com');
         $this->setUpContentNegotiationMock(
             User::class,

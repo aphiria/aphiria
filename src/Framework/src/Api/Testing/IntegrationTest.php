@@ -16,7 +16,7 @@ use Aphiria\Application\IApplication;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -62,9 +62,9 @@ trait IntegrationTest
      */
     protected function beforeEachTest(): void
     {
-        $container = new Container();
-        Container::$globalInstance = $container;
-        $container->bindInstance([IServiceResolver::class, IContainer::class, Container::class], $container);
+        $container = new ReflectionContainer();
+        ReflectionContainer::$globalInstance = $container;
+        $container->bindInstance([IServiceResolver::class, IContainer::class, ReflectionContainer::class], $container);
         $this->client = $this->createClient($container);
         $this->requestBuilder = $this->createRequestBuilder($container);
         $this->responseAssertions = $this->createResponseAssertions($container);

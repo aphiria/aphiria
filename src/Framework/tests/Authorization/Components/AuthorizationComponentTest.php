@@ -17,7 +17,7 @@ use Aphiria\Authorization\AuthorizationPolicyRegistry;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthorizationRequirementHandler;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -26,14 +26,14 @@ use PHPUnit\Framework\TestCase;
 class AuthorizationComponentTest extends TestCase
 {
     private AuthorizationComponent $authorizationComponent;
-    private Container $container;
+    private ReflectionContainer $container;
     private AuthorizationPolicyRegistry $policies;
     private AuthorizationRequirementHandlerRegistry $requirementHandlers;
 
     protected function setUp(): void
     {
         // Using a real container to simplify testing
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->authorizationComponent = new AuthorizationComponent($this->container);
 
         $this->container->bindInstance(AuthorizationPolicyRegistry::class, $this->policies = new AuthorizationPolicyRegistry());

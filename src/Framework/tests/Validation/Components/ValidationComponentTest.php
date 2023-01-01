@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Validation\Components;
 
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Validation\Builders\ObjectConstraintsBuilder;
 use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
@@ -25,14 +25,14 @@ use RuntimeException;
 
 class ValidationComponentTest extends TestCase
 {
-    private Container $container;
+    private ReflectionContainer $container;
     private ObjectConstraintsRegistry $objectConstraints;
     private ObjectConstraintsRegistrantCollection $objectConstraintsRegistrants;
     private ValidationComponent $validationComponent;
 
     protected function setUp(): void
     {
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->container->bindInstance(ObjectConstraintsRegistry::class, $this->objectConstraints = new ObjectConstraintsRegistry());
         $this->objectConstraintsRegistrants = new class () extends ObjectConstraintsRegistrantCollection {
             public function getAll(): array

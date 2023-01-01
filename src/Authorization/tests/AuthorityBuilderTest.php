@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization\Tests;
 
-use Aphiria\Authorization\Authority;
+use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorityBuilder;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
@@ -66,7 +66,7 @@ class AuthorityBuilderTest extends TestCase
             ->build();
         $expectedPolicies = new AuthorizationPolicyRegistry();
         $expectedPolicies->registerPolicy($policy);
-        $expectedAuthority = new Authority(
+        $expectedAuthority = new AuthorizationRequirementHandlerAuthority(
             $expectedPolicies,
             new AuthorizationRequirementHandlerRegistry()
         );
@@ -80,7 +80,7 @@ class AuthorityBuilderTest extends TestCase
             ->build();
         $expectedAuthorizationRequirementHandlers = new AuthorizationRequirementHandlerRegistry();
         $expectedAuthorizationRequirementHandlers->registerRequirementHandler(RolesRequirement::class, $roleRequirementHandler);
-        $expectedAuthority = new Authority(new AuthorizationPolicyRegistry(), $expectedAuthorizationRequirementHandlers);
+        $expectedAuthority = new AuthorizationRequirementHandlerAuthority(new AuthorizationPolicyRegistry(), $expectedAuthorizationRequirementHandlers);
         $this->assertEquals($expectedAuthority, $authority);
     }
 }

@@ -29,7 +29,7 @@ final class TrieFactory
     public function __construct(
         private readonly RouteCollection $routes,
         private readonly ?ITrieCache $trieCache = null,
-        private readonly ITrieCompiler $trieCompiler = new TrieCompiler()
+        private readonly ITrieCompiler $trieCompiler = new ParserTrieCompiler()
     ) {
     }
 

@@ -15,10 +15,10 @@ namespace Aphiria\Api;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
-use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\Api\Controllers\NegotiatedContentRouteActionInvoker;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\RequestPropertyUserAccessor;
-use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatterContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -55,11 +55,11 @@ class Router implements IRequestHandler
     public function __construct(
         private readonly IRouteMatcher $routeMatcher,
         private readonly IServiceResolver $serviceResolver,
-        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
+        private readonly IContentNegotiator $contentNegotiator = new MediaTypeFormatterContentNegotiator(),
         IRouteActionInvoker $routeActionInvoker = null,
         private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
-        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
+        $this->routeActionInvoker = $routeActionInvoker ?? new NegotiatedContentRouteActionInvoker($this->contentNegotiator);
     }
 
     /**

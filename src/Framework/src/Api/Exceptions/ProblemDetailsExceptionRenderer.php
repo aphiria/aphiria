@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Api\Exceptions;
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -59,7 +59,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
                 // We have to manually create a response
                 $response = new Response($problemDetails->status);
                 $response->getHeaders()->add('Content-Type', 'application/problem+json');
-                $bodyStream = new Stream(\fopen('php://temp', 'r+b'));
+                $bodyStream = new ResourceStream(\fopen('php://temp', 'r+b'));
                 // Intentionally using the parameterless constructor so that the default object encoder gets registered
                 $mediaTypeFormatter = new JsonMediaTypeFormatter();
                 $mediaTypeFormatter->writeToStream($problemDetails, $bodyStream, null);

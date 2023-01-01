@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Output;
 
 use Aphiria\Console\Output\Compilers\IOutputCompiler;
-use Aphiria\Console\Output\Compilers\OutputCompiler;
+use Aphiria\Console\Output\Compilers\ParserOutputCompiler;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -34,7 +34,7 @@ class StreamOutput extends Output
      * @throws InvalidArgumentException Thrown if the stream is not a resource
      * @psalm-suppress DocblockTypeContradiction Ditto We want check the types at runtime
      */
-    public function __construct($outputStream, $inputStream, IOutputCompiler $compiler = new OutputCompiler())
+    public function __construct($outputStream, $inputStream, IOutputCompiler $compiler = new ParserOutputCompiler())
     {
         if (!\is_resource($outputStream) || !\is_resource($inputStream)) {
             throw new InvalidArgumentException('The stream must be a resource');

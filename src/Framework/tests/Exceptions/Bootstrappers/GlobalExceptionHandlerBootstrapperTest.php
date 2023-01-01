@@ -17,7 +17,7 @@ use Aphiria\Api\Validation\InvalidRequestBodyException;
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
-use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Exceptions\ExceptionRendererGlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
@@ -302,7 +302,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
                     return true;
                 }
 
-                if ($actualInstance instanceof GlobalExceptionHandler) {
+                if ($actualInstance instanceof ExceptionRendererGlobalExceptionHandler) {
                     return true;
                 }
 

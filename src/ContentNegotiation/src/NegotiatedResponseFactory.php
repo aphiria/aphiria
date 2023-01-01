@@ -14,7 +14,7 @@ namespace Aphiria\ContentNegotiation;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCode;
@@ -37,7 +37,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator to use
      */
-    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator())
+    public function __construct(private readonly IContentNegotiator $contentNegotiator = new MediaTypeFormatterContentNegotiator())
     {
     }
 
@@ -125,7 +125,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
             throw $this->createNotAcceptableException($type);
         }
 
-        $bodyStream = new Stream(\fopen('php://temp', 'r+b'));
+        $bodyStream = new ResourceStream(\fopen('php://temp', 'r+b'));
 
         try {
             $mediaTypeFormatter->writeToStream(

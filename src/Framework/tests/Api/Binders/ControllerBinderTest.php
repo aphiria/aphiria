@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Api\Binders;
 
 use Aphiria\Api\Controllers\IRouteActionInvoker;
-use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\Api\Controllers\NegotiatedContentRouteActionInvoker;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Binders\ControllerBinder;
@@ -46,7 +46,7 @@ class ControllerBinderTest extends TestCase
     public function testRouteActionInvokerIsBound(): void
     {
         $this->container->method('bindInstance')
-            ->with(IRouteActionInvoker::class, $this->isInstanceOf(RouteActionInvoker::class));
+            ->with(IRouteActionInvoker::class, $this->isInstanceOf(NegotiatedContentRouteActionInvoker::class));
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);

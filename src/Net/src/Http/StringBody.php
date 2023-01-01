@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\IO\Streams\IStream;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 
 /**
  * Defines the string HTTP body
@@ -52,7 +52,7 @@ class StringBody implements IBody
     public function readAsStream(): IStream
     {
         if ($this->stream === null) {
-            $this->stream = new Stream(\fopen('php://temp', 'r+b'));
+            $this->stream = new ResourceStream(\fopen('php://temp', 'r+b'));
             $this->stream->write($this->content);
             $this->stream->rewind();
         }

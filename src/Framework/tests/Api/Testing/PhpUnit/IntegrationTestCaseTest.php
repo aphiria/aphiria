@@ -15,13 +15,13 @@ namespace Aphiria\Framework\Tests\Api\Testing\PhpUnit;
 use Aphiria\Application\IApplication;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\RequestHeaderMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
@@ -63,7 +63,7 @@ class IntegrationTestCaseTest extends TestCase
 
                 $this->app = $app;
                 $this->apiGateway = $apiGateway;
-                $this->mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
+                $this->mediaTypeFormatterMatcher = new RequestHeaderMediaTypeFormatterMatcher([
                     new JsonMediaTypeFormatter(),
                     new XmlMediaTypeFormatter(),
                     new HtmlMediaTypeFormatter(),
@@ -91,7 +91,7 @@ class IntegrationTestCaseTest extends TestCase
             public function send(IRequest $request): IResponse
             {
                 // Make this request accessible by the DI container so the application client doesn't bomb out
-                Container::$globalInstance?->bindInstance(IRequest::class, $request);
+                ReflectionContainer::$globalInstance?->bindInstance(IRequest::class, $request);
 
                 return parent::send($request);
             }
@@ -167,7 +167,7 @@ class IntegrationTestCaseTest extends TestCase
 
     protected function tearDown(): void
     {
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         \putenv("APP_URL={$this->prevAppUrl}");
     }
 

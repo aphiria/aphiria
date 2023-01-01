@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Output;
 
-use Aphiria\Console\Output\Compilers\OutputCompiler;
+use Aphiria\Console\Output\Compilers\ParserOutputCompiler;
 use Aphiria\Console\Output\StreamOutput;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -23,12 +23,12 @@ class StreamOutputTest extends TestCase
     private StreamOutput $output;
     /** @var resource|bool */
     private mixed $inputStream;
-    private OutputCompiler $compiler;
+    private ParserOutputCompiler $compiler;
 
     protected function setUp(): void
     {
         $this->inputStream = \fopen('php://memory', 'wb');
-        $this->compiler = new OutputCompiler();
+        $this->compiler = new ParserOutputCompiler();
         $this->output = new StreamOutput(\fopen('php://memory', 'wb'), $this->inputStream, $this->compiler);
     }
 

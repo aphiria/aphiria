@@ -15,7 +15,7 @@ namespace Aphiria\Console\Output;
 use Aphiria\Console\Drivers\DriverSelector;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\Compilers\IOutputCompiler;
-use Aphiria\Console\Output\Compilers\OutputCompiler;
+use Aphiria\Console\Output\Compilers\ParserOutputCompiler;
 
 /**
  * Defines a basic output
@@ -32,7 +32,7 @@ abstract class Output implements IOutput
      * @param IDriver|null $driver The driver
      */
     public function __construct(
-        protected readonly IOutputCompiler $outputCompiler = new OutputCompiler(),
+        protected readonly IOutputCompiler $outputCompiler = new ParserOutputCompiler(),
         IDriver $driver = null
     ) {
         $this->driver = $driver ?? (new DriverSelector())->select();

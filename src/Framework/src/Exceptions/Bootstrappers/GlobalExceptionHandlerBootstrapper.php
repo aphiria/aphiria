@@ -18,7 +18,7 @@ use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Application\IBootstrapper;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Exceptions\GlobalExceptionHandler;
+use Aphiria\Exceptions\ExceptionRendererGlobalExceptionHandler;
 use Aphiria\Exceptions\IExceptionRenderer;
 use Aphiria\Exceptions\IGlobalExceptionHandler;
 use Aphiria\Exceptions\LogLevelFactory;
@@ -60,15 +60,15 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 
         if ($this->isRunningInConsole()) {
             $this->container->bindInstance(IExceptionRenderer::class, $consoleExceptionRenderer);
-            $globalExceptionHandler = new GlobalExceptionHandler($consoleExceptionRenderer, $logger, $logLevelFactory);
+            $globalExceptionHandler = new ExceptionRendererGlobalExceptionHandler($consoleExceptionRenderer, $logger, $logLevelFactory);
         } else {
             $this->container->bindInstance(IExceptionRenderer::class, $apiExceptionRenderer);
-            $globalExceptionHandler = new GlobalExceptionHandler($apiExceptionRenderer, $logger, $logLevelFactory);
+            $globalExceptionHandler = new ExceptionRendererGlobalExceptionHandler($apiExceptionRenderer, $logger, $logLevelFactory);
         }
 
         $globalExceptionHandler->registerWithPhp();
         $this->container->bindInstance(
-            [IGlobalExceptionHandler::class, GlobalExceptionHandler::class],
+            [IGlobalExceptionHandler::class, ExceptionRendererGlobalExceptionHandler::class],
             $globalExceptionHandler
         );
     }

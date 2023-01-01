@@ -14,7 +14,7 @@ namespace Aphiria\Api\Controllers;
 
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\RequestPropertyUserAccessor;
-use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatterContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\Formatting\RequestParser;
@@ -41,11 +41,11 @@ final class ControllerRequestHandler implements IRequestHandler
         private readonly Controller $controller,
         private readonly Closure $routeActionDelegate,
         private readonly array $routeVariables,
-        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
+        private readonly IContentNegotiator $contentNegotiator = new MediaTypeFormatterContentNegotiator(),
         IRouteActionInvoker $routeActionInvoker = null,
         private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
-        $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
+        $this->routeActionInvoker = $routeActionInvoker ?? new NegotiatedContentRouteActionInvoker($this->contentNegotiator);
     }
 
     /**

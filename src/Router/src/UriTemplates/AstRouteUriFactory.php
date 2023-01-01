@@ -16,11 +16,11 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
 use Aphiria\Routing\UriTemplates\Lexers\UnexpectedTokenException;
-use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
+use Aphiria\Routing\UriTemplates\Lexers\AphiriaSyntaxUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
-use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
+use Aphiria\Routing\UriTemplates\Parsers\AphiriaSyntaxUriTemplateParser;
 use OutOfBoundsException;
 
 /**
@@ -35,8 +35,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
      */
     public function __construct(
         private readonly RouteCollection $routes,
-        private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
-        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
+        private readonly IUriTemplateParser $uriTemplateParser = new AphiriaSyntaxUriTemplateParser(),
+        private readonly IUriTemplateLexer $uriTemplateLexer = new AphiriaSyntaxUriTemplateLexer()
     ) {
     }
 

@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Tests\Api\Builders;
 use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\Api\Builders\SynchronousApiApplicationBuilder;
 use Aphiria\Framework\Api\SynchronousApiApplication;
 use Aphiria\Net\Http\IRequest;
@@ -27,13 +27,13 @@ use RuntimeException;
 
 class ApiApplicationBuilderTest extends TestCase
 {
-    private Container $container;
+    private ReflectionContainer $container;
     private SynchronousApiApplicationBuilder $appBuilder;
 
     protected function setUp(): void
     {
         // To simplify testing, we'll use a real container
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         // Several tests rely on a request and response writer being bound
         $this->container->bindInstance(IRequest::class, $this->createMock(IRequest::class));
         $this->container->bindInstance(IResponseWriter::class, $this->createMock(IResponseWriter::class));

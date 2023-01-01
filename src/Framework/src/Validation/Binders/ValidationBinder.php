@@ -27,7 +27,7 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\ErrorMessages\IErrorMessageTemplateRegistry;
 use Aphiria\Validation\ErrorMessages\StringReplaceErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
-use Aphiria\Validation\Validator;
+use Aphiria\Validation\ReflectionValidator;
 use InvalidArgumentException;
 
 /**
@@ -44,8 +44,8 @@ final class ValidationBinder extends Binder
     {
         $objectConstraints = new ObjectConstraintsRegistry();
         $container->bindInstance(ObjectConstraintsRegistry::class, $objectConstraints);
-        $validator = new Validator($objectConstraints);
-        $container->bindInstance([IValidator::class, Validator::class], $validator);
+        $validator = new ReflectionValidator($objectConstraints);
+        $container->bindInstance([IValidator::class, ReflectionValidator::class], $validator);
         $constraintCache = new FileObjectConstraintsRegistryCache(GlobalConfiguration::getString('aphiria.validation.constraintsCachePath'));
         $container->bindInstance(IObjectConstraintsRegistryCache::class, $constraintCache);
 

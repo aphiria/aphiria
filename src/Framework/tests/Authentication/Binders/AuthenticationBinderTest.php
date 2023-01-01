@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Authentication\Binders;
 
 use Aphiria\Authentication\AuthenticationSchemeRegistry;
-use Aphiria\Authentication\Authenticator;
+use Aphiria\Authentication\AuthenticationSchemeHandlerAuthenticator;
 use Aphiria\Authentication\ContainerAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IAuthenticator;
@@ -58,7 +58,7 @@ class AuthenticationBinderTest extends TestCase
             [AuthenticationSchemeRegistry::class, AuthenticationSchemeRegistry::class],
             [IAuthenticationSchemeHandlerResolver::class, ContainerAuthenticationSchemeHandlerResolver::class],
             [IUserAccessor::class, RequestPropertyUserAccessor::class],
-            [IAuthenticator::class, Authenticator::class]
+            [IAuthenticator::class, AuthenticationSchemeHandlerAuthenticator::class]
         ];
 
         foreach ($parameters as $parameter) {

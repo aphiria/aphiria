@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\LogLevelFactory;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
@@ -37,7 +37,7 @@ class ExceptionHandlerComponentTest extends TestCase
     protected function setUp(): void
     {
         $this->logLevelFactory = new LogLevelFactory();
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->container->bindInstance(LogLevelFactory::class, $this->logLevelFactory);
         $this->exceptionHandlerComponent = new ExceptionHandlerComponent($this->container);
     }
@@ -45,7 +45,7 @@ class ExceptionHandlerComponentTest extends TestCase
     protected function tearDown(): void
     {
         // Remove the global instance so it doesn't impact other tests
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
     }
 
     public function testBuildWithConsoleOutputWriterRegistersCallback(): void

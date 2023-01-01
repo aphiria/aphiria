@@ -14,7 +14,7 @@ namespace Aphiria\Security\Tests;
 
 use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
-use Aphiria\Security\Identity;
+use Aphiria\Security\ClaimsIdentity;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\User;
 use PHPUnit\Framework\TestCase;
@@ -31,10 +31,10 @@ class UserTest extends TestCase
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->getPrimaryIdentity());
-        $identity1 = new Identity([], 'http://example.com');
+        $identity1 = new ClaimsIdentity([], 'http://example.com');
         $user->addIdentity($identity1);
         $this->assertSame($identity1, $user->getPrimaryIdentity());
-        $identity2 = new Identity([], 'http://example.com');
+        $identity2 = new ClaimsIdentity([], 'http://example.com');
         $user->addIdentity($identity2);
         $this->assertSame($identity2, $user->getPrimaryIdentity());
     }
@@ -42,10 +42,10 @@ class UserTest extends TestCase
     public function testAddingIdentityAddsIt(): void
     {
         $user = new User([]);
-        $identity1 = new Identity([], 'http://example.com');
+        $identity1 = new ClaimsIdentity([], 'http://example.com');
         $user->addIdentity($identity1);
         $this->assertSame([$identity1], $user->getIdentities());
-        $identity2 = new Identity([], 'http://example.com');
+        $identity2 = new ClaimsIdentity([], 'http://example.com');
         $user->addIdentity($identity2);
         $this->assertSame([$identity1, $identity2], $user->getIdentities());
     }
@@ -60,8 +60,8 @@ class UserTest extends TestCase
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->getPrimaryIdentity());
-        $identity1 = new Identity([], 'http://example.com');
-        $identity2 = new Identity([], 'http://example.com');
+        $identity1 = new ClaimsIdentity([], 'http://example.com');
+        $identity2 = new ClaimsIdentity([], 'http://example.com');
         $user->addManyIdentities([$identity1, $identity2]);
         $this->assertSame($identity2, $user->getPrimaryIdentity());
     }
@@ -69,11 +69,11 @@ class UserTest extends TestCase
     public function testAddingManyIdentitiesAddsThem(): void
     {
         $user = new User([]);
-        $identity1 = new Identity([], 'http://example.com');
-        $identity2 = new Identity([], 'http://example.com');
+        $identity1 = new ClaimsIdentity([], 'http://example.com');
+        $identity2 = new ClaimsIdentity([], 'http://example.com');
         $user->addManyIdentities([$identity1, $identity2]);
         $this->assertSame([$identity1, $identity2], $user->getIdentities());
-        $identity3 = new Identity([], 'http://example.com');
+        $identity3 = new ClaimsIdentity([], 'http://example.com');
         $user->addManyIdentities([$identity3]);
         $this->assertSame([$identity1, $identity2, $identity3], $user->getIdentities());
     }
@@ -90,7 +90,7 @@ class UserTest extends TestCase
             new Claim('foo', 'qux', 'http://example.com'),
             new Claim('baz', 'qiz', 'http://example.com')
         ];
-        $user = new User([new Identity($identity1Claims), new Identity($identity2Claims)]);
+        $user = new User([new ClaimsIdentity($identity1Claims), new ClaimsIdentity($identity2Claims)]);
         $this->assertSame(
             [$identity1Claims[0], $identity1Claims[1], $identity2Claims[0], $identity2Claims[1]],
             $user->getClaims('foo')
@@ -109,13 +109,13 @@ class UserTest extends TestCase
             new Claim('foo', 'qux', 'http://example.com'),
             new Claim('baz', 'qiz', 'http://example.com')
         ];
-        $user = new User([new Identity($identity1Claims), new Identity($identity2Claims)]);
+        $user = new User([new ClaimsIdentity($identity1Claims), new ClaimsIdentity($identity2Claims)]);
         $this->assertSame([...$identity1Claims, ...$identity2Claims], $user->getClaims());
     }
 
     public function testGettingIdentitiesReturnsOnesSetInConstructor(): void
     {
-        $identities = [new Identity([], 'http://example.com'), new Identity([], 'http://example.com')];
+        $identities = [new ClaimsIdentity([], 'http://example.com'), new ClaimsIdentity([], 'http://example.com')];
         $user = new User($identities);
         $this->assertSame($identities, $user->getIdentities());
     }
@@ -123,14 +123,14 @@ class UserTest extends TestCase
     public function testHasClaimReturnsWhetherOrNotAnyIdentityHasClaim(): void
     {
         // Test with string types
-        $identity = new Identity([new Claim('foo', 'bar', 'http://example.com')]);
+        $identity = new ClaimsIdentity([new Claim('foo', 'bar', 'http://example.com')]);
         $user = new User([$identity]);
         $this->assertTrue($user->hasClaim('foo', 'bar'));
         $this->assertFalse($user->hasClaim('foo', 'baz'));
         $this->assertFalse($user->hasClaim('doesNotExist', 'bar'));
 
         // Test with enum types
-        $identity = new Identity([new Claim(ClaimType::Actor, 'bar', 'http://example.com')]);
+        $identity = new ClaimsIdentity([new Claim(ClaimType::Actor, 'bar', 'http://example.com')]);
         $user = new User([$identity]);
         $this->assertTrue($user->hasClaim(ClaimType::Actor, 'bar'));
         $this->assertFalse($user->hasClaim(ClaimType::Actor, 'baz'));
@@ -138,8 +138,8 @@ class UserTest extends TestCase
 
         // Test with multiple identities
         $user = new User([
-            new Identity([new Claim('foo', 'bar', 'http://example.com')]),
-            new Identity([new Claim('baz', 'quz', 'http://example.com')])
+            new ClaimsIdentity([new Claim('foo', 'bar', 'http://example.com')]),
+            new ClaimsIdentity([new Claim('baz', 'quz', 'http://example.com')])
         ]);
         $this->assertTrue($user->hasClaim('foo', 'bar'));
         $this->assertTrue($user->hasClaim('baz', 'quz'));
@@ -149,12 +149,12 @@ class UserTest extends TestCase
     public function testPrimaryIdentityIsFirstOneByDefault(): void
     {
         $identities = [
-            new Identity([], 'http://example.com'),
-            new Identity([], 'http://example.com')
+            new ClaimsIdentity([], 'http://example.com'),
+            new ClaimsIdentity([], 'http://example.com')
         ];
         $user = new User($identities);
         $this->assertSame($identities[0], $user->getPrimaryIdentity());
-        $user->addIdentity(new Identity([], 'http://example.com'));
+        $user->addIdentity(new ClaimsIdentity([], 'http://example.com'));
         $this->assertSame($identities[0], $user->getPrimaryIdentity());
     }
 
@@ -168,17 +168,17 @@ class UserTest extends TestCase
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->getPrimaryIdentity());
-        $identity1 = new Identity([], 'http://example.com');
+        $identity1 = new ClaimsIdentity([], 'http://example.com');
         $user->addIdentity($identity1);
         $this->assertSame($identity1, $user->getPrimaryIdentity());
-        $identity2 = new Identity([], 'http://example.com');
+        $identity2 = new ClaimsIdentity([], 'http://example.com');
         $user->addIdentity($identity2);
         $this->assertSame($identity2, $user->getPrimaryIdentity());
     }
 
     public function testSettingSingleIdentityInConstructorConvertsItToArray(): void
     {
-        $identity = new Identity([], 'http://example.com');
+        $identity = new ClaimsIdentity([], 'http://example.com');
         $user = new User($identity);
         $this->assertSame([$identity], $user->getIdentities());
     }

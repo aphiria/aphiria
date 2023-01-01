@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Api\Testing;
 
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\RequestHeaderMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
@@ -38,7 +38,7 @@ class ResponseAssertions
      * @param ResponseHeaderParser $responseHeaderParser The response header parser
      */
     public function __construct(
-        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
+        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new RequestHeaderMediaTypeFormatterMatcher([
             new JsonMediaTypeFormatter(),
             new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),

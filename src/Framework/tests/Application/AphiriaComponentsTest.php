@@ -27,7 +27,7 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\AphiriaComponents;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
@@ -58,7 +58,7 @@ class AphiriaComponentsTest extends TestCase
     protected function setUp(): void
     {
         $this->appBuilder = $this->createMock(IApplicationBuilder::class);
-        Container::$globalInstance = new Container();
+        ReflectionContainer::$globalInstance = new ReflectionContainer();
         GlobalConfiguration::resetConfigurationSources();
     }
 
@@ -125,7 +125,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -169,7 +169,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -278,7 +278,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -353,7 +353,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -421,7 +421,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -482,7 +482,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -554,7 +554,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -651,7 +651,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -758,7 +758,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -826,7 +826,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithGlobalMiddlewareRegistersComponentIfItIsNotRegisteredYetAndUsesBoundMiddlewareCollection(): void
     {
-        Container::$globalInstance?->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
+        ReflectionContainer::$globalInstance?->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
         $this->appBuilder->method('hasComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn(false);
@@ -854,7 +854,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $middleware = new class () {
         };
         $component = new class () {
@@ -931,7 +931,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -1050,7 +1050,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -1154,7 +1154,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -1215,7 +1215,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -1287,7 +1287,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 
@@ -1352,7 +1352,7 @@ class AphiriaComponentsTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
-        Container::$globalInstance = null;
+        ReflectionContainer::$globalInstance = null;
         $component = new class () {
             use AphiriaComponents;
 

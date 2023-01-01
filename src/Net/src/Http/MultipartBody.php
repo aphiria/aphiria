@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Http;
 
 use Aphiria\IO\Streams\MultiStream;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Exception;
 use InvalidArgumentException;
 use RuntimeException;
@@ -90,12 +90,12 @@ class MultipartBody extends StreamBody
      * Creates a stream from a string
      *
      * @param string $string The string to create a stream for
-     * @return Stream The stream
+     * @return ResourceStream The stream
      * @throws RuntimeException Thrown if the stream could not be written to
      */
-    private function createStreamFromString(string $string): Stream
+    private function createStreamFromString(string $string): ResourceStream
     {
-        $stream = new Stream(\fopen('php://temp', 'r+b'));
+        $stream = new ResourceStream(\fopen('php://temp', 'r+b'));
         $stream->write($string);
         $stream->rewind();
 

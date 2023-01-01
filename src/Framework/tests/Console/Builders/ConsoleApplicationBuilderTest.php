@@ -18,7 +18,7 @@ use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
@@ -30,14 +30,14 @@ use RuntimeException;
 
 class ConsoleApplicationBuilderTest extends TestCase
 {
-    private Container $container;
+    private ReflectionContainer $container;
     private ConsoleApplicationBuilder $appBuilder;
     private Input $input;
 
     protected function setUp(): void
     {
         // To simplify testing, we'll use a real container
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->appBuilder = new ConsoleApplicationBuilder($this->container);
         $this->input = new Input('foo');
         $this->container->bindInstance(IServiceResolver::class, $this->container);

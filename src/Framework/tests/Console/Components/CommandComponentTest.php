@@ -19,14 +19,14 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\DependencyInjection\Container;
+use Aphiria\DependencyInjection\ReflectionContainer;
 use Aphiria\Framework\Console\Components\CommandComponent;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class CommandComponentTest extends TestCase
 {
-    private Container $container;
+    private ReflectionContainer $container;
     private CommandComponent $commandComponent;
     private CommandRegistry $commands;
     private CommandRegistrantCollection $commandRegistrants;
@@ -34,7 +34,7 @@ class CommandComponentTest extends TestCase
     protected function setUp(): void
     {
         // Using a real container to simplify testing
-        $this->container = new Container();
+        $this->container = new ReflectionContainer();
         $this->commandComponent = new CommandComponent($this->container);
 
         $this->container->bindInstance(CommandRegistry::class, $this->commands = new CommandRegistry());

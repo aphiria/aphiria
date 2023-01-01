@@ -14,7 +14,7 @@ namespace Aphiria\Net\Http;
 
 use Aphiria\Collections\HashTable;
 use Aphiria\Collections\IDictionary;
-use Aphiria\IO\Streams\Stream;
+use Aphiria\IO\Streams\ResourceStream;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use RuntimeException;
@@ -105,7 +105,7 @@ class RequestFactory
 
         $uri = $this->createUriFromSuperglobals($server);
         $headers = $this->createHeadersFromSuperglobals($server);
-        $body = new StreamBody(new Stream(\fopen('php://input', 'rb')));
+        $body = new StreamBody(new ResourceStream(\fopen('php://input', 'rb')));
         $properties = $this->createProperties($server);
 
         return new Request($method, $uri, $headers, $body, $properties);

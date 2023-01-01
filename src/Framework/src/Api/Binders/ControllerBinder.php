@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Binders;
 
-use Aphiria\Api\Controllers\ControllerParameterResolver;
+use Aphiria\Api\Controllers\NegotiatedContentControllerParameterResolver;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
-use Aphiria\Api\Controllers\RouteActionInvoker;
-use Aphiria\Api\Validation\RequestBodyValidator;
+use Aphiria\Api\Controllers\NegotiatedContentRouteActionInvoker;
+use Aphiria\Api\Validation\InterpolatedErrorMessageRequestBodyValidator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
@@ -33,12 +33,12 @@ final class ControllerBinder extends Binder
      */
     public function bind(IContainer $container): void
     {
-        $requestBodyValidator = new RequestBodyValidator(
+        $requestBodyValidator = new InterpolatedErrorMessageRequestBodyValidator(
             $container->resolve(IValidator::class),
             $container->resolve(IErrorMessageInterpolator::class)
         );
-        $controllerParameterResolver = new ControllerParameterResolver($container->resolve(IContentNegotiator::class));
-        $routeActionInvoker = new RouteActionInvoker(
+        $controllerParameterResolver = new NegotiatedContentControllerParameterResolver($container->resolve(IContentNegotiator::class));
+        $routeActionInvoker = new NegotiatedContentRouteActionInvoker(
             $container->resolve(IContentNegotiator::class),
             $requestBodyValidator,
             $container->resolve(IResponseFactory::class),

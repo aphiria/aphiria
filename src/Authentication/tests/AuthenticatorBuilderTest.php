@@ -15,7 +15,7 @@ namespace Aphiria\Authentication\Tests;
 use Aphiria\Authentication\AuthenticationScheme;
 use Aphiria\Authentication\AuthenticationSchemeOptions;
 use Aphiria\Authentication\AuthenticationSchemeRegistry;
-use Aphiria\Authentication\Authenticator;
+use Aphiria\Authentication\AuthenticationSchemeHandlerAuthenticator;
 use Aphiria\Authentication\AuthenticatorBuilder;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IUserAccessor;
@@ -45,7 +45,7 @@ class AuthenticatorBuilderTest extends TestCase
         $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
         $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
             ->build();
-        $expectedAuthenticator = new Authenticator(new AuthenticationSchemeRegistry(), $schemeHandlerResolver, new RequestPropertyUserAccessor());
+        $expectedAuthenticator = new AuthenticationSchemeHandlerAuthenticator(new AuthenticationSchemeRegistry(), $schemeHandlerResolver, new RequestPropertyUserAccessor());
         $this->assertEquals($expectedAuthenticator, $authenticator);
     }
 
@@ -72,7 +72,7 @@ class AuthenticatorBuilderTest extends TestCase
             ->build();
         $expectedSchemes = new AuthenticationSchemeRegistry();
         $expectedSchemes->registerScheme($scheme, true);
-        $expectedAuthenticator = new Authenticator($expectedSchemes, $schemeHandlerResolver);
+        $expectedAuthenticator = new AuthenticationSchemeHandlerAuthenticator($expectedSchemes, $schemeHandlerResolver);
         $this->assertEquals($expectedAuthenticator, $authenticator);
     }
 
@@ -88,7 +88,7 @@ class AuthenticatorBuilderTest extends TestCase
             ->build();
         $expectedSchemes = new AuthenticationSchemeRegistry();
         $expectedSchemes->registerScheme($scheme);
-        $expectedAuthenticator = new Authenticator($expectedSchemes, $schemeHandlerResolver);
+        $expectedAuthenticator = new AuthenticationSchemeHandlerAuthenticator($expectedSchemes, $schemeHandlerResolver);
         $this->assertEquals($expectedAuthenticator, $authenticator);
     }
 
@@ -99,7 +99,7 @@ class AuthenticatorBuilderTest extends TestCase
         $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
             ->withUserAccessor($userAccessor)
             ->build();
-        $expectedAuthenticator = new Authenticator(new AuthenticationSchemeRegistry(), $schemeHandlerResolver, $userAccessor);
+        $expectedAuthenticator = new AuthenticationSchemeHandlerAuthenticator(new AuthenticationSchemeRegistry(), $schemeHandlerResolver, $userAccessor);
         $this->assertEquals($expectedAuthenticator, $authenticator);
     }
 }

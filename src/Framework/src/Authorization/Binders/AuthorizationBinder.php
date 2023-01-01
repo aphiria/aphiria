@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Authorization\Binders;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
-use Aphiria\Authorization\Authority;
+use Aphiria\Authorization\AuthorizationRequirementHandlerAuthority;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
 use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthority;
@@ -37,7 +37,7 @@ class AuthorizationBinder extends Binder
         $continueOnError = null;
         GlobalConfiguration::tryGetBool('authorization.continueOnFailure', $continueOnError);
         /** @var bool|null $continueOnError */
-        $authority = new Authority($policies, $requirementHandlers, $continueOnError ?? true);
+        $authority = new AuthorizationRequirementHandlerAuthority($policies, $requirementHandlers, $continueOnError ?? true);
         $container->bindInstance(IAuthority::class, $authority);
     }
 }

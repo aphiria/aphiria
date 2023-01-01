@@ -37,7 +37,7 @@ class AuthorityBuilder
      */
     public function build(): IAuthority
     {
-        return new Authority($this->policies, $this->requirementHandlers, $this->continueOnFailure);
+        return new AuthorizationRequirementHandlerAuthority($this->policies, $this->requirementHandlers, $this->continueOnFailure);
     }
 
     /**

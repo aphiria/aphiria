@@ -45,9 +45,9 @@ class AuthenticatorBuilder
         }
 
         if ($this->userAccessor === null) {
-            $authenticator = new Authenticator($this->schemes, $this->handlerResolver);
+            $authenticator = new AuthenticationSchemeHandlerAuthenticator($this->schemes, $this->handlerResolver);
         } else {
-            $authenticator = new Authenticator($this->schemes, $this->handlerResolver, $this->userAccessor);
+            $authenticator = new AuthenticationSchemeHandlerAuthenticator($this->schemes, $this->handlerResolver, $this->userAccessor);
         }
 
         return $authenticator;
