@@ -29,6 +29,7 @@ use Aphiria\Console\StatusCode;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Exception;
+use Mockery;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -47,16 +48,20 @@ class ConsoleGatewayTest extends TestCase
         $this->output = new Output();
     }
 
+    protected function tearDown(): void
+    {
+        Mockery::close();
+    }
+
     public function testHandlingCommandWithNoHandlerThrowsException(): void
     {
-        $output = $this->createMock(IOutput::class);
-        $output->expects($this->exactly(3))
-            ->method('writeln')
-            ->withConsecutive(
-                ['<fatal>' . CommandNotFoundException::class . '</fatal>: <info>No command found with name "foo"</info>'],
-                ['Stack trace:'],
-                [$this->anything()]
-            );
+        $output = Mockery::mock(IOutput::class);
+        $output->shouldReceive('writeln')
+            ->with('<fatal>' . CommandNotFoundException::class . '</fatal>: <info>No command found with name "foo"</info>');
+        $output->shouldReceive('writeln')
+            ->with('Stack trace:');
+        $output->shouldReceive('writeln')
+            ->withAnyArgs();
         $status = $this->consoleGateway->handle(new Input('foo'), $output);
         $this->assertSame(StatusCode::Error, $status);
     }
