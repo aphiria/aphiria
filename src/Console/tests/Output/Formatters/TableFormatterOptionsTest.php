@@ -13,11 +13,20 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Output\Formatters;
 
 use Aphiria\Console\Output\Formatters\TableFormatterOptions;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class TableFormatterOptionsTest extends TestCase
 {
-    public function testProptiesAreSetInConstructor(): void
+    public function testEmptyEolCharThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('EOL character cannot be empty');
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid character */
+        new TableFormatterOptions(eolChar: '');
+    }
+
+    public function testPropertiesAreSetInConstructor(): void
     {
         $options = new TableFormatterOptions(
             'padding',

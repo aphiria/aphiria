@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Application\Configuration;
 
 use Closure;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
@@ -22,10 +23,13 @@ class HashTableConfiguration implements IConfiguration
 {
     /**
      * @param array<string, mixed> $hashTable The hash table that backs the configuration
-     * @param string $pathDelimiter The delimiter to use for nested path segments
+     * @param non-empty-string $pathDelimiter The delimiter to use for nested path segments
      */
     public function __construct(private readonly array $hashTable, private readonly string $pathDelimiter = '.')
     {
+        if (empty($this->pathDelimiter)) {
+            throw new InvalidArgumentException('Path delimiter cannot be empty');
+        }
     }
 
     /**

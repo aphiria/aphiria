@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Configuration;
 
+use InvalidArgumentException;
+
 /**
  * Defines the interface for configuration file readers to implement
  */
@@ -21,8 +23,9 @@ interface IConfigurationFileReader
      * Reads the configuration from storage
      *
      * @param string $path The path to the file to read
-     * @param string $pathDelimiter The delimiter for nested path segments
+     * @param non-empty-string $pathDelimiter The delimiter for nested path segments
      * @return IConfiguration The configuration that was read
+     * @throws InvalidArgumentException Thrown if the path delimiter was invalid
      * @throws InvalidConfigurationFileException Thrown if the configuration could not be read
      */
     public function readConfiguration(string $path, string $pathDelimiter = '.'): IConfiguration;

@@ -177,7 +177,6 @@ class RequestFactory
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
             $protoString = (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = \explode(',', $protoString);
-            /** @psalm-suppress RedundantCondition Psalm is incorrectly marking the count as redundant - bug */
             $isSecure = \count($protoArray) > 0 && \in_array(\strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
         } else {
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';

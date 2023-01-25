@@ -41,12 +41,10 @@ final class FileBinderFinder
     public function findAll(string|array $paths): array
     {
         // Filter out any non-concrete binder classes
-        return \array_values(\array_filter($this->classFinder->findAllTypes($paths, true), static function ($className) {
+        return \array_values(\array_filter($this->classFinder->findAllSubtypesOfType(Binder::class, $paths, true), static function ($className) {
             $reflectionClass = new ReflectionClass($className);
 
-            return $reflectionClass->isSubclassOf(Binder::class) &&
-                !$reflectionClass->isInterface() &&
-                !$reflectionClass->isAbstract();
+            return !$reflectionClass->isInterface() && !$reflectionClass->isAbstract();
         }));
     }
 }

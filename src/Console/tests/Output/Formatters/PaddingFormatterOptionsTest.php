@@ -13,10 +13,19 @@ declare(strict_types=1);
 namespace Aphiria\Console\Tests\Output\Formatters;
 
 use Aphiria\Console\Output\Formatters\PaddingFormatterOptions;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class PaddingFormatterOptionsTest extends TestCase
 {
+    public function testEmptyEolCharThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('EOL character cannot be empty');
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid character */
+        new PaddingFormatterOptions(eolChar: '');
+    }
+
     public function testPropertiesSetInConstructor(): void
     {
         $options = new PaddingFormatterOptions(

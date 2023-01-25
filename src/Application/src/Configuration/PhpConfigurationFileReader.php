@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Configuration;
 
+use InvalidArgumentException;
+
 /**
  * Defines the configuration reader that reads a PHP files
  */
@@ -22,6 +24,10 @@ class PhpConfigurationFileReader implements IConfigurationFileReader
      */
     public function readConfiguration(string $path, string $pathDelimiter = '.'): IConfiguration
     {
+        if (empty($pathDelimiter)) {
+            throw new InvalidArgumentException('Path delimiter cannot be empty');
+        }
+
         if (!\file_exists($path)) {
             throw new InvalidConfigurationFileException("$path does not exist");
         }
