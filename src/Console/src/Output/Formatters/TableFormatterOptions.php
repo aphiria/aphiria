@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Output\Formatters;
 
+use InvalidArgumentException;
+
 /**
  * Defines the options for the table formatter
  */
@@ -23,7 +25,7 @@ readonly class TableFormatterOptions
      * @param string $horizontalBorderChar The character to use for horizontal borders
      * @param string $intersectionChar The character to use for row/column intersections
      * @param bool $padAfter Whether or not to pad after a string
-     * @param string $eolChar The end-of-line character
+     * @param non-empty-string $eolChar The end-of-line character
      * @see PaddingFormatterOptions The EOL char and whether we pad after should be kept identical between the two options classes
      */
     public function __construct(
@@ -34,5 +36,8 @@ readonly class TableFormatterOptions
         public bool $padAfter = true,
         public string $eolChar = PHP_EOL
     ) {
+        if (empty($this->eolChar)) {
+            throw new InvalidArgumentException('EOL character cannot be empty');
+        }
     }
 }

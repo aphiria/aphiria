@@ -14,6 +14,7 @@ namespace Aphiria\Application\Tests\Configuration;
 
 use Aphiria\Application\Configuration\InvalidConfigurationFileException;
 use Aphiria\Application\Configuration\PhpConfigurationFileReader;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class PhpConfigurationFileReaderTest extends TestCase
@@ -23,6 +24,14 @@ class PhpConfigurationFileReaderTest extends TestCase
     protected function setUp(): void
     {
         $this->reader = new PhpConfigurationFileReader();
+    }
+
+    public function testEmptyPathDelimiterThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Path delimiter cannot be empty');
+        /** @psalm-suppress InvalidArgument Purposely testing an empty path delimiter */
+        $this->reader->readConfiguration(__DIR__ . '/files/configuration.php', '');
     }
 
     public function testReadingConfigurationCreatesConfigurationFromContentsOfPhpFile(): void

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Configuration;
 
+use InvalidArgumentException;
 use JsonException;
 
 /**
@@ -24,6 +25,10 @@ class JsonConfigurationFileReader implements IConfigurationFileReader
      */
     public function readConfiguration($path, string $pathDelimiter = '.'): IConfiguration
     {
+        if (empty($pathDelimiter)) {
+            throw new InvalidArgumentException('Path delimiter cannot be empty');
+        }
+
         if (!\file_exists($path)) {
             throw new InvalidConfigurationFileException("$path does not exist");
         }

@@ -159,6 +159,7 @@ class BodyParser
             $parsedHeaders = new Headers();
 
             foreach ($rawHeaders as $headerLine) {
+                /** @psalm-suppress PossiblyUndefinedArrayOffset The header name and value should always be set */
                 [$headerName, $headerValue] = \explode(':', $headerLine, 2);
                 $parsedHeaders->add(\trim($headerName), \trim($headerValue));
             }

@@ -14,6 +14,7 @@ namespace Aphiria\Application\Tests\Configuration;
 
 use Aphiria\Application\Configuration\InvalidConfigurationFileException;
 use Aphiria\Application\Configuration\JsonConfigurationFileReader;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class JsonConfigurationFileReaderTest extends TestCase
@@ -23,6 +24,14 @@ class JsonConfigurationFileReaderTest extends TestCase
     protected function setUp(): void
     {
         $this->reader = new JsonConfigurationFileReader();
+    }
+
+    public function testEmptyPathDelimiterThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Path delimiter cannot be empty');
+        /** @psalm-suppress InvalidArgument Purposely testing an empty path delimiter */
+        $this->reader->readConfiguration(__DIR__ . '/files/configuration.json', '');
     }
 
     public function testReadingConfigurationCreatesConfigurationFromContentsOfJsonFile(): void

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Application\Configuration;
 
 use Closure;
+use InvalidArgumentException;
 
 /**
  * Defines the global configuration builder
@@ -89,8 +90,9 @@ class GlobalConfigurationBuilder
      * Adds a JSON file that contains a configuration object to the global configuration
      *
      * @param string $path The path to the PHP file
-     * @param string $pathDelimiter The delimiter between nested path segments
+     * @param non-empty-string $pathDelimiter The delimiter between nested path segments
      * @return static For chaining
+     * @throws InvalidArgumentException Thrown if the path delimiter is invalid
      */
     public function withJsonFileConfigurationSource(string $path, string $pathDelimiter = '.'): static
     {
@@ -106,8 +108,9 @@ class GlobalConfigurationBuilder
      * Adds a PHP file that returns a configuration array to the global configuration
      *
      * @param string $path The path to the PHP file
-     * @param string $pathDelimiter The delimiter between nested path segments
+     * @param non-empty-string $pathDelimiter The delimiter between nested path segments
      * @return static For chaining
+     * @throws InvalidArgumentException Thrown if the path delimiter is invalid
      */
     public function withPhpFileConfigurationSource(string $path, string $pathDelimiter = '.'): static
     {

@@ -15,11 +15,20 @@ namespace Aphiria\Application\Tests\Configuration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Application\Tests\Configuration\Mocks\ConfigObject;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 class HashTableConfigurationTest extends TestCase
 {
+    public function testEmptyPathDelimiterThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Path delimiter cannot be empty');
+        /** @psalm-suppress InvalidArgument Purposely testing an invalid path delimiter */
+        new HashTableConfiguration(['foo' => 'bar'], '');
+    }
+
     public function testGetArrayForNestedValueReturnsArray(): void
     {
         $configuration = new HashTableConfiguration(['foo' => ['bar' => [1, 2]]]);
