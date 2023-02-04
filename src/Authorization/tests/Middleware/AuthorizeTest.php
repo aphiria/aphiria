@@ -24,6 +24,7 @@ use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Security\ClaimType;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
@@ -51,27 +52,98 @@ class AuthorizeTest extends TestCase
 
     public static function getUnauthenticatedUsers(): array
     {
-        $userWithNoIdentity = self::createMock(IPrincipal::class);
-        $userWithNoIdentity->method('getPrimaryIdentity')
-            ->willReturn(null);
-        $userWithUnauthenticatedIdentity = self::createMock(IPrincipal::class);
-        $unauthenticatedIdentity = self::createMock(IIdentity::class);
-        $unauthenticatedIdentity->method('isAuthenticated')
-            ->willReturn(false);
-        $userWithUnauthenticatedIdentity->method('getPrimaryIdentity')
-            ->willReturn($unauthenticatedIdentity);
+        $userWithNoIdentity = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return null;
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
+        $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return new class () implements IIdentity {
+                    public function getAuthenticationSchemeName(): ?string
+                    {
+                        return null;
+                    }
+
+                    public function getClaims(ClaimType|string $type = null): array
+                    {
+                        return [];
+                    }
+
+                    public function getName(): ?string
+                    {
+                        return null;
+                    }
+
+                    public function getNameIdentifier(): ?string
+                    {
+                        return null;
+                    }
+
+                    public function hasClaim(ClaimType|string $type, mixed $value): bool
+                    {
+                        return false;
+                    }
+
+                    public function isAuthenticated(): bool
+                    {
+                        return false;
+                    }
+                };
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
 
         return [
             [$userWithNoIdentity],
             [$userWithUnauthenticatedIdentity]
-        ];
-    }
-
-    public function getInvalidParameters(): array
-    {
-        return [
-            [null, null, 'Either the policy name or the policy must be set'],
-            ['policy', new AuthorizationPolicy('foo', [new RolesRequirement('admin')]), 'Either the policy name or the policy must be set']
         ];
     }
 

@@ -55,8 +55,15 @@ class BasicAuthenticationHandlerTest extends TestCase
 
     public static function getChallengeSchemesAndWwwAuthenticateHeaderValues(): array
     {
-        /** @var BasicAuthenticationHandler $schemeHandler */
-        $schemeHandler = self::createMock(BasicAuthenticationHandler::class);
+        $schemeHandler = new class () extends BasicAuthenticationHandler {
+            protected function createAuthenticationResultFromCredentials(
+                string $username,
+                string $password,
+                AuthenticationScheme $scheme
+            ): AuthenticationResult {
+                return AuthenticationResult::fail('foo');
+            }
+        };
 
         /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         return [
