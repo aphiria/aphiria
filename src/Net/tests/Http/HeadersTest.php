@@ -16,6 +16,7 @@ use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use InvalidArgumentException;
 use OutOfBoundsException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class HeadersTest extends TestCase
@@ -37,10 +38,10 @@ class HeadersTest extends TestCase
     }
 
     /**
-     * @dataProvider getInvalidHeaderValues
      * @param string $name The name of the header value to test
      * @param mixed $value The header value to test
      */
+    #[DataProvider('getInvalidHeaderValues')]
     public function testAddingInvalidValueThrowsException(string $name, mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);

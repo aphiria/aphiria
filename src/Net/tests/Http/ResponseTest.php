@@ -18,18 +18,11 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
 {
-    public function provideStatusCodes(): array
-    {
-        return [
-            [201, HttpStatusCode::Created],
-            [HttpStatusCode::Created, HttpStatusCode::Created]
-        ];
-    }
-
     public function testDefaultReasonPhraseIsSet(): void
     {
         $response = new Response(200);
@@ -49,8 +42,11 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @dataProvider provideStatusCodes
+     * @param HttpStatusCode|int $inputStatusCode The status code to test
+     * @param HttpStatusCode $expectedStatusCode The expected status code
      */
+    #[TestWith([201, HttpStatusCode::Created])]
+    #[TestWith([HttpStatusCode::Created, HttpStatusCode::Created])]
     public function testGettingAndSettingStatusCode(HttpStatusCode|int $inputStatusCode, HttpStatusCode $expectedStatusCode): void
     {
         $response = new Response();

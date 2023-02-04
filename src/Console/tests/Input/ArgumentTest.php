@@ -15,6 +15,7 @@ namespace Aphiria\Console\Tests\Input;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentType;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ArgumentTest extends TestCase
@@ -97,10 +98,11 @@ class ArgumentTest extends TestCase
     }
 
     /**
-     * @dataProvider getTypes
      * @param list<ArgumentType> $expectedType The expected type
      * @param list<ArgumentType>|ArgumentType $paramType The type passed into the constructor
      */
+    #[TestWith([[ArgumentType::Required], ArgumentType::Required])]
+    #[TestWith([[ArgumentType::Required], [ArgumentType::Required]])]
     public function testTypeIsAlwaysArray(array $expectedType, array|ArgumentType $paramType): void
     {
         $argument = new Argument('arg', $paramType);

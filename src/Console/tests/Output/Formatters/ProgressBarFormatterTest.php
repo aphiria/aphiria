@@ -17,6 +17,7 @@ use Aphiria\Console\Output\Formatters\ProgressBarFormatterOptions;
 use Aphiria\Console\Output\IOutput;
 use Exception;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -146,11 +147,11 @@ class ProgressBarFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider baseCaseProvider
      * @param int $percentComplete The percent completed
      * @param string $expectedString The expected string
      * @throws Exception Thrown on error
      */
+    #[DataProvider('baseCaseProvider')]
     public function testOnProgressWritesCorrectStringsForBaseCases(int $percentComplete, string $expectedString): void
     {
         $formatter = new ProgressBarFormatter($this->output);

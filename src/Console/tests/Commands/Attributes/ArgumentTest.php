@@ -14,18 +14,11 @@ namespace Aphiria\Console\Tests\Commands\Attributes;
 
 use Aphiria\Console\Commands\Attributes\Argument;
 use Aphiria\Console\Input\ArgumentType;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ArgumentTest extends TestCase
 {
-    public function getTypes(): array
-    {
-        return [
-            [[ArgumentType::Required], ArgumentType::Required],
-            [[ArgumentType::Required], [ArgumentType::Required]]
-        ];
-    }
-
     public function testAllPropertiesAreSetInConstructor(): void
     {
         $argument = new Argument('arg', ArgumentType::Required, 'description', 'foo');
@@ -36,10 +29,11 @@ class ArgumentTest extends TestCase
     }
 
     /**
-     * @dataProvider getTypes
      * @param list<ArgumentType> $expectedType The expected type
      * @param list<ArgumentType>|ArgumentType $paramType The type passed into the argument constructor
      */
+    #[TestWith([[ArgumentType::Required], ArgumentType::Required])]
+    #[TestWith([[ArgumentType::Required], [ArgumentType::Required]])]
     public function testTypeIsAlwaysArray(array $expectedType, array|ArgumentType $paramType): void
     {
         $argument = new Argument('arg', $paramType);

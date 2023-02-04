@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\Net\Http\HttpStatusCode;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class HttpStatusCodeTest extends TestCase
@@ -64,10 +65,10 @@ class HttpStatusCodeTest extends TestCase
     }
 
     /**
-     * @dataProvider getDefaultReasonPhrases
      * @param HttpStatusCode $statusCode The status code to test
      * @param string $expectedDefaultReasonPhrase The expected default reason phrase
      */
+    #[DataProvider('getDefaultReasonPhrases')]
     public function testDefaultReasonPhrasesAreCorrect(HttpStatusCode $statusCode, string $expectedDefaultReasonPhrase): void
     {
         $this->assertSame($expectedDefaultReasonPhrase, HttpStatusCode::getDefaultReasonPhrase($statusCode));

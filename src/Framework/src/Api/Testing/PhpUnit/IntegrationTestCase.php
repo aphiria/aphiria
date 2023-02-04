@@ -17,6 +17,7 @@ use Aphiria\Framework\Api\Testing\IntegrationTest;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IResponse;
 use Closure;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -46,7 +47,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -63,7 +64,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -98,7 +99,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -116,7 +117,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -138,7 +139,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -161,7 +162,7 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
     }
 
@@ -178,7 +179,19 @@ abstract class IntegrationTestCase extends TestCase
             // Dummy assertion
             $this->assertTrue(true);
         } catch (AssertionFailedException $ex) {
-            $this->fail($ex->getMessage());
+            $this->failWithMessage($ex->getMessage());
         }
+    }
+
+    /**
+     * Provides an overrideable method for failing the test (useful in unit tests)
+     *
+     * @param string $message The message to fail with
+     * @internal
+     */
+    #[CodeCoverageIgnore]
+    protected function failWithMessage(string $message): void
+    {
+        $this->fail($message);
     }
 }

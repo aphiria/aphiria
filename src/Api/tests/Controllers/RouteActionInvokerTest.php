@@ -191,8 +191,6 @@ class RouteActionInvokerTest extends TestCase
             $request,
             []
         );
-        // Dummy assertion
-        $this->assertTrue(true);
     }
 
     public function testInvokingMethodWithVoidReturnTypeReturnsNoContentResponse(): void
@@ -273,8 +271,6 @@ class RouteActionInvokerTest extends TestCase
             []
         );
         $this->assertEquals($expectedUser, $request->getProperties()->get('__APHIRIA_PARSED_BODY'));
-        // Dummy assertion
-        $this->assertTrue(true);
     }
 
     public function testRequestBodyDeserializationExceptionIsRethrownAsHttpException(): void

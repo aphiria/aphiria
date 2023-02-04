@@ -17,6 +17,7 @@ use Aphiria\Routing\UriTemplates\Lexers\Token;
 use Aphiria\Routing\UriTemplates\Lexers\TokenStream;
 use Aphiria\Routing\UriTemplates\Lexers\TokenType;
 use Aphiria\Routing\UriTemplates\Lexers\UriTemplateLexer;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class UriTemplateLexerTest extends TestCase
@@ -28,19 +29,12 @@ class UriTemplateLexerTest extends TestCase
         $this->lexer = new UriTemplateLexer();
     }
 
-    public function lexingPathWithFloatProvider(): array
-    {
-        return [
-            [1.23, '1.23'],
-            [123.0, '123.0'],
-        ];
-    }
-
     /**
-     * @dataProvider lexingPathWithFloatProvider
      * @param float $number The number to lex
      * @param string $uriTemplate The
      */
+    #[TestWith([1.23, '1.23'])]
+    #[TestWith([123.0, '123.0'])]
     public function testLexingPathWithFloat(float $number, string $uriTemplate): void
     {
         $this->assertEquals(

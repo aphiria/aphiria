@@ -19,6 +19,7 @@ use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class RolesRequirementHandlerTest extends TestCase
@@ -78,10 +79,9 @@ class RolesRequirementHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getUsersWithMatchingRoles
-     *
      * @param IPrincipal $user The user with matching role claims
      */
+    #[DataProvider('getUsersWithMatchingRoles')]
     public function testUserWithMatchingRoleClaimPasses(IPrincipal $user): void
     {
         $roleRequirement = new RolesRequirement('admin');
@@ -92,10 +92,9 @@ class RolesRequirementHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getUsersWithNoMatchingRoles
-     *
      * @param IPrincipal $user The user with no matching roles
      */
+    #[DataProvider('getUsersWithNoMatchingRoles')]
     public function testUserWithNoMatchingRoleClaimsDoesNotPass(IPrincipal $user): void
     {
         $roleRequirement = new RolesRequirement('admin');

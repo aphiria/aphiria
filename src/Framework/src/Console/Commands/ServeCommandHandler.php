@@ -15,6 +15,7 @@ namespace Aphiria\Framework\Console\Commands;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 /**
  * Defines the serve command handler
@@ -46,8 +47,8 @@ class ServeCommandHandler implements ICommandHandler
      * Runs the PHP command
      *
      * @param string $command The command to run
-     * @codeCoverageIgnore
      */
+    #[CodeCoverageIgnore]
     protected function runPhpCommand(string $command): void
     {
         \passthru($command);

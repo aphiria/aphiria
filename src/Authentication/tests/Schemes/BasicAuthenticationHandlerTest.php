@@ -21,6 +21,7 @@ use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psalm\Issue\UndefinedPropertyAssignment;
 use RuntimeException;
@@ -87,12 +88,11 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getValidBasicAuthorizationValues
-     *
      * @param string $authorizationHeaderValue The authorization header value to test
      * @psalm-suppress UndefinedPropertyAssignment The properties do actually exist on the anonymous class
      * @psalm-suppress UndefinedPropertyFetch Ditto
      */
+    #[DataProvider('getValidBasicAuthorizationValues')]
     public function testAuthenticatingWithValidBase64CredentialsReturnsPassingResult(string $authorizationHeaderValue): void
     {
         $headers = new Headers();
@@ -110,11 +110,10 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getInvalidBasicAuthorizationValues
-     *
      * @param string $authorizationHeaderValue The invalid authorization header value
      * @param string $expectedFailureMessage The expected failure exception's message
      */
+    #[DataProvider('getInvalidBasicAuthorizationValues')]
     public function testAuthenticatingWithInvalidAuthorizationHeaderReturnsFailedResult(string $authorizationHeaderValue, string $expectedFailureMessage): void
     {
         $headers = new Headers();
@@ -143,11 +142,10 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getChallengeSchemesAndWwwAuthenticateHeaderValues
-     *
      * @param AuthenticationScheme<BasicAuthenticationOptions> $scheme The scheme we're challenging
      * @param string $expectedWwwAuthenticateHeaderValue The expected Www-Authenticate header value
      */
+    #[DataProvider('getChallengeSchemesAndWwwAuthenticateHeaderValues')]
     public function testChallengeSetsWwwAuthenticateResponseHeader(AuthenticationScheme $scheme, string $expectedWwwAuthenticateHeaderValue): void
     {
         $headers = new Headers();

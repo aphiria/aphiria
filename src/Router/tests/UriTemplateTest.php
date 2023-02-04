@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests;
 
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class UriTemplateTest extends TestCase
@@ -31,19 +32,12 @@ class UriTemplateTest extends TestCase
         $this->assertTrue($uriTemplate->isAbsoluteUri);
     }
 
-    public function leadingSlashUriProvider(): array
-    {
-        return [
-            ['foo', '/foo'],
-            ['/foo', '/foo'],
-        ];
-    }
-
     /**
-     * @dataProvider leadingSlashUriProvider
      * @param string $pathTemplate The actual path template
      * @param string $expectedPathTemplate The expected path template
      */
+    #[TestWith(['foo', '/foo'])]
+    #[TestWith(['/foo', '/foo'])]
     public function testLeadingSlashIsAddedToPath(string $pathTemplate, string $expectedPathTemplate): void
     {
         $uriTemplate = new UriTemplate($pathTemplate);

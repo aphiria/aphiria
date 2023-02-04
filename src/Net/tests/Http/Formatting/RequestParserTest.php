@@ -23,6 +23,7 @@ use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -190,9 +191,9 @@ class RequestParserTest extends TestCase
     }
 
     /**
-     * @dataProvider provideMissingBoundaryRequests
      * @param IRequest|MultipartBodyPart $request The request to test
      */
+    #[DataProvider('provideMissingBoundaryRequests')]
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(IRequest|MultipartBodyPart $request): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -234,10 +235,10 @@ class RequestParserTest extends TestCase
     }
 
     /**
-     * @dataProvider provideValidMultipartRequests
      * @param IRequest|MultipartBodyPart $request The request to test
      * @param string $expectedBody The expected body
      */
+    #[DataProvider('provideValidMultipartRequests')]
     public function testReadingAsMultipartRequestWithHeadersExtractsBody(
         IRequest|MultipartBodyPart $request,
         string $expectedBody

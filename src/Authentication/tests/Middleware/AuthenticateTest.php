@@ -20,6 +20,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -43,10 +44,9 @@ class AuthenticateTest extends TestCase
     }
 
     /**
-     * @dataProvider getSchemeNames
-     *
      * @param string|null $schemeName The scheme name or null
      */
+    #[DataProvider('getSchemeNames')]
     public function testHandlingFailingAuthenticationResultCallsChallengesTheResponse(?string $schemeName): void
     {
         $this->middleware->setParameters(['schemeName' => $schemeName]);
@@ -67,10 +67,9 @@ class AuthenticateTest extends TestCase
     }
 
     /**
-     * @dataProvider getSchemeNames
-     *
      * @param string|null $schemeName The scheme name or null
      */
+    #[DataProvider('getSchemeNames')]
     public function testHandlingPassingAuthenticationResultCallsNextRequestHandler(?string $schemeName): void
     {
         $this->middleware->setParameters(['schemeName' => $schemeName]);

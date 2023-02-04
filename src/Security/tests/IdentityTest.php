@@ -15,22 +15,16 @@ namespace Aphiria\Security\Tests;
 use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\Identity;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class IdentityTest extends TestCase
 {
-    public function getAuthenticationSchemeNames(): array
-    {
-        return [
-            ['foo'],
-            [null]
-        ];
-    }
-
     /**
-     * @dataProvider getAuthenticationSchemeNames
      * @param string|null $expectedAuthenticationSchemeName The expected auth scheme name
      */
+    #[TestWith(['foo'])]
+    #[TestWith([null])]
     public function testGettingAuthenticationSchemeNameReturnsOneSetInConstructor(?string $expectedAuthenticationSchemeName): void
     {
         $identity = new Identity([], $expectedAuthenticationSchemeName);

@@ -16,22 +16,16 @@ use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers\AcceptMediaTypeHeaderValue;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class AcceptMediaTypeHeaderValueTest extends TestCase
 {
-    public function qualityScoreOutsideAcceptedRangeProvider(): array
-    {
-        return [
-            ['-1'],
-            ['1.5'],
-        ];
-    }
-
     /**
-     * @dataProvider qualityScoreOutsideAcceptedRangeProvider
      * @param string $invalidScore The invalid score
      */
+    #[TestWith(['-1'])]
+    #[TestWith(['1.5'])]
     public function testExceptionThrownWithQualityScoreOutsideAcceptedRange(string $invalidScore): void
     {
         /** @var ImmutableHashTable<string, string|null> $parameters */

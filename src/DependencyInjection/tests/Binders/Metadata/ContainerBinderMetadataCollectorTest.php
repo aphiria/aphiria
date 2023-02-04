@@ -22,6 +22,7 @@ use Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks\Foo;
 use Aphiria\DependencyInjection\Tests\Mocks\Bar;
 use Aphiria\DependencyInjection\Tests\Mocks\IFoo;
 use Exception;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ContainerBinderMetadataCollectorTest extends TestCase
@@ -101,12 +102,12 @@ class ContainerBinderMetadataCollectorTest extends TestCase
     }
 
     /**
-     * @dataProvider getBinders
      * @param Binder $binder The binder to test with
      * @param string $expectedInterface The expected interface
      * @param bool $isTargeted Whether or not the binding is targeted
      * @param class-string|null $targetClass The target class if there is one, otherwise null
      */
+    #[DataProvider('getBinders')]
     public function testBindingMethodsCreatesUniversalBoundInterfaces(Binder $binder, string $expectedInterface, bool $isTargeted, ?string $targetClass): void
     {
         $collector = new ContainerBinderMetadataCollector($this->container);

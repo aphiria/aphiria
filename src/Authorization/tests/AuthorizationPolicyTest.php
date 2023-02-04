@@ -14,6 +14,7 @@ namespace Aphiria\Authorization\Tests;
 
 use Aphiria\Authorization\AuthorizationPolicy;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class AuthorizationPolicyTest extends TestCase
@@ -36,11 +37,10 @@ class AuthorizationPolicyTest extends TestCase
     }
 
     /**
-     * @dataProvider getAuthenticationSchemes
-     *
      * @param string|list<string>|null $authenticationSchemeNames The authentication scheme name or names to test
      * @param list<string>|null $expectedAuthenticationSchemeNames The expected nullable array of authentication scheme names
      */
+    #[DataProvider('getAuthenticationSchemes')]
     public function testAuthenticationSchemeNamesAreConvertedToArray(string|array|null $authenticationSchemeNames, ?array $expectedAuthenticationSchemeNames): void
     {
         $policy = new AuthorizationPolicy('foo', [$this], $authenticationSchemeNames);
@@ -61,11 +61,10 @@ class AuthorizationPolicyTest extends TestCase
     }
 
     /**
-     * @dataProvider getRequirements
-     *
      * @param object|list<object> $requirements The requirement or list of requirements
      * @param list<object> $expectedRequirements The expected array of requirements
      */
+    #[DataProvider('getRequirements')]
     public function testRequirementsAreConvertedToArray(object|array $requirements, array $expectedRequirements): void
     {
         $policy = new AuthorizationPolicy('foo', $requirements, []);

@@ -35,6 +35,8 @@ use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -59,7 +61,7 @@ class IntegrationTestCaseTest extends TestCase
             public function __construct(IApplication $app, IRequestHandler $apiGateway)
             {
                 /** @psalm-suppress InternalMethod We need to call this internal method */
-                parent::__construct();
+                parent::__construct('foo');
 
                 $this->app = $app;
                 $this->apiGateway = $apiGateway;
@@ -69,17 +71,6 @@ class IntegrationTestCaseTest extends TestCase
                     new HtmlMediaTypeFormatter(),
                     new PlainTextMediaTypeFormatter()
                 ]);
-            }
-
-            /**
-             * Sets the failure message
-             *
-             * @param string $message The failure message
-             * @psalm-suppress ImplementedReturnTypeMismatch This never returns anything - bug
-             */
-            public static function fail(string $message = ''): void
-            {
-                self::$failMessage = $message;
             }
 
             // Make this an instance method just for ease of access (static methods on anon classes are a pain)
@@ -161,6 +152,11 @@ class IntegrationTestCaseTest extends TestCase
 
                 return parent::createResponseAssertions($container);
             }
+
+            protected function failWithMessage(string $message): void
+            {
+                self::$failMessage = $message;
+            }
         };
         $this->integrationTests->setUp();
     }
@@ -169,16 +165,6 @@ class IntegrationTestCaseTest extends TestCase
     {
         Container::$globalInstance = null;
         \putenv("APP_URL={$this->prevAppUrl}");
-    }
-
-    public function getAppUrlsAndPaths(): array
-    {
-        return [
-            ['http://localhost', 'path'],
-            ['http://localhost/', 'path'],
-            ['http://localhost', '/path'],
-            ['http://localhost/', '/path']
-        ];
     }
 
     public function getFullyQualifiedUris(): array
@@ -508,9 +494,9 @@ class IntegrationTestCaseTest extends TestCase
     }
 
     /**
-     * @dataProvider getFullyQualifiedUris
      * @param string $expectedUri The expected URI
      */
+    #[DataProvider('getFullyQualifiedUris')]
     public function testSendingRequestWithFullyQualifiedUrisUseThoseUris(string $expectedUri): void
     {
         $this->apiGateway->expects($this->once())
@@ -522,10 +508,13 @@ class IntegrationTestCaseTest extends TestCase
     }
 
     /**
-     * @dataProvider getAppUrlsAndPaths
      * @param string $appUrl The URL to set as the app URL environment variable
      * @param string $path The relative path
      */
+    #[TestWith(['http://localhost', 'path'])]
+    #[TestWith(['http://localhost/', 'path'])]
+    #[TestWith(['http://localhost', '/path'])]
+    #[TestWith(['http://localhost/', '/path'])]
     public function testSendingRequestWithRelativeUriCreatesCorrectUri(string $appUrl, string $path): void
     {
         \putenv("APP_URL=$appUrl");

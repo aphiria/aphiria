@@ -20,6 +20,8 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StreamResponseWriter;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -50,23 +52,7 @@ class StreamResponseWriterTest extends TestCase
             ->willReturn('OK');
     }
 
-    /**
-     * Gets a list of headers that should be not be concatenated
-     *
-     * @return list<list<mixed>> The list of parameters to use
-     */
-    public function getHeadersThatShouldNotBeConcatenated(): array
-    {
-        return [
-            ['Set-Cookie', ['foo=bar', 'baz=blah']],
-            ['Www-Authenticate', ['Basic', 'Basic realm="foo"']],
-            ['Proxy-Authenticate', ['Basic', 'Basic realm="foo"']]
-        ];
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testBodyIsWrittenToOutputStream(): void
     {
         $this->body->expects($this->once())
@@ -78,8 +64,10 @@ class StreamResponseWriterTest extends TestCase
     /**
      * @param string $headerName The name of the header
      * @param list<mixed> $headerValues The list of header values
-     * @dataProvider getHeadersThatShouldNotBeConcatenated
      */
+    #[TestWith(['Set-Cookie', ['foo=bar', 'baz=blah']])]
+    #[TestWith(['Www-Authenticate', ['Basic', 'Basic realm="foo"']])]
+    #[TestWith(['Proxy-Authenticate', ['Basic', 'Basic realm="foo"']])]
     public function testWritingResponseDoesNotConcatenateSelectHeaders(string $headerName, array $headerValues): void
     {
         $expectedHeaders = ['HTTP/1.1 200 OK'];

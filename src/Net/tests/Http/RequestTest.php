@@ -21,6 +21,7 @@ use Aphiria\Net\Http\RequestTargetType;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -127,21 +128,14 @@ class RequestTest extends TestCase
         $this->assertSame("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string)$request);
     }
 
-    public function requestTargetQueryStringProvider(): array
-    {
-        return [
-            ['GET', 'https://example.com/foo', "GET /foo HTTP/1.1\r\nHost: example.com\r\n\r\n"],
-            ['GET', 'https://example.com/foo?bar', "GET /foo?bar HTTP/1.1\r\nHost: example.com\r\n\r\n"],
-            ['GET', 'https://example.com:8080/foo?bar', "GET /foo?bar HTTP/1.1\r\nHost: example.com:8080\r\n\r\n"],
-        ];
-    }
-
     /**
-     * @dataProvider requestTargetQueryStringProvider
      * @param string $requestQueryString The request query string
      * @param string $uri The request URI
      * @param string $expectedRequestQueryString The expected request query string
      */
+    #[TestWith(['GET', 'https://example.com/foo', "GET /foo HTTP/1.1\r\nHost: example.com\r\n\r\n"])]
+    #[TestWith(['GET', 'https://example.com/foo?bar', "GET /foo?bar HTTP/1.1\r\nHost: example.com\r\n\r\n"])]
+    #[TestWith(['GET', 'https://example.com:8080/foo?bar', "GET /foo?bar HTTP/1.1\r\nHost: example.com:8080\r\n\r\n"])]
     public function testRequestTargetTypeOriginFormIncludesHostHeader(string $requestQueryString, string $uri, string $expectedRequestQueryString): void
     {
         $requestQueryString = new Request($requestQueryString, new Uri($uri));

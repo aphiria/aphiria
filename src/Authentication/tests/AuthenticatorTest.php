@@ -28,6 +28,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -213,11 +214,10 @@ class AuthenticatorTest extends TestCase
         $this->authenticator->logIn($user, $request, $response, 'foo');
     }
 
-    /**
-     * @dataProvider getUsersForLogin
-     *
+    /**     *
      * @param IPrincipal $user The user to log in in tests
      */
+    #[DataProvider('getUsersForLogin')]
     public function testLogInWithUnauthenticatedUserThrowsException(IPrincipal $user): void
     {
         $this->expectException(NotAuthenticatedException::class);

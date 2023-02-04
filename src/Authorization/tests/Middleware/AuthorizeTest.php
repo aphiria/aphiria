@@ -27,6 +27,8 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -164,10 +166,9 @@ class AuthorizeTest extends TestCase
     }
 
     /**
-     * @dataProvider getUnauthenticatedUsers
-     *
      * @param IPrincipal $user The unauthenticated user
      */
+    #[DataProvider('getUnauthenticatedUsers')]
     public function testHandlingUnauthenticatedUserReturnsUnauthorizedAndChallengedResponse(IPrincipal $user): void
     {
         $request = $this->createMock(IRequest::class);
@@ -185,12 +186,12 @@ class AuthorizeTest extends TestCase
     }
 
     /**
-     * @dataProvider getInvalidParameters
-     *
      * @param string|null $policyName The policy name parameter
      * @param AuthorizationPolicy|null $policy The policy parameter
      * @param string $expectedExceptionMessage The expected exception message
      */
+    #[TestWith([null, null, 'Either the policy name or the policy must be set'])]
+    #[TestWith(['policy', new AuthorizationPolicy('foo', [new RolesRequirement('admin')]), 'Either the policy name or the policy must be set'])]
     public function testInvalidParametersThrowsException(
         ?string $policyName,
         ?AuthorizationPolicy $policy,

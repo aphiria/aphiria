@@ -16,6 +16,7 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\Application\Tests\Configuration\Mocks\ConfigObject;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -146,9 +147,7 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::getValue('baz');
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    #[RunInSeparateProcess]
     public function testGetValueWithoutSettingConfigurationSourceThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
