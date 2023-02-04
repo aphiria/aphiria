@@ -42,7 +42,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     /**
      * @return list<list<mixed>> The list of problem details property names, raw values, and expected values
      */
-    public function getMapValues(): array
+    public static function getMapValues(): array
     {
         return [
             ['type', 'foo', 'foo'],

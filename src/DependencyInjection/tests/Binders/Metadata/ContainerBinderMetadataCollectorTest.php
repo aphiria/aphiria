@@ -35,7 +35,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $this->container = new Container();
     }
 
-    public function getBinders(): array
+    public static function getBinders(): array
     {
         $binder1 = new class () extends Binder {
             public function bind(IContainer $container): void

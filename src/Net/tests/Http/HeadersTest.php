@@ -28,12 +28,15 @@ class HeadersTest extends TestCase
         $this->headers = new Headers();
     }
 
-    public function getInvalidHeaderValues(): array
+    public static function getInvalidHeaderValues(): array
     {
+        $object = new class () {
+        };
+
         return [
-            ['foo', $this],
-            ['foo', [$this]],
-            ['foo', ['bar', $this]]
+            ['foo', $object],
+            ['foo', [$object]],
+            ['foo', ['bar', $object]]
         ];
     }
 

@@ -53,10 +53,10 @@ class BasicAuthenticationHandlerTest extends TestCase
         };
     }
 
-    public function getChallengeSchemesAndWwwAuthenticateHeaderValues(): array
+    public static function getChallengeSchemesAndWwwAuthenticateHeaderValues(): array
     {
         /** @var BasicAuthenticationHandler $schemeHandler */
-        $schemeHandler = $this->createMock(BasicAuthenticationHandler::class);
+        $schemeHandler = self::createMock(BasicAuthenticationHandler::class);
 
         /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         return [
@@ -65,7 +65,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         ];
     }
 
-    public function getInvalidBasicAuthorizationValues(): array
+    public static function getInvalidBasicAuthorizationValues(): array
     {
         return [
             ['NotBasic ' . \base64_encode('foo:bar'), 'Request did not use basic authentication'],
@@ -76,7 +76,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         ];
     }
 
-    public function getValidBasicAuthorizationValues(): array
+    public static function getValidBasicAuthorizationValues(): array
     {
         return [
             ['BASIC ' . \base64_encode('foo:bar')],

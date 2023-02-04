@@ -35,7 +35,7 @@ class ProgressBarFormatterTest extends TestCase
         Mockery::close();
     }
 
-    public function baseCaseProvider(): array
+    public static function baseCaseProvider(): array
     {
         return [
             [1, '[1%--------]'],

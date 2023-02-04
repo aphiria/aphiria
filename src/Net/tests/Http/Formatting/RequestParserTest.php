@@ -50,10 +50,10 @@ class RequestParserTest extends TestCase
             ->willReturn($this->properties);
     }
 
-    public function provideMissingBoundaryRequests(): array
+    public static function provideMissingBoundaryRequests(): array
     {
         $headers = new Headers([new KeyValuePair('Content-Type', 'multipart/mixed')]);
-        $badRequest = $this->createMock(IRequest::class);
+        $badRequest = self::createMock(IRequest::class);
         $badRequest->method('getHeaders')
             ->willReturn($headers);
         $badRequest->method('getBody')
@@ -66,15 +66,15 @@ class RequestParserTest extends TestCase
         ];
     }
 
-    public function provideValidMultipartRequests(): array
+    public static function provideValidMultipartRequests(): array
     {
         $expectedBody = 'body';
         $serializedBody = "--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\n$expectedBody\r\n--boundary--";
         $headers = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=boundary')]);
-        $body = $this->createMock(IBody::class);
+        $body = self::createMock(IBody::class);
         $body->method('readAsString')
             ->willReturn($serializedBody);
-        $request = $this->createMock(IRequest::class);
+        $request = self::createMock(IRequest::class);
         $request->method('getHeaders')
             ->willReturn($headers);
         $request->method('getBody')

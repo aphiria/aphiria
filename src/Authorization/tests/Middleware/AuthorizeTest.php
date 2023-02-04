@@ -49,13 +49,13 @@ class AuthorizeTest extends TestCase
         $this->middleware = new Authorize($this->authority, $this->authenticator, $this->policies, $this->userAccessor);
     }
 
-    public function getUnauthenticatedUsers(): array
+    public static function getUnauthenticatedUsers(): array
     {
-        $userWithNoIdentity = $this->createMock(IPrincipal::class);
+        $userWithNoIdentity = self::createMock(IPrincipal::class);
         $userWithNoIdentity->method('getPrimaryIdentity')
             ->willReturn(null);
-        $userWithUnauthenticatedIdentity = $this->createMock(IPrincipal::class);
-        $unauthenticatedIdentity = $this->createMock(IIdentity::class);
+        $userWithUnauthenticatedIdentity = self::createMock(IPrincipal::class);
+        $unauthenticatedIdentity = self::createMock(IIdentity::class);
         $unauthenticatedIdentity->method('isAuthenticated')
             ->willReturn(false);
         $userWithUnauthenticatedIdentity->method('getPrimaryIdentity')

@@ -31,13 +31,13 @@ class RolesRequirementHandlerTest extends TestCase
         $this->requirementHandler = new RolesRequirementHandler();
     }
 
-    public function getUsersWithMatchingRoles(): array
+    public static function getUsersWithMatchingRoles(): array
     {
-        $userWithSingleMatchingRole = $this->createMock(IPrincipal::class);
+        $userWithSingleMatchingRole = self::createMock(IPrincipal::class);
         $userWithSingleMatchingRole->method('getClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'admin', 'example.com')]);
-        $userWithManyRolesIncludingMatchingOne = $this->createMock(IPrincipal::class);
+        $userWithManyRolesIncludingMatchingOne = self::createMock(IPrincipal::class);
         $userWithManyRolesIncludingMatchingOne->method('getClaims')
             ->with(ClaimType::Role)
             ->willReturn([
@@ -51,13 +51,13 @@ class RolesRequirementHandlerTest extends TestCase
         ];
     }
 
-    public function getUsersWithNoMatchingRoles(): array
+    public static function getUsersWithNoMatchingRoles(): array
     {
-        $userWithNoRoles = $this->createMock(IPrincipal::class);
+        $userWithNoRoles = self::createMock(IPrincipal::class);
         $userWithNoRoles->method('getClaims')
             ->with(ClaimType::Role)
             ->willReturn([]);
-        $userWithNoMatchingRoles = $this->createMock(IPrincipal::class);
+        $userWithNoMatchingRoles = self::createMock(IPrincipal::class);
         $userWithNoMatchingRoles->method('getClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'unused', 'example.com')]);

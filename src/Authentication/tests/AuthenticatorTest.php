@@ -47,13 +47,13 @@ class AuthenticatorTest extends TestCase
         $this->authenticator = new Authenticator($this->schemes, $this->authenticationHandlerResolver, $this->userAccessor);
     }
 
-    public function getUsersForLogin(): array
+    public static function getUsersForLogin(): array
     {
-        $userWithNoIdentity = $this->createMock(IPrincipal::class);
+        $userWithNoIdentity = self::createMock(IPrincipal::class);
         $userWithNoIdentity->method('getPrimaryIdentity')
             ->willReturn(null);
-        $userWithUnauthenticatedIdentity = $this->createMock(IPrincipal::class);
-        $unauthenticatedIdentity = $this->createMock(IIdentity::class);
+        $userWithUnauthenticatedIdentity = self::createMock(IPrincipal::class);
+        $unauthenticatedIdentity = self::createMock(IIdentity::class);
         $unauthenticatedIdentity->method('isAuthenticated')
             ->willReturn(false);
         $userWithUnauthenticatedIdentity->method('getPrimaryIdentity')

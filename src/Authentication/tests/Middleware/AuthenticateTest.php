@@ -35,7 +35,7 @@ class AuthenticateTest extends TestCase
         $this->middleware = new Authenticate($this->authenticator);
     }
 
-    public function getSchemeNames(): array
+    public static function getSchemeNames(): array
     {
         return [
             [null],

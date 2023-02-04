@@ -28,6 +28,35 @@ class RequestFactoryTest extends TestCase
         $this->factory = new RequestFactory();
     }
 
+    public static function httpServerPropertyProvider(): array
+    {
+        return [
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTPS' => 'on',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'https',
+            ],
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTPS' => 'off',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'http',
+            ],
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'http',
+            ],
+        ];
+    }
+
     public function testAuthorityInServerSetsAuthorityInUri(): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
@@ -177,35 +206,6 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals(['HTTP_HOST' => 'foo.com:8080']);
         $this->assertSame('foo.com', $request->getUri()->host);
-    }
-
-    public function httpServerPropertyProvider(): array
-    {
-        return [
-            [
-                [
-                    'SERVER_PROTOCOL' => 'HTTP/1.1',
-                    'HTTPS' => 'on',
-                    'HTTP_HOST' => 'foo.com',
-                ],
-                'https',
-            ],
-            [
-                [
-                    'SERVER_PROTOCOL' => 'HTTP/1.1',
-                    'HTTPS' => 'off',
-                    'HTTP_HOST' => 'foo.com',
-                ],
-                'http',
-            ],
-            [
-                [
-                    'SERVER_PROTOCOL' => 'HTTP/1.1',
-                    'HTTP_HOST' => 'foo.com',
-                ],
-                'http',
-            ],
-        ];
     }
 
     /**

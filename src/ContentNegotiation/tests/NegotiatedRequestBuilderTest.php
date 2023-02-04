@@ -33,13 +33,16 @@ class NegotiatedRequestBuilderTest extends TestCase
         $this->requestBuilder = new NegotiatedRequestBuilder();
     }
 
-    public function getRawBodies(): array
+    public static function getRawBodies(): array
     {
+        $object = new class () {
+        };
+
         return [
             ['string[]', ['foo', 'bar']],
             ['string', 'foo'],
-            [self::class, $this],
-            [self::class . '[]', [$this, $this]]
+            [$object::class, $object],
+            [$object::class . '[]', [$object, $object]]
         ];
     }
 

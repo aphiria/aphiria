@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class HttpStatusCodeTest extends TestCase
 {
-    public function getDefaultReasonPhrases(): array
+    public static function getDefaultReasonPhrases(): array
     {
         return [
             [HttpStatusCode::Continue, 'Continue'],

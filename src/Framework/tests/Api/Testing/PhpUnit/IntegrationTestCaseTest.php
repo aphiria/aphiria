@@ -167,7 +167,7 @@ class IntegrationTestCaseTest extends TestCase
         \putenv("APP_URL={$this->prevAppUrl}");
     }
 
-    public function getFullyQualifiedUris(): array
+    public static function getFullyQualifiedUris(): array
     {
         $schemes = ['about', 'data', 'file', 'ftp', 'git', 'http', 'https', 'sftp', 'ssh', 'svn'];
         $uris = [];

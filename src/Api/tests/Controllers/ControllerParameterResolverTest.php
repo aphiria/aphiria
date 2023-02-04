@@ -42,7 +42,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->resolver = new ControllerParameterResolver($this->contentNegotiator);
     }
 
-    public function scalarParameterTestDataProvider(): array
+    public static function scalarParameterTestDataProvider(): array
     {
         return [
             ['intParameter', 'foo', '123', 123],
