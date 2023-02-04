@@ -26,8 +26,10 @@ use Aphiria\Authentication\Schemes\ILoginAuthenticationSchemeHandler;
 use Aphiria\Authentication\UnsupportedAuthenticationHandlerException;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Security\ClaimType;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -46,17 +48,96 @@ class AuthenticatorTest extends TestCase
         $this->authenticator = new Authenticator($this->schemes, $this->authenticationHandlerResolver, $this->userAccessor);
     }
 
-    public function getUsersForLogin(): array
+    public static function getUsersForLogin(): array
     {
-        $userWithNoIdentity = $this->createMock(IPrincipal::class);
-        $userWithNoIdentity->method('getPrimaryIdentity')
-            ->willReturn(null);
-        $userWithUnauthenticatedIdentity = $this->createMock(IPrincipal::class);
-        $unauthenticatedIdentity = $this->createMock(IIdentity::class);
-        $unauthenticatedIdentity->method('isAuthenticated')
-            ->willReturn(false);
-        $userWithUnauthenticatedIdentity->method('getPrimaryIdentity')
-            ->willReturn($unauthenticatedIdentity);
+        $userWithNoIdentity = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return null;
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
+        $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return new class () implements IIdentity {
+                    public function getAuthenticationSchemeName(): ?string
+                    {
+                        return null;
+                    }
+
+                    public function getClaims(ClaimType|string $type = null): array
+                    {
+                        return [];
+                    }
+
+                    public function getName(): ?string
+                    {
+                        return null;
+                    }
+
+                    public function getNameIdentifier(): ?string
+                    {
+                        return null;
+                    }
+
+                    public function hasClaim(ClaimType|string $type, mixed $value): bool
+                    {
+                        return false;
+                    }
+
+                    public function isAuthenticated(): bool
+                    {
+                        return false;
+                    }
+                };
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
 
         return [
             [$userWithNoIdentity],
@@ -213,11 +294,10 @@ class AuthenticatorTest extends TestCase
         $this->authenticator->logIn($user, $request, $response, 'foo');
     }
 
-    /**
-     * @dataProvider getUsersForLogin
-     *
+    /**     *
      * @param IPrincipal $user The user to log in in tests
      */
+    #[DataProvider('getUsersForLogin')]
     public function testLogInWithUnauthenticatedUserThrowsException(IPrincipal $user): void
     {
         $this->expectException(NotAuthenticatedException::class);

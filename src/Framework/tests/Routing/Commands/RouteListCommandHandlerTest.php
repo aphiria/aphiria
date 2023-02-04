@@ -26,6 +26,7 @@ use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -47,22 +48,6 @@ class RouteListCommandHandlerTest extends TestCase
         $this->commandHandler = new RouteListCommandHandler($this->routes, $this->middleware, $this->paddingFormatter);
         $this->input = new Input('route:list', [], []);
         $this->output = $this->createMock(IOutput::class);
-    }
-
-    /**
-     * Gets URI templates for testing
-     *
-     * @return list<array{0: string, 1: string}> The list of URI templates and expected outputs
-     */
-    public function getUriTemplates(): array
-    {
-        return [
-            ['/foo', '/foo'],
-            ['/foo/:bar', '/foo/<info>:bar</info>'],
-            ['/foo/:bar/baz', '/foo/<info>:bar</info>/baz'],
-            ['/foo/:bar(int)', '/foo/<info>:bar(int)</info>'],
-            ['/foo[/:bar[/:baz]]', '/foo[/<info>:bar</info>[/<info>:baz</info>]]']
-        ];
     }
 
     public function testFullyQualifiedClassNamesAreUsedForControllersAndMiddlewareWhenOptionIsSpecified(): void
@@ -194,11 +179,14 @@ class RouteListCommandHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getUriTemplates
-     *
      * @param string $uriTemplate The raw URI template
      * @param string $expectedFormattedUriTemplate The expected formatted URI template
      */
+    #[TestWith(['/foo', '/foo'])]
+    #[TestWith(['/foo/:bar', '/foo/<info>:bar</info>'])]
+    #[TestWith(['/foo/:bar/baz', '/foo/<info>:bar</info>/baz'])]
+    #[TestWith(['/foo/:bar(int)', '/foo/<info>:bar(int)</info>'])]
+    #[TestWith(['/foo[/:bar[/:baz]]', '/foo[/<info>:bar</info>[/<info>:baz</info>]]'])]
     public function testRouteVariablesInUriTemplatesAreHighlighted(string $uriTemplate, string $expectedFormattedUriTemplate): void
     {
         $route = new Route(

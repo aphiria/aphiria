@@ -17,6 +17,7 @@ use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ContentTypeHeaderValueTest extends TestCase
@@ -62,18 +63,11 @@ class ContentTypeHeaderValueTest extends TestCase
         $this->assertSame('json', $value->suffix);
     }
 
-    public function incorrectlyFormattedMediaTypeProvider(): array
-    {
-        return [
-            ['foo'],
-            ['foo/'],
-        ];
-    }
-
     /**
-     * @dataProvider incorrectlyFormattedMediaTypeProvider
      * @param string $incorrectlyFormattedMediaType The incorrectly-formatted media type
      */
+    #[TestWith(['foo'])]
+    #[TestWith(['foo/'])]
     public function testIncorrectlyFormattedMediaTypeThrowsException(string $incorrectlyFormattedMediaType): void
     {
         $this->expectException(InvalidArgumentException::class);

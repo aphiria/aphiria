@@ -16,25 +16,19 @@ use Aphiria\Exceptions\FatalThrowableError;
 use ErrorException;
 use InvalidArgumentException;
 use ParseError;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use TypeError;
 
 class FatalThrowableErrorTest extends TestCase
 {
-    public function throwableProvider(): array
-    {
-        return [
-            [new ParseError()],
-            [new TypeError()],
-            [new InvalidArgumentException()],
-        ];
-    }
-
     /**
-     * @dataProvider throwableProvider
      * @param Throwable $throwable The throwable error
      */
+    #[TestWith([new ParseError()])]
+    #[TestWith([new TypeError()])]
+    #[TestWith([new InvalidArgumentException()])]
     public function testConstructor(Throwable $throwable): void
     {
         $throwableError = new FatalThrowableError($throwable);

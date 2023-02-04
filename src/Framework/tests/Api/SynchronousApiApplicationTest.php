@@ -25,12 +25,14 @@ use RuntimeException;
 class SynchronousApiApplicationTest extends TestCase
 {
     private SynchronousApiApplication $app;
+    private IResponseWriter&MockObject $responseWriter;
     private IRequestHandler&MockObject $apiGateway;
 
     protected function setUp(): void
     {
         $this->apiGateway = $this->createMock(IRequestHandler::class);
-        $this->app = new SynchronousApiApplication($this->apiGateway, $this->createMock(IRequest::class));
+        $this->responseWriter = $this->createMock(IResponseWriter::class);
+        $this->app = new SynchronousApiApplication($this->apiGateway, $this->createMock(IRequest::class), $this->responseWriter);
     }
 
     public function testRunReturnsZero(): void
@@ -46,11 +48,10 @@ class SynchronousApiApplicationTest extends TestCase
         $apiGateway->method('handle')
             ->with($request)
             ->willReturn($response);
-        $responseWriter = $this->createMock(IResponseWriter::class);
-        $responseWriter->expects($this->once())
+        $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($response);
-        $app = new SynchronousApiApplication($apiGateway, $request, $responseWriter);
+        $app = new SynchronousApiApplication($apiGateway, $request, $this->responseWriter);
         $app->run();
     }
 

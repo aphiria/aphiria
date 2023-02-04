@@ -26,6 +26,7 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use ReflectionParameter;
@@ -41,7 +42,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->resolver = new ControllerParameterResolver($this->contentNegotiator);
     }
 
-    public function scalarParameterTestDataProvider(): array
+    public static function scalarParameterTestDataProvider(): array
     {
         return [
             ['intParameter', 'foo', '123', 123],
@@ -226,12 +227,12 @@ class ControllerParameterResolverTest extends TestCase
     }
 
     /**
-     * @dataProvider scalarParameterTestDataProvider
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
      * @param string $rawValue The raw value
      * @param mixed $scalarValue Ths scalar value
      */
+    #[DataProvider('scalarParameterTestDataProvider')]
     public function testResolvingScalarParameterUsesMatchingQueryStringVariable(
         string $methodName,
         string $parameterName,
@@ -247,12 +248,12 @@ class ControllerParameterResolverTest extends TestCase
     }
 
     /**
-     * @dataProvider scalarParameterTestDataProvider
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
      * @param string $rawValue The raw value
      * @param mixed $scalarValue Ths scalar value
      */
+    #[DataProvider('scalarParameterTestDataProvider')]
     public function testResolvingScalarParameterUsesMatchingRouteVariableOverQueryStringVariable(
         string $methodName,
         string $parameterName,

@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.0.0-alpha9](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha8...v1.0.0-alpha9) (2023-?-?)
+
+### Changed
+
+- Updated to PHPUnit 10.0 ([#248](https://github.com/aphiria/aphiria/pull/248))
+
 ## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
 
 ### Changed

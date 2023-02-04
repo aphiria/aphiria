@@ -21,6 +21,7 @@ use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psalm\Issue\UndefinedPropertyAssignment;
 use RuntimeException;
@@ -52,10 +53,17 @@ class BasicAuthenticationHandlerTest extends TestCase
         };
     }
 
-    public function getChallengeSchemesAndWwwAuthenticateHeaderValues(): array
+    public static function getChallengeSchemesAndWwwAuthenticateHeaderValues(): array
     {
-        /** @var BasicAuthenticationHandler $schemeHandler */
-        $schemeHandler = $this->createMock(BasicAuthenticationHandler::class);
+        $schemeHandler = new class () extends BasicAuthenticationHandler {
+            protected function createAuthenticationResultFromCredentials(
+                string $username,
+                string $password,
+                AuthenticationScheme $scheme
+            ): AuthenticationResult {
+                return AuthenticationResult::fail('foo');
+            }
+        };
 
         /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         return [
@@ -64,7 +72,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         ];
     }
 
-    public function getInvalidBasicAuthorizationValues(): array
+    public static function getInvalidBasicAuthorizationValues(): array
     {
         return [
             ['NotBasic ' . \base64_encode('foo:bar'), 'Request did not use basic authentication'],
@@ -75,7 +83,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         ];
     }
 
-    public function getValidBasicAuthorizationValues(): array
+    public static function getValidBasicAuthorizationValues(): array
     {
         return [
             ['BASIC ' . \base64_encode('foo:bar')],
@@ -87,12 +95,11 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getValidBasicAuthorizationValues
-     *
      * @param string $authorizationHeaderValue The authorization header value to test
      * @psalm-suppress UndefinedPropertyAssignment The properties do actually exist on the anonymous class
      * @psalm-suppress UndefinedPropertyFetch Ditto
      */
+    #[DataProvider('getValidBasicAuthorizationValues')]
     public function testAuthenticatingWithValidBase64CredentialsReturnsPassingResult(string $authorizationHeaderValue): void
     {
         $headers = new Headers();
@@ -110,11 +117,10 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getInvalidBasicAuthorizationValues
-     *
      * @param string $authorizationHeaderValue The invalid authorization header value
      * @param string $expectedFailureMessage The expected failure exception's message
      */
+    #[DataProvider('getInvalidBasicAuthorizationValues')]
     public function testAuthenticatingWithInvalidAuthorizationHeaderReturnsFailedResult(string $authorizationHeaderValue, string $expectedFailureMessage): void
     {
         $headers = new Headers();
@@ -143,11 +149,10 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getChallengeSchemesAndWwwAuthenticateHeaderValues
-     *
      * @param AuthenticationScheme<BasicAuthenticationOptions> $scheme The scheme we're challenging
      * @param string $expectedWwwAuthenticateHeaderValue The expected Www-Authenticate header value
      */
+    #[DataProvider('getChallengeSchemesAndWwwAuthenticateHeaderValues')]
     public function testChallengeSetsWwwAuthenticateResponseHeader(AuthenticationScheme $scheme, string $expectedWwwAuthenticateHeaderValue): void
     {
         $headers = new Headers();

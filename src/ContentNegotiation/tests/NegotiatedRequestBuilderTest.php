@@ -21,6 +21,7 @@ use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class NegotiatedRequestBuilderTest extends TestCase
@@ -32,13 +33,16 @@ class NegotiatedRequestBuilderTest extends TestCase
         $this->requestBuilder = new NegotiatedRequestBuilder();
     }
 
-    public function getRawBodies(): array
+    public static function getRawBodies(): array
     {
+        $object = new class () {
+        };
+
         return [
             ['string[]', ['foo', 'bar']],
             ['string', 'foo'],
-            [self::class, $this],
-            [self::class . '[]', [$this, $this]]
+            [$object::class, $object],
+            [$object::class . '[]', [$object, $object]]
         ];
     }
 
@@ -80,10 +84,10 @@ class NegotiatedRequestBuilderTest extends TestCase
     }
 
     /**
-     * @dataProvider getRawBodies
      * @param string $expectedType The expected type
      * @param mixed $rawBody The raw body
      */
+    #[DataProvider('getRawBodies')]
     public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, mixed $rawBody): void
     {
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);

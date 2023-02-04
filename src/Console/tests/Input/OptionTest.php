@@ -15,6 +15,7 @@ namespace Aphiria\Console\Tests\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionType;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class OptionTest extends TestCase
@@ -24,14 +25,6 @@ class OptionTest extends TestCase
     protected function setUp(): void
     {
         $this->option = new Option('foo', OptionType::OptionalValue, 'f', 'Foo option', 'bar');
-    }
-
-    public function getTypes(): array
-    {
-        return [
-            [[OptionType::RequiredValue], OptionType::RequiredValue],
-            [[OptionType::RequiredValue], [OptionType::RequiredValue]]
-        ];
     }
 
     public function testCheckingIsValueArray(): void
@@ -122,10 +115,11 @@ class OptionTest extends TestCase
     }
 
     /**
-     * @dataProvider getTypes
      * @param list<OptionType> $expectedType The expected type
      * @param list<OptionType>|OptionType $paramType The type passed into the constructor
      */
+    #[TestWith([[OptionType::RequiredValue], OptionType::RequiredValue])]
+    #[TestWith([[OptionType::RequiredValue], [OptionType::RequiredValue]])]
     public function testTypeIsAlwaysArray(array $expectedType, array|OptionType $paramType): void
     {
         $option = new Option('opt', $paramType);

@@ -15,32 +15,17 @@ namespace Aphiria\Authorization\Tests\Attributes;
 use Aphiria\Authorization\Attributes\AuthorizeRoles;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class AuthorizeRolesTest extends TestCase
 {
-    public function getAuthenticationSchemeNames(): array
-    {
-        return [
-            [['foo', 'bar']],
-            ['foo'],
-            [null]
-        ];
-    }
-
-    public function getRoles(): array
-    {
-        return [
-            [['admin', 'dev']],
-            ['admin']
-        ];
-    }
-
     /**
-     * @dataProvider getAuthenticationSchemeNames
-     *
      * @param list<string>|string|null $authenticationSchemeNames The authentication scheme name or list of scheme names, or null if using the default scheme name
      */
+    #[TestWith(['foo', 'bar'])]
+    #[TestWith(['foo'])]
+    #[TestWith([null])]
     public function testAuthenticationSchemeNamesParameterIsAutomaticallySet(array|string|null $authenticationSchemeNames): void
     {
         $attribute = new AuthorizeRoles('admin', $authenticationSchemeNames);
@@ -55,10 +40,10 @@ class AuthorizeRolesTest extends TestCase
     }
 
     /**
-     * @dataProvider getRoles
-     *
      * @param list<string>|string $roles The role or list of roles
      */
+    #[TestWith([['admin', 'dev']])]
+    #[TestWith(['admin'])]
     public function testRolesAreConvertedToRoleRequirements(array|string $roles): void
     {
         $attribute = new AuthorizeRoles($roles);

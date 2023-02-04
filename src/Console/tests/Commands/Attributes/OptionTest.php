@@ -14,18 +14,11 @@ namespace Aphiria\Console\Tests\Commands\Attributes;
 
 use Aphiria\Console\Commands\Attributes\Option;
 use Aphiria\Console\Input\OptionType;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class OptionTest extends TestCase
 {
-    public function getTypes(): array
-    {
-        return [
-            [[OptionType::RequiredValue], OptionType::RequiredValue],
-            [[OptionType::RequiredValue], [OptionType::RequiredValue]]
-        ];
-    }
-
     public function testAllPropertiesAreSetInConstructor(): void
     {
         $option = new Option('opt', OptionType::RequiredValue, 'o', 'description', 'foo');
@@ -37,10 +30,11 @@ class OptionTest extends TestCase
     }
 
     /**
-     * @dataProvider getTypes
      * @param list<OptionType> $expectedType The expected type
      * @param list<OptionType>|OptionType $paramType The type passed into the option constructor
      */
+    #[TestWith([[OptionType::RequiredValue], OptionType::RequiredValue])]
+    #[TestWith([[OptionType::RequiredValue], [OptionType::RequiredValue]])]
     public function testTypeIsAlwaysArray(array $expectedType, array|OptionType $paramType): void
     {
         $option = new Option('opt', $paramType);

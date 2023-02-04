@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Console\Drivers;
 
 use Aphiria\Console\StatusCode;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 /**
  * Defines a base CLI driver that's common to multiple OS
@@ -89,8 +90,8 @@ abstract class Driver implements IDriver
      * Gets the CLI dimensions from STTY as a tuple
      *
      * @return array|null The dimensions (width x height) as a tuple if found, otherwise null
-     * @codeCoverageIgnore
      */
+    #[CodeCoverageIgnore]
     protected function getCliDimensionsFromStty(): ?array
     {
         $sttyOutput = $this->runProcess('stty -a | grep columns');
@@ -114,8 +115,8 @@ abstract class Driver implements IDriver
      *
      * @param string $command The command to run in the process
      * @return string|null The output of the process
-     * @codeCoverageIgnore
      */
+    #[CodeCoverageIgnore]
     protected function runProcess(string $command): ?string
     {
         $process = \proc_open(
@@ -143,8 +144,8 @@ abstract class Driver implements IDriver
      * Gets whether or not this driver supports stty
      *
      * @return bool Whether or not STTY is supported
-     * @codeCoverageIgnore
      */
+    #[CodeCoverageIgnore]
     protected function supportsStty(): bool
     {
         if ($this->supportsStty !== null) {

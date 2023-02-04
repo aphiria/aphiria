@@ -17,8 +17,10 @@ use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirementHandler;
 use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
+use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class RolesRequirementHandlerTest extends TestCase
@@ -30,19 +32,69 @@ class RolesRequirementHandlerTest extends TestCase
         $this->requirementHandler = new RolesRequirementHandler();
     }
 
-    public function getUsersWithMatchingRoles(): array
+    public static function getUsersWithMatchingRoles(): array
     {
-        $userWithSingleMatchingRole = $this->createMock(IPrincipal::class);
-        $userWithSingleMatchingRole->method('getClaims')
-            ->with(ClaimType::Role)
-            ->willReturn([new Claim(ClaimType::Role, 'admin', 'example.com')]);
-        $userWithManyRolesIncludingMatchingOne = $this->createMock(IPrincipal::class);
-        $userWithManyRolesIncludingMatchingOne->method('getClaims')
-            ->with(ClaimType::Role)
-            ->willReturn([
-                new Claim(ClaimType::Role, 'admin', 'example.com'),
-                new Claim(ClaimType::Role, 'dev', 'example.com')
-            ]);
+        $userWithSingleMatchingRole = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [new Claim(ClaimType::Role, 'admin', 'example.com')];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return null;
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
+        $userWithManyRolesIncludingMatchingOne = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [
+                    new Claim(ClaimType::Role, 'admin', 'example.com'),
+                    new Claim(ClaimType::Role, 'dev', 'example.com')
+                ];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return null;
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
 
         return [
             [$userWithSingleMatchingRole],
@@ -50,16 +102,66 @@ class RolesRequirementHandlerTest extends TestCase
         ];
     }
 
-    public function getUsersWithNoMatchingRoles(): array
+    public static function getUsersWithNoMatchingRoles(): array
     {
-        $userWithNoRoles = $this->createMock(IPrincipal::class);
-        $userWithNoRoles->method('getClaims')
-            ->with(ClaimType::Role)
-            ->willReturn([]);
-        $userWithNoMatchingRoles = $this->createMock(IPrincipal::class);
-        $userWithNoMatchingRoles->method('getClaims')
-            ->with(ClaimType::Role)
-            ->willReturn([new Claim(ClaimType::Role, 'unused', 'example.com')]);
+        $userWithNoRoles = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return null;
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
+        $userWithNoMatchingRoles = new class () implements IPrincipal {
+            public function addIdentity(IIdentity $identity): void
+            {
+            }
+
+            public function addManyIdentities(array $identities): void
+            {
+            }
+
+            public function getClaims(ClaimType|string $type = null): array
+            {
+                return [new Claim(ClaimType::Role, 'unused', 'example.com')];
+            }
+
+            public function getIdentities(): array
+            {
+                return [];
+            }
+
+            public function getPrimaryIdentity(): ?IIdentity
+            {
+                return null;
+            }
+
+            public function hasClaim(ClaimType|string $type, mixed $value): bool
+            {
+                return false;
+            }
+        };
 
         return [
             [$userWithNoRoles],
@@ -78,10 +180,9 @@ class RolesRequirementHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getUsersWithMatchingRoles
-     *
      * @param IPrincipal $user The user with matching role claims
      */
+    #[DataProvider('getUsersWithMatchingRoles')]
     public function testUserWithMatchingRoleClaimPasses(IPrincipal $user): void
     {
         $roleRequirement = new RolesRequirement('admin');
@@ -92,10 +193,9 @@ class RolesRequirementHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider getUsersWithNoMatchingRoles
-     *
      * @param IPrincipal $user The user with no matching roles
      */
+    #[DataProvider('getUsersWithNoMatchingRoles')]
     public function testUserWithNoMatchingRoleClaimsDoesNotPass(IPrincipal $user): void
     {
         $roleRequirement = new RolesRequirement('admin');

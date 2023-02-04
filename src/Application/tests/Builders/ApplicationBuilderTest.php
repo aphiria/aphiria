@@ -112,7 +112,7 @@ class ApplicationBuilderTest extends TestCase
             {
             }
         };
-        $this->expectErrorMessage('No component of type ' . $component::class . ' found');
+        $this->expectExceptionMessage('No component of type ' . $component::class . ' found');
         $this->appBuilder->getComponent($component::class);
     }
 

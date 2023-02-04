@@ -20,9 +20,11 @@ use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\MultipartBodyPart;
+use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -49,14 +51,10 @@ class RequestParserTest extends TestCase
             ->willReturn($this->properties);
     }
 
-    public function provideMissingBoundaryRequests(): array
+    public static function provideMissingBoundaryRequests(): array
     {
         $headers = new Headers([new KeyValuePair('Content-Type', 'multipart/mixed')]);
-        $badRequest = $this->createMock(IRequest::class);
-        $badRequest->method('getHeaders')
-            ->willReturn($headers);
-        $badRequest->method('getBody')
-            ->willReturn(null);
+        $badRequest = new Request('GET', new Uri('http://localhost'), $headers);
         $badMultipartBodyPart = new MultipartBodyPart($headers, null);
 
         return [
@@ -65,19 +63,13 @@ class RequestParserTest extends TestCase
         ];
     }
 
-    public function provideValidMultipartRequests(): array
+    public static function provideValidMultipartRequests(): array
     {
         $expectedBody = 'body';
         $serializedBody = "--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\n$expectedBody\r\n--boundary--";
         $headers = new Headers([new KeyValuePair('Content-Type', 'multipart/form-data; boundary=boundary')]);
-        $body = $this->createMock(IBody::class);
-        $body->method('readAsString')
-            ->willReturn($serializedBody);
-        $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
-            ->willReturn($headers);
-        $request->method('getBody')
-            ->willReturn($body);
+        $body = new StringBody($serializedBody);
+        $request = new Request('POST', new Uri('http://localhost'), $headers, $body);
         $multipartBodyPart = new MultipartBodyPart($headers, $body);
 
         return [
@@ -190,9 +182,9 @@ class RequestParserTest extends TestCase
     }
 
     /**
-     * @dataProvider provideMissingBoundaryRequests
      * @param IRequest|MultipartBodyPart $request The request to test
      */
+    #[DataProvider('provideMissingBoundaryRequests')]
     public function testParsingMultipartRequestWithoutBoundaryThrowsException(IRequest|MultipartBodyPart $request): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -234,10 +226,10 @@ class RequestParserTest extends TestCase
     }
 
     /**
-     * @dataProvider provideValidMultipartRequests
      * @param IRequest|MultipartBodyPart $request The request to test
      * @param string $expectedBody The expected body
      */
+    #[DataProvider('provideValidMultipartRequests')]
     public function testReadingAsMultipartRequestWithHeadersExtractsBody(
         IRequest|MultipartBodyPart $request,
         string $expectedBody

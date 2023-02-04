@@ -14,11 +14,13 @@ namespace Aphiria\Authorization\Tests;
 
 use Aphiria\Authorization\AuthorizationPolicy;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class AuthorizationPolicyTest extends TestCase
 {
-    public function getAuthenticationSchemes(): array
+    public static function getAuthenticationSchemes(): array
     {
         return [
             ['foo', ['foo']],
@@ -27,20 +29,24 @@ class AuthorizationPolicyTest extends TestCase
         ];
     }
 
-    public function getRequirements(): array
+    public static function getRequirements(): array
     {
+        $object = new class () {
+        };
+
         return [
-            [$this, [$this]],
-            [[$this, $this], [$this, $this]]
+            [$object, [$object]],
+            [[$object, $object], [$object, $object]]
         ];
     }
 
     /**
-     * @dataProvider getAuthenticationSchemes
-     *
      * @param string|list<string>|null $authenticationSchemeNames The authentication scheme name or names to test
      * @param list<string>|null $expectedAuthenticationSchemeNames The expected nullable array of authentication scheme names
      */
+    #[TestWith(['foo', ['foo']])]
+    #[TestWith([['foo', 'bar'], ['foo', 'bar']])]
+    #[TestWith([null, null])]
     public function testAuthenticationSchemeNamesAreConvertedToArray(string|array|null $authenticationSchemeNames, ?array $expectedAuthenticationSchemeNames): void
     {
         $policy = new AuthorizationPolicy('foo', [$this], $authenticationSchemeNames);
@@ -61,11 +67,10 @@ class AuthorizationPolicyTest extends TestCase
     }
 
     /**
-     * @dataProvider getRequirements
-     *
      * @param object|list<object> $requirements The requirement or list of requirements
      * @param list<object> $expectedRequirements The expected array of requirements
      */
+    #[DataProvider('getRequirements')]
     public function testRequirementsAreConvertedToArray(object|array $requirements, array $expectedRequirements): void
     {
         $policy = new AuthorizationPolicy('foo', $requirements, []);

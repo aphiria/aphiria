@@ -14,6 +14,7 @@ namespace Aphiria\Net\Tests;
 
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class UriTest extends TestCase
@@ -45,19 +46,12 @@ class UriTest extends TestCase
         $this->assertSame('dave=%25young', $uri->fragment);
     }
 
-    public function authorityWithNoUserPasswordProvider(): array
-    {
-        return [
-            ['http://host:8080', 'host:8080'],
-            ['https://host:4343', 'host:4343'],
-        ];
-    }
-
     /**
-     * @dataProvider authorityWithNoUserPasswordProvider
      * @param string $uri The URI
      * @param string $expectedUri The expected URI
      */
+    #[TestWith(['http://host:8080', 'host:8080'])]
+    #[TestWith(['https://host:4343', 'host:4343'])]
     public function testGettingAuthorityWithNoUserOrPasswordAndWithNonStandardPort(string $uri, string $expectedUri): void
     {
         $httpUri = new Uri($uri);
@@ -70,19 +64,12 @@ class UriTest extends TestCase
         $this->assertNull($httpUri->getAuthority());
     }
 
-    public function authorityWithUserPasswordProvider(): array
-    {
-        return [
-            ['http://user:password@host', 'user:password@host'],
-            ['http://user:@host', 'user@host'],
-        ];
-    }
-
     /**
-     * @dataProvider authorityWithUserPasswordProvider
      * @param string $uri The URI
      * @param string $expectedUri The expected URI
      */
+    #[TestWith(['http://user:password@host', 'user:password@host'])]
+    #[TestWith(['http://user:@host', 'user@host'])]
     public function testGettingAuthorityWithUserAndPasswordIncludesUserAndPassword(string $uri, string $expectedUri): void
     {
         $uriWithUserAndPassword = new Uri($uri);
@@ -188,18 +175,11 @@ class UriTest extends TestCase
         $this->assertSame('http://host#fragment', (string)$uri);
     }
 
-    public function httpUriProvider(): array
-    {
-        return [
-            ['http://host:8080'],
-            ['https://host:1234'],
-        ];
-    }
-
     /**
-     * @dataProvider httpUriProvider
      * @param string $uri The URI
      */
+    #[TestWith(['http://host:8080'])]
+    #[TestWith(['https://host:1234'])]
     public function testToStringWithNonStandardPortIncludesPort(string $uri): void
     {
         $httpUri = new Uri($uri);

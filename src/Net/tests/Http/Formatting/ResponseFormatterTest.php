@@ -21,6 +21,7 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -37,14 +38,6 @@ class ResponseFormatterTest extends TestCase
         $this->response = $this->createMock(IResponse::class);
         $this->response->method('getHeaders')
             ->willReturn($this->headers);
-    }
-
-    public function getRedirectStatusCodes(): array
-    {
-        return [
-            [HttpStatusCode::Found],
-            [302]
-        ];
     }
 
     public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
@@ -68,9 +61,10 @@ class ResponseFormatterTest extends TestCase
     }
 
     /**
-     * @dataProvider getRedirectStatusCodes
      * @param HttpStatusCode|int $expectedStatusCode
      */
+    #[TestWith([HttpStatusCode::Found])]
+    #[TestWith([302])]
     public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(HttpStatusCode|int $expectedStatusCode): void
     {
         $this->response->expects($this->once())

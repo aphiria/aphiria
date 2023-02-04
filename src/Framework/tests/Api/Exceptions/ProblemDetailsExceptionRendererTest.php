@@ -22,6 +22,7 @@ use Aphiria\Net\Http\IResponseWriter;
 use Aphiria\Net\Http\Response;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -41,7 +42,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     /**
      * @return list<list<mixed>> The list of problem details property names, raw values, and expected values
      */
-    public function getMapValues(): array
+    public static function getMapValues(): array
     {
         return [
             ['type', 'foo', 'foo'],
@@ -126,11 +127,11 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     }
 
     /**
-     * @dataProvider getMapValues
      * @param string $propertyName The name of the problem details property that is being set
      * @param mixed $rawValue The raw value passed into the map method
      * @param mixed $expectedValue The expected property value
      */
+    #[DataProvider('getMapValues')]
     public function testMappingProblemDetailsPropertiesWithCallbacksAndValuesSetsProperties(
         string $propertyName,
         mixed $rawValue,

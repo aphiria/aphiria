@@ -15,6 +15,8 @@ namespace Aphiria\Net\Tests\Http;
 use Aphiria\Net\Http\RequestFactory;
 use Aphiria\Net\Http\StreamBody;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class RequestFactoryTest extends TestCase
@@ -26,11 +28,32 @@ class RequestFactoryTest extends TestCase
         $this->factory = new RequestFactory();
     }
 
-    public function nonScalarHeaderValueProvider(): array
+    public static function httpServerPropertyProvider(): array
     {
         return [
-            ['foo', ['baz']],
-            ['HTTP_FOO', ['baz']]
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTPS' => 'on',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'https',
+            ],
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTPS' => 'off',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'http',
+            ],
+            [
+                [
+                    'SERVER_PROTOCOL' => 'HTTP/1.1',
+                    'HTTP_HOST' => 'foo.com',
+                ],
+                'http',
+            ],
         ];
     }
 
@@ -73,21 +96,14 @@ class RequestFactoryTest extends TestCase
         $this->assertSame('192.168.1.1', $request->getProperties()->get('CLIENT_IP_ADDRESS'));
     }
 
-    public function clientIPDataProvider(): array
-    {
-        return [
-            ['for="_gazonk"', '_gazonk'],
-            ['for="[2001:db8:cafe::17]:4711"', '2001:db8:cafe::17'],
-            ['for=192.0.2.60;proto=http;by=203.0.113.43', '192.0.2.60'],
-            ['for=192.0.2.43, for=198.51.100.17', '198.51.100.17'],
-        ];
-    }
-
     /**
-     * @dataProvider clientIPDataProvider
      * @param string $ipDatum1 The IP address
      * @param string $expectedIpDatum The expected IP address
      */
+    #[TestWith(['for="_gazonk"', '_gazonk'])]
+    #[TestWith(['for="[2001:db8:cafe::17]:4711"', '2001:db8:cafe::17'])]
+    #[TestWith(['for=192.0.2.60;proto=http;by=203.0.113.43', '192.0.2.60'])]
+    #[TestWith(['for=192.0.2.43, for=198.51.100.17', '198.51.100.17'])]
     public function testClientIPAddressIsSetFromForwardedHeaderWhenUsingTrustedProxy(string $ipDatum1, string $expectedIpDatum): void
     {
         $_SERVER['HTTP_FORWARDED'] = $ipDatum1;
@@ -120,24 +136,17 @@ class RequestFactoryTest extends TestCase
         $this->assertSame(8080, $request->getUri()->port);
     }
 
-    public function clientProtoProvider(): array
-    {
-        return [
-            ['192.168.1.1', 'HTTPS', 'foo.com', 'https', 'Try with HTTPS'],
-            ['192.168.1.1', 'ssl', 'foo.com', 'https', 'Try with SSL'],
-            ['192.168.1.1', 'on', 'foo.com', 'https', 'Try with "on"'],
-            ['192.168.1.1', 'HTTP', 'foo.com', 'http', 'Try with HTTP'],
-        ];
-    }
-
     /**
-     * @dataProvider clientProtoProvider
      * @param string $remoteAddress The remote address
      * @param string $forwardedProto The forwarded proto
      * @param string $host the host
      * @param string $expectedScheme The expected scheme
      * @param string $message The error message in case the assertion fails
      */
+    #[TestWith(['192.168.1.1', 'HTTPS', 'foo.com', 'https', 'Try with HTTPS'])]
+    #[TestWith(['192.168.1.1', 'ssl', 'foo.com', 'https', 'Try with SSL'])]
+    #[TestWith(['192.168.1.1', 'on', 'foo.com', 'https', 'Try with "on"'])]
+    #[TestWith(['192.168.1.1', 'HTTP', 'foo.com', 'http', 'Try with HTTP'])]
     public function testClientProtoUsedToSetSchemeWithTrustedProxy(string $remoteAddress, string $forwardedProto, string $host, string $expectedScheme, string $message): void
     {
         $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
@@ -199,40 +208,11 @@ class RequestFactoryTest extends TestCase
         $this->assertSame('foo.com', $request->getUri()->host);
     }
 
-    public function httpServerPropertyProvider(): array
-    {
-        return [
-            [
-                [
-                    'SERVER_PROTOCOL' => 'HTTP/1.1',
-                    'HTTPS' => 'on',
-                    'HTTP_HOST' => 'foo.com',
-                ],
-                'https',
-            ],
-            [
-                [
-                    'SERVER_PROTOCOL' => 'HTTP/1.1',
-                    'HTTPS' => 'off',
-                    'HTTP_HOST' => 'foo.com',
-                ],
-                'http',
-            ],
-            [
-                [
-                    'SERVER_PROTOCOL' => 'HTTP/1.1',
-                    'HTTP_HOST' => 'foo.com',
-                ],
-                'http',
-            ],
-        ];
-    }
-
     /**
-     * @dataProvider httpServerPropertyProvider
      * @param array<string, mixed> $superglobals The superglobals to create the request from
      * @param string $expectedScheme The expected scheme
      */
+    #[DataProvider('httpServerPropertyProvider')]
     public function testHttpsServerPropertyControlsSchemeOfUri(array $superglobals, string $expectedScheme): void
     {
         $httpsOnRequest = $this->factory->createRequestFromSuperglobals($superglobals);
@@ -275,10 +255,11 @@ class RequestFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider nonScalarHeaderValueProvider
      * @param string $name The name of the header value to add
      * @param mixed $value The header value that should not appear
      */
+    #[TestWith(['foo', ['baz']])]
+    #[TestWith(['HTTP_FOO', ['baz']])]
     public function testNonScalarHeaderValuesAreNotAddedToCollection(string $name, mixed $value): void
     {
         $request = $this->factory->createRequestFromSuperglobals([
