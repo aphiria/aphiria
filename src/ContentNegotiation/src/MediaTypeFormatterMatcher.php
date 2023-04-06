@@ -89,6 +89,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     ): ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
         if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {
+            /** @var list<AcceptMediaTypeHeaderValue> $mediaTypeHeaders */
             $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
         }
 
