@@ -21,7 +21,6 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
 use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class VariableTrieNodeTest extends TestCase
@@ -174,21 +173,11 @@ class VariableTrieNodeTest extends TestCase
         $expectedParts = [new RouteVariable('foo')];
         $expectedChildren = [new LiteralTrieNode('bar', [])];
         $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
-        $expectedHostTrie = $this->createMockNode();
+        $expectedHostTrie = $this->createMock(TrieNode::class);
         $node = new VariableTrieNode($expectedParts, $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame($expectedParts, $node->parts);
         $this->assertSame($expectedChildren, $node->getAllChildren());
         $this->assertSame($expectedRoutes, $node->routes);
         $this->assertSame($expectedHostTrie, $node->hostTrie);
-    }
-
-    /**
-     * Creates a mock node for use in tests
-     *
-     * @return TrieNode&MockObject The mock node
-     */
-    private function createMockNode(): TrieNode&MockObject
-    {
-        return $this->getMockForAbstractClass(TrieNode::class, [], '', false);
     }
 }
