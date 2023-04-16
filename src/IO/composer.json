@@ -44,7 +44,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.1"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

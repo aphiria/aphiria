@@ -36,10 +36,12 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+#[IgnoreMethodForCodeCoverage(IntegrationTestCase::class, 'failWithMessage')]
 class IntegrationTestCaseTest extends TestCase
 {
     private IApplication $app;

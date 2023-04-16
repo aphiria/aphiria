@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Updated to PHPUnit 10.0 ([#248](https://github.com/aphiria/aphiria/pull/248))
+- Updated to PHPUnit 10.1 ([#248](https://github.com/aphiria/aphiria/pull/248), [#250](https://github.com/aphiria/aphiria/pull/250))
 
 ## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
 

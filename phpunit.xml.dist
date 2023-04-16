@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd">
-    <coverage>
-        <include>
-            <directory suffix=".php">src/*/src</directory>
-        </include>
-        <report>
-          <html outputDirectory="./.coverage"/>
-        </report>
-    </coverage>
-    <testsuite name="Aphiria">
-        <directory>src/*/tests</directory>
-    </testsuite>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd">
+  <coverage>
+    <report>
+      <html outputDirectory="./.coverage"/>
+    </report>
+  </coverage>
+  <testsuite name="Aphiria">
+    <directory>src/*/tests</directory>
+  </testsuite>
+  <source>
+    <include>
+      <directory suffix=".php">src/*/src</directory>
+    </include>
+  </source>
 </phpunit>

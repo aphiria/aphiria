@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Console\Drivers;
 
 use Aphiria\Console\Output\IOutput;
-use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 /**
  * Defines the Windows OS CLI driver
@@ -27,7 +26,6 @@ class WindowsDriver extends Driver
      * @inheritdoc
      * @psalm-suppress ForbiddenCode We purposely are running an external executable
      */
-    #[CodeCoverageIgnore]
     public function readHiddenInput(IOutput $output): ?string
     {
         // Check if we're running from a PHAR
@@ -51,7 +49,6 @@ class WindowsDriver extends Driver
      *
      * @return array|null The dimensions (width x height) as a tuple if found, otherwise null
      */
-    #[CodeCoverageIgnore]
     protected function getCliDimensionsFromConsoleMode(): ?array
     {
         $modeOutput = $this->runProcess('mode CON');

@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Console\Drivers;
 
 use Aphiria\Console\Output\IOutput;
-use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 
 /**
  * Defines the *nix-based CLI driver
@@ -48,7 +47,6 @@ class UnixLikeDriver extends Driver
     /**
      * @inheritdoc
      */
-    #[CodeCoverageIgnore]
     protected function getCliDimensionsFromOS(): ?array
     {
         return $this->getCliDimensionsFromStty();
