@@ -12,10 +12,18 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Drivers;
 
+use Aphiria\Console\Drivers\Driver;
 use Aphiria\Console\Drivers\WindowsDriver;
 use Aphiria\Console\StatusCode;
+use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\TestCase;
 
+#[IgnoreMethodForCodeCoverage(WindowsDriver::class, 'getCliDimensionsFromOS')]
+#[IgnoreMethodForCodeCoverage(WindowsDriver::class, 'readHiddenInput')]
+#[IgnoreMethodForCodeCoverage(WindowsDriver::class, 'getCliDimensionsFromConsoleMode')]
+#[IgnoreMethodForCodeCoverage(Driver::class, 'getCliDimensionsFromStty')]
+#[IgnoreMethodForCodeCoverage(Driver::class, 'runProcess')]
+#[IgnoreMethodForCodeCoverage(Driver::class, 'supportsStty')]
 class WindowsDriverTest extends TestCase
 {
     private WindowsDriver $driver;

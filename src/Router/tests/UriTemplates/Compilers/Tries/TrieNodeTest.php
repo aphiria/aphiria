@@ -20,16 +20,20 @@ use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieNode;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\VariableTrieNode;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class TrieNodeTest extends TestCase
 {
-    private TrieNode&MockObject $node;
+    private TrieNode $node;
 
     protected function setUp(): void
     {
-        $this->node = $this->createMockNode();
+        $this->node = new class () extends TrieNode {
+            public function __construct()
+            {
+                parent::__construct([], [], null);
+            }
+        };
     }
 
     public function testAddingChildWithMoreLevelsAddsThemAll(): void
@@ -364,15 +368,5 @@ class TrieNodeTest extends TestCase
         $this->node->addChild($literalChild);
         $this->node->addChild($variableChild);
         $this->assertEquals([$literalChild, $variableChild], $this->node->getAllChildren());
-    }
-
-    /**
-     * Creates a mock node for use in tests
-     *
-     * @return TrieNode&MockObject The mock node
-     */
-    private function createMockNode(): TrieNode&MockObject
-    {
-        return $this->getMockForAbstractClass(TrieNode::class, [], '', false);
     }
 }

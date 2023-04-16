@@ -15,8 +15,10 @@ namespace Aphiria\Framework\Tests\Console\Commands;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Framework\Console\Commands\ServeCommandHandler;
+use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\TestCase;
 
+#[IgnoreMethodForCodeCoverage(ServeCommandHandler::class, 'runPhpCommand')]
 class ServeCommandHandlerTest extends TestCase
 {
     public function testHandlingRunCorrectPhpCommandAndWritesCorrectOutput(): void
