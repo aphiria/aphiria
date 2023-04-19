@@ -16,6 +16,7 @@ use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\RequestPropertyUserAccessor;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
@@ -56,7 +57,7 @@ final class ControllerRequestHandler implements IRequestHandler
         $this->controller->setRequest($request);
         $this->controller->setRequestParser(new RequestParser());
         $this->controller->setResponseFormatter(new ResponseFormatter());
-        $this->controller->setContentNegotiator($this->contentNegotiator);
+        $this->controller->setBodyDeserializer(new NegotiatedBodyDeserializer($this->contentNegotiator));
         $this->controller->setResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
         $this->controller->setUserAccessor($this->userAccessor);
 

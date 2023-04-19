@@ -13,7 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Authentication\IUserAccessor;
-use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\FailedContentNegotiationException;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
@@ -39,22 +40,22 @@ class Controller
     protected ?RequestParser $requestParser = null;
     /** @var ResponseFormatter|null The formatter to use to write data to the response */
     protected ?ResponseFormatter $responseFormatter = null;
-    /** @var IContentNegotiator|null The content negotiator */
-    protected ?IContentNegotiator $contentNegotiator = null;
+    /** @var IBodyDeserializer|null The body deserializer */
+    protected ?IBodyDeserializer $bodyDeserializer = null;
     /** @var IResponseFactory|null The response factory */
     protected ?IResponseFactory $responseFactory = null;
     /** @var IUserAccessor|null The user accessor */
     protected ?IUserAccessor $userAccessor = null;
 
     /**
-     * Sets the content negotiator
+     * Sets the body deserializer
      *
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IBodyDeserializer $bodyDeserializer The body deserializer
      * @internal
      */
-    public function setContentNegotiator(IContentNegotiator $contentNegotiator): void
+    public function setBodyDeserializer(IBodyDeserializer $bodyDeserializer): void
     {
-        $this->contentNegotiator = $contentNegotiator;
+        $this->bodyDeserializer = $bodyDeserializer;
     }
 
     /**
@@ -384,31 +385,17 @@ class Controller
      */
     protected function readRequestBodyAs(string $type): mixed
     {
-        // TODO: Refactor this to use IBodyDeserializer
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
         }
 
-        if (($body = $this->request->getBody()) === null) {
-            if (\substr($type, -2) === '[]') {
-                return [];
-            }
-
-            return null;
-        }
-
-        $contentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($type, $this->request);
-        $mediaTypeFormatter = $contentNegotiationResult->formatter;
-
-        if ($mediaTypeFormatter === null) {
+        try {
+            return $this->bodyDeserializer->readRequestBodyAs($type, $this->request);
+        } catch (FailedContentNegotiationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnsupportedMediaType,
                 "Failed to negotiate request content with type $type"
             );
-        }
-
-        try {
-            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnprocessableEntity,

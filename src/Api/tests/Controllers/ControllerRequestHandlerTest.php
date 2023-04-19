@@ -17,6 +17,7 @@ use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Closure;
@@ -48,8 +49,8 @@ class ControllerRequestHandlerTest extends TestCase
         $controller->expects($this->once())
             ->method('setRequestParser');
         $controller->expects($this->once())
-            ->method('setContentNegotiator')
-            ->with($this->contentNegotiator);
+            ->method('setBodyDeserializer')
+            ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
         $controller->expects($this->once())
             ->method('setResponseFactory');
         $controller->expects($this->once())

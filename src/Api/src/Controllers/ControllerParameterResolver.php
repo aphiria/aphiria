@@ -32,7 +32,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      */
     public function __construct(
         private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
-        private readonly UriParser         $uriParser = new UriParser()
+        private readonly UriParser $uriParser = new UriParser()
     ) {
     }
 

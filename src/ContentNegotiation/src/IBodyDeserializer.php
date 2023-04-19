@@ -29,7 +29,6 @@ interface IBodyDeserializer
      * @return float|object|int|bool|array|string|null The deserialized request body
      * @throws FailedContentNegotiationException Thrown if there was an error negotiating the request body
      * @throws SerializationException Thrown if there was an error deserializing the request body
-     * TODO:  Maybe IBodyDeserializer::readRequestBodyAs(), with concrete class NegotiatedBodyDeserializer?  Controller::readRequestBodyAs() is a precedent (that should probably be refactored to use IBodyNegotiator).
      */
     public function readRequestBodyAs(string $type, IRequest $request): float|object|int|bool|array|string|null;
 
@@ -42,7 +41,6 @@ interface IBodyDeserializer
      * @return float|object|int|bool|array|string|null The deserialized response body
      * @throws FailedContentNegotiationException Thrown if there was an error negotiating the response body
      * @throws SerializationException Thrown if there was an error deserializing the response body
-     * TODO:  Maybe IBodyDeserializer::readResponseBodyAs(), with concrete class NegotiatedBodyDeserializer?  Controller::readRequestBodyAs() is a precedent (that should probably be refactored to use IBodyNegotiator).
      */
     public function readResponseBodyAs(string $type, IRequest $request, IResponse $response): float|object|int|bool|array|string|null;
 }
