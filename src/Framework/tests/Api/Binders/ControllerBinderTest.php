@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Tests\Api\Binders;
 
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
+use Aphiria\ContentNegotiation\IBodyNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Binders\ControllerBinder;
@@ -39,6 +40,7 @@ class ControllerBinderTest extends TestCase
                 [IValidator::class, $this->createMock(IValidator::class)],
                 [IErrorMessageInterpolator::class, $this->createMock(IErrorMessageInterpolator::class)],
                 [IContentNegotiator::class, $this->createMock(IContentNegotiator::class)],
+                [IBodyNegotiator::class, $this->createMock(IBodyNegotiator::class)],
                 [IResponseFactory::class, $this->createMock(IResponseFactory::class)]
             ]);
     }

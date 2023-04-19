@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Api\Validation\IRequestBodyValidator;
+use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
@@ -52,7 +53,8 @@ class RouteActionInvoker implements IRouteActionInvoker
         IControllerParameterResolver $controllerParameterResolver = null
     ) {
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
-        $this->controllerParameterResolver = $controllerParameterResolver ?? new ControllerParameterResolver($contentNegotiator);
+        $this->controllerParameterResolver = $controllerParameterResolver
+            ?? new ControllerParameterResolver(new BodyNegotiator($contentNegotiator));
     }
 
     /**

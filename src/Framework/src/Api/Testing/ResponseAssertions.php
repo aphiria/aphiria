@@ -201,6 +201,7 @@ class ResponseAssertions
      * @param string $type The type to deserialize the body to
      * @return float|object|int|bool|array|string|null An instance of type, or null if the body is not set
      * @throws SerializationException Thrown if the body could not be read
+     * TODO: REMOVE
      */
     private function getParsedResponseBody(IRequest $request, IResponse $response, string $type): float|object|int|bool|array|string|null
     {
