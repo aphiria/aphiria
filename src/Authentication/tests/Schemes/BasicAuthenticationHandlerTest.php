@@ -65,7 +65,6 @@ class BasicAuthenticationHandlerTest extends TestCase
             }
         };
 
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         return [
             [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions()), 'Basic'],
             [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions(realm: 'example.com')), 'Basic realm="example.com"']
@@ -108,7 +107,6 @@ class BasicAuthenticationHandlerTest extends TestCase
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
         $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $this->assertSame($this->schemeHandler->expectedResult, $this->schemeHandler->authenticate($request, $scheme));
         $this->assertSame('foo', $this->schemeHandler->actualUsername);
@@ -128,7 +126,6 @@ class BasicAuthenticationHandlerTest extends TestCase
         $request->method('getHeaders')
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $result = $this->schemeHandler->authenticate($request, $scheme);
         $this->assertFalse($result->passed);
@@ -141,7 +138,6 @@ class BasicAuthenticationHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $request->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $result = $this->schemeHandler->authenticate($request, $scheme);
         $this->assertFalse($result->passed);
@@ -169,7 +165,6 @@ class BasicAuthenticationHandlerTest extends TestCase
         $response->expects($this->once())
             ->method('setStatusCode')
             ->with(HttpStatusCode::Forbidden);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);
     }
