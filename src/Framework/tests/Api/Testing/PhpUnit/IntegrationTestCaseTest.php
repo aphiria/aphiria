@@ -160,7 +160,7 @@ class IntegrationTestCaseTest extends TestCase
                 return $this->app;
             }
 
-            protected function createBodyNegotiator(IContainer $container): IBodyDeserializer
+            protected function createBodyDeserializer(IContainer $container): IBodyDeserializer
             {
                 // Ensure that the body negotiator is resolvable after this method is invoked
                 $container->bindInstance(IBodyDeserializer::class, $this->bodyDeserializer);

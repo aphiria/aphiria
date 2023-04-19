@@ -74,7 +74,8 @@ return (new PhpCsFixer\Config())
                 'method_protected',
                 'method_private_static',
                 'method_private'
-            ]
+            ],
+            'sort_algorithm' => 'alpha'
         ],
         'ordered_imports' => true,
         'return_type_declaration' => ['space_before' => 'none'],

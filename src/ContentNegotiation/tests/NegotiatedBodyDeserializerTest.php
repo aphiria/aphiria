@@ -108,6 +108,15 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $this->assertNull($actualUser);
     }
 
+    public function testDeserializingNullRequestBodyAsArrayTypeReturnsEmptyArray(): void
+    {
+        $request = $this->createMock(IRequest::class);
+        $request->method('getBody')
+            ->willReturn(null);
+        $actualUser = $this->bodyDeserializer->readRequestBodyAs(User::class . '[]', $request);
+        $this->assertSame([], $actualUser);
+    }
+
     public function testDeserializingNullResponseBodyReturnsNull(): void
     {
         $request = $this->createMock(IRequest::class);
@@ -116,6 +125,16 @@ class NegotiatedBodyDeserializerTest extends TestCase
             ->willReturn(null);
         $actualUser = $this->bodyDeserializer->readResponseBodyAs(User::class, $request, $response);
         $this->assertNull($actualUser);
+    }
+
+    public function testDeserializingNullResponseBodyAsArrayTypeReturnsEmptyArray(): void
+    {
+        $request = $this->createMock(IRequest::class);
+        $response = $this->createMock(IResponse::class);
+        $response->method('getBody')
+            ->willReturn(null);
+        $actualUser = $this->bodyDeserializer->readResponseBodyAs(User::class . '[]', $request, $response);
+        $this->assertSame([], $actualUser);
     }
 
     public function testDeserializingRequestBodyReturnsAnInstanceOfType(): void
