@@ -109,7 +109,7 @@
         "phpunit": "php vendor/phpunit/phpunit/phpunit --coverage-clover ./.coverage/clover.xml",
         "psalm": [
             "Composer\\Config::disableProcessTimeout",
-            "php vendor/vimeo/psalm/psalm --find-unused-psalm-suppress"
+            "php vendor/vimeo/psalm/psalm"
         ],
         "test": [
             "@phpunit",
