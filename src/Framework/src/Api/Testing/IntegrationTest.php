@@ -118,7 +118,7 @@ trait IntegrationTest
      */
     protected function createResponseAssertions(IContainer $container): ResponseAssertions
     {
-        return new ResponseAssertions($container->resolve(IMediaTypeFormatterMatcher::class));
+        return $container->resolve(ResponseAssertions::class);
     }
 
     /**
@@ -170,7 +170,7 @@ trait IntegrationTest
     {
         $appUrl = \getenv('APP_URL');
 
-        if ($appUrl === false || empty($appUrl)) {
+        if (empty($appUrl)) {
             return null;
         }
 

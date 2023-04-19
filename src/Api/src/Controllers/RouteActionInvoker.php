@@ -85,9 +85,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                     $routeVariables
                 );
 
-                if ($this->requestBodyValidator !== null) {
-                    $this->requestBodyValidator->validate($request, $resolvedParameter);
-                }
+                $this->requestBodyValidator?->validate($request, $resolvedParameter);
 
                 /** @psalm-suppress MixedAssignment The resolved parameter could legitimately be mixed */
                 $resolvedParameters[] = $resolvedParameter;
