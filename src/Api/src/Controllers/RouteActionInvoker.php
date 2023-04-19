@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Api\Validation\IRequestBodyValidator;
-use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCode;
@@ -54,7 +54,7 @@ class RouteActionInvoker implements IRouteActionInvoker
     ) {
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver
-            ?? new ControllerParameterResolver(new BodyNegotiator($contentNegotiator));
+            ?? new ControllerParameterResolver(new NegotiatedBodyDeserializer($contentNegotiator));
     }
 
     /**

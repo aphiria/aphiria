@@ -16,12 +16,12 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 
 /**
- * Defines a body negotiator
+ * Defines a body deserializer that uses content negotiation
  */
-final class BodyNegotiator implements IBodyNegotiator
+final class NegotiatedBodyDeserializer implements IBodyDeserializer
 {
     /**
-     * @param IContentNegotiator $contentNegotiator The content negotiator to use when negotiating message bodies
+     * @param IContentNegotiator $contentNegotiator The content negotiator to use when deserializing message bodies
      */
     public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator())
     {
@@ -30,8 +30,9 @@ final class BodyNegotiator implements IBodyNegotiator
     /**
      * @inheritdoc
      */
-    public function negotiateRequestBody(string $type, IRequest $request): float|object|int|bool|array|string|null
+    public function readRequestBodyAs(string $type, IRequest $request): float|object|int|bool|array|string|null
     {
+        // TODO: Check if it ends in [], and return an empty array, instead
         if (($body = $request->getBody()) === null) {
             return null;
         }
@@ -49,8 +50,9 @@ final class BodyNegotiator implements IBodyNegotiator
     /**
      * @inheritdoc
      */
-    public function negotiateResponseBody(string $type, IRequest $request, IResponse $response): float|object|int|bool|array|string|null
+    public function readResponseBodyAs(string $type, IRequest $request, IResponse $response): float|object|int|bool|array|string|null
     {
+        // TODO: Check if it ends in [], and return an empty array, instead
         if (($body = $response->getBody()) === null) {
             return null;
         }

@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Api\Testing\PhpUnit;
 
 use Aphiria\Application\IApplication;
 use Aphiria\Collections\KeyValuePair;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
@@ -49,7 +49,7 @@ class IntegrationTestCaseTest extends TestCase
 {
     private IApplication&MockObject $app;
     private IRequestHandler&MockObject $apiGateway;
-    private IBodyNegotiator&MockObject $bodyNegotiator;
+    private IBodyDeserializer&MockObject $bodyDeserializer;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;
 
@@ -58,15 +58,15 @@ class IntegrationTestCaseTest extends TestCase
         $this->prevAppUrl = \getenv('APP_URL') ?: '';
         $this->app = $this->createMock(IApplication::class);
         $this->apiGateway = $this->createMock(IRequestHandler::class);
-        $this->bodyNegotiator = $this->createMock(IBodyNegotiator::class);
-        $this->integrationTests = new class ($this->app, $this->apiGateway, $this->bodyNegotiator) extends IntegrationTestCase {
+        $this->bodyDeserializer = $this->createMock(IBodyDeserializer::class);
+        $this->integrationTests = new class ($this->app, $this->apiGateway, $this->bodyDeserializer) extends IntegrationTestCase {
             private static ?string $failMessage = null;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
 
             public function __construct(
                 private IApplication $app,
                 private IRequestHandler $apiGateway,
-                private IBodyNegotiator $bodyNegotiator
+                private IBodyDeserializer $bodyDeserializer
             ) {
                 /** @psalm-suppress InternalMethod We need to call this internal method */
                 parent::__construct('foo');
@@ -111,18 +111,6 @@ class IntegrationTestCaseTest extends TestCase
             }
 
             // Make this public for testability
-            public function negotiateRequestBody(string $type): float|object|int|bool|array|string|null
-            {
-                return parent::negotiateRequestBody($type);
-            }
-
-            // Make this public for testability
-            public function negotiateResponseBody(string $type, IResponse $response): float|object|int|bool|array|string|null
-            {
-                return parent::negotiateResponseBody($type, $response);
-            }
-
-            // Make this public for testability
             public function options(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
             {
                 return parent::options($uri, $headers, $body);
@@ -147,6 +135,18 @@ class IntegrationTestCaseTest extends TestCase
             }
 
             // Make this public for testability
+            public function readRequestBodyAs(string $type): float|object|int|bool|array|string|null
+            {
+                return parent::readRequestBodyAs($type);
+            }
+
+            // Make this public for testability
+            public function readResponseBodyAs(string $type, IResponse $response): float|object|int|bool|array|string|null
+            {
+                return parent::readResponseBodyAs($type, $response);
+            }
+
+            // Make this public for testability
             public function setUp(): void
             {
                 parent::setUp();
@@ -160,12 +160,12 @@ class IntegrationTestCaseTest extends TestCase
                 return $this->app;
             }
 
-            protected function createBodyNegotiator(IContainer $container): IBodyNegotiator
+            protected function createBodyNegotiator(IContainer $container): IBodyDeserializer
             {
                 // Ensure that the body negotiator is resolvable after this method is invoked
-                $container->bindInstance(IBodyNegotiator::class, $this->bodyNegotiator);
+                $container->bindInstance(IBodyDeserializer::class, $this->bodyDeserializer);
 
-                return parent::createBodyNegotiator($container);
+                return parent::createBodyDeserializer($container);
             }
 
             protected function createRequestBuilder(IContainer $container): NegotiatedRequestBuilder
@@ -448,34 +448,34 @@ class IntegrationTestCaseTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('A request must be sent before negotiating the request body');
-        $this->integrationTests->negotiateRequestBody(DateTime::class);
+        $this->integrationTests->readRequestBodyAs(DateTime::class);
     }
 
     public function testNegotiatingRequestBodyReturnsDeserializedValue(): void
     {
         $expectedNegotiatedBody = new DateTime();
         $this->integrationTests->get('http://localhost');
-        $this->bodyNegotiator->method('negotiateRequestBody')
+        $this->bodyDeserializer->method('readRequestBodyAs')
             ->with(DateTime::class, $this->integrationTests->getLastRequest())
             ->willReturn($expectedNegotiatedBody);
-        $this->assertSame($expectedNegotiatedBody, $this->integrationTests->negotiateRequestBody(DateTime::class));
+        $this->assertSame($expectedNegotiatedBody, $this->integrationTests->readRequestBodyAs(DateTime::class));
     }
 
     public function testNegotiatingResponseBeforeSendingRequestThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('A request must be sent before negotiating the response body');
-        $this->integrationTests->negotiateResponseBody(DateTime::class, $this->createMock(IResponse::class));
+        $this->integrationTests->readResponseBodyAs(DateTime::class, $this->createMock(IResponse::class));
     }
 
     public function testNegotiatingResponseBodyReturnsDeserializedValue(): void
     {
         $expectedNegotiatedBody = new DateTime();
         $response = $this->integrationTests->get('http://localhost');
-        $this->bodyNegotiator->method('negotiateResponseBody')
+        $this->bodyDeserializer->method('readResponseBodyAs')
             ->with(DateTime::class, $this->integrationTests->getLastRequest(), $response)
             ->willReturn($expectedNegotiatedBody);
-        $this->assertSame($expectedNegotiatedBody, $this->integrationTests->negotiateResponseBody(DateTime::class, $response));
+        $this->assertSame($expectedNegotiatedBody, $this->integrationTests->readResponseBodyAs(DateTime::class, $response));
     }
 
     public function testOptionsSendsRequestToClient(): void

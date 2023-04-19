@@ -16,15 +16,15 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\ContentNegotiation\AcceptLanguageMatcher;
-use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\ContentNegotiator;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\IEncodingMatcher;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
@@ -99,9 +99,9 @@ class ContentNegotiationBinder extends Binder
             $languageMatcher
         );
         $responseFactory = new NegotiatedResponseFactory($contentNegotiator);
-        $bodyNegotiator = new BodyNegotiator($contentNegotiator);
+        $bodyDeserializer = new NegotiatedBodyDeserializer($contentNegotiator);
         $container->bindInstance(IContentNegotiator::class, $contentNegotiator);
         $container->bindInstance(IResponseFactory::class, $responseFactory);
-        $container->bindInstance(IBodyNegotiator::class, $bodyNegotiator);
+        $container->bindInstance(IBodyDeserializer::class, $bodyDeserializer);
     }
 }

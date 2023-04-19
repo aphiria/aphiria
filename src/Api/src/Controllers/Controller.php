@@ -384,6 +384,7 @@ class Controller
      */
     protected function readRequestBodyAs(string $type): mixed
     {
+        // TODO: Refactor this to use IBodyDeserializer
         if (!$this->request instanceof IRequest) {
             throw new LogicException('Request is not set');
         }

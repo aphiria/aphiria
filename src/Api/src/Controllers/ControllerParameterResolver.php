@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
-use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\FailedContentNegotiationException;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\IRequest;
 use ReflectionNamedType;
@@ -27,12 +27,12 @@ use ReflectionParameter;
 final class ControllerParameterResolver implements IControllerParameterResolver
 {
     /**
-     * @param IBodyNegotiator $bodyNegotiator The body negotiator
+     * @param IBodyDeserializer $bodyDeserializer The body negotiator
      * @param UriParser $uriParser The URI parser to use
      */
     public function __construct(
-        private readonly IBodyNegotiator $bodyNegotiator = new BodyNegotiator(),
-        private readonly UriParser $uriParser = new UriParser()
+        private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
+        private readonly UriParser         $uriParser = new UriParser()
     ) {
     }
 
@@ -95,15 +95,15 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         IRequest $request
     ): ?object {
         try {
-            $negotiatedBody = $this->bodyNegotiator->negotiateRequestBody($type->getName(), $request);
+            $deserializedBody = $this->bodyDeserializer->readRequestBodyAs($type->getName(), $request);
 
-            if ($negotiatedBody === null && !$reflectionParameter->allowsNull()) {
+            if ($deserializedBody === null && !$reflectionParameter->allowsNull()) {
                 throw new MissingControllerParameterValueException(
                     "Body is null when resolving parameter {$reflectionParameter->getName()}"
                 );
             }
 
-            return $negotiatedBody;
+            return $deserializedBody;
         } catch (FailedContentNegotiationException $ex) {
             if ($reflectionParameter->allowsNull()) {
                 return null;

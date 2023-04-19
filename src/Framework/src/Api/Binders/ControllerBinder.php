@@ -16,7 +16,7 @@ use Aphiria\Api\Controllers\ControllerParameterResolver;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
 use Aphiria\Api\Validation\RequestBodyValidator;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
@@ -38,7 +38,7 @@ final class ControllerBinder extends Binder
             $container->resolve(IValidator::class),
             $container->resolve(IErrorMessageInterpolator::class)
         );
-        $controllerParameterResolver = new ControllerParameterResolver($container->resolve(IBodyNegotiator::class));
+        $controllerParameterResolver = new ControllerParameterResolver($container->resolve(IBodyDeserializer::class));
         $routeActionInvoker = new RouteActionInvoker(
             $container->resolve(IContentNegotiator::class),
             $requestBodyValidator,
