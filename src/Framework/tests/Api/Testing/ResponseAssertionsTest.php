@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Api\Testing;
 
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\Framework\Api\Testing\AssertionFailedException;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
@@ -158,7 +159,8 @@ class ResponseAssertionsTest extends TestCase
             ->method('getBestResponseMediaTypeFormatterMatch')
             ->with(self::class, $request)
             ->willReturn(null);
-        $assertions = new ResponseAssertions($mediaTypeFormatterMatcher);
+        $contentNegotiator = new ContentNegotiator(mediaTypeFormatterMatcher: $mediaTypeFormatterMatcher);
+        $assertions = new ResponseAssertions($contentNegotiator);
         $assertions->assertParsedBodyEquals($this, $request, $response);
     }
 
@@ -229,7 +231,8 @@ class ResponseAssertionsTest extends TestCase
             ->method('getBestResponseMediaTypeFormatterMatch')
             ->with(self::class, $request)
             ->willReturn(null);
-        $assertions = new ResponseAssertions($mediaTypeFormatterMatcher);
+        $contentNegotiator = new ContentNegotiator(mediaTypeFormatterMatcher: $mediaTypeFormatterMatcher);
+        $assertions = new ResponseAssertions($contentNegotiator);
         $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn (mixed $parsedBody): bool => true);
     }
 
