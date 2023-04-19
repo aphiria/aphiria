@@ -24,9 +24,9 @@ interface IBodyNegotiator
     /**
      * Negotiates the request body and returns it as the input type
      *
-     * @return float|object|int|bool|array|string|null The negotiated request body
-     * @param IRequest $request The request whose body we want to negotiate
      * @param string $type The type to deserialize the request body to
+     * @param IRequest $request The request whose body we want to negotiate
+     * @return float|object|int|bool|array|string|null The negotiated request body
      * @throws FailedContentNegotiationException Thrown if there was an error negotiating the request body
      * @throws SerializationException Thrown if there was an error deserializing the request body
      */

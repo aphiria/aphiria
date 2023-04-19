@@ -9,6 +9,7 @@
 ### Added
 
 - Added `IBodyNegotiator` and `BodyNegotiator` to simplify negotiating request and response bodies ([#253](https://github.com/aphiria/aphiria/pull/253))
+- Added ability to easily negotiate request and response bodies in integration tests ([#253](https://github.com/aphiria/aphiria/pull/253))
 
 ## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
 
