@@ -65,7 +65,6 @@ class BasicAuthenticationHandlerTest extends TestCase
             }
         };
 
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         return [
             [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions()), 'Basic'],
             [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions(realm: 'example.com')), 'Basic realm="example.com"']
