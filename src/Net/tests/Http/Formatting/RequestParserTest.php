@@ -30,11 +30,11 @@ use PHPUnit\Framework\TestCase;
 
 class RequestParserTest extends TestCase
 {
-    private RequestParser $parser;
-    private IRequest&MockObject $request;
-    private Headers $headers;
     private IBody&MockObject $body;
+    private Headers $headers;
+    private RequestParser $parser;
     private IDictionary $properties;
+    private IRequest&MockObject $request;
 
     protected function setUp(): void
     {

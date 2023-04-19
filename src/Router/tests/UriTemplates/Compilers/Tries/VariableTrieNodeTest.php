@@ -60,22 +60,6 @@ class VariableTrieNodeTest extends TestCase
         $this->assertFalse($node->isMatch('bar', $routeVariables));
     }
 
-    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndSetsVariablesWithNoConstraints(): void
-    {
-        $node = new VariableTrieNode([new RouteVariable('foo'), 'baz'], []);
-        $routeVariables = [];
-        $this->assertTrue($node->isMatch('barbaz', $routeVariables));
-        $this->assertEquals(['foo' => 'bar'], $routeVariables);
-    }
-
-    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexWithDifferentCaseAndSetsVariables(): void
-    {
-        $node = new VariableTrieNode([new RouteVariable('foo'), 'baz'], []);
-        $routeVariables = [];
-        $this->assertTrue($node->isMatch('barBAZ', $routeVariables));
-        $this->assertEquals(['foo' => 'bar'], $routeVariables);
-    }
-
     public function testIsMatchWithMultiplePartsReturnsFalseIfAnyConstraintFails(): void
     {
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
@@ -112,11 +96,19 @@ class VariableTrieNodeTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $routeVariables);
     }
 
-    public function testIsMatchWithSingleRouteVariableReturnsTrueAndSetsVariablesWithNoConstraints(): void
+    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndSetsVariablesWithNoConstraints(): void
     {
-        $node = new VariableTrieNode(new RouteVariable('foo'), []);
+        $node = new VariableTrieNode([new RouteVariable('foo'), 'baz'], []);
         $routeVariables = [];
-        $this->assertTrue($node->isMatch('bar', $routeVariables));
+        $this->assertTrue($node->isMatch('barbaz', $routeVariables));
+        $this->assertEquals(['foo' => 'bar'], $routeVariables);
+    }
+
+    public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexWithDifferentCaseAndSetsVariables(): void
+    {
+        $node = new VariableTrieNode([new RouteVariable('foo'), 'baz'], []);
+        $routeVariables = [];
+        $this->assertTrue($node->isMatch('barBAZ', $routeVariables));
         $this->assertEquals(['foo' => 'bar'], $routeVariables);
     }
 
@@ -136,6 +128,14 @@ class VariableTrieNodeTest extends TestCase
         $routeVariables = [];
         $this->assertFalse($node->isMatch('bar', $routeVariables));
         $this->assertEquals([], $routeVariables);
+    }
+
+    public function testIsMatchWithSingleRouteVariableReturnsTrueAndSetsVariablesWithNoConstraints(): void
+    {
+        $node = new VariableTrieNode(new RouteVariable('foo'), []);
+        $routeVariables = [];
+        $this->assertTrue($node->isMatch('bar', $routeVariables));
+        $this->assertEquals(['foo' => 'bar'], $routeVariables);
     }
 
     public function testIsMatchWithSingleRouteVariableReturnsTrueIfAllConstraintsPass(): void

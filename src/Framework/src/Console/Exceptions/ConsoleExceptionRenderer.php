@@ -38,26 +38,6 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     }
 
     /**
-     * @inheritdoc
-     */
-    public function render(Exception $ex): void
-    {
-        if (isset($this->outputWriters[$ex::class])) {
-            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::Fatal;
-        } else {
-            $statusCode  = StatusCode::Fatal;
-            $this->output->writeln($this->getDefaultExceptionMessages($ex));
-        }
-
-        if ($this->shouldExit) {
-            // We cannot actually call exit() from a test, even from a separate process
-            // @codeCoverageIgnoreStart
-            exit($statusCode instanceof StatusCode ? $statusCode->value : $statusCode);
-            // @codeCoverageIgnoreEnd
-        }
-    }
-
-    /**
      * Registers many writers that can use exceptions to write output and return status codes
      *
      * @template T of Exception
@@ -81,6 +61,26 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     {
         /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->outputWriters[$exceptionType] = $callback;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function render(Exception $ex): void
+    {
+        if (isset($this->outputWriters[$ex::class])) {
+            $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::Fatal;
+        } else {
+            $statusCode  = StatusCode::Fatal;
+            $this->output->writeln($this->getDefaultExceptionMessages($ex));
+        }
+
+        if ($this->shouldExit) {
+            // We cannot actually call exit() from a test, even from a separate process
+            // @codeCoverageIgnoreStart
+            exit($statusCode instanceof StatusCode ? $statusCode->value : $statusCode);
+            // @codeCoverageIgnoreEnd
+        }
     }
 
     /**

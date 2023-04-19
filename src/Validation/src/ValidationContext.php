@@ -40,16 +40,6 @@ final class ValidationContext
     }
 
     /**
-     * Adds many constraint violations to the context
-     *
-     * @param list<ConstraintViolation> $constraintViolations The violations to add
-     */
-    public function addManyConstraintViolations(array $constraintViolations): void
-    {
-        $this->constraintViolations = [...$this->constraintViolations, ...$constraintViolations];
-    }
-
-    /**
      * Adds a constraint violation to the context
      *
      * @param ConstraintViolation $constraintViolation The violation to add
@@ -57,6 +47,16 @@ final class ValidationContext
     public function addConstraintViolation(ConstraintViolation $constraintViolation): void
     {
         $this->constraintViolations[] = $constraintViolation;
+    }
+
+    /**
+     * Adds many constraint violations to the context
+     *
+     * @param list<ConstraintViolation> $constraintViolations The violations to add
+     */
+    public function addManyConstraintViolations(array $constraintViolations): void
+    {
+        $this->constraintViolations = [...$this->constraintViolations, ...$constraintViolations];
     }
 
     /**

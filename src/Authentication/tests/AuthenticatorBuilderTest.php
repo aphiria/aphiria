@@ -59,21 +59,6 @@ class AuthenticatorBuilderTest extends TestCase
         $this->assertTrue($instance1 === $instance2 && $instance2 === $instance3);
     }
 
-    public function testWithSchemeCanMarkSchemeAsDefault(): void
-    {
-        $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
-        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
-        $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
-        $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
-        $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
-            ->withScheme($scheme, true)
-            ->build();
-        $expectedSchemes = new AuthenticationSchemeRegistry();
-        $expectedSchemes->registerScheme($scheme, true);
-        $expectedAuthenticator = new Authenticator($expectedSchemes, $schemeHandlerResolver);
-        $this->assertEquals($expectedAuthenticator, $authenticator);
-    }
-
     public function testWithSchemeAddsSchemeToAuthenticator(): void
     {
         $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
@@ -85,6 +70,21 @@ class AuthenticatorBuilderTest extends TestCase
             ->build();
         $expectedSchemes = new AuthenticationSchemeRegistry();
         $expectedSchemes->registerScheme($scheme);
+        $expectedAuthenticator = new Authenticator($expectedSchemes, $schemeHandlerResolver);
+        $this->assertEquals($expectedAuthenticator, $authenticator);
+    }
+
+    public function testWithSchemeCanMarkSchemeAsDefault(): void
+    {
+        $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
+        $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
+        $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
+        $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
+            ->withScheme($scheme, true)
+            ->build();
+        $expectedSchemes = new AuthenticationSchemeRegistry();
+        $expectedSchemes->registerScheme($scheme, true);
         $expectedAuthenticator = new Authenticator($expectedSchemes, $schemeHandlerResolver);
         $this->assertEquals($expectedAuthenticator, $authenticator);
     }

@@ -127,13 +127,6 @@ class ContainerTest extends TestCase
         $this->assertSame('foo', $result);
     }
 
-    public function testCallingMethodWithPrimitiveTypesWithoutSpecifyingValue(): void
-    {
-        $this->expectException(CallException::class);
-        $instance = new ConstructorWithSetters();
-        $this->container->callMethod($instance, 'setPrimitive');
-    }
-
     public function testCallingClosureWithTypeHintedAndPrimitiveTypes(): void
     {
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
@@ -164,6 +157,13 @@ class ContainerTest extends TestCase
         $this->expectException(CallException::class);
         $this->expectExceptionMessage('Failed to call closure');
         $this->container->callClosure(fn (IFoo $foo) => null);
+    }
+
+    public function testCallingMethodWithPrimitiveTypesWithoutSpecifyingValue(): void
+    {
+        $this->expectException(CallException::class);
+        $instance = new ConstructorWithSetters();
+        $this->container->callMethod($instance, 'setPrimitive');
     }
 
     public function testCallingNonExistentMethod(): void

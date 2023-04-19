@@ -24,8 +24,8 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiatorTest extends TestCase
 {
-    private IRequest&MockObject $request;
     private Headers $headers;
+    private IRequest&MockObject $request;
 
     protected function setUp(): void
     {
@@ -130,6 +130,16 @@ class ContentNegotiatorTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testRequestFormatterIsNullWithNoContentTypeSpecified(): void
+    {
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateRequestContent(User::class, $this->request);
+        $this->assertNull($result->formatter);
+        $this->assertSame('application/octet-stream', $result->mediaType);
+        $this->assertNull($result->encoding);
+    }
+
     public function testRequestResultEncodingIsSetFromContentTypeHeaderIfSet(): void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
@@ -150,16 +160,6 @@ class ContentNegotiatorTest extends TestCase
         $this->assertSame('en-US', $result->language);
     }
 
-    public function testRequestFormatterIsNullWithNoContentTypeSpecified(): void
-    {
-        $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $negotiator = new ContentNegotiator([$formatter]);
-        $result = $negotiator->negotiateRequestContent(User::class, $this->request);
-        $this->assertNull($result->formatter);
-        $this->assertSame('application/octet-stream', $result->mediaType);
-        $this->assertNull($result->encoding);
-    }
-
     public function testRequestResultLanguageIsSetFromContentLanguageHeaderIfSet(): void
     {
         $formatter = $this->createFormatterMock(['text/html'], 1);
@@ -178,6 +178,46 @@ class ContentNegotiatorTest extends TestCase
         $this->assertSame('text/html', $result->mediaType);
         $this->assertSame('utf-8', $result->encoding);
         $this->assertSame('en-US', $result->language);
+    }
+
+    public function testResponseEncodingIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet(): void
+    {
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-16']);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $formatter->expects($this->once())
+            ->method('getDefaultMediaType')
+            ->willReturn('application/json');
+        $this->headers->add('Accept-Charset', 'utf-16');
+        $this->headers->add('Accept-Language', 'en-US');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateResponseContent(User::class, $this->request);
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('application/json', $result->mediaType);
+        $this->assertSame('utf-16', $result->encoding);
+    }
+
+    public function testResponseEncodingIsSetFromAcceptCharsetHeaderWhenPresent(): void
+    {
+        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter->expects($this->once())
+            ->method('getSupportedEncodings')
+            ->willReturn(['utf-8']);
+        $formatter->expects($this->once())
+            ->method('canWriteType')
+            ->with(User::class)
+            ->willReturn(true);
+        $this->headers->add('Accept', 'application/json');
+        $this->headers->add('Accept-Charset', 'utf-8');
+        $negotiator = new ContentNegotiator([$formatter]);
+        $result = $negotiator->negotiateResponseContent(User::class, $this->request);
+        $this->assertSame($formatter, $result->formatter);
+        $this->assertSame('utf-8', $result->encoding);
     }
 
     public function testResponseFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified(): void
@@ -235,46 +275,6 @@ class ContentNegotiatorTest extends TestCase
         $this->assertNull($result->mediaType);
         $this->assertNull($result->encoding);
         $this->assertNull($result->language);
-    }
-
-    public function testResponseEncodingIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet(): void
-    {
-        $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->expects($this->once())
-            ->method('getSupportedEncodings')
-            ->willReturn(['utf-16']);
-        $formatter->expects($this->once())
-            ->method('canWriteType')
-            ->with(User::class)
-            ->willReturn(true);
-        $formatter->expects($this->once())
-            ->method('getDefaultMediaType')
-            ->willReturn('application/json');
-        $this->headers->add('Accept-Charset', 'utf-16');
-        $this->headers->add('Accept-Language', 'en-US');
-        $negotiator = new ContentNegotiator([$formatter]);
-        $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->formatter);
-        $this->assertSame('application/json', $result->mediaType);
-        $this->assertSame('utf-16', $result->encoding);
-    }
-
-    public function testResponseEncodingIsSetFromAcceptCharsetHeaderWhenPresent(): void
-    {
-        $formatter = $this->createFormatterMock(['application/json'], 1);
-        $formatter->expects($this->once())
-            ->method('getSupportedEncodings')
-            ->willReturn(['utf-8']);
-        $formatter->expects($this->once())
-            ->method('canWriteType')
-            ->with(User::class)
-            ->willReturn(true);
-        $this->headers->add('Accept', 'application/json');
-        $this->headers->add('Accept-Charset', 'utf-8');
-        $negotiator = new ContentNegotiator([$formatter]);
-        $result = $negotiator->negotiateResponseContent(User::class, $this->request);
-        $this->assertSame($formatter, $result->formatter);
-        $this->assertSame('utf-8', $result->encoding);
     }
 
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void

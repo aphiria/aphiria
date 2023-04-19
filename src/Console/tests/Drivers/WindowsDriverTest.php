@@ -26,9 +26,9 @@ use PHPUnit\Framework\TestCase;
 #[IgnoreMethodForCodeCoverage(Driver::class, 'supportsStty')]
 class WindowsDriverTest extends TestCase
 {
-    private WindowsDriver $driver;
     private string|bool $ansicon;
     private string|bool $columns;
+    private WindowsDriver $driver;
     private string|bool $lines;
 
     protected function setUp(): void

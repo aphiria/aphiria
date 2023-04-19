@@ -35,9 +35,9 @@ use PHPUnit\Framework\TestCase;
 
 class AuthorizeTest extends TestCase
 {
-    private Authorize $middleware;
-    private IAuthority&MockObject $authority;
     private IAuthenticator&MockObject $authenticator;
+    private IAuthority&MockObject $authority;
+    private Authorize $middleware;
     private AuthorizationPolicyRegistry $policies;
     private IUserAccessor&MockObject $userAccessor;
 
@@ -194,25 +194,24 @@ class AuthorizeTest extends TestCase
         $this->assertSame($response, $this->middleware->handle($request, $next));
     }
 
-    public function testHandlingUnauthorizedResultForPolicyReturnsForbiddenResponse(): void
+    /**
+     * @param IPrincipal $user The unauthenticated user
+     */
+    #[DataProvider('getUnauthenticatedUsers')]
+    public function testHandlingUnauthenticatedUserReturnsUnauthorizedAndChallengedResponse(IPrincipal $user): void
     {
         $request = $this->createMock(IRequest::class);
-        $user = $this->createMockAuthenticatedUser();
         $this->userAccessor->expects($this->once())
             ->method('getUser')
             ->with($request)
             ->willReturn($user);
         $policy = new AuthorizationPolicy('policy', [$this], 'scheme');
-        $this->authority->expects($this->once())
-            ->method('authorize')
-            ->with($user, $policy)
-            ->willReturn(AuthorizationResult::fail([$this]));
         $this->authenticator->expects($this->once())
-            ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
+            ->method('challenge')
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), 'scheme');
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
-        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
     }
 
     public function testHandlingUnauthorizedResultForPolicyNameReturnsForbiddenResponse(): void
@@ -237,24 +236,25 @@ class AuthorizeTest extends TestCase
         $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
     }
 
-    /**
-     * @param IPrincipal $user The unauthenticated user
-     */
-    #[DataProvider('getUnauthenticatedUsers')]
-    public function testHandlingUnauthenticatedUserReturnsUnauthorizedAndChallengedResponse(IPrincipal $user): void
+    public function testHandlingUnauthorizedResultForPolicyReturnsForbiddenResponse(): void
     {
         $request = $this->createMock(IRequest::class);
+        $user = $this->createMockAuthenticatedUser();
         $this->userAccessor->expects($this->once())
             ->method('getUser')
             ->with($request)
             ->willReturn($user);
         $policy = new AuthorizationPolicy('policy', [$this], 'scheme');
+        $this->authority->expects($this->once())
+            ->method('authorize')
+            ->with($user, $policy)
+            ->willReturn(AuthorizationResult::fail([$this]));
         $this->authenticator->expects($this->once())
-            ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), 'scheme');
+            ->method('forbid')
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
-        $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
     }
 
     /**

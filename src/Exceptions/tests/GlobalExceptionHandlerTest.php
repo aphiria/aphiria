@@ -27,9 +27,9 @@ use Throwable;
 class GlobalExceptionHandlerTest extends TestCase
 {
     private IExceptionRenderer&MockObject $exceptionRenderer;
+    private GlobalExceptionHandler $globalExceptionHandler;
     private LoggerInterface&MockObject $logger;
     private LogLevelFactory $logLevelFactory;
-    private GlobalExceptionHandler $globalExceptionHandler;
     private int $prevErrorReporting;
 
     protected function setUp(): void
@@ -46,54 +46,6 @@ class GlobalExceptionHandlerTest extends TestCase
     {
         \error_reporting($this->prevErrorReporting);
         \restore_exception_handler();
-    }
-
-
-    public function testHandlingErrorThatShouldBeThrownIsThrown(): void
-    {
-        try {
-            $this->globalExceptionHandler->handleError(E_ERROR, 'foo');
-            $this->fail('Expected error to be thrown as exception');
-        } catch (ErrorException $ex) {
-            $this->assertSame(E_ERROR, $ex->getSeverity());
-            $this->assertSame('foo', $ex->getMessage());
-        }
-    }
-
-    public function testHandlingErrorThatNotShouldBeThrownIsNotThrown(): void
-    {
-        \error_reporting(\E_ERROR);
-        $this->globalExceptionHandler->handleError(E_NOTICE, 'foo');
-        // Just by getting here, we've verified that the error was not thrown as an exception
-        $this->assertTrue(true);
-    }
-
-    public function testHandlingExceptionDefaultsToErrorLogLevelIfExceptionHasNoCustomLogLevel(): void
-    {
-        $exception = new Exception();
-        $this->logger->expects($this->once())
-            ->method('error')
-            ->with($exception);
-        $this->globalExceptionHandler->handleException($exception);
-    }
-
-    public function testHandlingExceptionRendersException(): void
-    {
-        $exception = new Exception();
-        $this->exceptionRenderer->expects($this->once())
-            ->method('render')
-            ->with($exception);
-        $this->globalExceptionHandler->handleException($exception);
-    }
-
-    public function testHandlingExceptionWithCustomErrorLogLevelUsesIt(): void
-    {
-        $exception = new Exception();
-        $this->logger->expects($this->once())
-            ->method('emergency')
-            ->with($exception);
-        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
-        $this->globalExceptionHandler->handleException($exception);
     }
 
     public function testHandleShutdownThrowsErrorsAsExceptions(): void
@@ -122,5 +74,53 @@ class GlobalExceptionHandlerTest extends TestCase
             $this->assertSame($error['file'], $globalExceptionHandler->handledException->getFile());
             $this->assertSame($error['line'], $globalExceptionHandler->handledException->getLine());
         }
+    }
+
+    public function testHandlingErrorThatNotShouldBeThrownIsNotThrown(): void
+    {
+        \error_reporting(\E_ERROR);
+        $this->globalExceptionHandler->handleError(E_NOTICE, 'foo');
+        // Just by getting here, we've verified that the error was not thrown as an exception
+        $this->assertTrue(true);
+    }
+
+
+    public function testHandlingErrorThatShouldBeThrownIsThrown(): void
+    {
+        try {
+            $this->globalExceptionHandler->handleError(E_ERROR, 'foo');
+            $this->fail('Expected error to be thrown as exception');
+        } catch (ErrorException $ex) {
+            $this->assertSame(E_ERROR, $ex->getSeverity());
+            $this->assertSame('foo', $ex->getMessage());
+        }
+    }
+
+    public function testHandlingExceptionDefaultsToErrorLogLevelIfExceptionHasNoCustomLogLevel(): void
+    {
+        $exception = new Exception();
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with($exception);
+        $this->globalExceptionHandler->handleException($exception);
+    }
+
+    public function testHandlingExceptionRendersException(): void
+    {
+        $exception = new Exception();
+        $this->exceptionRenderer->expects($this->once())
+            ->method('render')
+            ->with($exception);
+        $this->globalExceptionHandler->handleException($exception);
+    }
+
+    public function testHandlingExceptionWithCustomErrorLogLevelUsesIt(): void
+    {
+        $exception = new Exception();
+        $this->logger->expects($this->once())
+            ->method('emergency')
+            ->with($exception);
+        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
+        $this->globalExceptionHandler->handleException($exception);
     }
 }

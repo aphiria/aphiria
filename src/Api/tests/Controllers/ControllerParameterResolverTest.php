@@ -32,8 +32,8 @@ use ReflectionParameter;
 
 class ControllerParameterResolverTest extends TestCase
 {
-    private ControllerParameterResolver $resolver;
     private IBodyDeserializer&MockObject $bodyDeserializer;
+    private ControllerParameterResolver $resolver;
 
     protected function setUp(): void
     {
@@ -196,17 +196,6 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertSame('bar', $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterWithUnsupportedTypeThrowsException(): void
-    {
-        $this->expectException(FailedScalarParameterConversionException::class);
-        $this->expectExceptionMessage('Failed to convert value to ');
-        $this->resolver->resolveParameter(
-            new ReflectionParameter([ControllerWithEndpoints::class, 'callableParameter'], 'foo'),
-            $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
-            []
-        );
-    }
-
     /**
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
@@ -247,6 +236,17 @@ class ControllerParameterResolverTest extends TestCase
             [$parameterName => $rawValue]
         );
         $this->assertSame($scalarValue, $resolvedParameter);
+    }
+
+    public function testResolvingScalarParameterWithUnsupportedTypeThrowsException(): void
+    {
+        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->expectExceptionMessage('Failed to convert value to ');
+        $this->resolver->resolveParameter(
+            new ReflectionParameter([ControllerWithEndpoints::class, 'callableParameter'], 'foo'),
+            $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
+            []
+        );
     }
 
     public function testResolvingStringParameterAndNoMatchingVariableThrowsException(): void

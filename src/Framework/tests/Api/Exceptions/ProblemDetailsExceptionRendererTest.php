@@ -28,9 +28,9 @@ use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsExceptionRendererTest extends TestCase
 {
-    private IResponseWriter&MockObject $responseWriter;
     private IRequest&MockObject $request;
     private IResponseFactory&MockObject $responseFactory;
+    private IResponseWriter&MockObject $responseWriter;
 
     protected function setUp(): void
     {
@@ -126,6 +126,77 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $this->assertEquals($expectedResponse, $actualResponse);
     }
 
+    public function testMappingExceptionWithCustomStatusWithNoRfcUriDefaultsToNull(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, 100);
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
+        /** @var array{type: string|null} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertNull($problemDetailsJson['type']);
+    }
+
+    public function testMappingExceptionWithCustomStatusWithRfcUriDefaultsToThatUri(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, 404);
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
+        /** @var array{type: string} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame('https://tools.ietf.org/html/rfc7231#section-6.5.4', $problemDetailsJson['type']);
+    }
+
+    public function testMappingExceptionWithoutCustomInstanceDetailDefaultsToNull(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
+        /** @var array{instance: string|null} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertNull($problemDetailsJson['instance']);
+    }
+
+    public function testMappingExceptionWithoutCustomStatusDefaultsTo500(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, 'foo');
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
+        /** @var array{status: int} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError->value, $problemDetailsJson['status']);
+    }
+
+    public function testMappingExceptionWithoutCustomTitleDefaultsToExceptionMessage(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException('foo'));
+        /** @var array{title: string} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame('foo', $problemDetailsJson['title']);
+    }
+
+    public function testMappingExceptionWithoutCustomTypeDefaultsTo500RfcUri(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
+        /** @var array{type: string} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame('https://tools.ietf.org/html/rfc7231#section-6.6.1', $problemDetailsJson['type']);
+    }
+
+    public function testMappingExceptionWithoutCustomTypeDetailDefaultsToNull(): void
+    {
+        $exceptionRenderer = $this->createExceptionRenderer(false, false);
+        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
+        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
+        /** @var array{detail: string|null} $problemDetailsJson */
+        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $this->assertNull($problemDetailsJson['detail']);
+    }
+
     /**
      * @param string $propertyName The name of the problem details property that is being set
      * @param mixed $rawValue The raw value passed into the map method
@@ -164,77 +235,6 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         /** @var array{type: string, title: string, detail: string, status: int, instance: string, extensions: array} $problemDetailsJson */
         $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame($expectedValue, $problemDetailsJson[$propertyName]);
-    }
-
-    public function testMappingExceptionWithCustomStatusWithNoRfcUriDefaultsToNull(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, 100);
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
-        /** @var array{type: string|null} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertNull($problemDetailsJson['type']);
-    }
-
-    public function testMappingExceptionWithCustomStatusWithRfcUriDefaultsToThatUri(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, 404);
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
-        /** @var array{type: string} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame('https://tools.ietf.org/html/rfc7231#section-6.5.4', $problemDetailsJson['type']);
-    }
-
-    public function testMappingExceptionWithoutCustomTypeDetailDefaultsToNull(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
-        /** @var array{detail: string|null} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertNull($problemDetailsJson['detail']);
-    }
-
-    public function testMappingExceptionWithoutCustomInstanceDetailDefaultsToNull(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
-        /** @var array{instance: string|null} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertNull($problemDetailsJson['instance']);
-    }
-
-    public function testMappingExceptionWithoutCustomTitleDefaultsToExceptionMessage(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException('foo'));
-        /** @var array{title: string} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame('foo', $problemDetailsJson['title']);
-    }
-
-    public function testMappingExceptionWithoutCustomTypeDefaultsTo500RfcUri(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
-        /** @var array{type: string} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame('https://tools.ietf.org/html/rfc7231#section-6.6.1', $problemDetailsJson['type']);
-    }
-
-    public function testMappingExceptionWithoutCustomStatusDefaultsTo500(): void
-    {
-        $exceptionRenderer = $this->createExceptionRenderer(false, false);
-        $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, 'foo');
-        $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
-        /** @var array{status: int} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
-        $this->assertSame(HttpStatusCode::InternalServerError->value, $problemDetailsJson['status']);
     }
 
     public function testNotHavingRequestSetCreatesProblemDetailsResponse(): void

@@ -26,8 +26,8 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
 {
-    private IRouteActionInvoker&MockObject $routeActionInvoker;
     private IContentNegotiator&MockObject $contentNegotiator;
+    private IRouteActionInvoker&MockObject $routeActionInvoker;
     private IUserAccessor&MockObject $userAccessor;
 
     protected function setUp(): void
@@ -35,6 +35,31 @@ class ControllerRequestHandlerTest extends TestCase
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
         $this->userAccessor = $this->createMock(IUserAccessor::class);
+    }
+
+    public function testHandlingRequestReturnsResponseFromRouteInvoker(): void
+    {
+        /** @var IRequest&MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        /** @var IResponse&MockObject $expectedResponse */
+        $expectedResponse = $this->createMock(IResponse::class);
+        /** @var ControllerWithEndpoints&MockObject $controller */
+        $controller = $this->createMock(ControllerWithEndpoints::class);
+        /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
+        $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
+        $this->routeActionInvoker->expects($this->once())
+            ->method('invokeRouteAction')
+            ->with($controllerClosure, $request, [])
+            ->willReturn($expectedResponse);
+
+        $requestHandler = new ControllerRequestHandler(
+            $controller,
+            $controllerClosure,
+            [],
+            $this->contentNegotiator,
+            $this->routeActionInvoker
+        );
+        $this->assertSame($expectedResponse, $requestHandler->handle($request));
     }
 
     public function testHandlingRequestSetsControllerProperties(): void
@@ -71,30 +96,5 @@ class ControllerRequestHandlerTest extends TestCase
             $this->userAccessor
         );
         $requestHandler->handle($request);
-    }
-
-    public function testHandlingRequestReturnsResponseFromRouteInvoker(): void
-    {
-        /** @var IRequest&MockObject $request */
-        $request = $this->createMock(IRequest::class);
-        /** @var IResponse&MockObject $expectedResponse */
-        $expectedResponse = $this->createMock(IResponse::class);
-        /** @var ControllerWithEndpoints&MockObject $controller */
-        $controller = $this->createMock(ControllerWithEndpoints::class);
-        /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
-        $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
-        $this->routeActionInvoker->expects($this->once())
-            ->method('invokeRouteAction')
-            ->with($controllerClosure, $request, [])
-            ->willReturn($expectedResponse);
-
-        $requestHandler = new ControllerRequestHandler(
-            $controller,
-            $controllerClosure,
-            [],
-            $this->contentNegotiator,
-            $this->routeActionInvoker
-        );
-        $this->assertSame($expectedResponse, $requestHandler->handle($request));
     }
 }

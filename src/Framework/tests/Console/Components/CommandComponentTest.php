@@ -26,10 +26,10 @@ use RuntimeException;
 
 class CommandComponentTest extends TestCase
 {
-    private Container $container;
     private CommandComponent $commandComponent;
-    private CommandRegistry $commands;
     private CommandRegistrantCollection $commandRegistrants;
+    private CommandRegistry $commands;
+    private Container $container;
 
     protected function setUp(): void
     {

@@ -20,9 +20,9 @@ use PHPUnit\Framework\TestCase;
 
 class MultipartBodyPartTest extends TestCase
 {
+    private IBody&MockObject $body;
     private MultipartBodyPart $bodyPart;
     private Headers $headers;
-    private IBody&MockObject $body;
 
     protected function setUp(): void
     {

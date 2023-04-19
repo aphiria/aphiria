@@ -20,14 +20,14 @@ use RuntimeException;
  */
 final class MultiStream implements IStream
 {
-    /** @var list<IStream> The list of sub-streams */
-    private array $streams = [];
     /** @var bool Whether or not this stream is seekable */
     private bool $isSeekable = true;
-    /** @var int The index of the currently read stream */
-    private int $streamIndex = 0;
     /** @var int The current position inside the substreams */
     private int $position = 0;
+    /** @var int The index of the currently read stream */
+    private int $streamIndex = 0;
+    /** @var list<IStream> The list of sub-streams */
+    private array $streams = [];
 
     /**
      * @param list<IStream> $streams The list of streams to add

@@ -24,10 +24,10 @@ use RuntimeException;
 
 class RouterComponentTest extends TestCase
 {
-    private RouterComponent $routerComponent;
     private Container $container;
-    private RouteCollection $routes;
+    private RouterComponent $routerComponent;
     private RouteRegistrantCollection $routeRegistrants;
+    private RouteCollection $routes;
 
     protected function setUp(): void
     {

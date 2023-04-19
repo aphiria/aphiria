@@ -24,9 +24,9 @@ use RuntimeException;
 
 class SynchronousApiApplicationTest extends TestCase
 {
+    private IRequestHandler&MockObject $apiGateway;
     private SynchronousApiApplication $app;
     private IResponseWriter&MockObject $responseWriter;
-    private IRequestHandler&MockObject $apiGateway;
 
     protected function setUp(): void
     {

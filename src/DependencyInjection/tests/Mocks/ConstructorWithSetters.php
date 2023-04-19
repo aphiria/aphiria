@@ -17,12 +17,12 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
  */
 class ConstructorWithSetters
 {
-    /** @var string A primitive */
-    private string $primitive = '';
-    /** @var IFoo An interface dependency */
-    private IFoo $interface;
     /** @var Bar A concrete dependency */
     private Bar $concrete;
+    /** @var IFoo An interface dependency */
+    private IFoo $interface;
+    /** @var string A primitive */
+    private string $primitive = '';
 
     /**
      * @return Bar

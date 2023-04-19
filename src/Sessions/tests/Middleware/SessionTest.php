@@ -24,6 +24,11 @@ use SessionHandlerInterface;
 
 class SessionTest extends TestCase
 {
+    private IRequestHandler&MockObject $next;
+    private IRequest&MockObject $request;
+    private Headers $requestHeaders;
+    private IResponse&MockObject $response;
+    private Headers $responseHeaders;
     private ISession&MockObject $session;
     /**
      * @var SessionHandlerInterface&MockObject
@@ -31,11 +36,6 @@ class SessionTest extends TestCase
      * @link https://github.com/vimeo/psalm/issues/7520
      */
     private SessionHandlerInterface $sessionHandler;
-    private Headers $requestHeaders;
-    private IRequest&MockObject $request;
-    private Headers $responseHeaders;
-    private IResponse&MockObject $response;
-    private IRequestHandler&MockObject $next;
 
     protected function setUp(): void
     {
@@ -80,30 +80,6 @@ class SessionTest extends TestCase
         $middleware->handle($this->request, $this->next);
     }
 
-    public function testSessionFlashDataIsAged(): void
-    {
-        $this->session->method('getId')
-            ->willReturn('foo');
-        $this->sessionHandler->expects($this->once())
-            ->method('read')
-            ->with('foo')
-            ->willReturn('bar');
-        $this->session->expects($this->once())
-            ->method('ageFlashData');
-        $middleware = new Session(
-            $this->session,
-            $this->sessionHandler,
-            3600,
-            'session',
-            null,
-            null,
-            false,
-            true,
-            0 // Make sure GC doesn't happen
-        );
-        $middleware->handle($this->request, $this->next);
-    }
-
     public function testSessionDataIsWrittenToResponseCookie(): void
     {
         $this->session->method('getId')
@@ -130,6 +106,30 @@ class SessionTest extends TestCase
             'session=foo; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
             $actualResponse->getHeaders()->getFirst('Set-Cookie')
         );
+    }
+
+    public function testSessionFlashDataIsAged(): void
+    {
+        $this->session->method('getId')
+            ->willReturn('foo');
+        $this->sessionHandler->expects($this->once())
+            ->method('read')
+            ->with('foo')
+            ->willReturn('bar');
+        $this->session->expects($this->once())
+            ->method('ageFlashData');
+        $middleware = new Session(
+            $this->session,
+            $this->sessionHandler,
+            3600,
+            'session',
+            null,
+            null,
+            false,
+            true,
+            0 // Make sure GC doesn't happen
+        );
+        $middleware->handle($this->request, $this->next);
     }
 
     public function testSessionIdIsRegeneratedIfSessionCookieNotPresent(): void

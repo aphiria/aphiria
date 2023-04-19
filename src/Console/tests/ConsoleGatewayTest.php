@@ -35,10 +35,10 @@ use PHPUnit\Framework\TestCase;
 
 class ConsoleGatewayTest extends TestCase
 {
-    private CommandRegistry $commands;
     private IServiceResolver&MockObject $commandHandlerResolver;
-    private Output $output;
+    private CommandRegistry $commands;
     private ConsoleGateway $consoleGateway;
+    private Output $output;
 
     protected function setUp(): void
     {

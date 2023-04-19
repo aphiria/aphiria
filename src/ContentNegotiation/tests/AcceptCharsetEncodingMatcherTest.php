@@ -22,9 +22,9 @@ use PHPUnit\Framework\TestCase;
 
 class AcceptCharsetEncodingMatcherTest extends TestCase
 {
-    private AcceptCharsetEncodingMatcher $matcher;
     private RequestHeaderParser $headerParser;
     private Headers $headers;
+    private AcceptCharsetEncodingMatcher $matcher;
     private IRequest $request;
 
     protected function setUp(): void
@@ -125,14 +125,6 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->assertSame('utf-8', $encoding);
     }
 
-    public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardIsBeforeNon(): void
-    {
-        $this->headers->add('Accept-Charset', '*');
-        $this->headers->add('Accept-Charset', 'utf-8', true);
-        $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
-        $this->assertSame('utf-8', $encoding);
-    }
-
     public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardisAfterNon(): void
     {
         $this->headers->add('Accept-Charset', 'utf-8');
@@ -141,15 +133,12 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $this->assertSame('utf-8', $encoding);
     }
 
-    public function testBestEncodingIsNullWhenFormatterDoesNotSupportCharsetFromContentTypeHeader(): void
+    public function testBestEncodingIsNonWildcardIfBothHaveEqualsScoresAndWildcardIsBeforeNon(): void
     {
-        $this->headers->add('Content-Type', 'text/html; charset=utf-16');
-        $encoding = $this->matcher->getBestEncodingMatch(
-            ['utf-8'],
-            $this->request,
-            $this->headerParser->parseContentTypeHeader($this->headers)
-        );
-        $this->assertNull($encoding);
+        $this->headers->add('Accept-Charset', '*');
+        $this->headers->add('Accept-Charset', 'utf-8', true);
+        $encoding = $this->matcher->getBestEncodingMatch(['utf-8'], $this->request);
+        $this->assertSame('utf-8', $encoding);
     }
 
     public function testBestEncodingIsNullWhenFormatterDoesNotSupportCharsetFromAcceptCharsetHeader(): void
@@ -166,6 +155,17 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
             ['utf-8'],
             $this->request,
             $this->headerParser->parseAcceptHeader($this->headers)[0]
+        );
+        $this->assertNull($encoding);
+    }
+
+    public function testBestEncodingIsNullWhenFormatterDoesNotSupportCharsetFromContentTypeHeader(): void
+    {
+        $this->headers->add('Content-Type', 'text/html; charset=utf-16');
+        $encoding = $this->matcher->getBestEncodingMatch(
+            ['utf-8'],
+            $this->request,
+            $this->headerParser->parseContentTypeHeader($this->headers)
         );
         $this->assertNull($encoding);
     }

@@ -37,8 +37,8 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiationBinderTest extends TestCase
 {
-    private IContainer&MockInterface $container;
     private ContentNegotiationBinder $binder;
+    private IContainer&MockInterface $container;
 
     protected function setUp(): void
     {

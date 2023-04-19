@@ -46,6 +46,12 @@ class UriTest extends TestCase
         $this->assertSame('dave=%25young', $uri->fragment);
     }
 
+    public function testGettingAuthorityWithNoHostOrUserInfoReturnsNull(): void
+    {
+        $httpUri = new Uri('');
+        $this->assertNull($httpUri->getAuthority());
+    }
+
     /**
      * @param string $uri The URI
      * @param string $expectedUri The expected URI
@@ -56,12 +62,6 @@ class UriTest extends TestCase
     {
         $httpUri = new Uri($uri);
         $this->assertEquals($expectedUri, $httpUri->getAuthority());
-    }
-
-    public function testGettingAuthorityWithNoHostOrUserInfoReturnsNull(): void
-    {
-        $httpUri = new Uri('');
-        $this->assertNull($httpUri->getAuthority());
     }
 
     /**
@@ -204,15 +204,15 @@ class UriTest extends TestCase
         $this->assertSame('http://host?query', (string)$uri);
     }
 
-    public function testToStringWithUserPasswordIncludesThoseValues(): void
-    {
-        $uri = new Uri('http://user:password@host');
-        $this->assertSame('http://user:password@host', (string)$uri);
-    }
-
     public function testToStringWithUserButNoPasswordOnlyIncludesUser(): void
     {
         $uri = new Uri('http://user@host');
         $this->assertSame('http://user@host', (string)$uri);
+    }
+
+    public function testToStringWithUserPasswordIncludesThoseValues(): void
+    {
+        $uri = new Uri('http://user:password@host');
+        $this->assertSame('http://user:password@host', (string)$uri);
     }
 }

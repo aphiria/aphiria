@@ -19,10 +19,10 @@ use InvalidArgumentException;
  */
 class Response implements IResponse
 {
-    /** @var HttpStatusCode The response status code */
-    protected HttpStatusCode $statusCode;
     /** @var string|null The response reason phrase if there is one, otherwise null */
     protected ?string $reasonPhrase;
+    /** @var HttpStatusCode The response status code */
+    protected HttpStatusCode $statusCode;
 
     /**
      * @param HttpStatusCode|int $statusCode The response status code

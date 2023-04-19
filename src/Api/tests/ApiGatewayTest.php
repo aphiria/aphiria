@@ -24,8 +24,8 @@ use PHPUnit\Framework\TestCase;
 class ApiGatewayTest extends TestCase
 {
     private ApiGateway $apiGateway;
-    private IRequestHandler&MockObject $router;
     private MiddlewareCollection $middleware;
+    private IRequestHandler&MockObject $router;
 
     protected function setUp(): void
     {

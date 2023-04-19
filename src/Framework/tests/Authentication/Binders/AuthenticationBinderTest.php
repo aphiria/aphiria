@@ -27,8 +27,8 @@ use PHPUnit\Framework\TestCase;
 
 class AuthenticationBinderTest extends TestCase
 {
-    private IContainer&MockInterface $container;
     private AuthenticationBinder $binder;
+    private IContainer&MockInterface $container;
 
     protected function setUp(): void
     {

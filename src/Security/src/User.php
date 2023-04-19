@@ -21,10 +21,10 @@ class User implements IPrincipal
 {
     /** @var Closure(list<IIdentity>): ?IIdentity The primary identity selector */
     private readonly Closure $primaryIdentitySelector;
-    /** @var IIdentity|null The primary identity if this principal has one, otherwise null */
-    private ?IIdentity $primaryIdentity = null;
     /** @var list<IIdentity> The list of identities this principal has */
     private array $identities;
+    /** @var IIdentity|null The primary identity if this principal has one, otherwise null */
+    private ?IIdentity $primaryIdentity = null;
 
     /**
      * @param list<IIdentity>|IIdentity $identities The identity or list of identities this principal has

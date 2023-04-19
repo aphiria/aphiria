@@ -128,6 +128,14 @@ class OutputLexerTest extends TestCase
         );
     }
 
+    public function testLexingOpenTagAtEndOfInputIsIgnored(): void
+    {
+        $expectedOutput = [
+            new OutputToken(OutputTokenType::Eof, null, 1)
+        ];
+        $this->assertEquals($expectedOutput, $this->lexer->lex('<'));
+    }
+
     public function testLexingOpenTagInsideOfAnotherTagCreatesExceptionMessagesWithCorrectContexts(): void
     {
         // Test various permutations to make sure we're always getting the proper surround text context
@@ -145,14 +153,6 @@ class OutputLexerTest extends TestCase
                 $this->assertEquals($input[1], $ex->getMessage());
             }
         }
-    }
-
-    public function testLexingOpenTagAtEndOfInputIsIgnored(): void
-    {
-        $expectedOutput = [
-            new OutputToken(OutputTokenType::Eof, null, 1)
-        ];
-        $this->assertEquals($expectedOutput, $this->lexer->lex('<'));
     }
 
     public function testLexingOpenTagInsideOfCloseTagThrowsException(): void

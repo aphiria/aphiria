@@ -17,10 +17,10 @@ namespace Aphiria\Routing\UriTemplates\Parsers;
  */
 final class AstNode
 {
-    /** @var AstNode|null The parent node */
-    public ?AstNode $parent = null;
     /** @var list<AstNode> The child nodes */
     public array $children = [];
+    /** @var AstNode|null The parent node */
+    public ?AstNode $parent = null;
 
     /**
      * @param AstNodeType $type The node type

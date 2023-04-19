@@ -27,11 +27,11 @@ use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
 {
-    private Request $request;
-    private Headers $headers;
     private IBody&MockObject $body;
-    private Uri $uri;
+    private Headers $headers;
     private HashTable $properties;
+    private Request $request;
+    private Uri $uri;
 
     protected function setUp(): void
     {

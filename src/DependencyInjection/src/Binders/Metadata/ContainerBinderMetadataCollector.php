@@ -25,12 +25,12 @@ use Closure;
  */
 final class ContainerBinderMetadataCollector implements IBinderMetadataCollector, IContainer
 {
-    /** @var Context The current context */
-    private Context $currentContext;
-    /** @var list<Context> The stack of contexts */
-    private array $contextStack = [];
     /** @var list<BoundInterface> The list of bound interfaces that were found */
     private array $boundInterfaces = [];
+    /** @var list<Context> The stack of contexts */
+    private array $contextStack = [];
+    /** @var Context The current context */
+    private Context $currentContext;
     /** @var list<ResolvedInterface> The list of resolved interfaces that were found */
     private array $resolvedInterfaces = [];
 

@@ -30,10 +30,10 @@ use Exception;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var array<class-string<Exception>, array{type: string|Closure(Exception): string|null, title: string|Closure(Exception): string|null, detail: string|Closure(Exception): string|null, status: HttpStatusCode|int|Closure(Exception): HttpStatusCode|Closure(Exception): int, instance: string|Closure(Exception): string|null, extensions: array|Closure(Exception): array|null}> The mapping of exception types to problem detail settings */
-    private array $exceptionProblemDetailMappings = [];
     /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(mixed, IOutput): int|Closure(mixed, IOutput): StatusCode> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
+    /** @var array<class-string<Exception>, array{type: string|Closure(Exception): string|null, title: string|Closure(Exception): string|null, detail: string|Closure(Exception): string|null, status: HttpStatusCode|int|Closure(Exception): HttpStatusCode|Closure(Exception): int, instance: string|Closure(Exception): string|null, extensions: array|Closure(Exception): array|null}> The mapping of exception types to problem detail settings */
+    private array $exceptionProblemDetailMappings = [];
     /** @var array<class-string<Exception>, Closure(Exception): string> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 

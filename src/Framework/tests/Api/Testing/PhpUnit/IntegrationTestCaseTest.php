@@ -47,8 +47,8 @@ use RuntimeException;
 #[IgnoreMethodForCodeCoverage(IntegrationTestCase::class, 'failWithMessage')]
 class IntegrationTestCaseTest extends TestCase
 {
-    private IApplication&MockObject $app;
     private IRequestHandler&MockObject $apiGateway;
+    private IApplication&MockObject $app;
     private IBodyDeserializer&MockObject $bodyDeserializer;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;

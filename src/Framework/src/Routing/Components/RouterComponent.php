@@ -33,10 +33,10 @@ use RuntimeException;
  */
 class RouterComponent implements IComponent
 {
-    /** @var list<Closure(RouteCollectionBuilder): void> The list of callbacks that can register route builders */
-    private array $callbacks = [];
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;
+    /** @var list<Closure(RouteCollectionBuilder): void> The list of callbacks that can register route builders */
+    private array $callbacks = [];
 
     /**
      * @param IContainer $container The DI container

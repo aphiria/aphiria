@@ -26,10 +26,10 @@ use Psr\Log\LogLevel;
 
 class ExceptionHandlerTest extends TestCase
 {
+    private ExceptionHandler $exceptionHandler;
     private IApiExceptionRenderer&MockObject $exceptionRenderer;
     private LoggerInterface&MockObject $logger;
     private LogLevelFactory $logLevelFactory;
-    private ExceptionHandler $exceptionHandler;
 
     protected function setUp(): void
     {

@@ -89,14 +89,6 @@ class ApplicationBuilderTest extends TestCase
         $this->appBuilder->build();
     }
 
-    public function testHasComponentReturnsWhetherOrNotComponentIsRegistered(): void
-    {
-        $component = $this->createMock(IComponent::class);
-        $this->assertFalse($this->appBuilder->hasComponent($component::class));
-        $this->appBuilder->withComponent($component);
-        $this->assertTrue($this->appBuilder->hasComponent($component::class));
-    }
-
     public function testGettingComponentReturnsItIfRegistered(): void
     {
         $component = $this->createMock(IComponent::class);
@@ -114,6 +106,14 @@ class ApplicationBuilderTest extends TestCase
         };
         $this->expectExceptionMessage('No component of type ' . $component::class . ' found');
         $this->appBuilder->getComponent($component::class);
+    }
+
+    public function testHasComponentReturnsWhetherOrNotComponentIsRegistered(): void
+    {
+        $component = $this->createMock(IComponent::class);
+        $this->assertFalse($this->appBuilder->hasComponent($component::class));
+        $this->appBuilder->withComponent($component);
+        $this->assertTrue($this->appBuilder->hasComponent($component::class));
     }
 
     public function testModulesAreConfiguredOnBuild(): void

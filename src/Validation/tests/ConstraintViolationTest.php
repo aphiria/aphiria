@@ -18,10 +18,16 @@ use PHPUnit\Framework\TestCase;
 
 class ConstraintViolationTest extends TestCase
 {
-    public function testGettingErrorMessageReturnsOneSetInConstructor(): void
+    public function testGetConstraintReturnsOneSetInConstructor(): void
     {
-        $violation = new ConstraintViolation('error', $this->createMock(IConstraint::class), 'foo', 'bar');
-        $this->assertSame('error', $violation->errorMessage);
+        $expectedConstraint = $this->createMock(IConstraint::class);
+        $violation = new ConstraintViolation(
+            'error',
+            $expectedConstraint,
+            'foo',
+            'bar'
+        );
+        $this->assertSame($expectedConstraint, $violation->constraint);
     }
 
     public function testGetInvalidValueReturnsOneSetInConstructor(): void
@@ -70,16 +76,9 @@ class ConstraintViolationTest extends TestCase
         );
         $this->assertSame('bar', $violation->rootValue);
     }
-
-    public function testGetConstraintReturnsOneSetInConstructor(): void
+    public function testGettingErrorMessageReturnsOneSetInConstructor(): void
     {
-        $expectedConstraint = $this->createMock(IConstraint::class);
-        $violation = new ConstraintViolation(
-            'error',
-            $expectedConstraint,
-            'foo',
-            'bar'
-        );
-        $this->assertSame($expectedConstraint, $violation->constraint);
+        $violation = new ConstraintViolation('error', $this->createMock(IConstraint::class), 'foo', 'bar');
+        $this->assertSame('error', $violation->errorMessage);
     }
 }

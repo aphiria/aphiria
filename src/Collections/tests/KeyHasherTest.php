@@ -37,17 +37,17 @@ class KeyHasherTest extends TestCase
         $this->assertSame('__aphiria:u', $this->keyHasher->getHashKey(null));
     }
 
+    public function testResourceIsHashedUsingItsStringValue(): void
+    {
+        $resource = \fopen('php://temp', 'r+b');
+        $this->assertSame("__aphiria:r:$resource", $this->keyHasher->getHashKey($resource));
+    }
+
     public function testScalarsAreHashedToCorrectKey(): void
     {
         $this->assertSame('__aphiria:s:1', $this->keyHasher->getHashKey('1'));
         $this->assertSame('__aphiria:i:1', $this->keyHasher->getHashKey(1));
         $this->assertSame('__aphiria:f:1.1', $this->keyHasher->getHashKey(1.1));
-    }
-
-    public function testResourceIsHashedUsingItsStringValue(): void
-    {
-        $resource = \fopen('php://temp', 'r+b');
-        $this->assertSame("__aphiria:r:$resource", $this->keyHasher->getHashKey($resource));
     }
 
     /**

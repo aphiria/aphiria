@@ -66,6 +66,14 @@ class HeadersTest extends TestCase
         $this->assertEquals(['bar'], $this->headers->get('foo'));
     }
 
+    public function testAddRangeOnInvalidValue(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('Value must be instance of %s', KeyValuePair::class));
+        /** @psalm-suppress InvalidArgument Purposely checking an invalid argument */
+        $this->headers->addRange(['invalid KeyValuePair']);
+    }
+
     public function testCheckingIfHeaderExists(): void
     {
         $this->assertFalse($this->headers->containsKey('foo'));
@@ -92,30 +100,6 @@ class HeadersTest extends TestCase
         $this->headers->getFirst('foo');
     }
 
-    public function testNamesAreNormalizedWhenAddingSingleValue(): void
-    {
-        // Test lower-case names
-        $this->headers->add('foo', 'bar');
-        $this->assertEquals(['bar'], $this->headers->get('Foo'));
-        $this->assertSame('bar', $this->headers->getFirst('foo'));
-        $this->assertTrue($this->headers->containsKey('foo'));
-        $this->headers->removeKey('foo');
-        // Test snake-case names
-        $this->headers->add('FOO_BAR', 'baz');
-        $this->assertEquals(['baz'], $this->headers->get('Foo-Bar'));
-        $this->assertSame('baz', $this->headers->getFirst('FOO_BAR'));
-        $this->assertTrue($this->headers->containsKey('FOO_BAR'));
-        $this->headers->removeKey('FOO_BAR');
-        // Test upper-case names
-        $this->assertEquals([], $this->headers->toArray());
-        $this->headers->add('BAZ', 'blah');
-        $this->assertEquals(['blah'], $this->headers->get('Baz'));
-        $this->assertSame('blah', $this->headers->getFirst('BAZ'));
-        $this->assertTrue($this->headers->containsKey('BAZ'));
-        $this->headers->removeKey('BAZ');
-        $this->assertEquals([], $this->headers->toArray());
-    }
-
     public function testNamesAreNormalizedWhenAddingMultipleValue(): void
     {
         // Test lower-case names
@@ -133,6 +117,30 @@ class HeadersTest extends TestCase
         // Test upper-case names
         $this->assertEquals([], $this->headers->toArray());
         $this->headers->addRange([new KeyValuePair('BAZ', 'blah')]);
+        $this->assertEquals(['blah'], $this->headers->get('Baz'));
+        $this->assertSame('blah', $this->headers->getFirst('BAZ'));
+        $this->assertTrue($this->headers->containsKey('BAZ'));
+        $this->headers->removeKey('BAZ');
+        $this->assertEquals([], $this->headers->toArray());
+    }
+
+    public function testNamesAreNormalizedWhenAddingSingleValue(): void
+    {
+        // Test lower-case names
+        $this->headers->add('foo', 'bar');
+        $this->assertEquals(['bar'], $this->headers->get('Foo'));
+        $this->assertSame('bar', $this->headers->getFirst('foo'));
+        $this->assertTrue($this->headers->containsKey('foo'));
+        $this->headers->removeKey('foo');
+        // Test snake-case names
+        $this->headers->add('FOO_BAR', 'baz');
+        $this->assertEquals(['baz'], $this->headers->get('Foo-Bar'));
+        $this->assertSame('baz', $this->headers->getFirst('FOO_BAR'));
+        $this->assertTrue($this->headers->containsKey('FOO_BAR'));
+        $this->headers->removeKey('FOO_BAR');
+        // Test upper-case names
+        $this->assertEquals([], $this->headers->toArray());
+        $this->headers->add('BAZ', 'blah');
         $this->assertEquals(['blah'], $this->headers->get('Baz'));
         $this->assertSame('blah', $this->headers->getFirst('BAZ'));
         $this->assertTrue($this->headers->containsKey('BAZ'));
@@ -202,13 +210,5 @@ class HeadersTest extends TestCase
         $this->headers->add('foo', 'bar');
         $this->assertTrue($this->headers->tryGetFirst('foo', $value));
         $this->assertSame('bar', $value);
-    }
-
-    public function testAddRangeOnInvalidValue(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\sprintf('Value must be instance of %s', KeyValuePair::class));
-        /** @psalm-suppress InvalidArgument Purposely checking an invalid argument */
-        $this->headers->addRange(['invalid KeyValuePair']);
     }
 }

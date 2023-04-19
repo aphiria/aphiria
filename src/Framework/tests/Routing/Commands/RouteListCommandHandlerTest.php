@@ -34,11 +34,11 @@ use RuntimeException;
 class RouteListCommandHandlerTest extends TestCase
 {
     private RouteListCommandHandler $commandHandler;
-    private IOutput&MockObject $output;
     private Input $input;
-    private RouteCollection $routes;
     private MiddlewareCollection $middleware;
+    private IOutput&MockObject $output;
     private PaddingFormatter $paddingFormatter;
+    private RouteCollection $routes;
 
     protected function setUp(): void
     {

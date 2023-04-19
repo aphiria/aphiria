@@ -33,8 +33,8 @@ use PHPUnit\Framework\TestCase;
 
 class CommandBinderTest extends TestCase
 {
-    private IContainer&MockInterface $container;
     private CommandBinder $binder;
+    private IContainer&MockInterface $container;
     private ?string $currEnvironment;
 
     protected function setUp(): void

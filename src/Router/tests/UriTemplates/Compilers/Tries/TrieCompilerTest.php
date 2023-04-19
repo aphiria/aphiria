@@ -36,12 +36,12 @@ use PHPUnit\Framework\TestCase;
 
 class TrieCompilerTest extends TestCase
 {
+    private AstNode $ast;
     private TrieCompiler $compiler;
     private RouteVariableConstraintFactory $constraintFactory;
-    private IUriTemplateParser&MockObject $parser;
-    private IUriTemplateLexer&MockObject $lexer;
-    private AstNode $ast;
     private RootTrieNode $expectedTrie;
+    private IUriTemplateLexer&MockObject $lexer;
+    private IUriTemplateParser&MockObject $parser;
 
     protected function setUp(): void
     {
@@ -216,6 +216,36 @@ class TrieCompilerTest extends TestCase
         $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
     }
 
+    public function testCompilingPathVariableWithConstraintsCreatesVariableNodeWithConstraints(): void
+    {
+        // Set up AST
+        $variableNode = (new AstNode(AstNodeType::Variable, 'foo'))
+            ->addChild(new AstNode(AstNodeType::VariableConstraint, 'r1'));
+        $pathAst = (new AstNode(AstNodeType::Path, null))
+            ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
+            ->addChild($variableNode);
+        $this->ast->addChild($pathAst);
+
+        // Set up constraint factory
+        /** @var IRouteVariableConstraint&MockObject $constraint */
+        $constraint = $this->createMock(IRouteVariableConstraint::class);
+        $this->constraintFactory->registerConstraintFactory('r1', fn (): IRouteVariableConstraint => $constraint);
+
+        // Test compiling
+        $pathTemplate = '/:foo(r1)';
+        $expectedRoute = $this->createRoute($pathTemplate);
+        $this->expectedTrie->addChild(new VariableTrieNode(
+            new RouteVariable('foo', [$constraint]),
+            [],
+            $expectedRoute
+        ));
+        $this->lexer->expects($this->once())
+            ->method('lex')
+            ->with($pathTemplate)
+            ->willReturn(new TokenStream([]));
+        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
+    }
+
     public function testCompilingPathVariableWithMultipleConstraintsAndParamsCreatesVariableNodeWithConstraints(): void
     {
         // Set up AST
@@ -269,36 +299,6 @@ class TrieCompilerTest extends TestCase
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
         $this->compiler->compile($this->createRoute($pathTemplate));
-    }
-
-    public function testCompilingPathVariableWithConstraintsCreatesVariableNodeWithConstraints(): void
-    {
-        // Set up AST
-        $variableNode = (new AstNode(AstNodeType::Variable, 'foo'))
-            ->addChild(new AstNode(AstNodeType::VariableConstraint, 'r1'));
-        $pathAst = (new AstNode(AstNodeType::Path, null))
-            ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
-            ->addChild($variableNode);
-        $this->ast->addChild($pathAst);
-
-        // Set up constraint factory
-        /** @var IRouteVariableConstraint&MockObject $constraint */
-        $constraint = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn (): IRouteVariableConstraint => $constraint);
-
-        // Test compiling
-        $pathTemplate = '/:foo(r1)';
-        $expectedRoute = $this->createRoute($pathTemplate);
-        $this->expectedTrie->addChild(new VariableTrieNode(
-            new RouteVariable('foo', [$constraint]),
-            [],
-            $expectedRoute
-        ));
-        $this->lexer->expects($this->once())
-            ->method('lex')
-            ->with($pathTemplate)
-            ->willReturn(new TokenStream([]));
-        $this->assertEquals($this->expectedTrie, $this->compiler->compile($expectedRoute));
     }
 
     public function testCompilingRequiredAndOptionalPathSegmentsCreatesNodesWithSameRoute(): void

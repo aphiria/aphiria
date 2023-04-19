@@ -43,14 +43,6 @@ class TokenStreamTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testExpectThrowsExceptionOnMiss(): void
-    {
-        $this->expectException(UnexpectedTokenException::class);
-        $this->expectExceptionMessage('Expected token type ' . TokenType::Number->name . ', got ' . TokenType::Text->name . ' with value \"foo\"');
-        $stream = new TokenStream([new Token(TokenType::Text, 'foo')]);
-        $stream->expect(TokenType::Number);
-    }
-
     public function testExpectThrowsExceptionOnEndOfStream(): void
     {
         $this->expectException(UnexpectedTokenException::class);
@@ -60,11 +52,12 @@ class TokenStreamTest extends TestCase
         $stream->expect(TokenType::Punctuation);
     }
 
-    public function testGettingCurrentTokenWhenAtEndReturnsNull(): void
+    public function testExpectThrowsExceptionOnMiss(): void
     {
+        $this->expectException(UnexpectedTokenException::class);
+        $this->expectExceptionMessage('Expected token type ' . TokenType::Number->name . ', got ' . TokenType::Text->name . ' with value \"foo\"');
         $stream = new TokenStream([new Token(TokenType::Text, 'foo')]);
-        $stream->next();
-        $this->assertNull($stream->getCurrent());
+        $stream->expect(TokenType::Number);
     }
 
     public function testGettingCurrentAlwaysReturnsCurrentToken(): void
@@ -75,6 +68,13 @@ class TokenStreamTest extends TestCase
         $this->assertSame($token1, $stream->getCurrent());
         $stream->next();
         $this->assertSame($token2, $stream->getCurrent());
+    }
+
+    public function testGettingCurrentTokenWhenAtEndReturnsNull(): void
+    {
+        $stream = new TokenStream([new Token(TokenType::Text, 'foo')]);
+        $stream->next();
+        $this->assertNull($stream->getCurrent());
     }
 
     public function testGettingNextAlwaysReturnsNextToken(): void
@@ -110,6 +110,12 @@ class TokenStreamTest extends TestCase
         $this->assertSame($token3, $stream->peek());
     }
 
+    public function testPeekingWhenAtEndReturnsNull(): void
+    {
+        $stream = new TokenStream([new Token(TokenType::Text, 'foo')]);
+        $this->assertNull($stream->peek());
+    }
+
     public function testPeekingWhileSkippingReturnsTheCorrectToken(): void
     {
         $token1 = new Token(TokenType::Text, 'foo');
@@ -117,12 +123,6 @@ class TokenStreamTest extends TestCase
         $token3 = new Token(TokenType::Text, 'baz');
         $stream = new TokenStream([$token1, $token2, $token3]);
         $this->assertSame($token3, $stream->peek(2));
-    }
-
-    public function testPeekingWhenAtEndReturnsNull(): void
-    {
-        $stream = new TokenStream([new Token(TokenType::Text, 'foo')]);
-        $this->assertNull($stream->peek());
     }
 
     public function testTestingNextTokensType(): void

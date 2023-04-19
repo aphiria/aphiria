@@ -36,6 +36,122 @@ class TrieNodeTest extends TestCase
         };
     }
 
+    public function testAddingChildrenWithSameTwoLevelsOfChildrenMergesRoutesOnThirdLevel(): void
+    {
+        $controller = new class () {
+            public function bar(): void
+            {
+            }
+        };
+        $fooARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $fooBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $barARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $barBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $bazARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $bazBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $this->node->addChild(new LiteralTrieNode(
+            'foo',
+            [
+                new LiteralTrieNode(
+                    'bar',
+                    [
+                        new LiteralTrieNode(
+                            'baz',
+                            [],
+                            [$bazARoute]
+                        )
+                    ],
+                    [$barARoute]
+                )
+            ],
+            [$fooARoute]
+        ));
+        $this->node->addChild(new LiteralTrieNode(
+            'foo',
+            [
+                new LiteralTrieNode(
+                    'bar',
+                    [
+                        new LiteralTrieNode(
+                            'baz',
+                            [],
+                            [$bazBRoute]
+                        )
+                    ],
+                    [$barBRoute]
+                )
+            ],
+            [$fooBRoute]
+        ));
+        $expectedChildren = [
+            new LiteralTrieNode(
+                'foo',
+                [
+                    new LiteralTrieNode(
+                        'bar',
+                        [
+                            new LiteralTrieNode(
+                                'baz',
+                                [],
+                                [$bazARoute, $bazBRoute]
+                            )
+                        ],
+                        [$barARoute, $barBRoute]
+                    )
+                ],
+                [$fooARoute, $fooBRoute]
+            )
+        ];
+        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+    }
+
+    public function testAddingChildThatHasLessLevelsStillItsChildren(): void
+    {
+        $controller = new class () {
+            public function bar(): void
+            {
+            }
+        };
+        $fooRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
+        $barRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
+        $this->node->addChild(new LiteralTrieNode(
+            'foo',
+            [
+                new LiteralTrieNode(
+                    'bar',
+                    [],
+                    $barRoutes
+                )
+            ],
+            $fooRoutes
+        ));
+        $bazRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
+        $this->node->addChild(new LiteralTrieNode(
+            'baz',
+            [],
+            $bazRoutes
+        ));
+        $expectedChildren = [
+            new LiteralTrieNode(
+                'foo',
+                [
+                    new LiteralTrieNode(
+                        'bar',
+                        [],
+                        $barRoutes
+                    )
+                ],
+                $fooRoutes
+            ),
+            new LiteralTrieNode(
+                'baz',
+                [],
+                $bazRoutes
+            )
+        ];
+        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+    }
+
     public function testAddingChildWithMoreLevelsAddsThemAll(): void
     {
         $controller = new class () {
@@ -85,48 +201,73 @@ class TrieNodeTest extends TestCase
         $this->assertEquals($expectedChildren, $this->node->getAllChildren());
     }
 
-    public function testAddingChildThatHasLessLevelsStillItsChildren(): void
+    public function testAddingChildWithSameLiteralValueMergesRoutes(): void
     {
         $controller = new class () {
             public function bar(): void
             {
             }
         };
-        $fooRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
-        $barRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
+        $fooRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $barRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $this->node->addChild(new LiteralTrieNode(
             'foo',
-            [
-                new LiteralTrieNode(
-                    'bar',
-                    [],
-                    $barRoutes
-                )
-            ],
-            $fooRoutes
-        ));
-        $bazRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
-        $this->node->addChild(new LiteralTrieNode(
-            'baz',
             [],
-            $bazRoutes
+            [$fooRoute]
+        ));
+        $this->node->addChild(new LiteralTrieNode(
+            'foo',
+            [],
+            [$barRoute]
         ));
         $expectedChildren = [
             new LiteralTrieNode(
                 'foo',
-                [
-                    new LiteralTrieNode(
-                        'bar',
-                        [],
-                        $barRoutes
-                    )
-                ],
-                $fooRoutes
-            ),
-            new LiteralTrieNode(
-                'baz',
                 [],
-                $bazRoutes
+                [$fooRoute, $barRoute]
+            )
+        ];
+        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+    }
+
+    public function testAddingChildWithSameVariablePartsMergesRoutes(): void
+    {
+        $controller = new class () {
+            public function foo(): void
+            {
+            }
+
+            public function bar(): void
+            {
+            }
+
+            public function baz(): void
+            {
+            }
+        };
+        $fooRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'foo'), []);
+        $barRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
+        $bazRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'baz'), []);
+        $this->node->addChild(new VariableTrieNode(
+            new RouteVariable('foo'),
+            [],
+            [$fooRoute]
+        ));
+        $this->node->addChild(new VariableTrieNode(
+            new RouteVariable('foo'),
+            // Test that grandchildren also get merged in
+            [
+                new LiteralTrieNode('bar', [], [$bazRoute])
+            ],
+            [$barRoute]
+        ));
+        $expectedChildren = [
+            new VariableTrieNode(
+                new RouteVariable('foo'),
+                [
+                    new LiteralTrieNode('bar', [], [$bazRoute])
+                ],
+                [$fooRoute, $barRoute]
             )
         ];
         $this->assertEquals($expectedChildren, $this->node->getAllChildren());
@@ -215,147 +356,6 @@ class TrieNodeTest extends TestCase
                 new RouteVariable('bar'),
                 [],
                 $barRoutes
-            )
-        ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
-    }
-
-    public function testAddingChildrenWithSameTwoLevelsOfChildrenMergesRoutesOnThirdLevel(): void
-    {
-        $controller = new class () {
-            public function bar(): void
-            {
-            }
-        };
-        $fooARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $fooBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $barARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $barBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $bazARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $bazBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $this->node->addChild(new LiteralTrieNode(
-            'foo',
-            [
-                new LiteralTrieNode(
-                    'bar',
-                    [
-                        new LiteralTrieNode(
-                            'baz',
-                            [],
-                            [$bazARoute]
-                        )
-                    ],
-                    [$barARoute]
-                )
-            ],
-            [$fooARoute]
-        ));
-        $this->node->addChild(new LiteralTrieNode(
-            'foo',
-            [
-                new LiteralTrieNode(
-                    'bar',
-                    [
-                        new LiteralTrieNode(
-                            'baz',
-                            [],
-                            [$bazBRoute]
-                        )
-                    ],
-                    [$barBRoute]
-                )
-            ],
-            [$fooBRoute]
-        ));
-        $expectedChildren = [
-            new LiteralTrieNode(
-                'foo',
-                [
-                    new LiteralTrieNode(
-                        'bar',
-                        [
-                            new LiteralTrieNode(
-                                'baz',
-                                [],
-                                [$bazARoute, $bazBRoute]
-                            )
-                        ],
-                        [$barARoute, $barBRoute]
-                    )
-                ],
-                [$fooARoute, $fooBRoute]
-            )
-        ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
-    }
-
-    public function testAddingChildWithSameLiteralValueMergesRoutes(): void
-    {
-        $controller = new class () {
-            public function bar(): void
-            {
-            }
-        };
-        $fooRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $barRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $this->node->addChild(new LiteralTrieNode(
-            'foo',
-            [],
-            [$fooRoute]
-        ));
-        $this->node->addChild(new LiteralTrieNode(
-            'foo',
-            [],
-            [$barRoute]
-        ));
-        $expectedChildren = [
-            new LiteralTrieNode(
-                'foo',
-                [],
-                [$fooRoute, $barRoute]
-            )
-        ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
-    }
-
-    public function testAddingChildWithSameVariablePartsMergesRoutes(): void
-    {
-        $controller = new class () {
-            public function foo(): void
-            {
-            }
-
-            public function bar(): void
-            {
-            }
-
-            public function baz(): void
-            {
-            }
-        };
-        $fooRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'foo'), []);
-        $barRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
-        $bazRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'baz'), []);
-        $this->node->addChild(new VariableTrieNode(
-            new RouteVariable('foo'),
-            [],
-            [$fooRoute]
-        ));
-        $this->node->addChild(new VariableTrieNode(
-            new RouteVariable('foo'),
-            // Test that grandchildren also get merged in
-            [
-                new LiteralTrieNode('bar', [], [$bazRoute])
-            ],
-            [$barRoute]
-        ));
-        $expectedChildren = [
-            new VariableTrieNode(
-                new RouteVariable('foo'),
-                [
-                    new LiteralTrieNode('bar', [], [$bazRoute])
-                ],
-                [$fooRoute, $barRoute]
             )
         ];
         $this->assertEquals($expectedChildren, $this->node->getAllChildren());

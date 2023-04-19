@@ -256,6 +256,28 @@ final class InputCompiler implements IInputCompiler
     }
 
     /**
+     * Parses a short option token and returns an array of data
+     *
+     * @param string $token The token to parse
+     * @return array<array{0: string, 1: null}> The name of the option mapped to its value
+     */
+    private static function parseShortOption(string $token): array
+    {
+        // Trim the "-"
+        $token = \mb_substr($token, 1);
+        $options = [];
+
+        // Each character in a short option is an option
+        $tokens = \preg_split('//u', $token, -1, PREG_SPLIT_NO_EMPTY);
+
+        foreach ($tokens as $singleToken) {
+            $options[] = [$singleToken, null];
+        }
+
+        return $options;
+    }
+
+    /**
      * Parses the tokens for the command name, arguments, and options
      *
      * @param list<mixed> $tokens The tokens to parse
@@ -286,28 +308,6 @@ final class InputCompiler implements IInputCompiler
                 $argumentValues[] = self::parseArgument((string)$token);
             }
         }
-    }
-
-    /**
-     * Parses a short option token and returns an array of data
-     *
-     * @param string $token The token to parse
-     * @return array<array{0: string, 1: null}> The name of the option mapped to its value
-     */
-    private static function parseShortOption(string $token): array
-    {
-        // Trim the "-"
-        $token = \mb_substr($token, 1);
-        $options = [];
-
-        // Each character in a short option is an option
-        $tokens = \preg_split('//u', $token, -1, PREG_SPLIT_NO_EMPTY);
-
-        foreach ($tokens as $singleToken) {
-            $options[] = [$singleToken, null];
-        }
-
-        return $options;
     }
 
     /**

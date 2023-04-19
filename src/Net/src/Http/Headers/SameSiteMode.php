@@ -19,8 +19,8 @@ enum SameSiteMode: string
 {
     /** The lax same-site value */
     case Lax = 'lax';
-    /** The strict same-site value */
-    case Strict = 'strict';
     /** The none same-site value */
     case None = 'none';
+    /** The strict same-site value */
+    case Strict = 'strict';
 }

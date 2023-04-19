@@ -29,32 +29,6 @@ class UriTemplateLexerTest extends TestCase
         $this->lexer = new UriTemplateLexer();
     }
 
-    /**
-     * @param float $number The number to lex
-     * @param string $uriTemplate The
-     */
-    #[TestWith([1.23, '1.23'])]
-    #[TestWith([123.0, '123.0'])]
-    public function testLexingPathWithFloat(float $number, string $uriTemplate): void
-    {
-        $this->assertEquals(
-            new TokenStream([
-                new Token(TokenType::Number, $number)
-            ]),
-            $this->lexer->lex($uriTemplate)
-        );
-    }
-
-    public function testLexingPathWithInt(): void
-    {
-        $this->assertEquals(
-            new TokenStream([
-                new Token(TokenType::Number, 123)
-            ]),
-            $this->lexer->lex('123')
-        );
-    }
-
     public function testLexingHostWithNoVariablesCreatesTextAndPunctuationTokens(): void
     {
         $this->assertEquals(
@@ -94,6 +68,32 @@ class UriTemplateLexerTest extends TestCase
                 new Token(TokenType::Text, 'com')
             ]),
             $this->lexer->lex(':foo.example.com')
+        );
+    }
+
+    /**
+     * @param float $number The number to lex
+     * @param string $uriTemplate The
+     */
+    #[TestWith([1.23, '1.23'])]
+    #[TestWith([123.0, '123.0'])]
+    public function testLexingPathWithFloat(float $number, string $uriTemplate): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenType::Number, $number)
+            ]),
+            $this->lexer->lex($uriTemplate)
+        );
+    }
+
+    public function testLexingPathWithInt(): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenType::Number, 123)
+            ]),
+            $this->lexer->lex('123')
         );
     }
 
@@ -202,27 +202,6 @@ class UriTemplateLexerTest extends TestCase
         );
     }
 
-    public function testLexingPathWithSingleConstraintWithMixOfStringAndNumberParameters(): void
-    {
-        $this->assertEquals(
-            new TokenStream([
-                new Token(TokenType::Punctuation, '/'),
-                new Token(TokenType::Text, 'foo'),
-                new Token(TokenType::Punctuation, '/'),
-                new Token(TokenType::Variable, 'bar'),
-                new Token(TokenType::Punctuation, '('),
-                new Token(TokenType::Text, 'baz'),
-                new Token(TokenType::Punctuation, '('),
-                new Token(TokenType::QuotedString, '1,2'),
-                new Token(TokenType::Punctuation, ','),
-                new Token(TokenType::Number, 3),
-                new Token(TokenType::Punctuation, ')'),
-                new Token(TokenType::Punctuation, ')')
-            ]),
-            $this->lexer->lex('/foo/:bar(baz("1,2",3))')
-        );
-    }
-
     public function testLexingPathWithSingleConstraintWithArrayParameter(): void
     {
         $this->assertEquals(
@@ -245,6 +224,27 @@ class UriTemplateLexerTest extends TestCase
                 new Token(TokenType::Punctuation, ')')
             ]),
             $this->lexer->lex('/foo/:bar(baz([1,2,"foo"]))')
+        );
+    }
+
+    public function testLexingPathWithSingleConstraintWithMixOfStringAndNumberParameters(): void
+    {
+        $this->assertEquals(
+            new TokenStream([
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Text, 'foo'),
+                new Token(TokenType::Punctuation, '/'),
+                new Token(TokenType::Variable, 'bar'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::Text, 'baz'),
+                new Token(TokenType::Punctuation, '('),
+                new Token(TokenType::QuotedString, '1,2'),
+                new Token(TokenType::Punctuation, ','),
+                new Token(TokenType::Number, 3),
+                new Token(TokenType::Punctuation, ')'),
+                new Token(TokenType::Punctuation, ')')
+            ]),
+            $this->lexer->lex('/foo/:bar(baz("1,2",3))')
         );
     }
 

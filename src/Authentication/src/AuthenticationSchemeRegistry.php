@@ -19,10 +19,10 @@ use OutOfBoundsException;
  */
 final class AuthenticationSchemeRegistry
 {
-    /** @var array<string, AuthenticationScheme<AuthenticationSchemeOptions>> The mapping of authentication scheme names to schemes */
-    private array $schemesByName = [];
     /** @var AuthenticationScheme<AuthenticationSchemeOptions>|null The default scheme if one is set, otherwise null */
     private ?AuthenticationScheme $defaultScheme = null;
+    /** @var array<string, AuthenticationScheme<AuthenticationSchemeOptions>> The mapping of authentication scheme names to schemes */
+    private array $schemesByName = [];
 
     /**
      * Gets the default authentication scheme

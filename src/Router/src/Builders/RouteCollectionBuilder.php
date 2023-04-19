@@ -21,10 +21,10 @@ use Closure;
  */
 final class RouteCollectionBuilder
 {
-    /** @var list<RouteBuilder> The list of registered route builders */
-    private array $routeBuilders = [];
     /** @var list<RouteGroupOptions> The stack of route group options */
     private array $groupOptionsStack = [];
+    /** @var list<RouteBuilder> The list of registered route builders */
+    private array $routeBuilders = [];
 
     /**
      * Builds a route collection from all the route builders

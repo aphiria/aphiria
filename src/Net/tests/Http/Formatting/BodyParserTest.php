@@ -21,8 +21,8 @@ use RuntimeException;
 
 class BodyParserTest extends TestCase
 {
-    private BodyParser $parser;
     private IBody&MockObject $body;
+    private BodyParser $parser;
 
     protected function setUp(): void
     {
@@ -38,11 +38,6 @@ class BodyParserTest extends TestCase
         $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
     }
 
-    public function testGettingMimeTypeOfNullBodyReturnsNull(): void
-    {
-        $this->assertNull($this->parser->getMimeType(null));
-    }
-
     public function testGettingMimeTypeForBodyThatAlreadyHasBeenCheckedReturnsSameMimeType(): void
     {
         $this->body->expects($this->once())
@@ -50,6 +45,11 @@ class BodyParserTest extends TestCase
             ->willReturn('<?xml version="1.0"?><foo />');
         $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
         $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
+    }
+
+    public function testGettingMimeTypeOfNullBodyReturnsNull(): void
+    {
+        $this->assertNull($this->parser->getMimeType(null));
     }
 
     public function testGettingMimeTypeReturnsCorrectMimeType(): void
@@ -60,20 +60,20 @@ class BodyParserTest extends TestCase
         $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
     }
 
+    public function testParsingInputWithFormUrlEncodedBodyReturnsParsedFormData(): void
+    {
+        $this->body->expects($this->once())
+            ->method('readAsString')
+            ->willReturn('foo=bar');
+        $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
+    }
+
     public function testParsingInputWithFormUrlEncodedBodyThatAlreadyHasBeenCheckedReturnsSameInput(): void
     {
         $this->body->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
-        $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
-    }
-
-    public function testParsingInputWithFormUrlEncodedBodyReturnsParsedFormData(): void
-    {
-        $this->body->expects($this->once())
-            ->method('readAsString')
-            ->willReturn('foo=bar');
         $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
     }
 

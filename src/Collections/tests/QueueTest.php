@@ -47,6 +47,11 @@ class QueueTest extends TestCase
         $this->assertSame(2, $this->queue->count());
     }
 
+    public function testDequeueingWhenNoValuesAreInQueueReturnsNull(): void
+    {
+        $this->assertNull($this->queue->dequeue());
+    }
+
     public function testDequeuingRemovesValueFromBeginningOfQueue(): void
     {
         $this->queue->enqueue('foo');
@@ -55,11 +60,6 @@ class QueueTest extends TestCase
         $this->assertEquals(['bar'], $this->queue->toArray());
         $this->assertSame('bar', $this->queue->dequeue());
         $this->assertEquals([], $this->queue->toArray());
-    }
-
-    public function testDequeueingWhenNoValuesAreInQueueReturnsNull(): void
-    {
-        $this->assertNull($this->queue->dequeue());
     }
 
     public function testEnqueueAddsValueToEndOfQueue(): void

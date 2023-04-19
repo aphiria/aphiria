@@ -25,8 +25,8 @@ use ReflectionProperty;
 class ApplicationClientTest extends TestCase
 {
     private IRequestHandler&MockObject $app;
-    private IContainer&MockObject $container;
     private ApplicationClient $appClient;
+    private IContainer&MockObject $container;
 
     protected function setUp(): void
     {

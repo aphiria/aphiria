@@ -58,6 +58,11 @@ class HeaderParserTest extends TestCase
         $this->assertFalse($this->parser->isMultipart($headers));
     }
 
+    public function testIsJsonForHeadersWithoutContentTypeReturnsFalse(): void
+    {
+        $this->assertFalse($this->parser->isJson(new Headers()));
+    }
+
     public function testParseContentTypeHeaderReturnsIt(): void
     {
         $headers = new Headers();
@@ -89,10 +94,5 @@ class HeaderParserTest extends TestCase
         $headers->add('Bar', 'bar="baz"');
         $this->assertSame('baz', $this->parser->parseParameters($headers, 'Foo')->get('bar'));
         $this->assertSame('baz', $this->parser->parseParameters($headers, 'Bar')->get('bar'));
-    }
-
-    public function testIsJsonForHeadersWithoutContentTypeReturnsFalse(): void
-    {
-        $this->assertFalse($this->parser->isJson(new Headers()));
     }
 }

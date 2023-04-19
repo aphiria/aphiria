@@ -274,6 +274,37 @@ class MultiStreamTest extends TestCase
         $this->multiStream->seek(-1, SEEK_END);
     }
 
+    public function testSeekingStreamWithUnknownLengthThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $stream = $this->createReadableStream();
+        $stream->method('getLength')
+            ->willReturn(null);
+        $this->multiStream->addStream($stream);
+        $this->multiStream->seek(1);
+    }
+
+    public function testSeekingUnseekableStreamThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $unseekableStream = $this->createReadableStream();
+        $unseekableStream->expects($this->once())
+            ->method('isSeekable')
+            ->willReturn(false);
+        $this->multiStream->addStream($unseekableStream);
+        $this->multiStream->seek(0);
+    }
+
+    public function testSeekingWithInvalidWhenceThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Whence -1 is invalid');
+        $stream = new Stream(\fopen('php://temp', 'r+b'));
+        $stream->write('foo');
+        $this->multiStream->addStream($stream);
+        $this->multiStream->seek(0, -1);
+    }
+
     public function testSeekingWithMultipleStreamsSeeksToCorrectPosition(): void
     {
         $stream1 = new Stream(\fopen('php://temp', 'r+b'));
@@ -323,37 +354,6 @@ class MultiStreamTest extends TestCase
         $this->assertSame(3, $stream->getPosition());
         $this->multiStream->seek(-1, SEEK_END);
         $this->assertSame(5, $stream->getPosition());
-    }
-
-    public function testSeekingStreamWithUnknownLengthThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $stream = $this->createReadableStream();
-        $stream->method('getLength')
-            ->willReturn(null);
-        $this->multiStream->addStream($stream);
-        $this->multiStream->seek(1);
-    }
-
-    public function testSeekingUnseekableStreamThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $unseekableStream = $this->createReadableStream();
-        $unseekableStream->expects($this->once())
-            ->method('isSeekable')
-            ->willReturn(false);
-        $this->multiStream->addStream($unseekableStream);
-        $this->multiStream->seek(0);
-    }
-
-    public function testSeekingWithInvalidWhenceThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Whence -1 is invalid');
-        $stream = new Stream(\fopen('php://temp', 'r+b'));
-        $stream->write('foo');
-        $this->multiStream->addStream($stream);
-        $this->multiStream->seek(0, -1);
     }
 
     public function testSeekingWithUnknownLengthThrowsException(): void

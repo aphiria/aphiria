@@ -24,11 +24,11 @@ class DateConstraintTest extends TestCase
         $this->assertSame('date', DateConstraint::getSlug());
     }
 
-    public function testFailingSingleFormat(): void
+    public function testEmptyListOfFormatsThrowsException(): void
     {
-        $format = 'F j';
-        $constraint = new DateConstraint($format);
-        $this->assertFalse($constraint->passes((new DateTime())->format('Ymd')));
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(\sprintf('No formats specified for %s', DateConstraint::class));
+        new DateConstraint([]);
     }
 
     public function testFailingMultipleFormats(): void
@@ -40,18 +40,11 @@ class DateConstraintTest extends TestCase
         $this->assertFalse($constraint->passes((new DateTime())->format('Ymd')));
     }
 
-    public function testEmptyListOfFormatsThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage(\sprintf('No formats specified for %s', DateConstraint::class));
-        new DateConstraint([]);
-    }
-
-    public function testPassingSingleFormat(): void
+    public function testFailingSingleFormat(): void
     {
         $format = 'F j';
         $constraint = new DateConstraint($format);
-        $this->assertTrue($constraint->passes((new DateTime())->format($format)));
+        $this->assertFalse($constraint->passes((new DateTime())->format('Ymd')));
     }
 
     public function testPassingMultipleFormats(): void
@@ -61,5 +54,12 @@ class DateConstraintTest extends TestCase
         $constraint = new DateConstraint([$format1, $format2]);
         $this->assertTrue($constraint->passes((new DateTime())->format($format1)));
         $this->assertTrue($constraint->passes((new DateTime())->format($format2)));
+    }
+
+    public function testPassingSingleFormat(): void
+    {
+        $format = 'F j';
+        $constraint = new DateConstraint($format);
+        $this->assertTrue($constraint->passes((new DateTime())->format($format)));
     }
 }

@@ -20,12 +20,12 @@ use InvalidArgumentException;
  */
 abstract class TrieNode
 {
+    /** @var array<string, LiteralTrieNode> The mapping of literal child node values to child nodes */
+    public array $literalChildrenByValue = [];
     /** @var list<Route> The list of routes for this node, if there are any */
     public array $routes;
     /** @var list<VariableTrieNode> The child variable nodes */
     public array $variableChildren = [];
-    /** @var array<string, LiteralTrieNode> The mapping of literal child node values to child nodes */
-    public array $literalChildrenByValue = [];
 
     /**
      * @param list<TrieNode> $children The list of children

@@ -28,8 +28,8 @@ use PHPUnit\Framework\TestCase;
 
 class AuthorizationBinderTest extends TestCase
 {
-    private IContainer&MockInterface $container;
     private AuthorizationBinder $binder;
+    private IContainer&MockInterface $container;
 
     protected function setUp(): void
     {

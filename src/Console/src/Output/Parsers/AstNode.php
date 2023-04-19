@@ -17,10 +17,10 @@ namespace Aphiria\Console\Output\Parsers;
  */
 abstract class AstNode
 {
-    /** @var AstNode|null The parent node */
-    public ?AstNode $parent = null;
     /** @var list<AstNode> The child nodes */
     public array $children = [];
+    /** @var AstNode|null The parent node */
+    public ?AstNode $parent = null;
 
     /**
      * @param mixed $value The value of the node

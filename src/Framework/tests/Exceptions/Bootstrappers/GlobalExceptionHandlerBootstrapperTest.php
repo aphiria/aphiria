@@ -41,10 +41,10 @@ use Psr\Log\LogLevel;
 
 class GlobalExceptionHandlerBootstrapperTest extends TestCase
 {
+    private IApiExceptionRenderer $apiExceptionRenderer;
+    private GlobalExceptionHandlerBootstrapper $bootstrapper;
     private IContainer&MockObject $container;
     private Logger $logger;
-    private GlobalExceptionHandlerBootstrapper $bootstrapper;
-    private IApiExceptionRenderer $apiExceptionRenderer;
 
     protected function setUp(): void
     {
@@ -178,13 +178,15 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->assertSame(HttpStatusCode::BadRequest, $response->getStatusCode());
     }
 
-    public function testLogLevelFactoryIsCreatedAndBound(): void
+    public function testIsRunningInConsoleDefaultsToTrue(): void
     {
-        $this->addBootstrapAssertions();
-        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->bootstrap();
-        // Dummy assertion
-        $this->assertTrue(true);
+        $bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
+            public function isRunningInConsole(): bool
+            {
+                return parent::isRunningInConsole();
+            }
+        };
+        $this->assertTrue($bootstrapper->isRunningInConsole());
     }
 
     public function testLoggerSupportsStreamHandler(): void
@@ -230,15 +232,13 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->bootstrapper->bootstrap();
     }
 
-    public function testIsRunningInConsoleDefaultsToTrue(): void
+    public function testLogLevelFactoryIsCreatedAndBound(): void
     {
-        $bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
-            public function isRunningInConsole(): bool
-            {
-                return parent::isRunningInConsole();
-            }
-        };
-        $this->assertTrue($bootstrapper->isRunningInConsole());
+        $this->addBootstrapAssertions();
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
+        $this->bootstrapper->bootstrap();
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     /**

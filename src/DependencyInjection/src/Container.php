@@ -36,14 +36,14 @@ class Container implements IContainer
      * @var Container|null
      */
     public static ?Container $globalInstance = null;
-    /** @var Context The current context */
-    protected Context $currentContext;
-    /** @var list<Context> The stack of contexts */
-    protected array $contextStack = [];
     /** @var array<string|class-string, array<string|class-string, IContainerBinding<object>>> The list of bindings */
     protected array $bindings = [];
     /** @var array<class-string, array{0: ReflectionMethod|null, 1: list<ReflectionParameter>|null}> The cache of reflection constructors and their parameters */
     protected array $constructorReflectionCache = [];
+    /** @var list<Context> The stack of contexts */
+    protected array $contextStack = [];
+    /** @var Context The current context */
+    protected Context $currentContext;
 
     public function __construct()
     {

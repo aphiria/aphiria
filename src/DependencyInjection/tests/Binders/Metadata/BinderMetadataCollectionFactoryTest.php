@@ -55,6 +55,31 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $this->assertEquals($expectedCollection, $actualCollection);
     }
 
+    public function testCreatingCollectionThatMustRetryBinderKeepsTrackOfResolutionsThatWorkedTheSecondTime(): void
+    {
+        $this->expectException(ImpossibleBindingException::class);
+        $binderA = new class () extends Binder {
+            public function bind(IContainer $container): void
+            {
+                // This will fail the first time, but should pass the second time
+                $container->resolve(IFoo::class);
+                $container->bindClass(IPerson::class, Dave::class);
+                // This will continue to not be able to be resolved
+                $container->resolve(IBar::class);
+            }
+        };
+        $binderB = new class () extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->bindInstance(IFoo::class, new Foo());
+            }
+        };
+        $this->expectExceptionMessage(
+            (new ImpossibleBindingException([IBar::class => [$binderA]]))->getMessage(),
+        );
+        $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
+    }
+
     public function testCreatingCollectionThatNeedsTargetedBindingWorksWhenOneHasUniversalBinding(): void
     {
         $target = new class () {
@@ -134,6 +159,38 @@ class BinderMetadataCollectionFactoryTest extends TestCase
         $this->assertEquals($expectedCollection, $actualCollection);
     }
 
+    public function testCreatingCollectionThatReliesOnMultipleOtherBindersBindingStillWorks(): void
+    {
+        $binderA = new class () extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->resolve(IFoo::class);
+                $container->bindClass(IPerson::class, Dave::class);
+                $container->resolve(IBar::class);
+            }
+        };
+        $binderB = new class () extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->bindInstance(IFoo::class, new Foo());
+            }
+        };
+        $binderC = new class () extends Binder {
+            public function bind(IContainer $container): void
+            {
+                $container->bindInstance(IBar::class, new Bar());
+            }
+        };
+        // Binder B will be before binder A because it isn't dependent on another binder's bindings
+        $expectedCollection = new BinderMetadataCollection([
+            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, new UniversalContext())], []),
+            new BinderMetadata($binderC, [new BoundInterface(IBar::class, new UniversalContext())], []),
+            new BinderMetadata($binderA, [new BoundInterface(IPerson::class, new UniversalContext())], [new ResolvedInterface(IFoo::class, new UniversalContext()), new ResolvedInterface(IBar::class, new UniversalContext())])
+        ]);
+        $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB, $binderC]);
+        $this->assertEquals($expectedCollection, $actualCollection);
+    }
+
     public function testCreatingCollectionThatReliesOnTargetedBindingSetInAnotherStillWorks(): void
     {
         $target = new class () {
@@ -167,63 +224,6 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             new BinderMetadata($binderA, [new BoundInterface(IBar::class, new TargetedContext($target::class))], [new ResolvedInterface(IFoo::class, new TargetedContext($target::class))])
         ]);
         $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
-        $this->assertEquals($expectedCollection, $actualCollection);
-    }
-
-    public function testCreatingCollectionThatMustRetryBinderKeepsTrackOfResolutionsThatWorkedTheSecondTime(): void
-    {
-        $this->expectException(ImpossibleBindingException::class);
-        $binderA = new class () extends Binder {
-            public function bind(IContainer $container): void
-            {
-                // This will fail the first time, but should pass the second time
-                $container->resolve(IFoo::class);
-                $container->bindClass(IPerson::class, Dave::class);
-                // This will continue to not be able to be resolved
-                $container->resolve(IBar::class);
-            }
-        };
-        $binderB = new class () extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->bindInstance(IFoo::class, new Foo());
-            }
-        };
-        $this->expectExceptionMessage(
-            (new ImpossibleBindingException([IBar::class => [$binderA]]))->getMessage(),
-        );
-        $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
-    }
-
-    public function testCreatingCollectionThatReliesOnMultipleOtherBindersBindingStillWorks(): void
-    {
-        $binderA = new class () extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->resolve(IFoo::class);
-                $container->bindClass(IPerson::class, Dave::class);
-                $container->resolve(IBar::class);
-            }
-        };
-        $binderB = new class () extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->bindInstance(IFoo::class, new Foo());
-            }
-        };
-        $binderC = new class () extends Binder {
-            public function bind(IContainer $container): void
-            {
-                $container->bindInstance(IBar::class, new Bar());
-            }
-        };
-        // Binder B will be before binder A because it isn't dependent on another binder's bindings
-        $expectedCollection = new BinderMetadataCollection([
-            new BinderMetadata($binderB, [new BoundInterface(IFoo::class, new UniversalContext())], []),
-            new BinderMetadata($binderC, [new BoundInterface(IBar::class, new UniversalContext())], []),
-            new BinderMetadata($binderA, [new BoundInterface(IPerson::class, new UniversalContext())], [new ResolvedInterface(IFoo::class, new UniversalContext()), new ResolvedInterface(IBar::class, new UniversalContext())])
-        ]);
-        $actualCollection = $this->factory->createBinderMetadataCollection([$binderA, $binderB, $binderC]);
         $this->assertEquals($expectedCollection, $actualCollection);
     }
 

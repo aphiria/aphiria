@@ -97,28 +97,6 @@ class BasicAuthenticationHandlerTest extends TestCase
     }
 
     /**
-     * @param string $authorizationHeaderValue The authorization header value to test
-     * @psalm-suppress UndefinedPropertyAssignment The properties do actually exist on the anonymous class
-     * @psalm-suppress UndefinedPropertyFetch Ditto
-     */
-    #[DataProvider('getValidBasicAuthorizationValues')]
-    public function testAuthenticatingWithValidBase64CredentialsReturnsPassingResult(string $authorizationHeaderValue): void
-    {
-        $headers = new Headers();
-        $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
-            ->willReturn($headers);
-        $headers->add('Authorization', $authorizationHeaderValue);
-        $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
-        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
-        $this->assertSame($this->schemeHandler->expectedResult, $this->schemeHandler->authenticate($request, $scheme));
-        $this->assertSame('foo', $this->schemeHandler->actualUsername);
-        $this->assertSame('bar', $this->schemeHandler->actualPassword);
-        $this->assertSame($request, $this->schemeHandler->actualRequest);
-        $this->assertSame($scheme, $this->schemeHandler->actualScheme);
-    }
-
-    /**
      * @param string $authorizationHeaderValue The invalid authorization header value
      * @param string $expectedFailureMessage The expected failure exception's message
      */
@@ -146,6 +124,28 @@ class BasicAuthenticationHandlerTest extends TestCase
         $result = $this->schemeHandler->authenticate($request, $scheme);
         $this->assertFalse($result->passed);
         $this->assertSame('Missing authorization header', $result->failure?->getMessage());
+    }
+
+    /**
+     * @param string $authorizationHeaderValue The authorization header value to test
+     * @psalm-suppress UndefinedPropertyAssignment The properties do actually exist on the anonymous class
+     * @psalm-suppress UndefinedPropertyFetch Ditto
+     */
+    #[DataProvider('getValidBasicAuthorizationValues')]
+    public function testAuthenticatingWithValidBase64CredentialsReturnsPassingResult(string $authorizationHeaderValue): void
+    {
+        $headers = new Headers();
+        $request = $this->createMock(IRequest::class);
+        $request->method('getHeaders')
+            ->willReturn($headers);
+        $headers->add('Authorization', $authorizationHeaderValue);
+        $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
+        $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
+        $this->assertSame($this->schemeHandler->expectedResult, $this->schemeHandler->authenticate($request, $scheme));
+        $this->assertSame('foo', $this->schemeHandler->actualUsername);
+        $this->assertSame('bar', $this->schemeHandler->actualPassword);
+        $this->assertSame($request, $this->schemeHandler->actualRequest);
+        $this->assertSame($scheme, $this->schemeHandler->actualScheme);
     }
 
     /**

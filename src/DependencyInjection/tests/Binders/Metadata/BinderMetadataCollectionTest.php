@@ -39,21 +39,6 @@ class BinderMetadataCollectionTest extends TestCase
         $this->assertEmpty($collection->getBinderMetadataThatResolveInterface(new BoundInterface($boundInterface::class, new TargetedContext($target::class))));
     }
 
-    public function testBinderThatResolvesTargetedInterfaceIsReturnedForUniversalBoundInterfaceWithSameInterface(): void
-    {
-        $resolvedInterface = new class () {
-        };
-        $target = new class () {
-        };
-        $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
-        ];
-        $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface($resolvedInterface::class, new UniversalContext()));
-        $this->assertCount(1, $actualBinderMetadatas);
-        $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
-    }
-
     public function testBinderThatResolvesTargetedInterfaceIsReturnedForTargetedBoundInterfaceWithSameInterfaceAndTarget(): void
     {
         $resolvedInterface = new class () {
@@ -69,6 +54,37 @@ class BinderMetadataCollectionTest extends TestCase
         );
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
+    }
+
+    public function testBinderThatResolvesTargetedInterfaceIsReturnedForUniversalBoundInterfaceWithSameInterface(): void
+    {
+        $resolvedInterface = new class () {
+        };
+        $target = new class () {
+        };
+        $binderMetadatas = [
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
+        ];
+        $collection = new BinderMetadataCollection($binderMetadatas);
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface($resolvedInterface::class, new UniversalContext()));
+        $this->assertCount(1, $actualBinderMetadatas);
+        $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
+    }
+
+    public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterface(): void
+    {
+        $resolvedInterface = new class () {
+        };
+        $target = new class () {
+        };
+        $binderMetadatas = [
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
+        ];
+        $collection = new BinderMetadataCollection($binderMetadatas);
+        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(
+            new BoundInterface($resolvedInterface::class, new TargetedContext($target::class))
+        );
+        $this->assertEmpty($actualBinderMetadatas);
     }
 
     public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForUniversalBoundInterfaceWithDifferentInterface(): void
@@ -100,22 +116,6 @@ class BinderMetadataCollectionTest extends TestCase
         );
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
-    }
-
-    public function testBinderThatUniversallyResolvesInterfaceIsNotReturnedForTargetedBoundInterfaceWithSameInterface(): void
-    {
-        $resolvedInterface = new class () {
-        };
-        $target = new class () {
-        };
-        $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
-        ];
-        $collection = new BinderMetadataCollection($binderMetadatas);
-        $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(
-            new BoundInterface($resolvedInterface::class, new TargetedContext($target::class))
-        );
-        $this->assertEmpty($actualBinderMetadatas);
     }
 
     public function testGetAllBinderMetadataReturnsAllMetadata(): void

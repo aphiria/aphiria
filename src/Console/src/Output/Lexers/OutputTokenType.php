@@ -19,10 +19,10 @@ enum OutputTokenType
 {
     /** Defines an end of file token type */
     case Eof;
-    /** Defines a word token type */
-    case Word;
-    /** Defines an open tag token type */
-    case TagOpen;
     /** Defines a close tag token type */
     case TagClose;
+    /** Defines an open tag token type */
+    case TagOpen;
+    /** Defines a word token type */
+    case Word;
 }

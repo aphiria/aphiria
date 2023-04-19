@@ -44,18 +44,18 @@ class ConsoleApplicationTest extends TestCase
         $this->assertSame(StatusCode::Ok->value, $this->app->run());
     }
 
-    public function testRunReturnsStatusCodeValueIfGatewayReturnsInt(): void
-    {
-        $this->consoleGateway->method('handle')
-            ->willReturn(100);
-        $this->assertSame(100, $this->app->run());
-    }
-
     public function testRunReturnsStatusCodeValueIfGatewayReturnsEnum(): void
     {
         $this->consoleGateway->method('handle')
             ->willReturn(StatusCode::Fatal);
         $this->assertSame(StatusCode::Fatal->value, $this->app->run());
+    }
+
+    public function testRunReturnsStatusCodeValueIfGatewayReturnsInt(): void
+    {
+        $this->consoleGateway->method('handle')
+            ->willReturn(100);
+        $this->assertSame(100, $this->app->run());
     }
 
     public function testUnhandledExceptionsAreRethrownAsRuntimeExceptions(): void

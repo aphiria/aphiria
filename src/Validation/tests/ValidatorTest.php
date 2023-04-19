@@ -26,9 +26,9 @@ use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase
 {
-    private Validator $validator;
-    private ObjectConstraintsRegistry $objectConstraints;
     private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
+    private ObjectConstraintsRegistry $objectConstraints;
+    private Validator $validator;
 
     protected function setUp(): void
     {
@@ -97,28 +97,6 @@ class ValidatorTest extends TestCase
         $this->assertTrue($this->validator->tryValidateMethod($outerObject, 'method'));
     }
 
-    public function testTryValidateMethodWithMagicMethodIsSkipped(): void
-    {
-        $object = new class () {
-            public function __toString(): string
-            {
-                die('Should not get here');
-            }
-        };
-        $this->assertTrue($this->validator->tryValidateMethod($object, '__toString'));
-    }
-
-    public function testTryValidateMethodWithRequiredParamsIsSkipped(): void
-    {
-        $object = new class () {
-            public function foo(int $foo): string
-            {
-                die('Should not get here');
-            }
-        };
-        $this->assertTrue($this->validator->tryValidateMethod($object, 'foo'));
-    }
-
     public function testTryValidateMethodWithAPassedConstraintAndAFailedConstraintReturnsFalse(): void
     {
         $object = new class () {
@@ -166,6 +144,28 @@ class ValidatorTest extends TestCase
         $this->assertSame($constraints[0], $violations[0]->constraint);
         $this->assertEquals($object, $violations[0]->rootValue);
         $this->assertSame(1, $violations[0]->invalidValue);
+    }
+
+    public function testTryValidateMethodWithMagicMethodIsSkipped(): void
+    {
+        $object = new class () {
+            public function __toString(): string
+            {
+                die('Should not get here');
+            }
+        };
+        $this->assertTrue($this->validator->tryValidateMethod($object, '__toString'));
+    }
+
+    public function testTryValidateMethodWithRequiredParamsIsSkipped(): void
+    {
+        $object = new class () {
+            public function foo(int $foo): string
+            {
+                die('Should not get here');
+            }
+        };
+        $this->assertTrue($this->validator->tryValidateMethod($object, 'foo'));
     }
 
     public function testTryValidateMethodWithValidValueHasNoConstraintViolations(): void
@@ -307,18 +307,6 @@ class ValidatorTest extends TestCase
         $this->assertTrue($this->validator->tryValidateProperty($object, 'prop'));
     }
 
-    public function testTryValidateValueReturnsFalseForInvalidValue(): void
-    {
-        $constraints = [$this->createMockConstraint(false, 'foo')];
-        $this->assertFalse($this->validator->tryValidateValue('foo', $constraints));
-    }
-
-    public function testTryValidateValueReturnsTrueForValidValue(): void
-    {
-        $constraints = [$this->createMockConstraint(true, 'foo')];
-        $this->assertTrue($this->validator->tryValidateValue('foo', $constraints));
-    }
-
     public function testTryValidatePropertyWillRecursivelyValidateObjects(): void
     {
         $innerObject = new class () {
@@ -383,6 +371,18 @@ class ValidatorTest extends TestCase
         $this->assertSame(1, $violations[0]->invalidValue);
     }
 
+    public function testTryValidateValueReturnsFalseForInvalidValue(): void
+    {
+        $constraints = [$this->createMockConstraint(false, 'foo')];
+        $this->assertFalse($this->validator->tryValidateValue('foo', $constraints));
+    }
+
+    public function testTryValidateValueReturnsTrueForValidValue(): void
+    {
+        $constraints = [$this->createMockConstraint(true, 'foo')];
+        $this->assertTrue($this->validator->tryValidateValue('foo', $constraints));
+    }
+
     public function testTryValidateValueWithInvalidValueSetsConstraintViolations(): void
     {
         $constraints = [$this->createMockConstraint(false, 'foo')];
@@ -401,6 +401,37 @@ class ValidatorTest extends TestCase
         $violations = [];
         $this->assertTrue($this->validator->tryValidateValue('foo', $constraints, $violations));
         $this->assertCount(0, $violations);
+    }
+
+    public function testValidateMethodThatDoesNotExistThrowsException(): void
+    {
+        $class = new class () {
+        };
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($class::class . '::foo() does not exist');
+        $this->validator->validateMethod($class, 'foo');
+    }
+
+    public function testValidateMethodThrowsIfInvalid(): void
+    {
+        $class = new class () {
+            public function foo(): string
+            {
+                return 'foo';
+            }
+        };
+        $this->expectException(ValidationException::class);
+        $constraint = $this->createMock(IConstraint::class);
+        $constraint->expects($this->once())
+            ->method('passes')
+            ->with('foo')
+            ->willReturn(false);
+        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
+            $class::class,
+            [],
+            ['foo' => [$constraint]]
+        ));
+        $this->validator->validateMethod($class, 'foo');
     }
 
     public function testValidateMethodWithCircularDependencyThrowsException(): void
@@ -442,37 +473,6 @@ class ValidatorTest extends TestCase
         // Due to the order that objects are recursively validated, object1 will show up as the circular dependency
         $this->expectExceptionMessage('Circular dependency on ' . $object1::class . ' detected');
         $this->validator->validateObject($object1);
-    }
-
-    public function testValidateMethodThatDoesNotExistThrowsException(): void
-    {
-        $class = new class () {
-        };
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage($class::class . '::foo() does not exist');
-        $this->validator->validateMethod($class, 'foo');
-    }
-
-    public function testValidateMethodThrowsIfInvalid(): void
-    {
-        $class = new class () {
-            public function foo(): string
-            {
-                return 'foo';
-            }
-        };
-        $this->expectException(ValidationException::class);
-        $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->once())
-            ->method('passes')
-            ->with('foo')
-            ->willReturn(false);
-        $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
-            $class::class,
-            [],
-            ['foo' => [$constraint]]
-        ));
-        $this->validator->validateMethod($class, 'foo');
     }
 
     public function testValidatePropertyThatDoesNotExistThrowsException(): void

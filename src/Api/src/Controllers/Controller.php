@@ -34,16 +34,16 @@ use LogicException;
  */
 class Controller
 {
+    /** @var IBodyDeserializer|null The body deserializer */
+    protected ?IBodyDeserializer $bodyDeserializer = null;
     /** @var IRequest|null The current request */
     protected ?IRequest $request = null;
     /** @var RequestParser|null The parser to use to get data from the current request */
     protected ?RequestParser $requestParser = null;
-    /** @var ResponseFormatter|null The formatter to use to write data to the response */
-    protected ?ResponseFormatter $responseFormatter = null;
-    /** @var IBodyDeserializer|null The body deserializer */
-    protected ?IBodyDeserializer $bodyDeserializer = null;
     /** @var IResponseFactory|null The response factory */
     protected ?IResponseFactory $responseFactory = null;
+    /** @var ResponseFormatter|null The formatter to use to write data to the response */
+    protected ?ResponseFormatter $responseFormatter = null;
     /** @var IUserAccessor|null The user accessor */
     protected ?IUserAccessor $userAccessor = null;
 
@@ -56,17 +56,6 @@ class Controller
     public function setBodyDeserializer(IBodyDeserializer $bodyDeserializer): void
     {
         $this->bodyDeserializer = $bodyDeserializer;
-    }
-
-    /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory
-     * @internal
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void
-    {
-        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -89,6 +78,17 @@ class Controller
     public function setRequestParser(RequestParser $requestParser): void
     {
         $this->requestParser = $requestParser;
+    }
+
+    /**
+     * Sets the response factory
+     *
+     * @param IResponseFactory $responseFactory The response factory
+     * @internal
+     */
+    public function setResponseFactory(IResponseFactory $responseFactory): void
+    {
+        $this->responseFactory = $responseFactory;
     }
 
     /**

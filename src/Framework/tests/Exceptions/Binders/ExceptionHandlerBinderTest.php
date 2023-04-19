@@ -23,9 +23,9 @@ use PHPUnit\Framework\TestCase;
 
 class ExceptionHandlerBinderTest extends TestCase
 {
-    private IContainer&MockObject $container;
-    private ExceptionHandlerBinder $binder;
     private ?IApiExceptionRenderer $apiExceptionRenderer;
+    private ExceptionHandlerBinder $binder;
+    private IContainer&MockObject $container;
     private ?IRequest $request;
     private ?IResponseFactory $responseFactory;
 

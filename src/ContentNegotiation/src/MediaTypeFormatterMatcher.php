@@ -75,55 +75,6 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     }
 
     /**
-     * Gets the best media type formatter match
-     *
-     * @param string $type The type that will be read/written by the formatter
-     * @param list<MediaTypeHeaderValue> $mediaTypeHeaders The media type headers to match against
-     * @param string $ioType Whether this is an input or an output media type formatter
-     * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
-     */
-    private function getBestMediaTypeFormatterMatch(
-        string $type,
-        array $mediaTypeHeaders,
-        string $ioType
-    ): ?MediaTypeFormatterMatch {
-        // Rank the media type headers if they are rankable
-        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {
-            /** @psalm-suppress ArgumentTypeCoercion Psalm seems to not be convinced that this is an array of AcceptMediaTypeHeaderValue objects */
-            $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
-        }
-
-        foreach ($mediaTypeHeaders as $mediaTypeHeader) {
-            [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->mediaType);
-
-            foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
-                foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
-                    if ($ioType === self::FORMATTER_TYPE_INPUT && !$mediaTypeFormatter->canReadType($type)) {
-                        continue;
-                    }
-
-                    if ($ioType === self::FORMATTER_TYPE_OUTPUT && !$mediaTypeFormatter->canWriteType($type)) {
-                        continue;
-                    }
-
-                    [$supportedType, $supportedSubType] = \explode('/', $supportedMediaType);
-
-                    // Checks if the type is a wildcard or a match and the sub-type is a wildcard or a match
-                    if (
-                        $mediaType === '*' ||
-                        ($mediaSubType === '*' && $mediaType === $supportedType) ||
-                        ($mediaType === $supportedType && $mediaSubType === $supportedSubType)
-                    ) {
-                        return new MediaTypeFormatterMatch($mediaTypeFormatter, $supportedMediaType, $mediaTypeHeader);
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Compares two media types and returns which of them is "lower" than the other
      *
      * @param AcceptMediaTypeHeaderValue $a The first media type to compare
@@ -181,6 +132,55 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
         return $header->getQuality() > 0;
+    }
+
+    /**
+     * Gets the best media type formatter match
+     *
+     * @param string $type The type that will be read/written by the formatter
+     * @param list<MediaTypeHeaderValue> $mediaTypeHeaders The media type headers to match against
+     * @param string $ioType Whether this is an input or an output media type formatter
+     * @return MediaTypeFormatterMatch|null The media type formatter match if there was one, otherwise null
+     */
+    private function getBestMediaTypeFormatterMatch(
+        string $type,
+        array $mediaTypeHeaders,
+        string $ioType
+    ): ?MediaTypeFormatterMatch {
+        // Rank the media type headers if they are rankable
+        if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {
+            /** @psalm-suppress ArgumentTypeCoercion Psalm seems to not be convinced that this is an array of AcceptMediaTypeHeaderValue objects */
+            $mediaTypeHeaders = $this->rankAcceptMediaTypeHeaders($mediaTypeHeaders);
+        }
+
+        foreach ($mediaTypeHeaders as $mediaTypeHeader) {
+            [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->mediaType);
+
+            foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
+                foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
+                    if ($ioType === self::FORMATTER_TYPE_INPUT && !$mediaTypeFormatter->canReadType($type)) {
+                        continue;
+                    }
+
+                    if ($ioType === self::FORMATTER_TYPE_OUTPUT && !$mediaTypeFormatter->canWriteType($type)) {
+                        continue;
+                    }
+
+                    [$supportedType, $supportedSubType] = \explode('/', $supportedMediaType);
+
+                    // Checks if the type is a wildcard or a match and the sub-type is a wildcard or a match
+                    if (
+                        $mediaType === '*' ||
+                        ($mediaSubType === '*' && $mediaType === $supportedType) ||
+                        ($mediaType === $supportedType && $mediaSubType === $supportedSubType)
+                    ) {
+                        return new MediaTypeFormatterMatch($mediaTypeFormatter, $supportedMediaType, $mediaTypeHeader);
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

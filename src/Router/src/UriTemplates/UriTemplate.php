@@ -17,12 +17,12 @@ namespace Aphiria\Routing\UriTemplates;
  */
 final readonly class UriTemplate
 {
-    /** @var string The path template */
-    public string $pathTemplate;
     /** @var string|null The host template, or null if there is none */
     public ?string $hostTemplate;
     /** @var bool Whether or not the URI is absolute */
     public bool $isAbsoluteUri;
+    /** @var string The path template */
+    public string $pathTemplate;
 
     /**
      * @param string $pathTemplate The path template

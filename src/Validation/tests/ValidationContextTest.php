@@ -20,6 +20,19 @@ use PHPUnit\Framework\TestCase;
 
 class ValidationContextTest extends TestCase
 {
+    public function testAddingConstraintViolation(): void
+    {
+        $expectedConstraintViolation = new ConstraintViolation(
+            'error',
+            $this->createMock(IConstraint::class),
+            'foo',
+            'foo'
+        );
+        $context = new ValidationContext('foo');
+        $context->addConstraintViolation($expectedConstraintViolation);
+        $this->assertCount(1, $context->getConstraintViolations());
+        $this->assertSame($expectedConstraintViolation, $context->getConstraintViolations()[0]);
+    }
     public function testAddingManyConstraintViolations(): void
     {
         $expectedConstraintViolation1 = new ConstraintViolation(
@@ -71,20 +84,6 @@ class ValidationContextTest extends TestCase
         $this->assertSame($expectedConstraintViolation3, $context->getConstraintViolations()[2]);
     }
 
-    public function testAddingConstraintViolation(): void
-    {
-        $expectedConstraintViolation = new ConstraintViolation(
-            'error',
-            $this->createMock(IConstraint::class),
-            'foo',
-            'foo'
-        );
-        $context = new ValidationContext('foo');
-        $context->addConstraintViolation($expectedConstraintViolation);
-        $this->assertCount(1, $context->getConstraintViolations());
-        $this->assertSame($expectedConstraintViolation, $context->getConstraintViolations()[0]);
-    }
-
     public function testCircularDependencyDetectedIfObjectAppearsInChildContext(): void
     {
         $object = new class () {
@@ -120,33 +119,6 @@ class ValidationContextTest extends TestCase
 
         // Dummy assertion
         $this->assertTrue(true);
-    }
-
-    public function testGettingMethodNameReturnsOneSetInConstructor(): void
-    {
-        $context = new ValidationContext($this, null, 'method');
-        $this->assertSame('method', $context->methodName);
-    }
-
-    public function testGettingPropertyNameReturnsOneSetInConstructor(): void
-    {
-        $context = new ValidationContext($this, 'prop');
-        $this->assertSame('prop', $context->propertyName);
-    }
-
-    public function testGettingRootValueReturnsParentValueIfParentContextExists(): void
-    {
-        $parentContext = new ValidationContext($this);
-        $childContext = new ValidationContext(new class () {
-        }, null, null, $parentContext);
-        $this->assertSame($this, $childContext->getRootValue());
-        $this->assertSame($this, $parentContext->getRootValue());
-    }
-
-    public function testGettingRootValueReturnsValueIfNoParentContextExists(): void
-    {
-        $context = new ValidationContext($this);
-        $this->assertSame($this, $context->getRootValue());
     }
 
     public function testGettingConstraintViolationsIncludesOnesFromChildren(): void
@@ -198,6 +170,33 @@ class ValidationContextTest extends TestCase
         $childContext = new ValidationContext($this, 'prop', null, $parentContext);
         $childContext->addManyConstraintViolations([$constraintViolation1, $constraintViolation2]);
         $this->assertEquals(['error1', 'error2'], $parentContext->getErrorMessages());
+    }
+
+    public function testGettingMethodNameReturnsOneSetInConstructor(): void
+    {
+        $context = new ValidationContext($this, null, 'method');
+        $this->assertSame('method', $context->methodName);
+    }
+
+    public function testGettingPropertyNameReturnsOneSetInConstructor(): void
+    {
+        $context = new ValidationContext($this, 'prop');
+        $this->assertSame('prop', $context->propertyName);
+    }
+
+    public function testGettingRootValueReturnsParentValueIfParentContextExists(): void
+    {
+        $parentContext = new ValidationContext($this);
+        $childContext = new ValidationContext(new class () {
+        }, null, null, $parentContext);
+        $this->assertSame($this, $childContext->getRootValue());
+        $this->assertSame($this, $parentContext->getRootValue());
+    }
+
+    public function testGettingRootValueReturnsValueIfNoParentContextExists(): void
+    {
+        $context = new ValidationContext($this);
+        $this->assertSame($this, $context->getRootValue());
     }
 
     public function testGettingValueReturnsOneSetInConstructor(): void

@@ -19,10 +19,10 @@ use InvalidArgumentException;
  */
 class MultipleChoice extends Question
 {
-    /** @var string The string to display before the input */
-    public string $answerLineString = '  > ';
     /** @var bool Whether or not to allow multiple choices */
     public bool $allowsMultipleChoices = false;
+    /** @var string The string to display before the input */
+    public string $answerLineString = '  > ';
 
     /*
      * @param string $question The question text

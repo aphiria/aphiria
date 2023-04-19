@@ -101,6 +101,18 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->assertEquals($expectedHeaders, $this->headers->get('Set-Cookie'));
     }
 
+    public function testDeletingCookieWithSameSite(): void
+    {
+        $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false, SameSiteMode::Strict);
+        $this->assertSame('foo=; Max-Age=0; SameSite=strict', $this->headers->getFirst('Set-Cookie'));
+    }
+
+    public function testDeletingCookieWithSecure(): void
+    {
+        $this->formatter->deleteCookie($this->headers, 'foo', null, null, true, false, null);
+        $this->assertSame('foo=; Max-Age=0; Secure', $this->headers->getFirst('Set-Cookie'));
+    }
+
     public function testDeletingCookieWithSpecificDomain(): void
     {
         $this->formatter->deleteCookie($this->headers, 'foo', null, 'domain.com', false, false, null);
@@ -111,18 +123,6 @@ class ResponseHeaderFormatterTest extends TestCase
     {
         $this->formatter->deleteCookie($this->headers, 'foo', '/', null, false, false, null);
         $this->assertSame('foo=; Max-Age=0; Path=/', $this->headers->getFirst('Set-Cookie'));
-    }
-
-    public function testDeletingCookieWithSecure(): void
-    {
-        $this->formatter->deleteCookie($this->headers, 'foo', null, null, true, false, null);
-        $this->assertSame('foo=; Max-Age=0; Secure', $this->headers->getFirst('Set-Cookie'));
-    }
-
-    public function testDeletingCookieWithSameSite(): void
-    {
-        $this->formatter->deleteCookie($this->headers, 'foo', null, null, false, false, SameSiteMode::Strict);
-        $this->assertSame('foo=; Max-Age=0; SameSite=strict', $this->headers->getFirst('Set-Cookie'));
     }
 
     public function testHttpOnlyCookieSetsHttpOnlyFlag(): void

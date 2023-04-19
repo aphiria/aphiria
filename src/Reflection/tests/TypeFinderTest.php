@@ -31,20 +31,6 @@ class TypeFinderTest extends TestCase
         $this->finder = new TypeFinder();
     }
 
-    public function testFindAllClassesOnlyReturnsClasses(): void
-    {
-        $expectedClasses = [
-            ClassA::class,
-            ClassB::class,
-            ClassC::class
-        ];
-        // We don't care so much about the ordering
-        $this->assertEqualsCanonicalizing(
-            $expectedClasses,
-            $this->finder->findAllClasses(self::DIRECTORY, true)
-        );
-    }
-
     public function testFindAllClassesAndAbstractClassesOnlyReturnsClassesAndAbstractClasses(): void
     {
         $expectedClasses = [
@@ -57,6 +43,20 @@ class TypeFinderTest extends TestCase
         $this->assertEqualsCanonicalizing(
             $expectedClasses,
             $this->finder->findAllClasses(self::DIRECTORY, true, true)
+        );
+    }
+
+    public function testFindAllClassesOnlyReturnsClasses(): void
+    {
+        $expectedClasses = [
+            ClassA::class,
+            ClassB::class,
+            ClassC::class
+        ];
+        // We don't care so much about the ordering
+        $this->assertEqualsCanonicalizing(
+            $expectedClasses,
+            $this->finder->findAllClasses(self::DIRECTORY, true)
         );
     }
 

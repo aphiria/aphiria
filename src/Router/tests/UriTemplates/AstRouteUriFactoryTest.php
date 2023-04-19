@@ -107,12 +107,6 @@ class AstRouteUriFactoryTest extends TestCase
         $this->assertSame('http://example.com/foo', $this->uriFactory->createRouteUri('foo'));
     }
 
-    public function testCreatingUriWithOptionalHostWithTextOnlyInOptionalPartIncludesThatText(): void
-    {
-        $this->addRouteWithUriTemplate('foo', '[foo.]example.com', '');
-        $this->assertSame('https://foo.example.com', $this->uriFactory->createRouteUri('foo'));
-    }
-
     public function testCreatingUriWithOptionalHostVarDoesNotSetItIfValueDoesNotExist(): void
     {
         $this->addRouteWithUriTemplate('foo', '[:foo.]example.com', '');
@@ -129,6 +123,12 @@ class AstRouteUriFactoryTest extends TestCase
             'https://bar.example.com',
             $this->uriFactory->createRouteUri('foo', ['foo' => 'bar'])
         );
+    }
+
+    public function testCreatingUriWithOptionalHostWithTextOnlyInOptionalPartIncludesThatText(): void
+    {
+        $this->addRouteWithUriTemplate('foo', '[foo.]example.com', '');
+        $this->assertSame('https://foo.example.com', $this->uriFactory->createRouteUri('foo'));
     }
 
     public function testCreatingUriWithOptionalNestedHostsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
@@ -169,12 +169,6 @@ class AstRouteUriFactoryTest extends TestCase
         );
     }
 
-    public function testCreatingUriWithOptionalPathWithTextOnlyInOptionalPartIncludesThatText(): void
-    {
-        $this->addRouteWithUriTemplate('foo', 'example.com', 'foo[/bar]');
-        $this->assertSame('https://example.com/foo/bar', $this->uriFactory->createRouteUri('foo'));
-    }
-
     public function testCreatingUriWithOptionalPathVarDoesNotSetItIfValueDoesNotExist(): void
     {
         $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]');
@@ -191,6 +185,12 @@ class AstRouteUriFactoryTest extends TestCase
             'https://example.com/foo/baz',
             $this->uriFactory->createRouteUri('foo', ['bar' => 'baz'])
         );
+    }
+
+    public function testCreatingUriWithOptionalPathWithTextOnlyInOptionalPartIncludesThatText(): void
+    {
+        $this->addRouteWithUriTemplate('foo', 'example.com', 'foo[/bar]');
+        $this->assertSame('https://example.com/foo/bar', $this->uriFactory->createRouteUri('foo'));
     }
 
     public function testCreatingUriWithoutEnoughHostVarsThrowsException(): void

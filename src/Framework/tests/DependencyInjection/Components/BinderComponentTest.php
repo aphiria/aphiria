@@ -29,6 +29,13 @@ class BinderComponentTest extends TestCase
         $this->binderComponent = new BinderComponent(new Container());
     }
 
+    public function testBuildingWithoutBinderDispatcherThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Must call withBinderDispatcher() before building');
+        $this->binderComponent->build();
+    }
+
     public function testBuildWithBindersAppendsToListOfBindersToBeDispatched(): void
     {
         $binder1 = new class () extends Binder {
@@ -90,13 +97,6 @@ class BinderComponentTest extends TestCase
             ->with([$binder]);
         $this->binderComponent->withBinderDispatcher($binderDispatcher);
         $this->binderComponent->withBinders($binder);
-        $this->binderComponent->build();
-    }
-
-    public function testBuildingWithoutBinderDispatcherThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Must call withBinderDispatcher() before building');
         $this->binderComponent->build();
     }
 }

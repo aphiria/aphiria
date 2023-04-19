@@ -35,8 +35,8 @@ use PHPUnit\Framework\TestCase;
 
 class NegotiatedResponseFactoryTest extends TestCase
 {
-    private NegotiatedResponseFactory $factory;
     private IContentNegotiator&MockObject $contentNegotiator;
+    private NegotiatedResponseFactory $factory;
 
     protected function setUp(): void
     {
@@ -141,18 +141,6 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->assertSame('en-US', $response->getHeaders()->getFirst('Content-Language'));
     }
 
-    public function testCreatingResponseWithEnumStatusCodeSetsStatusCodeCorrectly(): void
-    {
-        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), HttpStatusCode::Ok);
-        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
-    }
-
-    public function testCreatingResponseWithIntStatusCodeSetsStatusCodeCorrectly(): void
-    {
-        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200);
-        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
-    }
-
     public function testCreatingResponseUsesStatusCode(): void
     {
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 202);
@@ -177,6 +165,12 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->assertSame('foo/bar', $response->getHeaders()->getFirst('Content-Type'));
     }
 
+    public function testCreatingResponseWithEnumStatusCodeSetsStatusCodeCorrectly(): void
+    {
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), HttpStatusCode::Ok);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+    }
+
     public function testCreatingResponseWithHeadersUsesThoseHeaders(): void
     {
         $headers = new Headers();
@@ -189,6 +183,12 @@ class NegotiatedResponseFactoryTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, null, $expectedBody);
         $this->assertSame($expectedBody, $response->getBody());
+    }
+
+    public function testCreatingResponseWithIntStatusCodeSetsStatusCodeCorrectly(): void
+    {
+        $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200);
+        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
     }
 
     public function testCreatingResponseWithNonScalarNorObjectBodyThrowsException(): void
@@ -229,6 +229,23 @@ class NegotiatedResponseFactoryTest extends TestCase
         }
     }
 
+    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(): void
+    {
+        $rawBody = new User(123, 'foo@bar.com');
+        $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $responseMediaTypeFormatter->expects($this->once())
+            ->method('writeToStream')
+            ->with($rawBody, $this->isInstanceOf(Stream::class), 'utf-8');
+        $request = $this->createRequest('http://foo.com');
+        $this->setUpContentNegotiationMock(
+            User::class,
+            $request,
+            new ContentNegotiationResult($responseMediaTypeFormatter, null, 'utf-8', null)
+        );
+        $response = $this->factory->createResponse($request, 200, null, $rawBody);
+        $this->assertInstanceOf(StreamBody::class, $response->getBody());
+    }
+
     public function testCreatingResponseWithObjectRethrowsSerializationExceptionAsHttpException(): void
     {
         $rawBody = new User(123, 'foo@bar.com');
@@ -250,23 +267,6 @@ class NegotiatedResponseFactoryTest extends TestCase
         } catch (HttpException $ex) {
             $this->assertSame(HttpStatusCode::InternalServerError, $ex->response->getStatusCode());
         }
-    }
-
-    public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(): void
-    {
-        $rawBody = new User(123, 'foo@bar.com');
-        $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $responseMediaTypeFormatter->expects($this->once())
-            ->method('writeToStream')
-            ->with($rawBody, $this->isInstanceOf(Stream::class), 'utf-8');
-        $request = $this->createRequest('http://foo.com');
-        $this->setUpContentNegotiationMock(
-            User::class,
-            $request,
-            new ContentNegotiationResult($responseMediaTypeFormatter, null, 'utf-8', null)
-        );
-        $response = $this->factory->createResponse($request, 200, null, $rawBody);
-        $this->assertInstanceOf(StreamBody::class, $response->getBody());
     }
 
     public function testCreatingResponseWithScalarBodyCreatesBodyFromScalar(): void

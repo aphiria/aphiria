@@ -70,33 +70,13 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $this->bodyDeserializer->readResponseBodyAs(User::class, $request, $response);
     }
 
-    public function testFailingToFindMediaTypeFormatterForRequestBodyThrowsException(): void
+    public function testDeserializingNullRequestBodyAsArrayTypeReturnsEmptyArray(): void
     {
-        $this->expectException(FailedContentNegotiationException::class);
-        $this->expectExceptionMessage('No media type formatter available for ' . User::class);
         $request = $this->createMock(IRequest::class);
         $request->method('getBody')
-            ->willReturn($this->createMock(IBody::class));
-        $contentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
-        $this->contentNegotiator->method('negotiateRequestContent')
-            ->with(User::class, $request)
-            ->willReturn($contentNegotiationResult);
-        $this->bodyDeserializer->readRequestBodyAs(User::class, $request);
-    }
-
-    public function testFailingToFindMediaTypeFormatterForResponseBodyThrowsException(): void
-    {
-        $this->expectException(FailedContentNegotiationException::class);
-        $this->expectExceptionMessage('No media type formatter available for ' . User::class);
-        $request = $this->createMock(IRequest::class);
-        $response = $this->createMock(IResponse::class);
-        $response->method('getBody')
-            ->willReturn($this->createMock(IBody::class));
-        $contentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
-        $this->contentNegotiator->method('negotiateResponseContent')
-            ->with(User::class, $request)
-            ->willReturn($contentNegotiationResult);
-        $this->bodyDeserializer->readResponseBodyAs(User::class, $request, $response);
+            ->willReturn(null);
+        $actualUser = $this->bodyDeserializer->readRequestBodyAs(User::class . '[]', $request);
+        $this->assertSame([], $actualUser);
     }
 
     public function testDeserializingNullRequestBodyReturnsNull(): void
@@ -108,12 +88,13 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $this->assertNull($actualUser);
     }
 
-    public function testDeserializingNullRequestBodyAsArrayTypeReturnsEmptyArray(): void
+    public function testDeserializingNullResponseBodyAsArrayTypeReturnsEmptyArray(): void
     {
         $request = $this->createMock(IRequest::class);
-        $request->method('getBody')
+        $response = $this->createMock(IResponse::class);
+        $response->method('getBody')
             ->willReturn(null);
-        $actualUser = $this->bodyDeserializer->readRequestBodyAs(User::class . '[]', $request);
+        $actualUser = $this->bodyDeserializer->readResponseBodyAs(User::class . '[]', $request, $response);
         $this->assertSame([], $actualUser);
     }
 
@@ -125,16 +106,6 @@ class NegotiatedBodyDeserializerTest extends TestCase
             ->willReturn(null);
         $actualUser = $this->bodyDeserializer->readResponseBodyAs(User::class, $request, $response);
         $this->assertNull($actualUser);
-    }
-
-    public function testDeserializingNullResponseBodyAsArrayTypeReturnsEmptyArray(): void
-    {
-        $request = $this->createMock(IRequest::class);
-        $response = $this->createMock(IResponse::class);
-        $response->method('getBody')
-            ->willReturn(null);
-        $actualUser = $this->bodyDeserializer->readResponseBodyAs(User::class . '[]', $request, $response);
-        $this->assertSame([], $actualUser);
     }
 
     public function testDeserializingRequestBodyReturnsAnInstanceOfType(): void
@@ -178,5 +149,34 @@ class NegotiatedBodyDeserializerTest extends TestCase
             ->willReturn($contentNegotiationResult);
         $actualUser = $this->bodyDeserializer->readResponseBodyAs(User::class, $request, $response);
         $this->assertSame($expectedUser, $actualUser);
+    }
+
+    public function testFailingToFindMediaTypeFormatterForRequestBodyThrowsException(): void
+    {
+        $this->expectException(FailedContentNegotiationException::class);
+        $this->expectExceptionMessage('No media type formatter available for ' . User::class);
+        $request = $this->createMock(IRequest::class);
+        $request->method('getBody')
+            ->willReturn($this->createMock(IBody::class));
+        $contentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
+        $this->contentNegotiator->method('negotiateRequestContent')
+            ->with(User::class, $request)
+            ->willReturn($contentNegotiationResult);
+        $this->bodyDeserializer->readRequestBodyAs(User::class, $request);
+    }
+
+    public function testFailingToFindMediaTypeFormatterForResponseBodyThrowsException(): void
+    {
+        $this->expectException(FailedContentNegotiationException::class);
+        $this->expectExceptionMessage('No media type formatter available for ' . User::class);
+        $request = $this->createMock(IRequest::class);
+        $response = $this->createMock(IResponse::class);
+        $response->method('getBody')
+            ->willReturn($this->createMock(IBody::class));
+        $contentNegotiationResult = new ContentNegotiationResult(null, null, null, null);
+        $this->contentNegotiator->method('negotiateResponseContent')
+            ->with(User::class, $request)
+            ->willReturn($contentNegotiationResult);
+        $this->bodyDeserializer->readResponseBodyAs(User::class, $request, $response);
     }
 }
