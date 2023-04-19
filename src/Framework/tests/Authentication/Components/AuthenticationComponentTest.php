@@ -40,9 +40,7 @@ class AuthenticationComponentTest extends TestCase
     {
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockObject $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $defaultScheme = new AuthenticationScheme('foo', $schemeHandler::class);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $nonDefaultScheme = new AuthenticationScheme('bar', $schemeHandler::class);
         $this->authenticationComponent->withScheme($defaultScheme, true);
         $this->authenticationComponent->withScheme($nonDefaultScheme, false);

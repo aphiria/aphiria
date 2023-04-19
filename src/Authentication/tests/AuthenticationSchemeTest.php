@@ -24,7 +24,6 @@ class AuthenticationSchemeTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $expectedHandler */
         $expectedHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $expectedOptions = new AuthenticationSchemeOptions();
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $expectedHandler::class, $expectedOptions);
         $this->assertSame('foo', $scheme->name);
         $this->assertSame($expectedHandler::class, $scheme->handlerClassName);

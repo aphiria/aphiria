@@ -54,7 +54,6 @@ class CookieAuthenticationHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $request->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         $result = $this->schemeHandler->authenticate($request, $scheme);
         $this->assertFalse($result->passed);
@@ -69,7 +68,6 @@ class CookieAuthenticationHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $request->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
         $this->schemeHandler->expectedAuthenticationResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
@@ -88,7 +86,6 @@ class CookieAuthenticationHandlerTest extends TestCase
             ->with(HttpStatusCode::Found);
         $response->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie', loginPagePath: '/login'));
         $this->schemeHandler->challenge($this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame('/login', $headers->getFirst('Location'));
@@ -103,7 +100,6 @@ class CookieAuthenticationHandlerTest extends TestCase
             ->with(HttpStatusCode::Unauthorized);
         $response->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         $this->schemeHandler->challenge($this->createMock(IRequest::class), $response, $scheme);
     }
@@ -117,7 +113,6 @@ class CookieAuthenticationHandlerTest extends TestCase
             ->with(HttpStatusCode::Found);
         $response->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie', forbiddenPagePath: '/forbidden'));
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame('/forbidden', $headers->getFirst('Location'));
@@ -132,7 +127,6 @@ class CookieAuthenticationHandlerTest extends TestCase
             ->with(HttpStatusCode::Forbidden);
         $response->method('getHeaders')
             ->willReturn($headers);
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);
     }
@@ -152,7 +146,6 @@ class CookieAuthenticationHandlerTest extends TestCase
             cookieIsHttpOnly: true,
             cookieSameSite: SameSiteMode::Strict
         );
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, $options);
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
         $this->schemeHandler->expectedCookieValue = 'abc';
@@ -178,7 +171,6 @@ class CookieAuthenticationHandlerTest extends TestCase
             cookieIsHttpOnly: true,
             cookieSameSite: SameSiteMode::Strict
         );
-        /** @psalm-suppress InvalidCast https://github.com/vimeo/psalm/issues/8810 - bug */
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, $options);
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
         $this->schemeHandler->expectedCookieValue = 'abc';
