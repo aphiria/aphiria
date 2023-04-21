@@ -24,7 +24,7 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
 
 /**
- * Defines a authentication scheme handler for reading auth data from cookies
+ * Defines an authentication scheme handler for reading auth data from cookies
  *
  * @implements ILoginAuthenticationSchemeHandler<CookieAuthenticationOptions>
  * @implements IAuthenticationSchemeHandler<CookieAuthenticationOptions>
@@ -55,7 +55,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
         }
 
         /** @var string $cookieValue */
-        return $this->createAuthenticationResultFromCookie($cookieValue, $scheme);
+        return $this->createAuthenticationResultFromCookie($cookieValue, $request, $scheme);
     }
 
     /**
@@ -127,10 +127,11 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
      * Creates an authentication result from a cookie
      *
      * @param string $cookieValue The value of the cookie
+     * @param IRequest $request The current request
      * @param AuthenticationScheme<CookieAuthenticationOptions> $scheme The scheme
      * @return AuthenticationResult The authentication result
      */
-    abstract protected function createAuthenticationResultFromCookie(string $cookieValue, AuthenticationScheme $scheme): AuthenticationResult;
+    abstract protected function createAuthenticationResultFromCookie(string $cookieValue, IRequest $request, AuthenticationScheme $scheme): AuthenticationResult;
 
     /**
      * Gets the authentication cookie value for a user

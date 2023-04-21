@@ -35,10 +35,11 @@ class BasicAuthenticationHandlerTest extends TestCase
         $this->schemeHandler = new class () extends BasicAuthenticationHandler {
             public ?string $actualUsername = null;
             public ?string $actualPassword = null;
+            public ?IRequest $actualRequest = null;
             public ?AuthenticationScheme $actualScheme = null;
             public ?AuthenticationResult $expectedResult = null;
 
-            protected function createAuthenticationResultFromCredentials(string $username, string $password, AuthenticationScheme $scheme): AuthenticationResult
+            protected function createAuthenticationResultFromCredentials(string $username, string $password, IRequest $request, AuthenticationScheme $scheme): AuthenticationResult
             {
                 if ($this->expectedResult === null) {
                     throw new RuntimeException('Expected result not set');
@@ -46,6 +47,7 @@ class BasicAuthenticationHandlerTest extends TestCase
 
                 $this->actualUsername = $username;
                 $this->actualPassword = $password;
+                $this->actualRequest = $request;
                 $this->actualScheme = $scheme;
 
                 return $this->expectedResult;
@@ -59,6 +61,7 @@ class BasicAuthenticationHandlerTest extends TestCase
             protected function createAuthenticationResultFromCredentials(
                 string $username,
                 string $password,
+                IRequest $request,
                 AuthenticationScheme $scheme
             ): AuthenticationResult {
                 return AuthenticationResult::fail('foo');
@@ -111,6 +114,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         $this->assertSame($this->schemeHandler->expectedResult, $this->schemeHandler->authenticate($request, $scheme));
         $this->assertSame('foo', $this->schemeHandler->actualUsername);
         $this->assertSame('bar', $this->schemeHandler->actualPassword);
+        $this->assertSame($request, $this->schemeHandler->actualRequest);
         $this->assertSame($scheme, $this->schemeHandler->actualScheme);
     }
 

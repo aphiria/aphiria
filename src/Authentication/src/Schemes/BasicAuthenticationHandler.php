@@ -66,7 +66,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
 
         [$username, $password] = $explodedCredentials;
 
-        return $this->createAuthenticationResultFromCredentials($username, $password, $scheme);
+        return $this->createAuthenticationResultFromCredentials($username, $password, $request, $scheme);
     }
 
     /**
@@ -94,8 +94,9 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
      *
      * @param string $username The username
      * @param string $password The password
+     * @param IRequest $request The current request
      * @param AuthenticationScheme<BasicAuthenticationOptions> $scheme The authentication scheme used
      * @return AuthenticationResult The authentication result
      */
-    abstract protected function createAuthenticationResultFromCredentials(string $username, string $password, AuthenticationScheme $scheme): AuthenticationResult;
+    abstract protected function createAuthenticationResultFromCredentials(string $username, string $password, IRequest $request, AuthenticationScheme $scheme): AuthenticationResult;
 }
