@@ -16,7 +16,9 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\ContentNegotiation\AcceptLanguageMatcher;
+use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\IBodyNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\IEncodingMatcher;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
@@ -97,7 +99,9 @@ class ContentNegotiationBinder extends Binder
             $languageMatcher
         );
         $responseFactory = new NegotiatedResponseFactory($contentNegotiator);
+        $bodyNegotiator = new BodyNegotiator($contentNegotiator);
         $container->bindInstance(IContentNegotiator::class, $contentNegotiator);
         $container->bindInstance(IResponseFactory::class, $responseFactory);
+        $container->bindInstance(IBodyNegotiator::class, $bodyNegotiator);
     }
 }

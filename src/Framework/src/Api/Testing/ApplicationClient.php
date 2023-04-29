@@ -40,7 +40,7 @@ class ApplicationClient implements IHttpClient
     public function send(IRequest $request): IResponse
     {
         /**
-         * We override the request binder's request with this one that it is the same one that's resolved/used by
+         * We override the request binder's request with this one so that it is the same one that's resolved/used by
          * other classes, eg controllers and exception renderers.  We explicitly resolve the request so that it
          * dispatches the request binder, which in turn dispatches any other binders that resolved IRequest.
          */

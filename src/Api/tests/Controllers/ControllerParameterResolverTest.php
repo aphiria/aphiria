@@ -19,9 +19,8 @@ use Aphiria\Api\Controllers\MissingControllerParameterValueException;
 use Aphiria\Api\Controllers\RequestBodyDeserializationException;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
-use Aphiria\ContentNegotiation\ContentNegotiationResult;
-use Aphiria\ContentNegotiation\IContentNegotiator;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\FailedContentNegotiationException;
+use Aphiria\ContentNegotiation\IBodyNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StringBody;
@@ -34,12 +33,12 @@ use ReflectionParameter;
 class ControllerParameterResolverTest extends TestCase
 {
     private ControllerParameterResolver $resolver;
-    private IContentNegotiator&MockObject $contentNegotiator;
+    private IBodyNegotiator&MockObject $bodyNegotiator;
 
     protected function setUp(): void
     {
-        $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $this->resolver = new ControllerParameterResolver($this->contentNegotiator);
+        $this->bodyNegotiator = $this->createMock(IBodyNegotiator::class);
+        $this->resolver = new ControllerParameterResolver($this->bodyNegotiator);
     }
 
     public static function scalarParameterTestDataProvider(): array
@@ -78,16 +77,10 @@ class ControllerParameterResolverTest extends TestCase
         $this->expectExceptionMessage('Failed to deserialize request body when resolving parameter user');
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->once())
-            ->method('readFromStream')
-            ->with($request->getBody()?->readAsStream(), User::class)
-            ->willThrowException(new SerializationException());
-        $this->contentNegotiator->expects($this->once())
-            ->method('negotiateRequestContent')
+        $this->bodyNegotiator->expects($this->once())
+            ->method('negotiateRequestBody')
             ->with(User::class, $request)
-            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
+            ->willThrowException(new SerializationException());
         $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'objectParameter'], 'user'),
             $request,
@@ -95,16 +88,16 @@ class ControllerParameterResolverTest extends TestCase
         );
     }
 
-    public function testResolvingNonNullableObjectParameterWithBodyThatHasNoMediaTypeFormatterThrowsException(): void
+    public function testResolvingNonNullableObjectParameterWithBodyThatFailedContentNegotiationRethrowsException(): void
     {
         $this->expectException(FailedRequestContentNegotiationException::class);
         $this->expectExceptionMessage('Failed to negotiate request content with type ' . User::class);
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        $this->contentNegotiator->expects($this->once())
-            ->method('negotiateRequestContent')
+        $this->bodyNegotiator->expects($this->once())
+            ->method('negotiateRequestBody')
             ->with(User::class, $request)
-            ->willReturn(new ContentNegotiationResult(null, null, null, null));
+            ->willThrowException(new FailedContentNegotiationException());
         $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'objectParameter'], 'user'),
             $request,
@@ -116,16 +109,10 @@ class ControllerParameterResolverTest extends TestCase
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->once())
-            ->method('readFromStream')
-            ->with($request->getBody()?->readAsStream(), User::class)
-            ->willThrowException(new SerializationException());
-        $this->contentNegotiator->expects($this->once())
-            ->method('negotiateRequestContent')
+        $this->bodyNegotiator->expects($this->once())
+            ->method('negotiateRequestBody')
             ->with(User::class, $request)
-            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
+            ->willThrowException(new SerializationException());
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'nullableObjectParameter'], 'user'),
             $request,
@@ -134,14 +121,14 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertNull($resolvedParameter);
     }
 
-    public function testResolvingNullableObjectParameterWithBodyThatHasNoMediaTypeFormatterPassesNull(): void
+    public function testResolvingNullableObjectParameterWithBodyThatFailsContentNegotiationReturnsNull(): void
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        $this->contentNegotiator->expects($this->once())
-            ->method('negotiateRequestContent')
+        $this->bodyNegotiator->expects($this->once())
+            ->method('negotiateRequestBody')
             ->with(User::class, $request)
-            ->willReturn(new ContentNegotiationResult(null, null, null, null));
+            ->willThrowException(new FailedContentNegotiationException());
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'nullableObjectParameter'], 'user'),
             $request,
@@ -187,16 +174,10 @@ class ControllerParameterResolverTest extends TestCase
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
         $expectedUser = new User(123, 'foo@bar.com');
-        /** @var IMediaTypeFormatter&MockObject $mediaTypeFormatter */
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->once())
-            ->method('readFromStream')
-            ->with($request->getBody()?->readAsStream(), User::class)
-            ->willReturn($expectedUser);
-        $this->contentNegotiator->expects($this->once())
-            ->method('negotiateRequestContent')
+        $this->bodyNegotiator->expects($this->once())
+            ->method('negotiateRequestBody')
             ->with(User::class, $request)
-            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
+            ->willReturn($expectedUser);
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([ControllerWithEndpoints::class, 'objectParameter'], 'user'),
             $request,

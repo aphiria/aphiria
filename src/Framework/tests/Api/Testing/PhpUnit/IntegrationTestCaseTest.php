@@ -14,6 +14,7 @@ namespace Aphiria\Framework\Tests\Api\Testing\PhpUnit;
 
 use Aphiria\Application\IApplication;
 use Aphiria\Collections\KeyValuePair;
+use Aphiria\ContentNegotiation\IBodyNegotiator;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
@@ -34,18 +35,21 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use DateTime;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 #[IgnoreMethodForCodeCoverage(IntegrationTestCase::class, 'failWithMessage')]
 class IntegrationTestCaseTest extends TestCase
 {
-    private IApplication $app;
-    private IRequestHandler $apiGateway;
+    private IApplication&MockObject $app;
+    private IRequestHandler&MockObject $apiGateway;
+    private IBodyNegotiator&MockObject $bodyNegotiator;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;
 
@@ -54,19 +58,19 @@ class IntegrationTestCaseTest extends TestCase
         $this->prevAppUrl = \getenv('APP_URL') ?: '';
         $this->app = $this->createMock(IApplication::class);
         $this->apiGateway = $this->createMock(IRequestHandler::class);
-        $this->integrationTests = new class ($this->app, $this->apiGateway) extends IntegrationTestCase {
+        $this->bodyNegotiator = $this->createMock(IBodyNegotiator::class);
+        $this->integrationTests = new class ($this->app, $this->apiGateway, $this->bodyNegotiator) extends IntegrationTestCase {
             private static ?string $failMessage = null;
-            private IApplication $app;
-            private IRequestHandler $apiGateway;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
 
-            public function __construct(IApplication $app, IRequestHandler $apiGateway)
-            {
+            public function __construct(
+                private IApplication $app,
+                private IRequestHandler $apiGateway,
+                private IBodyNegotiator $bodyNegotiator
+            ) {
                 /** @psalm-suppress InternalMethod We need to call this internal method */
                 parent::__construct('foo');
 
-                $this->app = $app;
-                $this->apiGateway = $apiGateway;
                 $this->mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
                     new JsonMediaTypeFormatter(),
                     new XmlMediaTypeFormatter(),
@@ -79,6 +83,11 @@ class IntegrationTestCaseTest extends TestCase
             public function getFailMessage(): ?string
             {
                 return self::$failMessage;
+            }
+
+            public function getLastRequest(): ?IRequest
+            {
+                return $this->lastRequest;
             }
 
             public function send(IRequest $request): IResponse
@@ -99,6 +108,18 @@ class IntegrationTestCaseTest extends TestCase
             public function get(string|Uri $uri, array $headers = []): IResponse
             {
                 return parent::get($uri, $headers);
+            }
+
+            // Make this public for testability
+            public function negotiateRequestBody(string $type): float|object|int|bool|array|string|null
+            {
+                return parent::negotiateRequestBody($type);
+            }
+
+            // Make this public for testability
+            public function negotiateResponseBody(string $type, IResponse $response): float|object|int|bool|array|string|null
+            {
+                return parent::negotiateResponseBody($type, $response);
             }
 
             // Make this public for testability
@@ -137,6 +158,14 @@ class IntegrationTestCaseTest extends TestCase
                 $container->bindInstance(IRequestHandler::class, $this->apiGateway);
 
                 return $this->app;
+            }
+
+            protected function createBodyNegotiator(IContainer $container): IBodyNegotiator
+            {
+                // Ensure that the body negotiator is resolvable after this method is invoked
+                $container->bindInstance(IBodyNegotiator::class, $this->bodyNegotiator);
+
+                return parent::createBodyNegotiator($container);
             }
 
             protected function createRequestBuilder(IContainer $container): NegotiatedRequestBuilder
@@ -413,6 +442,40 @@ class IntegrationTestCaseTest extends TestCase
             ['Foo' => ['bar']]
         );
         $this->assertSame($expectedResponse, $actualResponse);
+    }
+
+    public function testNegotiatingRequestBeforeSendingRequestThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A request must be sent before negotiating the request body');
+        $this->integrationTests->negotiateRequestBody(DateTime::class);
+    }
+
+    public function testNegotiatingRequestBodyReturnsDeserializedValue(): void
+    {
+        $expectedNegotiatedBody = new DateTime();
+        $this->integrationTests->get('http://localhost');
+        $this->bodyNegotiator->method('negotiateRequestBody')
+            ->with(DateTime::class, $this->integrationTests->getLastRequest())
+            ->willReturn($expectedNegotiatedBody);
+        $this->assertSame($expectedNegotiatedBody, $this->integrationTests->negotiateRequestBody(DateTime::class));
+    }
+
+    public function testNegotiatingResponseBeforeSendingRequestThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A request must be sent before negotiating the response body');
+        $this->integrationTests->negotiateResponseBody(DateTime::class, $this->createMock(IResponse::class));
+    }
+
+    public function testNegotiatingResponseBodyReturnsDeserializedValue(): void
+    {
+        $expectedNegotiatedBody = new DateTime();
+        $response = $this->integrationTests->get('http://localhost');
+        $this->bodyNegotiator->method('negotiateResponseBody')
+            ->with(DateTime::class, $this->integrationTests->getLastRequest(), $response)
+            ->willReturn($expectedNegotiatedBody);
+        $this->assertSame($expectedNegotiatedBody, $this->integrationTests->negotiateResponseBody(DateTime::class, $response));
     }
 
     public function testOptionsSendsRequestToClient(): void

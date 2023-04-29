@@ -12,8 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
-use Aphiria\ContentNegotiation\ContentNegotiator;
-use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\BodyNegotiator;
+use Aphiria\ContentNegotiation\FailedContentNegotiationException;
+use Aphiria\ContentNegotiation\IBodyNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\IRequest;
@@ -26,11 +27,11 @@ use ReflectionParameter;
 final class ControllerParameterResolver implements IControllerParameterResolver
 {
     /**
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IBodyNegotiator $bodyNegotiator The body negotiator
      * @param UriParser $uriParser The URI parser to use
      */
     public function __construct(
-        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
+        private readonly IBodyNegotiator $bodyNegotiator = new BodyNegotiator(),
         private readonly UriParser $uriParser = new UriParser()
     ) {
     }
@@ -83,8 +84,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @param IRequest $request The current request
      * @return object|null The resolved parameter
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
+     * @throws RequestBodyDeserializationException Thrown if there was an error deserializing the request body
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
-     * @throws RequestBodyDeserializationException Thrown if the request body could not be deserialized
      * @psalm-suppress InvalidReturnType The media type formatter will resolve to the parameter type, which will be an object
      * @psalm-suppress InvalidReturnStatement Ditto
      */
@@ -93,47 +94,34 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         ReflectionNamedType $type,
         IRequest $request
     ): ?object {
-        $body = $request->getBody();
+        try {
+            $negotiatedBody = $this->bodyNegotiator->negotiateRequestBody($type->getName(), $request);
 
-        if ($body === null) {
-            if (!$reflectionParameter->allowsNull()) {
+            if ($negotiatedBody === null && !$reflectionParameter->allowsNull()) {
                 throw new MissingControllerParameterValueException(
                     "Body is null when resolving parameter {$reflectionParameter->getName()}"
                 );
             }
 
-            return null;
-        }
-
-        $requestContentNegotiationResult = $this->contentNegotiator->negotiateRequestContent(
-            $type->getName(),
-            $request
-        );
-        $mediaTypeFormatter = $requestContentNegotiationResult->formatter;
-
-        if ($mediaTypeFormatter === null) {
-            if (!$reflectionParameter->allowsNull()) {
-                throw new FailedRequestContentNegotiationException(
-                    "Failed to negotiate request content with type $type"
-                );
+            return $negotiatedBody;
+        } catch (FailedContentNegotiationException $ex) {
+            if ($reflectionParameter->allowsNull()) {
+                return null;
             }
 
-            return null;
-        }
-
-        try {
-            return $mediaTypeFormatter
-                ->readFromStream($body->readAsStream(), $type->getName());
+            throw new FailedRequestContentNegotiationException(
+                "Failed to negotiate request content with type $type"
+            );
         } catch (SerializationException $ex) {
-            if (!$reflectionParameter->allowsNull()) {
-                throw new RequestBodyDeserializationException(
-                    "Failed to deserialize request body when resolving parameter {$reflectionParameter->getName()}",
-                    0,
-                    $ex
-                );
+            if ($reflectionParameter->allowsNull()) {
+                return null;
             }
 
-            return null;
+            throw new RequestBodyDeserializationException(
+                "Failed to deserialize request body when resolving parameter {$reflectionParameter->getName()}",
+                0,
+                $ex
+            );
         }
     }
 

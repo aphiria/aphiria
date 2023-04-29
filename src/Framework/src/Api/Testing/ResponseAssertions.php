@@ -12,13 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Testing;
 
-use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\HtmlMediaTypeFormatter;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
+use Aphiria\ContentNegotiation\ContentNegotiator;
+use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
@@ -34,16 +30,11 @@ use InvalidArgumentException;
 class ResponseAssertions
 {
     /**
-     * @param IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher The media type formatter matcher
+     * @param IContentNegotiator $contentNegotiator The content negotiator
      * @param ResponseHeaderParser $responseHeaderParser The response header parser
      */
     public function __construct(
-        private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher([
-            new JsonMediaTypeFormatter(),
-            new XmlMediaTypeFormatter(),
-            new HtmlMediaTypeFormatter(),
-            new PlainTextMediaTypeFormatter()
-        ]),
+        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser()
     ) {
     }
@@ -157,7 +148,7 @@ class ResponseAssertions
                 if ($response->getBody() != $expectedValue) {
                     throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
                 }
-            } elseif ($this->getParsedBody($request, $response, TypeResolver::resolveType($expectedValue)) != $expectedValue) {
+            } elseif ($this->getParsedResponseBody($request, $response, TypeResolver::resolveType($expectedValue)) != $expectedValue) {
                 throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
             }
         } catch (SerializationException | InvalidArgumentException $ex) {
@@ -177,7 +168,7 @@ class ResponseAssertions
     public function assertParsedBodyPassesCallback(IRequest $request, IResponse $response, string $type, Closure $callback): void
     {
         try {
-            if (!$callback($this->getParsedBody($request, $response, $type))) {
+            if (!$callback($this->getParsedResponseBody($request, $response, $type))) {
                 throw new AssertionFailedException('Failed to assert that the response body passes the callback');
             }
         } catch (SerializationException | InvalidArgumentException $ex) {
@@ -210,22 +201,21 @@ class ResponseAssertions
      * @param string $type The type to deserialize the body to
      * @return float|object|int|bool|array|string|null An instance of type, or null if the body is not set
      * @throws SerializationException Thrown if the body could not be read
+     * TODO: REMOVE
      */
-    private function getParsedBody(IRequest $request, IResponse $response, string $type): float|object|int|bool|array|string|null
+    private function getParsedResponseBody(IRequest $request, IResponse $response, string $type): float|object|int|bool|array|string|null
     {
         if (($body = $response->getBody()) === null) {
             return null;
         }
 
-        $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
-            $type,
-            $request
-        );
+        $contentNegotiationResult = $this->contentNegotiator->negotiateResponseContent($type, $request);
+        $mediaTypeFormatter = $contentNegotiationResult->formatter;
 
-        if ($mediaTypeFormatterMatch === null) {
+        if ($mediaTypeFormatter === null) {
             throw new InvalidArgumentException("No media type formatter available for $type");
         }
 
-        return $mediaTypeFormatterMatch->formatter->readFromStream($body->readAsStream(), $type);
+        return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
     }
 }
