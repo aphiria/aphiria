@@ -17,16 +17,16 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
  */
 enum TokenType
 {
-    /** A text token type */
-    case Text;
+    /** The end of file token type */
+    case Eof;
     /** A number token type */
     case Number;
     /** A punctuation token type */
     case Punctuation;
     /** A quoted string token type */
     case QuotedString;
+    /** A text token type */
+    case Text;
     /** A variable token type */
     case Variable;
-    /** The end of file token type */
-    case Eof;
 }

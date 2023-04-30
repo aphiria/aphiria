@@ -28,15 +28,6 @@ class MediaTypeFormatterMatchTest extends TestCase
         $this->assertSame($formatter, $match->formatter);
     }
 
-    public function testGettingMediaTypeReturnsSameOneInConstructor(): void
-    {
-        /** @var IMediaTypeFormatter $formatter */
-        $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
-        $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
-        $this->assertSame('baz/blah', $match->mediaType);
-    }
-
     public function testGettingMediaTypeHeaderReturnsSameOneInConstructor(): void
     {
         /** @var IMediaTypeFormatter $formatter */
@@ -44,5 +35,14 @@ class MediaTypeFormatterMatchTest extends TestCase
         $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
         $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
         $this->assertSame($mediaTypeHeaderValue, $match->mediaTypeHeaderValue);
+    }
+
+    public function testGettingMediaTypeReturnsSameOneInConstructor(): void
+    {
+        /** @var IMediaTypeFormatter $formatter */
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeHeaderValue = new ContentTypeHeaderValue('foo/bar');
+        $match = new MediaTypeFormatterMatch($formatter, 'baz/blah', $mediaTypeHeaderValue);
+        $this->assertSame('baz/blah', $match->mediaType);
     }
 }

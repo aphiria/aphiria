@@ -14,9 +14,8 @@ namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Authentication\IUserAccessor;
-use Aphiria\ContentNegotiation\ContentNegotiationResult;
-use Aphiria\ContentNegotiation\IContentNegotiator;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\FailedContentNegotiationException;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpException;
@@ -26,7 +25,6 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
-use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use Aphiria\Security\IPrincipal;
 use LogicException;
@@ -182,6 +180,17 @@ class ControllerTest extends TestCase
         $this->assertSame($expectedHeaders, $response->getHeaders());
     }
 
+    public function testForbiddenCreatesCorrectResponse(): void
+    {
+        $this->controller->setRequest($this->request);
+        $expectedBody = $this->createMock(IBody::class);
+        $expectedHeaders = new Headers();
+        $response = $this->controller->forbidden($expectedBody, $expectedHeaders);
+        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
+        $this->assertSame($expectedBody, $response->getBody());
+        $this->assertSame($expectedHeaders, $response->getHeaders());
+    }
+
     public function testFoundWithStringUriCreatesCorrectResponse(): void
     {
         $this->controller->setRequest($this->request);
@@ -202,17 +211,6 @@ class ControllerTest extends TestCase
         $response = $this->controller->found(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
         $this->assertSame(HttpStatusCode::Found, $response->getStatusCode());
         $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
-    }
-
-    public function testForbiddenCreatesCorrectResponse(): void
-    {
-        $this->controller->setRequest($this->request);
-        $expectedBody = $this->createMock(IBody::class);
-        $expectedHeaders = new Headers();
-        $response = $this->controller->forbidden($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
         $this->assertSame($expectedBody, $response->getBody());
         $this->assertSame($expectedHeaders, $response->getHeaders());
     }
@@ -340,66 +338,27 @@ class ControllerTest extends TestCase
         $this->assertSame($expectedHeaders, $response->getHeaders());
     }
 
-    public function testReadingRequestBodyForArrayTypeWithRequestWithNoBodyReturnsNull(): void
+    public function testReadingRequestBodyReturnsDeserializedBody(): void
     {
-        $this->request->expects($this->once())
-            ->method('getBody')
-            ->willReturn(null);
+        $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
+        $bodyDeserializer->expects($this->once())
+            ->method('readRequestBodyAs')
+            ->with('foo', $this->request)
+            ->willReturn('bar');
+        $this->controller->setBodyDeserializer($bodyDeserializer);
         $this->controller->setRequest($this->request);
-        $this->assertSame([], $this->controller->readRequestBodyAs('foo[]'));
+        $this->assertSame('bar', $this->controller->readRequestBodyAs('foo'));
     }
 
-    public function testReadingRequestBodyForObjectTypeWithRequestWithNoBodyReturnsNull(): void
-    {
-        $this->request->expects($this->once())
-            ->method('getBody')
-            ->willReturn(null);
-        $this->controller->setRequest($this->request);
-        $this->assertNull($this->controller->readRequestBodyAs('foo'));
-    }
-
-    public function testReadingRequestBodyForTypeThatThereIsNoMediaTypeFormatterForThrowsException(): void
+    public function testReadingRequestBodyThrowsUnprocessableEntityExceptionWhenItFailsToDeserialize(): void
     {
         try {
-            $contentNegotiator = $this->createMock(IContentNegotiator::class);
-            $contentNegotiator->expects($this->once())
-                ->method('negotiateRequestContent')
+            $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
+            $bodyDeserializer->expects($this->once())
+                ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
-                ->willReturn(new ContentNegotiationResult(null, null, null, null));
-            $this->request->expects($this->once())
-                ->method('getBody')
-                ->willReturn(new StringBody('foo'));
-            $this->controller->setContentNegotiator($contentNegotiator);
-            $this->controller->setRequest($this->request);
-            $this->controller->readRequestBodyAs('foo');
-            $this->fail('Failed to throw exception');
-        } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCode::UnsupportedMediaType, $ex->response->getStatusCode());
-            $this->assertSame('Failed to negotiate request content with type foo', $ex->getMessage());
-        }
-    }
-
-    public function testReadingRequestBodyWithMediaTypeFormatterThatFailsToSerializeThrowsException(): void
-    {
-        try {
-            $expectedBody = new StringBody('foo');
-            $this->request->expects($this->once())
-                ->method('getBody')
-                ->willReturn($expectedBody);
-            $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-            $mediaTypeFormatter->expects($this->once())
-                ->method('readFromStream')
-                ->with($expectedBody->readAsStream(), 'foo')
                 ->willThrowException(new SerializationException());
-            $contentNegotiator = $this->createMock(IContentNegotiator::class);
-            $contentNegotiator->expects($this->once())
-                ->method('negotiateRequestContent')
-                ->with('foo', $this->request)
-                ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
-            $this->request->expects($this->once())
-                ->method('getBody')
-                ->willReturn(new StringBody('foo'));
-            $this->controller->setContentNegotiator($contentNegotiator);
+            $this->controller->setBodyDeserializer($bodyDeserializer);
             $this->controller->setRequest($this->request);
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
@@ -409,28 +368,22 @@ class ControllerTest extends TestCase
         }
     }
 
-    public function testReadingRequestBodyWithMediaTypeFormatterThatReturnsDeserializedBodyReturnsThatBody(): void
+    public function testReadingRequestBodyThrowsUnsupportedMediaTypeExceptionWhenContentNegotiationFails(): void
     {
-        $expectedBody = new StringBody('foo');
-        $this->request->expects($this->once())
-            ->method('getBody')
-            ->willReturn($expectedBody);
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->expects($this->once())
-            ->method('readFromStream')
-            ->with($expectedBody->readAsStream(), 'foo')
-            ->willReturn('bar');
-        $contentNegotiator = $this->createMock(IContentNegotiator::class);
-        $contentNegotiator->expects($this->once())
-            ->method('negotiateRequestContent')
-            ->with('foo', $this->request)
-            ->willReturn(new ContentNegotiationResult($mediaTypeFormatter, null, null, null));
-        $this->request->expects($this->once())
-            ->method('getBody')
-            ->willReturn(new StringBody('foo'));
-        $this->controller->setContentNegotiator($contentNegotiator);
-        $this->controller->setRequest($this->request);
-        $this->assertSame('bar', $this->controller->readRequestBodyAs('foo'));
+        try {
+            $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
+            $bodyDeserializer->expects($this->once())
+                ->method('readRequestBodyAs')
+                ->with('foo', $this->request)
+                ->willThrowException(new FailedContentNegotiationException());
+            $this->controller->setBodyDeserializer($bodyDeserializer);
+            $this->controller->setRequest($this->request);
+            $this->controller->readRequestBodyAs('foo');
+            $this->fail('Failed to throw exception');
+        } catch (HttpException $ex) {
+            $this->assertSame(HttpStatusCode::UnsupportedMediaType, $ex->response->getStatusCode());
+            $this->assertSame('Failed to negotiate request content with type foo', $ex->getMessage());
+        }
     }
 
     public function testUnauthorizedCreatesCorrectResponse(): void

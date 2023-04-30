@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Api\Binders;
 
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RouteActionInvoker;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Binders\ControllerBinder;
@@ -26,8 +26,8 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerBinderTest extends TestCase
 {
-    private IContainer&MockObject $container;
     private ControllerBinder $binder;
+    private IContainer&MockObject $container;
 
     protected function setUp(): void
     {
@@ -40,7 +40,7 @@ class ControllerBinderTest extends TestCase
                 [IValidator::class, $this->createMock(IValidator::class)],
                 [IErrorMessageInterpolator::class, $this->createMock(IErrorMessageInterpolator::class)],
                 [IContentNegotiator::class, $this->createMock(IContentNegotiator::class)],
-                [IBodyNegotiator::class, $this->createMock(IBodyNegotiator::class)],
+                [IBodyDeserializer::class, $this->createMock(IBodyDeserializer::class)],
                 [IResponseFactory::class, $this->createMock(IResponseFactory::class)]
             ]);
     }

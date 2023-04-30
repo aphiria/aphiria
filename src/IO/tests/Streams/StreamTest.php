@@ -111,6 +111,15 @@ class StreamTest extends TestCase
         $this->assertFalse($stream->isEof());
     }
 
+    public function testIsEofReturnsTrueForStreamsAtEof(): void
+    {
+        $handle = \fopen('php://temp', 'w+b');
+        $stream = new Stream($handle);
+        $stream->write('foo');
+        $stream->readToEnd();
+        $this->assertTrue($stream->isEof());
+    }
+
     public function testIsEofThrowsExceptionForClosedStream(): void
     {
         $this->expectException(RuntimeException::class);
@@ -119,15 +128,6 @@ class StreamTest extends TestCase
         $stream->write('foo');
         $stream->close();
         $stream->isEof();
-    }
-
-    public function testIsEofReturnsTrueForStreamsAtEof(): void
-    {
-        $handle = \fopen('php://temp', 'w+b');
-        $stream = new Stream($handle);
-        $stream->write('foo');
-        $stream->readToEnd();
-        $this->assertTrue($stream->isEof());
     }
 
     public function testIsReadableReturnsCorrectValueBasedOnItsMode(): void
@@ -190,6 +190,15 @@ class StreamTest extends TestCase
         $stream->read(1);
     }
 
+    public function testReadingFromUnreadableStreamThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $handle = \fopen(self::TEMP_FILE, 'ab');
+        $stream = new Stream($handle);
+        $stream->write('foo');
+        $stream->read(1);
+    }
+
     public function testReadingToEndFromClosedStreamThrowsException(): void
     {
         $this->expectException(RuntimeException::class);
@@ -198,15 +207,6 @@ class StreamTest extends TestCase
         $stream->write('foo');
         $stream->close();
         $stream->readToEnd();
-    }
-
-    public function testReadingFromUnreadableStreamThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $handle = \fopen(self::TEMP_FILE, 'ab');
-        $stream = new Stream($handle);
-        $stream->write('foo');
-        $stream->read(1);
     }
 
     public function testReadingToEndFromUnreadableStreamThrowsException(): void
@@ -249,14 +249,6 @@ class StreamTest extends TestCase
         $this->assertSame('o', $stream->readToEnd());
     }
 
-    public function testWritingToUnwritableStreamThrowsException(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $handle = \fopen('php://temp', 'rb');
-        $stream = new Stream($handle);
-        $stream->write('foo');
-    }
-
     public function testWritingToStreamWritesData(): void
     {
         $handle = \fopen('php://temp', 'w+b');
@@ -264,5 +256,13 @@ class StreamTest extends TestCase
         $stream->write('foo');
         $stream->rewind();
         $this->assertSame('foo', $stream->readToEnd());
+    }
+
+    public function testWritingToUnwritableStreamThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $handle = \fopen('php://temp', 'rb');
+        $stream = new Stream($handle);
+        $stream->write('foo');
     }
 }

@@ -47,6 +47,13 @@ class StringInputTokenizerTest extends TestCase
         ], $tokens);
     }
 
+    public function testTokenizingNonStringThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Input must be a string');
+        $this->tokenizer->tokenize(['foo']);
+    }
+
     public function testTokenizingOptionValueWithSpace(): void
     {
         $tokens = $this->tokenizer->tokenize("foo --name 'dave young'");
@@ -55,13 +62,6 @@ class StringInputTokenizerTest extends TestCase
             '--name',
             "'dave young'"
         ], $tokens);
-    }
-
-    public function testTokenizingNonStringThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Input must be a string');
-        $this->tokenizer->tokenize(['foo']);
     }
 
     public function testTokenizingSingleQuoteInsideDoubleQuotes(): void

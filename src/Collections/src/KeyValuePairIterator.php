@@ -44,14 +44,6 @@ class KeyValuePairIterator implements Iterator
 
     /**
      * @inheritdoc
-     */
-    public function next(): void
-    {
-        $this->currIndex++;
-    }
-
-    /**
-     * @inheritdoc
      * @return TKey
      */
     public function key(): mixed
@@ -62,9 +54,9 @@ class KeyValuePairIterator implements Iterator
     /**
      * @inheritdoc
      */
-    public function valid(): bool
+    public function next(): void
     {
-        return isset($this->kvps[$this->currIndex]);
+        $this->currIndex++;
     }
 
     /**
@@ -73,5 +65,13 @@ class KeyValuePairIterator implements Iterator
     public function rewind(): void
     {
         $this->currIndex = 0;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function valid(): bool
+    {
+        return isset($this->kvps[$this->currIndex]);
     }
 }

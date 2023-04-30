@@ -43,23 +43,6 @@ class EachConstraintTest extends TestCase
         $this->assertTrue($eachConstraint->passes(['foo']));
     }
 
-    public function testPassesOnNonIterableValueThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Value must be iterable');
-        $eachConstraint = new EachConstraint($this->createMock(IConstraint::class), 'foo');
-        $eachConstraint->passes('foo');
-    }
-
-    public function testPassesOnEmptyValueReturnsTrue(): void
-    {
-        $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->never())
-            ->method('passes');
-        $eachConstraint = new EachConstraint($constraint, 'foo');
-        $this->assertTrue($eachConstraint->passes([]));
-    }
-
     public function testPassesOnAllPassedConstraintsReturnsTrue(): void
     {
         $constraint1 = $this->createMock(IConstraint::class);
@@ -76,6 +59,15 @@ class EachConstraintTest extends TestCase
         $this->assertTrue($eachConstraint->passes(['foo']));
     }
 
+    public function testPassesOnEmptyValueReturnsTrue(): void
+    {
+        $constraint = $this->createMock(IConstraint::class);
+        $constraint->expects($this->never())
+            ->method('passes');
+        $eachConstraint = new EachConstraint($constraint, 'foo');
+        $this->assertTrue($eachConstraint->passes([]));
+    }
+
     public function testPassesOnFailedConstraintDoesNotCallSecondConstraint(): void
     {
         $constraint1 = $this->createMock(IConstraint::class);
@@ -88,6 +80,14 @@ class EachConstraintTest extends TestCase
             ->method('passes');
         $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
         $this->assertFalse($eachConstraint->passes(['foo']));
+    }
+
+    public function testPassesOnNonIterableValueThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Value must be iterable');
+        $eachConstraint = new EachConstraint($this->createMock(IConstraint::class), 'foo');
+        $eachConstraint->passes('foo');
     }
 
     public function testPassesOnPassedAndFailedConstraintsReturnsFalse(): void

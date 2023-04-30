@@ -13,7 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Authentication\IUserAccessor;
-use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\FailedContentNegotiationException;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Formatting\RequestParser;
 use Aphiria\Net\Http\Formatting\ResponseFormatter;
@@ -33,39 +34,28 @@ use LogicException;
  */
 class Controller
 {
+    /** @var IBodyDeserializer|null The body deserializer */
+    protected ?IBodyDeserializer $bodyDeserializer = null;
     /** @var IRequest|null The current request */
     protected ?IRequest $request = null;
     /** @var RequestParser|null The parser to use to get data from the current request */
     protected ?RequestParser $requestParser = null;
-    /** @var ResponseFormatter|null The formatter to use to write data to the response */
-    protected ?ResponseFormatter $responseFormatter = null;
-    /** @var IContentNegotiator|null The content negotiator */
-    protected ?IContentNegotiator $contentNegotiator = null;
     /** @var IResponseFactory|null The response factory */
     protected ?IResponseFactory $responseFactory = null;
+    /** @var ResponseFormatter|null The formatter to use to write data to the response */
+    protected ?ResponseFormatter $responseFormatter = null;
     /** @var IUserAccessor|null The user accessor */
     protected ?IUserAccessor $userAccessor = null;
 
     /**
-     * Sets the content negotiator
+     * Sets the body deserializer
      *
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IBodyDeserializer $bodyDeserializer The body deserializer
      * @internal
      */
-    public function setContentNegotiator(IContentNegotiator $contentNegotiator): void
+    public function setBodyDeserializer(IBodyDeserializer $bodyDeserializer): void
     {
-        $this->contentNegotiator = $contentNegotiator;
-    }
-
-    /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory
-     * @internal
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void
-    {
-        $this->responseFactory = $responseFactory;
+        $this->bodyDeserializer = $bodyDeserializer;
     }
 
     /**
@@ -88,6 +78,17 @@ class Controller
     public function setRequestParser(RequestParser $requestParser): void
     {
         $this->requestParser = $requestParser;
+    }
+
+    /**
+     * Sets the response factory
+     *
+     * @param IResponseFactory $responseFactory The response factory
+     * @internal
+     */
+    public function setResponseFactory(IResponseFactory $responseFactory): void
+    {
+        $this->responseFactory = $responseFactory;
     }
 
     /**
@@ -388,26 +389,13 @@ class Controller
             throw new LogicException('Request is not set');
         }
 
-        if (($body = $this->request->getBody()) === null) {
-            if (\substr($type, -2) === '[]') {
-                return [];
-            }
-
-            return null;
-        }
-
-        $contentNegotiationResult = $this->contentNegotiator->negotiateRequestContent($type, $this->request);
-        $mediaTypeFormatter = $contentNegotiationResult->formatter;
-
-        if ($mediaTypeFormatter === null) {
+        try {
+            return $this->bodyDeserializer->readRequestBodyAs($type, $this->request);
+        } catch (FailedContentNegotiationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnsupportedMediaType,
                 "Failed to negotiate request content with type $type"
             );
-        }
-
-        try {
-            return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnprocessableEntity,

@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 
 class HelpCommandHandlerTest extends TestCase
 {
-    private IOutput&MockObject $output;
-    private HelpCommandHandler $handler;
     private CommandRegistry $commands;
+    private HelpCommandHandler $handler;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {
@@ -68,58 +68,6 @@ class HelpCommandHandlerTest extends TestCase
         );
         $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options', 'The help text'));
-        $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
-    }
-
-    public function testHandlingWithArgumentIncludesItInArgumentDescriptionAndParsedCommand(): void
-    {
-        $this->assertCliWidthIsCalled();
-        $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
-        };
-        $this->commands->registerCommand(
-            new Command(
-                'foo',
-                [new Argument('arg1', ArgumentType::Required, 'Arg1 description')],
-                [],
-                'The description'
-            ),
-            $commandHandler::class
-        );
-        $this->output->method('writeln')
-            ->with(self::compileOutput('foo', 'foo arg1', 'The description', '  <info>arg1</info> - Arg1 description', '  No options'));
-        $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
-    }
-
-    public function testHandlingWithoutCommandNameWritesMessageAboutSpecifyingACommandName(): void
-    {
-        $this->output->expects($this->once())
-            ->method('writeln')
-            ->with("<comment>Pass in the name of the command you'd like help with</comment>");
-        $this->assertSame(StatusCode::Ok, $this->handler->handle(new Input('help', [], []), $this->output));
-    }
-
-    public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
-    {
-        $this->assertCliWidthIsCalled();
-        $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
-        };
-        $this->commands->registerCommand(
-            new Command(
-                'foo',
-                [],
-                [],
-                'The description'
-            ),
-            $commandHandler::class
-        );
-        $this->output->method('writeln')
-            ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
@@ -164,6 +112,50 @@ class HelpCommandHandlerTest extends TestCase
         );
         $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
+        $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
+    }
+
+    public function testHandlingWithArgumentIncludesItInArgumentDescriptionAndParsedCommand(): void
+    {
+        $this->assertCliWidthIsCalled();
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [new Argument('arg1', ArgumentType::Required, 'Arg1 description')],
+                [],
+                'The description'
+            ),
+            $commandHandler::class
+        );
+        $this->output->method('writeln')
+            ->with(self::compileOutput('foo', 'foo arg1', 'The description', '  <info>arg1</info> - Arg1 description', '  No options'));
+        $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
+    }
+
+    public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
+    {
+        $this->assertCliWidthIsCalled();
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [],
+                [],
+                'The description'
+            ),
+            $commandHandler::class
+        );
+        $this->output->method('writeln')
+            ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
@@ -231,6 +223,14 @@ class HelpCommandHandlerTest extends TestCase
         $this->output->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1|-o]', 'The description', '  No arguments', '  <info>--opt1|-o</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
+    }
+
+    public function testHandlingWithoutCommandNameWritesMessageAboutSpecifyingACommandName(): void
+    {
+        $this->output->expects($this->once())
+            ->method('writeln')
+            ->with("<comment>Pass in the name of the command you'd like help with</comment>");
+        $this->assertSame(StatusCode::Ok, $this->handler->handle(new Input('help', [], []), $this->output));
     }
 
     /**

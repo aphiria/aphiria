@@ -79,6 +79,20 @@ class RouteBuilderTest extends TestCase
         $this->routeBuilder->withManyMiddleware([$this]);
     }
 
+    public function testManyConstraintBindingIsSet(): void
+    {
+        $constraints = [$this->createMock(IRouteConstraint::class)];
+        $this->routeBuilder->withManyConstraints($constraints);
+        $controller = new class () {
+            public function bar(): void
+            {
+            }
+        };
+        $this->routeBuilder->mapsToMethod($controller::class, 'bar');
+        $route = $this->routeBuilder->build();
+        $this->assertContains($constraints[0], $route->constraints);
+    }
+
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsObjects(): void
     {
         $middleware1 = new class () {
@@ -101,20 +115,6 @@ class RouteBuilderTest extends TestCase
         $this->assertSame($middleware2::class, $route->middlewareBindings[1]->className);
         $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->parameters);
         $this->assertEquals(['young' => 'cool'], $route->middlewareBindings[1]->parameters);
-    }
-
-    public function testManyConstraintBindingIsSet(): void
-    {
-        $constraints = [$this->createMock(IRouteConstraint::class)];
-        $this->routeBuilder->withManyConstraints($constraints);
-        $controller = new class () {
-            public function bar(): void
-            {
-            }
-        };
-        $this->routeBuilder->mapsToMethod($controller::class, 'bar');
-        $route = $this->routeBuilder->build();
-        $this->assertContains($constraints[0], $route->constraints);
     }
 
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsStrings(): void

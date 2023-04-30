@@ -28,14 +28,14 @@ class RouteBuilder
 {
     /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
-    /** @var array<string, mixed> The mapping of custom route parameter names => values */
-    private array $parameters = [];
+    /** @var list<IRouteConstraint> The list of constraints */
+    private array $constraints = [];
     /** @var list<MiddlewareBinding> The list of middleware bindings on this route */
     private array $middlewareBindings = [];
     /** @var string|null The name of this route */
     private ?string $name = null;
-    /** @var list<IRouteConstraint> The list of constraints */
-    private array $constraints = [];
+    /** @var array<string, mixed> The mapping of custom route parameter names => values */
+    private array $parameters = [];
 
     /**
      * @param list<string> $httpMethods The list of HTTP methods the route matches on

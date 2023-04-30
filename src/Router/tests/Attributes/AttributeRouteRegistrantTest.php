@@ -96,6 +96,155 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->assertSame(DummyMiddleware::class, $routeArr[0]->middlewareBindings[0]->className);
     }
 
+    public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void
+    {
+        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class () extends Controller {
+            #[Get('')]
+            public function routeWithNoExtraConstraints(): void
+            {
+                // Empty
+            }
+
+            #[
+                Get(''),
+                /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
+                RouteConstraint(DummyConstraint::class, ['bar'])
+            ]
+            public function routeWithExtraConstraints(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(2, $routeArr);
+        // Note: The HTTP method constraint gets automatically added, too
+        $this->assertCount(2, $routeArr[0]->constraints);
+        $this->assertCount(3, $routeArr[1]->constraints);
+    }
+
+    public function testRegisteringRoutesWithRouteGroupThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void
+    {
+        $controller = new #[RouteGroup(isHttpsOnly: true)] class () extends Controller {
+            #[Get('', isHttpsOnly: true)]
+            public function routeThatIsAlreadyHttpsOnly(): void
+            {
+                // Empty
+            }
+
+            #[Get('')]
+            public function routeThatIsNotHttpsOnly(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(2, $routeArr);
+        $this->assertTrue($routeArr[0]->uriTemplate->isHttpsOnly);
+        $this->assertTrue($routeArr[1]->uriTemplate->isHttpsOnly);
+    }
+
+    public function testRegisteringRoutesWithRouteGroupWithEmptyPathPrependsNothingToRoutePaths(): void
+    {
+        $controller = new #[RouteGroup('')] class () extends Controller {
+            #[Get('foo')]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
+        $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
+    }
+
+    public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
+    {
+        $controller = new #[RouteGroup(host: 'example.com')] class () extends Controller {
+            #[Get('', 'api')]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
+        $this->assertSame('api.example.com', $route->uriTemplate->hostTemplate);
+    }
+
+    public function testRegisteringRoutesWithRouteGroupWithParametersAppliesParametersToChildRoutes(): void
+    {
+        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class () extends Controller {
+            #[Get('')]
+            public function routeWithNoParameters(): void
+            {
+                // Empty
+            }
+
+            #[Get('', parameters: ['baz' => 'blah'])]
+            public function routeWithParameters(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(2, $routeArr);
+        $this->assertEquals(['foo' => 'bar'], $routeArr[0]->parameters);
+        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routeArr[1]->parameters);
+    }
+
+    public function testRegisteringRoutesWithRouteGroupWithPathPrependsPathToRoutePaths(): void
+    {
+        $controller = new #[RouteGroup('foo')] class () extends Controller {
+            #[Get('bar')]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->getAll();
+        $this->assertCount(1, $routeArr);
+        $route = $routeArr[0];
+        $this->assertSame('/foo/bar', $route->uriTemplate->pathTemplate);
+    }
+
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
         $controller = new class () extends Controller {
@@ -257,154 +406,5 @@ class AttributeRouteRegistrantTest extends TestCase
         $this->assertEquals(['foo' => 'bar'], $route->middlewareBindings[0]->parameters);
         $this->assertSame(DummyMiddleware::class, $route->middlewareBindings[1]->className);
         $this->assertEquals(['baz' => 'blah'], $route->middlewareBindings[1]->parameters);
-    }
-
-    public function testRegisteringRoutesWithRouteGroupWithEmptyPathPrependsNothingToRoutePaths(): void
-    {
-        $controller = new #[RouteGroup('')] class () extends Controller {
-            #[Get('foo')]
-            public function route(): void
-            {
-                // Empty
-            }
-        };
-        $this->typeFinder->expects($this->once())
-            ->method('findAllClasses')
-            ->with([self::PATH])
-            ->willReturn([$controller::class]);
-        $routes = new RouteCollection();
-        $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
-        $this->assertCount(1, $routeArr);
-        $route = $routeArr[0];
-        $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
-    }
-
-    public function testRegisteringRoutesWithRouteGroupWithPathPrependsPathToRoutePaths(): void
-    {
-        $controller = new #[RouteGroup('foo')] class () extends Controller {
-            #[Get('bar')]
-            public function route(): void
-            {
-                // Empty
-            }
-        };
-        $this->typeFinder->expects($this->once())
-            ->method('findAllClasses')
-            ->with([self::PATH])
-            ->willReturn([$controller::class]);
-        $routes = new RouteCollection();
-        $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
-        $this->assertCount(1, $routeArr);
-        $route = $routeArr[0];
-        $this->assertSame('/foo/bar', $route->uriTemplate->pathTemplate);
-    }
-
-    public function testRegisteringRoutesWithRouteGroupWithHostAppendsHostToRouteHost(): void
-    {
-        $controller = new #[RouteGroup(host: 'example.com')] class () extends Controller {
-            #[Get('', 'api')]
-            public function route(): void
-            {
-                // Empty
-            }
-        };
-        $this->typeFinder->expects($this->once())
-            ->method('findAllClasses')
-            ->with([self::PATH])
-            ->willReturn([$controller::class]);
-        $routes = new RouteCollection();
-        $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
-        $this->assertCount(1, $routeArr);
-        $route = $routeArr[0];
-        $this->assertSame('api.example.com', $route->uriTemplate->hostTemplate);
-    }
-
-    public function testRegisteringRoutesWithRouteGroupThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void
-    {
-        $controller = new #[RouteGroup(isHttpsOnly: true)] class () extends Controller {
-            #[Get('', isHttpsOnly: true)]
-            public function routeThatIsAlreadyHttpsOnly(): void
-            {
-                // Empty
-            }
-
-            #[Get('')]
-            public function routeThatIsNotHttpsOnly(): void
-            {
-                // Empty
-            }
-        };
-        $this->typeFinder->expects($this->once())
-            ->method('findAllClasses')
-            ->with([self::PATH])
-            ->willReturn([$controller::class]);
-        $routes = new RouteCollection();
-        $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
-        $this->assertCount(2, $routeArr);
-        $this->assertTrue($routeArr[0]->uriTemplate->isHttpsOnly);
-        $this->assertTrue($routeArr[1]->uriTemplate->isHttpsOnly);
-    }
-
-    public function testRegisteringRoutesWithRouteGroupWithParametersAppliesParametersToChildRoutes(): void
-    {
-        $controller = new #[RouteGroup('', parameters: ['foo' => 'bar'])] class () extends Controller {
-            #[Get('')]
-            public function routeWithNoParameters(): void
-            {
-                // Empty
-            }
-
-            #[Get('', parameters: ['baz' => 'blah'])]
-            public function routeWithParameters(): void
-            {
-                // Empty
-            }
-        };
-        $this->typeFinder->expects($this->once())
-            ->method('findAllClasses')
-            ->with([self::PATH])
-            ->willReturn([$controller::class]);
-        $routes = new RouteCollection();
-        $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
-        $this->assertCount(2, $routeArr);
-        $this->assertEquals(['foo' => 'bar'], $routeArr[0]->parameters);
-        $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routeArr[1]->parameters);
-    }
-
-    public function testRegisteringRoutesWithRouteConstraintsAppliesConstraintsToChildRoutes(): void
-    {
-        $controller = new #[RouteConstraint(DummyConstraint::class, ['foo'])] class () extends Controller {
-            #[Get('')]
-            public function routeWithNoExtraConstraints(): void
-            {
-                // Empty
-            }
-
-            #[
-                Get(''),
-                /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
-                RouteConstraint(DummyConstraint::class, ['bar'])
-            ]
-            public function routeWithExtraConstraints(): void
-            {
-                // Empty
-            }
-        };
-        $this->typeFinder->expects($this->once())
-            ->method('findAllClasses')
-            ->with([self::PATH])
-            ->willReturn([$controller::class]);
-        $routes = new RouteCollection();
-        $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
-        $this->assertCount(2, $routeArr);
-        // Note: The HTTP method constraint gets automatically added, too
-        $this->assertCount(2, $routeArr[0]->constraints);
-        $this->assertCount(3, $routeArr[1]->constraints);
     }
 }

@@ -19,12 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class BoundInterfaceTest extends TestCase
 {
-    public function testGetInterfaceReturnsSetInterface(): void
-    {
-        $interface = new BoundInterface(self::class, new UniversalContext());
-        $this->assertSame(self::class, $interface->interface);
-    }
-
     public function testGetContextReturnsSetContext(): void
     {
         $target = new class () {
@@ -32,5 +26,10 @@ class BoundInterfaceTest extends TestCase
         $expectedContext = new TargetedContext($target::class);
         $interface = new BoundInterface(self::class, $expectedContext);
         $this->assertSame($expectedContext, $interface->context);
+    }
+    public function testGetInterfaceReturnsSetInterface(): void
+    {
+        $interface = new BoundInterface(self::class, new UniversalContext());
+        $this->assertSame(self::class, $interface->interface);
     }
 }

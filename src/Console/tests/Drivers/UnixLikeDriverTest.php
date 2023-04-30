@@ -26,9 +26,9 @@ use PHPUnit\Framework\TestCase;
 #[IgnoreMethodForCodeCoverage(Driver::class, 'supportsStty')]
 class UnixLikeDriverTest extends TestCase
 {
-    private UnixLikeDriver $driver;
     private string|bool $ansicon;
     private string|bool $columns;
+    private UnixLikeDriver $driver;
     private string|bool $lines;
 
     protected function setUp(): void
@@ -52,19 +52,6 @@ class UnixLikeDriverTest extends TestCase
         if ($this->lines !== false) {
             \putenv("LINES={$this->lines}");
         }
-    }
-
-    public function testReadHiddenInputThrowsExceptionIfSttyIsNotSupported(): void
-    {
-        $this->expectException(HiddenInputNotSupportedException::class);
-        $this->expectExceptionMessage('STTY must be supported to hide input');
-        $driver = new class () extends UnixLikeDriver {
-            protected function supportsStty(): bool
-            {
-                return false;
-            }
-        };
-        $driver->readHiddenInput($this->createMock(IOutput::class));
     }
 
     public function testCliDimensionsAlwaysHaveFallbackDimensions(): void
@@ -131,5 +118,18 @@ class UnixLikeDriverTest extends TestCase
         $this->assertSame(10, $this->driver->getCliWidth());
         \putenv('COLUMNS=0');
         $this->assertSame(10, $this->driver->getCliWidth());
+    }
+
+    public function testReadHiddenInputThrowsExceptionIfSttyIsNotSupported(): void
+    {
+        $this->expectException(HiddenInputNotSupportedException::class);
+        $this->expectExceptionMessage('STTY must be supported to hide input');
+        $driver = new class () extends UnixLikeDriver {
+            protected function supportsStty(): bool
+            {
+                return false;
+            }
+        };
+        $driver->readHiddenInput($this->createMock(IOutput::class));
     }
 }

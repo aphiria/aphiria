@@ -66,6 +66,26 @@ class ResponseFormatter
     }
 
     /**
+     * Sets up the response to redirect to a particular URI
+     *
+     * @param IResponse $response The response to format
+     * @param string|Uri $uri The URI to redirect to
+     * @param HttpStatusCode|int $statusCode The status code
+     * @throws RuntimeException Thrown if the location header's hash key could not be calculated
+     */
+    public function redirectToUri(IResponse $response, string|Uri $uri, HttpStatusCode|int $statusCode = HttpStatusCode::Found): void
+    {
+        if (\is_string($uri)) {
+            $uriString = $uri;
+        } else {
+            $uriString = (string)$uri;
+        }
+
+        $response->setStatusCode($statusCode);
+        $response->getHeaders()->add('Location', $uriString);
+    }
+
+    /**
      * Sets a cookie in the headers
      *
      * @param IResponse $response The response to set the cookie in
@@ -85,26 +105,6 @@ class ResponseFormatter
     public function setCookies(IResponse $response, array $cookies): void
     {
         $this->headerFormatter->setCookies($response->getHeaders(), $cookies);
-    }
-
-    /**
-     * Sets up the response to redirect to a particular URI
-     *
-     * @param IResponse $response The response to format
-     * @param string|Uri $uri The URI to redirect to
-     * @param HttpStatusCode|int $statusCode The status code
-     * @throws RuntimeException Thrown if the location header's hash key could not be calculated
-     */
-    public function redirectToUri(IResponse $response, string|Uri $uri, HttpStatusCode|int $statusCode = HttpStatusCode::Found): void
-    {
-        if (\is_string($uri)) {
-            $uriString = $uri;
-        } else {
-            $uriString = (string)$uri;
-        }
-
-        $response->setStatusCode($statusCode);
-        $response->getHeaders()->add('Location', $uriString);
     }
 
     /**

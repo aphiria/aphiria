@@ -19,10 +19,10 @@ use InvalidArgumentException;
  */
 readonly class AuthorizationPolicy
 {
-    /** @var list<object> The list of requirements */
-    public array $requirements;
     /** @var list<string>|null The list of authentication schemes the requirements are evaluated against, or null if using the default scheme */
     public ?array $authenticationSchemeNames;
+    /** @var list<object> The list of requirements */
+    public array $requirements;
 
     /**
      * @param string $name The name of the policy

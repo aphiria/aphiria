@@ -20,8 +20,8 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigurationBootstrapperTest extends TestCase
 {
-    private GlobalConfigurationBuilder $globalConfigurationBuilder;
     private ConfigurationBootstrapper $configurationBootstrapper;
+    private GlobalConfigurationBuilder $globalConfigurationBuilder;
 
     protected function setUp(): void
     {

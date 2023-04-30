@@ -80,20 +80,20 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 
+    public function testWithJsonFileForNonExistentPathThrowsException(): void
+    {
+        $this->expectException(InvalidConfigurationFileException::class);
+        $this->expectExceptionMessage('/doesnotexist does not exist');
+        $this->builder->withJsonFileConfigurationSource('/doesnotexist');
+        $this->builder->build();
+    }
+
     public function testWithJsonFileThatContainsInvalidJsonThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.json';
         $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage("Invalid JSON in $path");
         $this->builder->withJsonFileConfigurationSource($path);
-        $this->builder->build();
-    }
-
-    public function testWithJsonFileForNonExistentPathThrowsException(): void
-    {
-        $this->expectException(InvalidConfigurationFileException::class);
-        $this->expectExceptionMessage('/doesnotexist does not exist');
-        $this->builder->withJsonFileConfigurationSource('/doesnotexist');
         $this->builder->build();
     }
 
@@ -130,20 +130,20 @@ class GlobalConfigurationBuilderTest extends TestCase
         $this->assertSame('bar', GlobalConfiguration::getString('foo'));
     }
 
+    public function testWithPhpFileForNonExistentPathThrowsException(): void
+    {
+        $this->expectException(InvalidConfigurationFileException::class);
+        $this->expectExceptionMessage('/doesnotexist does not exist');
+        $this->builder->withPhpFileConfigurationSource('/doesnotexist');
+        $this->builder->build();
+    }
+
     public function testWithPhpFileThatContainsInvalidPhpThrowsException(): void
     {
         $path = __DIR__ . '/files/invalid-configuration.php';
         $this->expectException(InvalidConfigurationFileException::class);
         $this->expectExceptionMessage("Configuration in $path must be an array");
         $this->builder->withPhpFileConfigurationSource($path);
-        $this->builder->build();
-    }
-
-    public function testWithPhpFileForNonExistentPathThrowsException(): void
-    {
-        $this->expectException(InvalidConfigurationFileException::class);
-        $this->expectExceptionMessage('/doesnotexist does not exist');
-        $this->builder->withPhpFileConfigurationSource('/doesnotexist');
         $this->builder->build();
     }
 

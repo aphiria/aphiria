@@ -82,6 +82,19 @@ class CommandFormatterTest extends TestCase
         $this->assertSame('foo bar', $this->formatter->format($command));
     }
 
+    public function testFormattingCommandWithOneOptionalArgument(): void
+    {
+        $command = new Command(
+            'foo',
+            [
+                new Argument('bar', ArgumentType::Optional, 'Bar argument')
+            ],
+            [],
+            'Foo command'
+        );
+        $this->assertSame('foo [bar]', $this->formatter->format($command));
+    }
+
     public function testFormattingCommandWithOneOptionWithDefaultValue(): void
     {
         $command = new Command(
@@ -119,19 +132,6 @@ class CommandFormatterTest extends TestCase
             'Foo command'
         );
         $this->assertSame('foo [--bar]', $this->formatter->format($command));
-    }
-
-    public function testFormattingCommandWithOneOptionalArgument(): void
-    {
-        $command = new Command(
-            'foo',
-            [
-                new Argument('bar', ArgumentType::Optional, 'Bar argument')
-            ],
-            [],
-            'Foo command'
-        );
-        $this->assertSame('foo [bar]', $this->formatter->format($command));
     }
 
     public function testFormattingCommandWithOptionalArrayArgument(): void

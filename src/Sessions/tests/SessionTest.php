@@ -19,6 +19,34 @@ use PHPUnit\Framework\TestCase;
 
 class SessionTest extends TestCase
 {
+    public function testAgingFlashDataAndWritingToItAgainKeepsItInSession(): void
+    {
+        $session = new Session();
+        $session->flash('foo', 'bar');
+        $session->ageFlashData();
+        $session->flash('foo', 'baz');
+        $session->ageFlashData();
+        $this->assertTrue($session->containsKey('foo'));
+        $this->assertSame('baz', $session->get('foo'));
+        $this->assertEquals(
+            [
+                'foo' => 'baz',
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => ['foo']
+            ],
+            $session->getAll()
+        );
+        $session->ageFlashData();
+        $this->assertFalse($session->containsKey('foo'));
+        $this->assertNull($session->get('foo'));
+        $this->assertEquals(
+            [
+                Session::NEW_FLASH_KEYS_KEY => [],
+                Session::STALE_FLASH_KEYS_KEY => []
+            ],
+            $session->getAll()
+        );
+    }
     public function testAgingFlashDataEvictsOldData(): void
     {
         $session = new Session();
@@ -59,35 +87,6 @@ class SessionTest extends TestCase
         $session->ageFlashData();
         $this->assertNull($session->get('baz'));
         $this->assertFalse($session->containsKey('baz'));
-        $this->assertEquals(
-            [
-                Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => []
-            ],
-            $session->getAll()
-        );
-    }
-
-    public function testAgingFlashDataAndWritingToItAgainKeepsItInSession(): void
-    {
-        $session = new Session();
-        $session->flash('foo', 'bar');
-        $session->ageFlashData();
-        $session->flash('foo', 'baz');
-        $session->ageFlashData();
-        $this->assertTrue($session->containsKey('foo'));
-        $this->assertSame('baz', $session->get('foo'));
-        $this->assertEquals(
-            [
-                'foo' => 'baz',
-                Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => ['foo']
-            ],
-            $session->getAll()
-        );
-        $session->ageFlashData();
-        $this->assertFalse($session->containsKey('foo'));
-        $this->assertNull($session->get('foo'));
         $this->assertEquals(
             [
                 Session::NEW_FLASH_KEYS_KEY => [],
@@ -260,6 +259,14 @@ class SessionTest extends TestCase
         $this->assertNotEquals(2, $session->getId());
     }
 
+    public function testSettingKeyWritesItToSession(): void
+    {
+        $session = new Session();
+        $session->set('foo', 'bar');
+        $this->assertSame('bar', $session->get('foo'));
+        $this->assertEquals(['foo' => 'bar'], $session->getAll());
+    }
+
     public function testSettingManyWritesAllValuesToSession(): void
     {
         $session = new Session();
@@ -282,14 +289,6 @@ class SessionTest extends TestCase
         $session = new Session();
         $session['foo'] = 'bar';
         $this->assertSame('bar', $session['foo']);
-        $this->assertSame('bar', $session->get('foo'));
-        $this->assertEquals(['foo' => 'bar'], $session->getAll());
-    }
-
-    public function testSettingKeyWritesItToSession(): void
-    {
-        $session = new Session();
-        $session->set('foo', 'bar');
         $this->assertSame('bar', $session->get('foo'));
         $this->assertEquals(['foo' => 'bar'], $session->getAll());
     }

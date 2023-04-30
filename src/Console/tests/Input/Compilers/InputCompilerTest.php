@@ -28,8 +28,8 @@ use RuntimeException;
 
 class InputCompilerTest extends TestCase
 {
-    private InputCompiler $compiler;
     private CommandRegistry $commands;
+    private InputCompiler $compiler;
 
     protected function setUp(): void
     {
@@ -55,21 +55,6 @@ class InputCompilerTest extends TestCase
         );
         $input = $this->compiler->compile('foo bar\\baz');
         $this->assertSame('bar\\baz', $input->arguments['arg']);
-    }
-
-    public function testCompilingArgvInputIsCompiledCorrectly(): void
-    {
-        $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
-        };
-        $this->commands->registerCommand(
-            new Command('bar', [], [], ''),
-            $commandHandler::class
-        );
-        $input = $this->compiler->compile(['foo', 'bar']);
-        $this->assertSame('bar', $input->commandName);
     }
 
     public function testCompilingArgumentShortOptionLongOption(): void
@@ -98,7 +83,7 @@ class InputCompilerTest extends TestCase
         $this->assertSame('dave', $input->options['opt1']);
     }
 
-    public function testCompilingArrayArgumentWithOptionalArgumentAfterIsAcceptable(): void
+    public function testCompilingArgvInputIsCompiledCorrectly(): void
     {
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
@@ -106,21 +91,11 @@ class InputCompilerTest extends TestCase
             }
         };
         $this->commands->registerCommand(
-            new Command(
-                'foo',
-                [
-                    new Argument('arg1', ArgumentType::IsArray, ''),
-                    new Argument('arg2', ArgumentType::Optional, '', 'blah')
-                ],
-                [],
-                '',
-                ''
-            ),
+            new Command('bar', [], [], ''),
             $commandHandler::class
         );
-        $input = $this->compiler->compile('foo bar baz');
-        $this->assertEquals(['bar', 'baz'], $input->arguments['arg1']);
-        $this->assertSame('blah', $input->arguments['arg2']);
+        $input = $this->compiler->compile(['foo', 'bar']);
+        $this->assertSame('bar', $input->commandName);
     }
 
     public function testCompilingArrayArgumentCreatesListOfValues(): void
@@ -144,6 +119,31 @@ class InputCompilerTest extends TestCase
         );
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg']);
+    }
+
+    public function testCompilingArrayArgumentWithOptionalArgumentAfterIsAcceptable(): void
+    {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(
+            new Command(
+                'foo',
+                [
+                    new Argument('arg1', ArgumentType::IsArray, ''),
+                    new Argument('arg2', ArgumentType::Optional, '', 'blah')
+                ],
+                [],
+                '',
+                ''
+            ),
+            $commandHandler::class
+        );
+        $input = $this->compiler->compile('foo bar baz');
+        $this->assertEquals(['bar', 'baz'], $input->arguments['arg1']);
+        $this->assertSame('blah', $input->arguments['arg2']);
     }
 
     public function testCompilingArrayArgumentWithRequiredArgumentAfterThrowsException(): void
@@ -626,6 +626,18 @@ class InputCompilerTest extends TestCase
         $this->assertEquals([], $input->arguments);
     }
 
+    public function testCompilingStringInputIsCompiledCorrectly(): void
+    {
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
+        $input = $this->compiler->compile('foo');
+        $this->assertSame('foo', $input->commandName);
+    }
+
     public function testCompilingTwoConsecutiveLongOptions(): void
     {
         $commandHandler = new class () implements ICommandHandler {
@@ -650,18 +662,6 @@ class InputCompilerTest extends TestCase
         $this->assertEquals([], $input->arguments);
         $this->assertEquals(null, $input->options['opt1']);
         $this->assertEquals(null, $input->options['opt2']);
-    }
-
-    public function testCompilingStringInputIsCompiledCorrectly(): void
-    {
-        $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
-        };
-        $this->commands->registerCommand(new Command('foo'), $commandHandler::class);
-        $input = $this->compiler->compile('foo');
-        $this->assertSame('foo', $input->commandName);
     }
 
     public function testCompilingUnregisteredCommandThrowsException(): void

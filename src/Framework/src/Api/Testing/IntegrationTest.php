@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Api\Testing;
 
 use Aphiria\Application\IApplication;
 use Aphiria\ContentNegotiation\FailedContentNegotiationException;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
@@ -36,12 +36,14 @@ use RuntimeException;
  */
 trait IntegrationTest
 {
-    /** @var ResponseAssertions The response assertions */
-    protected ResponseAssertions $responseAssertions;
-    /** @var NegotiatedRequestBuilder The request builder */
-    protected NegotiatedRequestBuilder $requestBuilder;
     /** @var IRequest|null The most recently sent request from the helper methods in this class */
     protected ?IRequest $lastRequest = null;
+    /** @var NegotiatedRequestBuilder The request builder */
+    protected NegotiatedRequestBuilder $requestBuilder;
+    /** @var ResponseAssertions The response assertions */
+    protected ResponseAssertions $responseAssertions;
+    /** @var IBodyDeserializer What to use when wanting to deserialize request or response bodies in integration tests */
+    private IBodyDeserializer $bodyDeserializer;
     /**
      * The application client
      * This is private for DX so that we can control setting the last request and using that for any assertions that need it
@@ -49,8 +51,6 @@ trait IntegrationTest
      * @var IHttpClient
      */
     private IHttpClient $client;
-    /** @var IBodyNegotiator What to use when wanting to negotiate request or response bodies in integration tests */
-    private IBodyNegotiator $bodyNegotiator;
 
     /**
      * Gets the built application that will handle requests
@@ -73,7 +73,7 @@ trait IntegrationTest
         $this->client = $this->createClient($container);
         $this->requestBuilder = $this->createRequestBuilder($container);
         $this->responseAssertions = $this->createResponseAssertions($container);
-        $this->bodyNegotiator = $this->createBodyNegotiator($container);
+        $this->bodyDeserializer = $this->createBodyDeserializer($container);
     }
 
     /**
@@ -89,15 +89,15 @@ trait IntegrationTest
     }
 
     /**
-     * Creates a body negotiator to simplify negotiating request and response bodies
+     * Creates a body deserializer to simplify deserializing request and response bodies
      *
      * @param IContainer $container The DI container
-     * @return IBodyNegotiator The body negotiator
-     * @throws ResolutionException Thrown if the body negotiator could not be resolved
+     * @return IBodyDeserializer The body deserializer
+     * @throws ResolutionException Thrown if the body deserializer could not be resolved
      */
-    protected function createBodyNegotiator(IContainer $container): IBodyNegotiator
+    protected function createBodyDeserializer(IContainer $container): IBodyDeserializer
     {
-        return $container->resolve(IBodyNegotiator::class);
+        return $container->resolve(IBodyDeserializer::class);
     }
 
     /**
@@ -196,43 +196,6 @@ trait IntegrationTest
     }
 
     /**
-     * Negotiates the last request body and returns it as the input type
-     *
-     * @param string $type The type to deserialize the request body to
-     * @return float|object|int|bool|array|string|null The negotiated request body
-     * @throws RuntimeException Thrown if the last request was not set first
-     * @throws FailedContentNegotiationException Thrown if there was an error negotiating the request body
-     * @throws SerializationException Thrown if there was an error deserializing the request body
-     */
-    protected function negotiateRequestBody(string $type): float|object|int|bool|array|string|null
-    {
-        if ($this->lastRequest === null) {
-            throw new RuntimeException('A request must be sent before negotiating the request body');
-        }
-
-        return $this->bodyNegotiator->negotiateRequestBody($type, $this->lastRequest);
-    }
-
-    /**
-     * Negotiates the response body and returns it as the input type
-     *
-     * @param string $type The type to deserialize the request body to
-     * @param IResponse $response The response whose body we want to negotiate
-     * @return float|object|int|bool|array|string|null The negotiated request body
-     * @throws RuntimeException Thrown if the last request was not set first
-     * @throws FailedContentNegotiationException Thrown if there was an error negotiating the request body
-     * @throws SerializationException Thrown if there was an error deserializing the request body
-     */
-    protected function negotiateResponseBody(string $type, IResponse $response): float|object|int|bool|array|string|null
-    {
-        if ($this->lastRequest === null) {
-            throw new RuntimeException('A request must be sent before negotiating the response body');
-        }
-
-        return $this->bodyNegotiator->negotiateResponseBody($type, $this->lastRequest, $response);
-    }
-
-    /**
      * Sends an OPTIONS request
      *
      * @param string|Uri $uri The URI to request
@@ -318,6 +281,43 @@ trait IntegrationTest
             ->build();
 
         return $this->send($request);
+    }
+
+    /**
+     * Negotiates the last request body and returns it as the input type
+     *
+     * @param string $type The type to deserialize the request body to
+     * @return float|object|int|bool|array|string|null The negotiated request body
+     * @throws RuntimeException Thrown if the last request was not set first
+     * @throws FailedContentNegotiationException Thrown if there was an error negotiating the request body
+     * @throws SerializationException Thrown if there was an error deserializing the request body
+     */
+    protected function readRequestBodyAs(string $type): float|object|int|bool|array|string|null
+    {
+        if ($this->lastRequest === null) {
+            throw new RuntimeException('A request must be sent before negotiating the request body');
+        }
+
+        return $this->bodyDeserializer->readRequestBodyAs($type, $this->lastRequest);
+    }
+
+    /**
+     * Negotiates the response body and returns it as the input type
+     *
+     * @param string $type The type to deserialize the request body to
+     * @param IResponse $response The response whose body we want to negotiate
+     * @return float|object|int|bool|array|string|null The negotiated request body
+     * @throws RuntimeException Thrown if the last request was not set first
+     * @throws FailedContentNegotiationException Thrown if there was an error negotiating the request body
+     * @throws SerializationException Thrown if there was an error deserializing the request body
+     */
+    protected function readResponseBodyAs(string $type, IResponse $response): float|object|int|bool|array|string|null
+    {
+        if ($this->lastRequest === null) {
+            throw new RuntimeException('A request must be sent before negotiating the response body');
+        }
+
+        return $this->bodyDeserializer->readResponseBodyAs($type, $this->lastRequest, $response);
     }
 
     /**

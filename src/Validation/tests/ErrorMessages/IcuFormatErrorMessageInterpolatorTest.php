@@ -19,15 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class IcuFormatErrorMessageInterpolatorTest extends TestCase
 {
-    public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithNoPlaceholders(): void
-    {
-        $interpolator = new IcuFormatErrorMessageInterpolator();
-        $this->assertSame(
-            'foo bar',
-            $interpolator->interpolate('foo bar')
-        );
-    }
-
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithFallbackLocale(): void
     {
         $interpolator = new IcuFormatErrorMessageInterpolator(defaultLocale: 'de');
@@ -45,6 +36,14 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23], 'de')
         );
     }
+    public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithNoPlaceholders(): void
+    {
+        $interpolator = new IcuFormatErrorMessageInterpolator();
+        $this->assertSame(
+            'foo bar',
+            $interpolator->interpolate('foo bar')
+        );
+    }
 
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithPlaceholders(): void
     {
@@ -53,14 +52,6 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
             'Dave has $1.23',
             $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
         );
-    }
-
-    public function testInterpolatingInvalidIcuMessageThrowsException(): void
-    {
-        $this->expectException(ErrorMessageInterpolationException::class);
-        $this->expectExceptionMessage('Could not interpolate error message ID {');
-        $interpolator = new IcuFormatErrorMessageInterpolator();
-        $interpolator->interpolate('{', [], 'en-US');
     }
 
     public function testInterpolatingGetsErrorMessageTemplateFromRegistry(): void
@@ -72,6 +63,14 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
             ->willReturn('bar');
         $interpolator = new IcuFormatErrorMessageInterpolator($errorMessageTemplates);
         $this->assertSame('bar', $interpolator->interpolate('foo', [], 'en-US'));
+    }
+
+    public function testInterpolatingInvalidIcuMessageThrowsException(): void
+    {
+        $this->expectException(ErrorMessageInterpolationException::class);
+        $this->expectExceptionMessage('Could not interpolate error message ID {');
+        $interpolator = new IcuFormatErrorMessageInterpolator();
+        $interpolator->interpolate('{', [], 'en-US');
     }
 
     public function testSettingDefaultLocaleCausesInterpolationToUseItAsFallbackLocale(): void

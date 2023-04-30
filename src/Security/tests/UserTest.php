@@ -21,6 +21,16 @@ use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
+    public function testAddingIdentityAddsIt(): void
+    {
+        $user = new User([]);
+        $identity1 = new Identity([], 'http://example.com');
+        $user->addIdentity($identity1);
+        $this->assertSame([$identity1], $user->getIdentities());
+        $identity2 = new Identity([], 'http://example.com');
+        $user->addIdentity($identity2);
+        $this->assertSame([$identity1, $identity2], $user->getIdentities());
+    }
     public function testAddingIdentityCanResetPrimaryIdentity(): void
     {
         // This will return the last one
@@ -39,15 +49,16 @@ class UserTest extends TestCase
         $this->assertSame($identity2, $user->getPrimaryIdentity());
     }
 
-    public function testAddingIdentityAddsIt(): void
+    public function testAddingManyIdentitiesAddsThem(): void
     {
         $user = new User([]);
         $identity1 = new Identity([], 'http://example.com');
-        $user->addIdentity($identity1);
-        $this->assertSame([$identity1], $user->getIdentities());
         $identity2 = new Identity([], 'http://example.com');
-        $user->addIdentity($identity2);
+        $user->addManyIdentities([$identity1, $identity2]);
         $this->assertSame([$identity1, $identity2], $user->getIdentities());
+        $identity3 = new Identity([], 'http://example.com');
+        $user->addManyIdentities([$identity3]);
+        $this->assertSame([$identity1, $identity2, $identity3], $user->getIdentities());
     }
 
     public function testAddingManyIdentitiesCanResetPrimaryIdentity(): void
@@ -64,18 +75,6 @@ class UserTest extends TestCase
         $identity2 = new Identity([], 'http://example.com');
         $user->addManyIdentities([$identity1, $identity2]);
         $this->assertSame($identity2, $user->getPrimaryIdentity());
-    }
-
-    public function testAddingManyIdentitiesAddsThem(): void
-    {
-        $user = new User([]);
-        $identity1 = new Identity([], 'http://example.com');
-        $identity2 = new Identity([], 'http://example.com');
-        $user->addManyIdentities([$identity1, $identity2]);
-        $this->assertSame([$identity1, $identity2], $user->getIdentities());
-        $identity3 = new Identity([], 'http://example.com');
-        $user->addManyIdentities([$identity3]);
-        $this->assertSame([$identity1, $identity2, $identity3], $user->getIdentities());
     }
 
     public function testGettingClaimsWithFilterOnlyReturnsClaimsOfThatType(): void

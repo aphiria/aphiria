@@ -17,10 +17,10 @@ namespace Aphiria\Sessions\Ids;
  */
 interface IIdGenerator
 {
-    /** The minimum length Id that is cryptographically secure */
-    public const MIN_LENGTH = 16;
     /** The maximum length Id that PHP allows */
     public const MAX_LENGTH = 128;
+    /** The minimum length Id that is cryptographically secure */
+    public const MIN_LENGTH = 16;
 
     /**
      * Generates an Id

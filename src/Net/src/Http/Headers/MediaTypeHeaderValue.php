@@ -21,10 +21,10 @@ use InvalidArgumentException;
  */
 class MediaTypeHeaderValue
 {
+    /** @var string|null The charset if one was set, otherwise null */
+    public readonly ?string $charset;
     /** @var IImmutableDictionary<string, string|null> The dictionary of parameter names to values */
     public readonly IImmutableDictionary $parameters;
-    /** @var string The type, eg "text" in "text/html" */
-    public readonly string $type;
     /** @var string The sub-type, eg "html" in "text/html" */
     public readonly string $subType;
     /**
@@ -33,8 +33,8 @@ class MediaTypeHeaderValue
      * @var string|null
      */
     public readonly ?string $suffix;
-    /** @var string|null The charset if one was set, otherwise null */
-    public readonly ?string $charset;
+    /** @var string The type, eg "text" in "text/html" */
+    public readonly string $type;
 
     /**
      * @param string $mediaType The media type

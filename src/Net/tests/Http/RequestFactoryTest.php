@@ -136,6 +136,17 @@ class RequestFactoryTest extends TestCase
         $this->assertSame(8080, $request->getUri()->port);
     }
 
+    public function testClientProtoUsedToDeterminePortWithTrustedProxy(): void
+    {
+        $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
+        $request = $factory->createRequestFromSuperglobals([
+            'REMOTE_ADDR' => '192.168.1.1',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'HTTP_HOST' => 'foo.com'
+        ]);
+        $this->assertSame(443, $request->getUri()->port);
+    }
+
     /**
      * @param string $remoteAddress The remote address
      * @param string $forwardedProto The forwarded proto
@@ -156,17 +167,6 @@ class RequestFactoryTest extends TestCase
             'HTTP_HOST' => $host,
         ]);
         $this->assertEquals($expectedScheme, $request->getUri()->scheme, $message);
-    }
-
-    public function testClientProtoUsedToDeterminePortWithTrustedProxy(): void
-    {
-        $factory = new RequestFactory(['192.168.1.1'], ['HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO']);
-        $request = $factory->createRequestFromSuperglobals([
-            'REMOTE_ADDR' => '192.168.1.1',
-            'HTTP_X_FORWARDED_PROTO' => 'https',
-            'HTTP_HOST' => 'foo.com'
-        ]);
-        $this->assertSame(443, $request->getUri()->port);
     }
 
     public function testCommaInHeaderThatDoesNotPermitMultipleValuesDoesNotSplitHeaderValue(): void

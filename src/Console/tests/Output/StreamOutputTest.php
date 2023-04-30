@@ -20,10 +20,10 @@ use RuntimeException;
 
 class StreamOutputTest extends TestCase
 {
-    private StreamOutput $output;
+    private OutputCompiler $compiler;
     /** @var resource|bool */
     private mixed $inputStream;
-    private OutputCompiler $compiler;
+    private StreamOutput $output;
 
     protected function setUp(): void
     {
@@ -66,20 +66,6 @@ class StreamOutputTest extends TestCase
         $this->output->readLine();
     }
 
-    public function testWriteOnArray(): void
-    {
-        $this->output->write(['foo', 'bar']);
-        \rewind($this->output->outputStream);
-        $this->assertSame('foobar', \stream_get_contents($this->output->outputStream));
-    }
-
-    public function testWriteOnString(): void
-    {
-        $this->output->write('foo');
-        \rewind($this->output->outputStream);
-        $this->assertSame('foo', \stream_get_contents($this->output->outputStream));
-    }
-
     public function testWritelnOnArray(): void
     {
         $this->output->writeln(['foo', 'bar']);
@@ -92,5 +78,19 @@ class StreamOutputTest extends TestCase
         $this->output->writeln('foo');
         \rewind($this->output->outputStream);
         $this->assertSame('foo' . PHP_EOL, \stream_get_contents($this->output->outputStream));
+    }
+
+    public function testWriteOnArray(): void
+    {
+        $this->output->write(['foo', 'bar']);
+        \rewind($this->output->outputStream);
+        $this->assertSame('foobar', \stream_get_contents($this->output->outputStream));
+    }
+
+    public function testWriteOnString(): void
+    {
+        $this->output->write('foo');
+        \rewind($this->output->outputStream);
+        $this->assertSame('foo', \stream_get_contents($this->output->outputStream));
     }
 }

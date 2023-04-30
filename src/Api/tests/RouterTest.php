@@ -41,11 +41,11 @@ use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
-    private Router $router;
-    private IRouteMatcher&MockObject $routeMatcher;
-    private IServiceResolver&MockObject $serviceResolver;
     private IContentNegotiator&MockObject $contentNegotiator;
     private IRouteActionInvoker&MockObject $routeActionInvoker;
+    private IRouteMatcher&MockObject $routeMatcher;
+    private Router $router;
+    private IServiceResolver&MockObject $serviceResolver;
     private IUserAccessor&MockObject $userAccessor;
 
     protected function setUp(): void

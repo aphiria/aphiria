@@ -18,8 +18,8 @@ use PHPUnit\Framework\TestCase;
 
 class RequestHeaderParserTest extends TestCase
 {
-    private RequestHeaderParser $parser;
     private Headers $headers;
+    private RequestHeaderParser $parser;
 
     protected function setUp(): void
     {
@@ -144,17 +144,17 @@ class RequestHeaderParserTest extends TestCase
         $this->assertNull($headerValue->charset);
     }
 
+    public function testParsingCookiesAndNotHavingCookieHeaderReturnsEmptyDictionary(): void
+    {
+        $this->assertSame(0, $this->parser->parseCookies($this->headers)->count());
+    }
+
     public function testParsingCookiesReturnsCorrectValuesWithMultipleCookieValues(): void
     {
         $this->headers->add('Cookie', 'foo=bar; baz=blah');
         $cookies = $this->parser->parseCookies($this->headers);
         $this->assertSame('bar', $cookies->get('foo'));
         $this->assertSame('blah', $cookies->get('baz'));
-    }
-
-    public function testParsingCookiesAndNotHavingCookieHeaderReturnsEmptyDictionary(): void
-    {
-        $this->assertSame(0, $this->parser->parseCookies($this->headers)->count());
     }
 
     public function testParsingNonExistentAcceptCharsetHeaderReturnsEmptyArray(): void

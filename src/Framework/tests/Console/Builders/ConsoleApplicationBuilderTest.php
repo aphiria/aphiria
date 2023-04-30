@@ -30,8 +30,8 @@ use RuntimeException;
 
 class ConsoleApplicationBuilderTest extends TestCase
 {
-    private Container $container;
     private ConsoleApplicationBuilder $appBuilder;
+    private Container $container;
     private Input $input;
 
     protected function setUp(): void
@@ -43,13 +43,6 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->container->bindInstance(IServiceResolver::class, $this->container);
         $this->container->bindInstance(Input::class, $this->input);
         $this->container->bindInstance(IOutput::class, $this->createMock(IOutput::class));
-    }
-
-    public function testBuildResolvesConsoleApplicationFromServiceResolver(): void
-    {
-        $app = new ConsoleApplication($this->createMock(ICommandHandler::class), new Input('foo'));
-        $this->container->bindInstance(ConsoleApplication::class, $app);
-        $this->assertSame($app, $this->appBuilder->build());
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void
@@ -88,6 +81,13 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->container->bindInstance(ConsoleApplication::class, $app);
         $this->appBuilder->build();
         $this->assertEquals([$module::class, $component::class], $builtParts);
+    }
+
+    public function testBuildResolvesConsoleApplicationFromServiceResolver(): void
+    {
+        $app = new ConsoleApplication($this->createMock(ICommandHandler::class), new Input('foo'));
+        $this->container->bindInstance(ConsoleApplication::class, $app);
+        $this->assertSame($app, $this->appBuilder->build());
     }
 
     public function testBuildThatThrowsResolutionExceptionIsRethrown(): void

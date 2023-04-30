@@ -19,11 +19,11 @@ use PHPUnit\Framework\TestCase;
 
 class RouteGroupOptionsTest extends TestCase
 {
-    private RouteGroupOptions $routeGroupOptions;
     /** @var list<IRouteConstraint> The list of constraints */
     private array $constraints;
     /** @var list<MiddlewareBinding> The list of middleware bindings in the options */
     private array $middlewareBindings = [];
+    private RouteGroupOptions $routeGroupOptions;
 
     protected function setUp(): void
     {

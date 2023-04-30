@@ -35,9 +35,9 @@ use PHPUnit\Framework\TestCase;
 
 class AuthenticatorTest extends TestCase
 {
+    private IAuthenticationSchemeHandlerResolver&MockObject $authenticationHandlerResolver;
     private Authenticator $authenticator;
     private AuthenticationSchemeRegistry $schemes;
-    private IAuthenticationSchemeHandlerResolver&MockObject $authenticationHandlerResolver;
     private IUserAccessor&MockObject $userAccessor;
 
     protected function setUp(): void

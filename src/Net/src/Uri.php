@@ -19,22 +19,22 @@ use InvalidArgumentException;
  */
 readonly class Uri
 {
+    /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
+    public ?string $fragment;
+    /** @var string|null The URI host if set, otherwise null */
+    public ?string $host;
+    /** @var string|null The URI password if set, otherwise null */
+    public ?string $password;
+    /** @var string|null The URI path if set, otherwise null */
+    public ?string $path;
+    /** @var int|null The URI port if set, otherwise null */
+    public ?int $port;
+    /** @var string|null The URI query string (excludes '?') if set, otherwise null */
+    public ?string $queryString;
     /** @var string|null The URI scheme if set, otherwise null */
     public ?string $scheme;
     /** @var string|null The URI user if set, otherwise null */
     public ?string $user;
-    /** @var string|null The URI password if set, otherwise null */
-    public ?string $password;
-    /** @var string|null The URI host if set, otherwise null */
-    public ?string $host;
-    /** @var int|null The URI port if set, otherwise null */
-    public ?int $port;
-    /** @var string|null The URI path if set, otherwise null */
-    public ?string $path;
-    /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    public ?string $queryString;
-    /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    public ?string $fragment;
 
     /**
      * @param string $uri The raw URI

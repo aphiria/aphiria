@@ -18,19 +18,19 @@ namespace Aphiria\Console\Output\Compilers\Elements;
 final class Style
 {
     /**
-     * The list of possible foreground colors
-     *
-     * @link http://en.wikipedia.org/wiki/ANSI_escape_code
-     * @var array<string, array{0: int, 1: int}>
-     */
-    private array $supportedForegroundColors;
-    /**
      * The list of possible background colors
      *
      * @link http://en.wikipedia.org/wiki/ANSI_escape_code
      * @var array<string, array{0: int, 1: int}>
      */
     private array $supportedBackgroundColors;
+    /**
+     * The list of possible foreground colors
+     *
+     * @link http://en.wikipedia.org/wiki/ANSI_escape_code
+     * @var array<string, array{0: int, 1: int}>
+     */
+    private array $supportedForegroundColors;
     /**
      * The list of possible text styles
      *

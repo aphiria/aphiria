@@ -13,9 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Api\Controllers;
 
 use Aphiria\Api\Validation\IRequestBodyValidator;
-use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\HttpStatusCode;
@@ -35,10 +35,10 @@ class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @const The name of the property to store the parsed body in */
     private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
-    /** @var IResponseFactory The response factory */
-    private readonly IResponseFactory $responseFactory;
     /** @var IControllerParameterResolver The controller parameter resolver to use */
     private readonly IControllerParameterResolver $controllerParameterResolver;
+    /** @var IResponseFactory The response factory */
+    private readonly IResponseFactory $responseFactory;
 
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator
@@ -54,7 +54,7 @@ class RouteActionInvoker implements IRouteActionInvoker
     ) {
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver
-            ?? new ControllerParameterResolver(new BodyNegotiator($contentNegotiator));
+            ?? new ControllerParameterResolver(new NegotiatedBodyDeserializer($contentNegotiator));
     }
 
     /**

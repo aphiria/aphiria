@@ -28,11 +28,11 @@ use PHPUnit\Framework\TestCase;
 
 class RequestBodyValidatorTest extends TestCase
 {
-    private IRequest&MockObject $request;
-    private IValidator|MockInterface $validator;
     private IErrorMessageInterpolator&MockObject $errorMessageInterpolator;
     private ILanguageMatcher&MockObject $languageMatcher;
+    private IRequest&MockObject $request;
     private RequestBodyValidator $requestBodyValidator;
+    private IValidator|MockInterface $validator;
 
     protected function setUp(): void
     {
@@ -112,19 +112,9 @@ class RequestBodyValidatorTest extends TestCase
         }
     }
 
-    public function testValidatingSetsLocaleOnErrorMessageInterpolatorOnlyOnce(): void
+    public function testValidatingScalarValueDoesNotThrowException(): void
     {
-        $this->validator->shouldReceive('validateObject');
-        $this->languageMatcher->expects($this->once())
-            ->method('getBestLanguageMatch')
-            ->with($this->request)
-            ->willReturn('en-US');
-        $this->errorMessageInterpolator->expects($this->once())
-            ->method('setDefaultLocale')
-            ->with('en-US');
-        // Double-validating this body should be sufficient to test this
-        $this->requestBodyValidator->validate($this->request, $this);
-        $this->requestBodyValidator->validate($this->request, $this);
+        $this->requestBodyValidator->validate($this->request, 1);
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -144,9 +134,19 @@ class RequestBodyValidatorTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testValidatingScalarValueDoesNotThrowException(): void
+    public function testValidatingSetsLocaleOnErrorMessageInterpolatorOnlyOnce(): void
     {
-        $this->requestBodyValidator->validate($this->request, 1);
+        $this->validator->shouldReceive('validateObject');
+        $this->languageMatcher->expects($this->once())
+            ->method('getBestLanguageMatch')
+            ->with($this->request)
+            ->willReturn('en-US');
+        $this->errorMessageInterpolator->expects($this->once())
+            ->method('setDefaultLocale')
+            ->with('en-US');
+        // Double-validating this body should be sufficient to test this
+        $this->requestBodyValidator->validate($this->request, $this);
+        $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion
         $this->assertTrue(true);
     }

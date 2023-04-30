@@ -17,10 +17,10 @@ namespace Aphiria\Console\Input;
  */
 enum ArgumentType: int
 {
-    /** The argument is required */
-    case Required = 1;
-    /** The argument is optional */
-    case Optional = 2;
     /** The argument is an array */
     case IsArray = 4;
+    /** The argument is optional */
+    case Optional = 2;
+    /** The argument is required */
+    case Required = 1;
 }

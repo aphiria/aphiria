@@ -17,10 +17,10 @@ namespace Aphiria\Validation\Constraints;
  */
 final class ObjectConstraints
 {
-    /** @var array<string, list<IConstraint>> The mapping of property names to constraints */
-    private array $propertyConstraints = [];
     /** @var array<string, list<IConstraint>> The mapping of method names to constraints */
     private array $methodConstraints = [];
+    /** @var array<string, list<IConstraint>> The mapping of property names to constraints */
+    private array $propertyConstraints = [];
 
     /**
      * @param class-string $className The name of the class whose constraints are represented here

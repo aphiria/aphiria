@@ -177,20 +177,6 @@ class CommandRegistryTest extends TestCase
         $this->assertNull($commandHandlerClassName);
     }
 
-    public function testTryGettingHandlerClassNameUsingCommandUsesTheCommandNameToLookItUp(): void
-    {
-        $command = new Command('foo');
-        $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
-        };
-        $this->commands->registerCommand($command, $commandHandler::class);
-        $actualCommandHandlerClassName = null;
-        $this->assertTrue($this->commands->tryGetHandlerClassName($command, $actualCommandHandlerClassName));
-        $this->assertSame($commandHandler::class, $actualCommandHandlerClassName);
-    }
-
     public function testTryGettingHandlerClassNameReturnsTrueIfCommandWasFound(): void
     {
         $expectedCommand = new Command('foo', [], [], '');
@@ -203,5 +189,19 @@ class CommandRegistryTest extends TestCase
         $actualCommandHandler = null;
         $this->assertTrue($this->commands->tryGetHandlerClassName('foo', $actualCommandHandler));
         $this->assertSame($commandHandler::class, $actualCommandHandler);
+    }
+
+    public function testTryGettingHandlerClassNameUsingCommandUsesTheCommandNameToLookItUp(): void
+    {
+        $command = new Command('foo');
+        $commandHandler = new class () implements ICommandHandler {
+            public function handle(Input $input, IOutput $output): void
+            {
+            }
+        };
+        $this->commands->registerCommand($command, $commandHandler::class);
+        $actualCommandHandlerClassName = null;
+        $this->assertTrue($this->commands->tryGetHandlerClassName($command, $actualCommandHandlerClassName));
+        $this->assertSame($commandHandler::class, $actualCommandHandlerClassName);
     }
 }

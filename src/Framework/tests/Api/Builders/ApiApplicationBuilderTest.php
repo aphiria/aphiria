@@ -27,8 +27,8 @@ use RuntimeException;
 
 class ApiApplicationBuilderTest extends TestCase
 {
-    private Container $container;
     private SynchronousApiApplicationBuilder $appBuilder;
+    private Container $container;
 
     protected function setUp(): void
     {

@@ -17,12 +17,12 @@ namespace Aphiria\Console;
  */
 enum StatusCode: int
 {
-    /** Everything executed successfully */
-    case Ok = 0;
-    /** There was a warning */
-    case Warning = 1;
     /** There was a non-fatal error */
     case Error = 2;
     /** The application crashed */
     case Fatal = 3;
+    /** Everything executed successfully */
+    case Ok = 0;
+    /** There was a warning */
+    case Warning = 1;
 }

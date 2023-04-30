@@ -54,13 +54,6 @@ class NegotiatedRequestBuilderTest extends TestCase
         $this->assertEquals(['*/*'], $request->getHeaders()->get('Accept'));
     }
 
-    public function testWithBodyWithInvalidBodyTypeThrowsException(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Body must either implement ' . IBody::class . ' or be an array, object, or scalar');
-        $this->requestBuilder->withBody(\fopen('php://temp', 'r+b'));
-    }
-
     public function testWithBodyWithBodyInstanceSetsBodyToThatInstance(): void
     {
         $expectedBody = $this->createMock(IBody::class);
@@ -69,6 +62,13 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withBody($expectedBody)
             ->build();
         $this->assertSame($expectedBody, $request->getBody());
+    }
+
+    public function testWithBodyWithInvalidBodyTypeThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Body must either implement ' . IBody::class . ' or be an array, object, or scalar');
+        $this->requestBuilder->withBody(\fopen('php://temp', 'r+b'));
     }
 
     public function testWithBodyWithNonHttpBodyThatCannotBeNegotiatedThrows(): void

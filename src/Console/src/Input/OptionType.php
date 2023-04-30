@@ -17,12 +17,12 @@ namespace Aphiria\Console\Input;
  */
 enum OptionType: int
 {
-    /** The option is required */
-    case RequiredValue = 1;
-    /** The option is optional */
-    case OptionalValue = 2;
-    /** The option is not allowed */
-    case NoValue = 4;
     /** The option is an array */
     case IsArray = 8;
+    /** The option is not allowed */
+    case NoValue = 4;
+    /** The option is optional */
+    case OptionalValue = 2;
+    /** The option is required */
+    case RequiredValue = 1;
 }

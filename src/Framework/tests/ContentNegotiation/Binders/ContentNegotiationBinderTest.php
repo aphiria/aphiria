@@ -16,9 +16,8 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\ContentNegotiation\AcceptCharsetEncodingMatcher;
 use Aphiria\ContentNegotiation\AcceptLanguageMatcher;
-use Aphiria\ContentNegotiation\BodyNegotiator;
 use Aphiria\ContentNegotiation\ContentNegotiator;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\IEncodingMatcher;
 use Aphiria\ContentNegotiation\ILanguageMatcher;
@@ -26,6 +25,7 @@ use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\ContentNegotiation\Binders\ContentNegotiationBinder;
@@ -37,8 +37,8 @@ use PHPUnit\Framework\TestCase;
 
 class ContentNegotiationBinderTest extends TestCase
 {
-    private IContainer&MockInterface $container;
     private ContentNegotiationBinder $binder;
+    private IContainer&MockInterface $container;
 
     protected function setUp(): void
     {
@@ -59,7 +59,7 @@ class ContentNegotiationBinderTest extends TestCase
             [IEncodingMatcher::class, AcceptCharsetEncodingMatcher::class],
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
-            [IBodyNegotiator::class, BodyNegotiator::class],
+            [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
             [IResponseFactory::class, NegotiatedResponseFactory::class]
         ]);
         $this->setUpContainerMockResolve();
@@ -76,7 +76,7 @@ class ContentNegotiationBinderTest extends TestCase
             [IEncodingMatcher::class, AcceptCharsetEncodingMatcher::class],
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
-            [IBodyNegotiator::class, BodyNegotiator::class],
+            [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
             [IResponseFactory::class, NegotiatedResponseFactory::class]
         ]);
         $this->setUpContainerMockResolve();
@@ -93,7 +93,7 @@ class ContentNegotiationBinderTest extends TestCase
             [IEncodingMatcher::class, AcceptCharsetEncodingMatcher::class],
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
-            [IBodyNegotiator::class, BodyNegotiator::class],
+            [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
             [IResponseFactory::class, NegotiatedResponseFactory::class]
         ]);
         $this->setUpContainerMockResolve();
@@ -156,7 +156,7 @@ class ContentNegotiationBinderTest extends TestCase
             [IEncodingMatcher::class, $encodingMatcher::class],
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
-            [IBodyNegotiator::class, BodyNegotiator::class],
+            [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
             [IResponseFactory::class, NegotiatedResponseFactory::class]
         ]);
         $this->setUpContainerMockResolve([$encodingMatcher::class, $encodingMatcher]);
@@ -176,7 +176,7 @@ class ContentNegotiationBinderTest extends TestCase
             [IEncodingMatcher::class, AcceptCharsetEncodingMatcher::class],
             [ILanguageMatcher::class, $languageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
-            [IBodyNegotiator::class, BodyNegotiator::class],
+            [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
             [IResponseFactory::class, NegotiatedResponseFactory::class]
         ]);
         $this->setUpContainerMockResolve([$languageMatcher::class, $languageMatcher]);

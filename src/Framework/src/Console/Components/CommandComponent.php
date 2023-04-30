@@ -27,10 +27,10 @@ use RuntimeException;
  */
 class CommandComponent implements IComponent
 {
-    /** @var list<Closure(CommandRegistry): void> The list of callbacks that can register commands */
-    private array $callbacks = [];
     /** @var bool Whether or not attributes are enabled */
     private bool $attributesEnabled = false;
+    /** @var list<Closure(CommandRegistry): void> The list of callbacks that can register commands */
+    private array $callbacks = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver

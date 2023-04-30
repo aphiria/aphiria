@@ -32,10 +32,10 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
-    /** @var IRequest|null The current request, if one is set, otherwise null */
-    protected ?IRequest $request = null;
     /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
+    /** @var IRequest|null The current request, if one is set, otherwise null */
+    protected ?IRequest $request = null;
 
     /**
      * @param IResponseFactory|null $responseFactory The optional response factory

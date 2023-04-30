@@ -22,8 +22,8 @@ use PHPUnit\Framework\TestCase;
 
 class ProgressBarTest extends TestCase
 {
-    private ProgressBar $progressBar;
     private IProgressBarObserver&MockObject $formatter;
+    private ProgressBar $progressBar;
 
     protected function setUp(): void
     {

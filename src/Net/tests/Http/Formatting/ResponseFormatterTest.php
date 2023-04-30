@@ -28,8 +28,8 @@ use PHPUnit\Framework\TestCase;
 class ResponseFormatterTest extends TestCase
 {
     private ResponseFormatter $formatter;
-    private IResponse&MockObject $response;
     private Headers $headers;
+    private IResponse&MockObject $response;
 
     protected function setUp(): void
     {
@@ -73,21 +73,21 @@ class ResponseFormatterTest extends TestCase
         $this->formatter->redirectToUri($this->response, 'http://foo.com', $expectedStatusCode);
     }
 
-    public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
-    {
-        $this->response->expects($this->once())
-            ->method('setStatusCode')
-            ->with(301);
-        $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
-        $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
-    }
-
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
             ->method('setStatusCode')
             ->with(301);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
+        $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
+    }
+
+    public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
+    {
+        $this->response->expects($this->once())
+            ->method('setStatusCode')
+            ->with(301);
+        $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }
 

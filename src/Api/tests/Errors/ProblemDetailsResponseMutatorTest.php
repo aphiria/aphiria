@@ -20,8 +20,8 @@ use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsResponseMutatorTest extends TestCase
 {
-    private ProblemDetailsResponseMutator $mutator;
     private Headers $headers;
+    private ProblemDetailsResponseMutator $mutator;
     private IResponse&MockObject $response;
 
     protected function setUp(): void

@@ -40,8 +40,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SymfonySerializerBinderTest extends TestCase
 {
-    private IContainer&MockObject $container;
     private SymfonySerializerBinder $binder;
+    private IContainer&MockObject $container;
 
     protected function setUp(): void
     {
@@ -58,20 +58,6 @@ class SymfonySerializerBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['serialization']['normalizers'][] = ArrayDenormalizer::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->binder->bind($this->container);
-        // Dummy assertion
-        $this->assertTrue(true);
-    }
-
-    public function testEnumBackedNormalizerIsInstantiated(): void
-    {
-        $config = self::getBaseConfig();
-        $config['aphiria']['serialization']['normalizers'][] = BackedEnumNormalizer::class;
-        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        // Make sure the container wasn't used to resolve this normalizer
-        $this->container->expects($this->never())
-            ->method('resolve')
-            ->with(BackedEnumNormalizer::class);
         $this->binder->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
@@ -98,6 +84,20 @@ class SymfonySerializerBinderTest extends TestCase
         $config['aphiria']['serialization']['encoders'][] = $this::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->binder->bind($this->container);
+    }
+
+    public function testEnumBackedNormalizerIsInstantiated(): void
+    {
+        $config = self::getBaseConfig();
+        $config['aphiria']['serialization']['normalizers'][] = BackedEnumNormalizer::class;
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
+        // Make sure the container wasn't used to resolve this normalizer
+        $this->container->expects($this->never())
+            ->method('resolve')
+            ->with(BackedEnumNormalizer::class);
+        $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testJsonEncoderIsInstantiated(): void

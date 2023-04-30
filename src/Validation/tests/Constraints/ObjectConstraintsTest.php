@@ -30,6 +30,18 @@ class ObjectConstraintsTest extends TestCase
         $this->assertSame($expectedConstraints, $actualAllMethodConstraints['method']);
     }
 
+    public function testAddingMultiplePropertyConstraintsMakesThemGettable(): void
+    {
+        $expectedConstraints = [$this->createMock(IConstraint::class)];
+        $objectConstraints = new ObjectConstraints(self::class);
+        $objectConstraints->addPropertyConstraint('prop', $expectedConstraints);
+        $actualProperty = $objectConstraints->getPropertyConstraints('prop');
+        $actualAllPropertyConstraints = $objectConstraints->getAllPropertyConstraints();
+        $this->assertSame($expectedConstraints, $actualProperty);
+        $this->assertTrue(isset($actualAllPropertyConstraints['prop']));
+        $this->assertSame($expectedConstraints, $actualAllPropertyConstraints['prop']);
+    }
+
     public function testAddingSingleMethodConstraintsMakesItGettable(): void
     {
         $expectedConstraint = $this->createMock(IConstraint::class);
@@ -41,18 +53,6 @@ class ObjectConstraintsTest extends TestCase
         $this->assertSame($expectedConstraint, $actualMethodConstraints[0]);
         $this->assertTrue(isset($actualAllMethodConstraints['method']));
         $this->assertSame($expectedConstraint, $actualAllMethodConstraints['method'][0]);
-    }
-
-    public function testAddingMultiplePropertyConstraintsMakesThemGettable(): void
-    {
-        $expectedConstraints = [$this->createMock(IConstraint::class)];
-        $objectConstraints = new ObjectConstraints(self::class);
-        $objectConstraints->addPropertyConstraint('prop', $expectedConstraints);
-        $actualProperty = $objectConstraints->getPropertyConstraints('prop');
-        $actualAllPropertyConstraints = $objectConstraints->getAllPropertyConstraints();
-        $this->assertSame($expectedConstraints, $actualProperty);
-        $this->assertTrue(isset($actualAllPropertyConstraints['prop']));
-        $this->assertSame($expectedConstraints, $actualAllPropertyConstraints['prop']);
     }
 
     public function testAddingSinglePropertyConstraintsMakesItGettable(): void

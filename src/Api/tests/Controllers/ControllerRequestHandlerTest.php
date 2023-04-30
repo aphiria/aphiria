@@ -17,6 +17,7 @@ use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Closure;
@@ -25,8 +26,8 @@ use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
 {
-    private IRouteActionInvoker&MockObject $routeActionInvoker;
     private IContentNegotiator&MockObject $contentNegotiator;
+    private IRouteActionInvoker&MockObject $routeActionInvoker;
     private IUserAccessor&MockObject $userAccessor;
 
     protected function setUp(): void
@@ -34,42 +35,6 @@ class ControllerRequestHandlerTest extends TestCase
         $this->contentNegotiator = $this->createMock(IContentNegotiator::class);
         $this->routeActionInvoker = $this->createMock(IRouteActionInvoker::class);
         $this->userAccessor = $this->createMock(IUserAccessor::class);
-    }
-
-    public function testHandlingRequestSetsControllerProperties(): void
-    {
-        /** @var IRequest&MockObject $request */
-        $request = $this->createMock(IRequest::class);
-        /** @var ControllerWithEndpoints&MockObject $controller */
-        $controller = $this->createMock(ControllerWithEndpoints::class);
-        $controller->expects($this->once())
-            ->method('setRequest')
-            ->with($request);
-        $controller->expects($this->once())
-            ->method('setRequestParser');
-        $controller->expects($this->once())
-            ->method('setContentNegotiator')
-            ->with($this->contentNegotiator);
-        $controller->expects($this->once())
-            ->method('setResponseFactory');
-        $controller->expects($this->once())
-            ->method('setUserAccessor');
-        /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
-        $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
-        $this->routeActionInvoker->expects($this->once())
-            ->method('invokeRouteAction')
-            ->with($controllerClosure, $request, [])
-            ->willReturn($this->createMock(IResponse::class));
-
-        $requestHandler = new ControllerRequestHandler(
-            $controller,
-            $controllerClosure,
-            [],
-            $this->contentNegotiator,
-            $this->routeActionInvoker,
-            $this->userAccessor
-        );
-        $requestHandler->handle($request);
     }
 
     public function testHandlingRequestReturnsResponseFromRouteInvoker(): void
@@ -95,5 +60,41 @@ class ControllerRequestHandlerTest extends TestCase
             $this->routeActionInvoker
         );
         $this->assertSame($expectedResponse, $requestHandler->handle($request));
+    }
+
+    public function testHandlingRequestSetsControllerProperties(): void
+    {
+        /** @var IRequest&MockObject $request */
+        $request = $this->createMock(IRequest::class);
+        /** @var ControllerWithEndpoints&MockObject $controller */
+        $controller = $this->createMock(ControllerWithEndpoints::class);
+        $controller->expects($this->once())
+            ->method('setRequest')
+            ->with($request);
+        $controller->expects($this->once())
+            ->method('setRequestParser');
+        $controller->expects($this->once())
+            ->method('setBodyDeserializer')
+            ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
+        $controller->expects($this->once())
+            ->method('setResponseFactory');
+        $controller->expects($this->once())
+            ->method('setUserAccessor');
+        /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
+        $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
+        $this->routeActionInvoker->expects($this->once())
+            ->method('invokeRouteAction')
+            ->with($controllerClosure, $request, [])
+            ->willReturn($this->createMock(IResponse::class));
+
+        $requestHandler = new ControllerRequestHandler(
+            $controller,
+            $controllerClosure,
+            [],
+            $this->contentNegotiator,
+            $this->routeActionInvoker,
+            $this->userAccessor
+        );
+        $requestHandler->handle($request);
     }
 }

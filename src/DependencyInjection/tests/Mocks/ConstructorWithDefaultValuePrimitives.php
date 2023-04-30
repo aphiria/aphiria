@@ -18,9 +18,9 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 class ConstructorWithDefaultValuePrimitives
 {
     /** @var string A primitive stored by this class */
-    private string $foo;
-    /** @var string A primitive stored by this class */
     private string $bar;
+    /** @var string A primitive stored by this class */
+    private string $foo;
 
     /**
      * @param string $foo A primitive to store in this class

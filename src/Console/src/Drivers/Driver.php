@@ -25,10 +25,10 @@ abstract class Driver implements IDriver
     protected const DEFAULT_WIDTH = 80;
     /** @var int|null The determined height of the CLI */
     protected ?int $height = null;
-    /** @var int|null The determined width of the CLI */
-    protected ?int $width = null;
     /** @var bool|null Whether or not the CLI support STTY, or null if we haven't checked */
     protected ?bool $supportsStty = null;
+    /** @var int|null The determined width of the CLI */
+    protected ?int $width = null;
 
     /**
      * @inheritdoc

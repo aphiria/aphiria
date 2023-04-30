@@ -34,24 +34,6 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertEmpty($this->builder->build()->getAll());
     }
 
-    public function testGroupParametersToMatchOnAreMergedWithRouteParametersToMatch(): void
-    {
-        $groupOptions = new RouteGroupOptions('foo', null, false, [], [], ['H1' => 'val1']);
-        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class () {
-                public function bar(): void
-                {
-                }
-            };
-            $registry->route('GET', '')
-                ->mapsToMethod($controller::class, 'bar')
-                ->withParameter('H2', 'val2');
-        });
-        $routes = $this->builder->build()->getAll();
-        $this->assertCount(1, $routes);
-        $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->parameters);
-    }
-
     public function testGroupConstraintsAreMergedWithRouteParameters(): void
     {
         $groupConstraints = [$this->createMock(IRouteConstraint::class)];
@@ -73,6 +55,59 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertContains($routeConstraints[0], $routes[0]->constraints);
     }
 
+    public function testGroupHostWithNestedGroupHostHasDotBetweenThem(): void
+    {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
+            $registry->group(new RouteGroupOptions('', 'foo'), function (RouteCollectionBuilder $registry) {
+                $controller = new class () {
+                    public function bar(): void
+                    {
+                    }
+                };
+                $registry->route('GET', 'baz', 'bar')
+                    ->mapsToMethod($controller::class, 'bar');
+            });
+        });
+        $routes = $registry->build()->getAll();
+        $this->assertCount(1, $routes);
+        $this->assertSame('bar.foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+    }
+
+    public function testGroupHostWithNoDotAndRouteHostWithNoDosHasDotBetweenThem(): void
+    {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
+            $controller = new class () {
+                public function bar(): void
+                {
+                }
+            };
+            $registry->route('GET', '', 'foo')
+                ->mapsToMethod($controller::class, 'bar');
+        });
+        $routes = $registry->build()->getAll();
+        $this->assertCount(1, $routes);
+        $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+    }
+
+    public function testGroupHostWithNoDotAndRouteHostWithTrailingDotHasDotBetweenThem(): void
+    {
+        $registry = new RouteCollectionBuilder();
+        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
+            $controller = new class () {
+                public function bar(): void
+                {
+                }
+            };
+            $registry->route('GET', '', 'foo.')
+                ->mapsToMethod($controller::class, 'bar');
+        });
+        $routes = $registry->build()->getAll();
+        $this->assertCount(1, $routes);
+        $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+    }
+
     public function testGroupingAppendsToRouteHostTemplate(): void
     {
         $groupOptions = new RouteGroupOptions('foo', 'baz', false);
@@ -90,29 +125,21 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertSame('bar.baz', $routes[0]->uriTemplate->hostTemplate);
     }
 
-    public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup(): void
+    public function testGroupingPrependsToRoutePathTemplate(): void
     {
-        $groupOptions = new RouteGroupOptions('gp');
+        $groupOptions = new RouteGroupOptions('foo');
         $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $controller = new class () {
                 public function bar(): void
                 {
                 }
             };
-            $registry->route('GET', 'rp1')
+            $registry->route('GET', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $controller = new class () {
-            public function bar(): void
-            {
-            }
-        };
-        $this->builder->route('POST', 'rp2')
-            ->mapsToMethod($controller::class, 'bar');
         $routes = $this->builder->build()->getAll();
-        $this->assertCount(2, $routes);
-        $this->assertSame('/gp/rp1', $routes[0]->uriTemplate->pathTemplate);
-        $this->assertSame('/rp2', $routes[1]->uriTemplate->pathTemplate);
+        $this->assertCount(1, $routes);
+        $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
 
     public function testGroupMiddlewareAreMergedWithRouteMiddleware(): void
@@ -140,57 +167,47 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertEquals([$groupMiddlewareBinding, $routeMiddlewareBinding], $routes[0]->middlewareBindings);
     }
 
-    public function testGroupHostWithNestedGroupHostHasDotBetweenThem(): void
+    public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup(): void
     {
-        $registry = new RouteCollectionBuilder();
-        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
-            $registry->group(new RouteGroupOptions('', 'foo'), function (RouteCollectionBuilder $registry) {
-                $controller = new class () {
-                    public function bar(): void
-                    {
-                    }
-                };
-                $registry->route('GET', 'baz', 'bar')
-                    ->mapsToMethod($controller::class, 'bar');
-            });
-        });
-        $routes = $registry->build()->getAll();
-        $this->assertCount(1, $routes);
-        $this->assertSame('bar.foo.example.com', $routes[0]->uriTemplate->hostTemplate);
-    }
-
-    public function testGroupHostWithNoDotAndRouteHostWithTrailingDotHasDotBetweenThem(): void
-    {
-        $registry = new RouteCollectionBuilder();
-        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
+        $groupOptions = new RouteGroupOptions('gp');
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $controller = new class () {
                 public function bar(): void
                 {
                 }
             };
-            $registry->route('GET', '', 'foo.')
+            $registry->route('GET', 'rp1')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $registry->build()->getAll();
-        $this->assertCount(1, $routes);
-        $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+        $controller = new class () {
+            public function bar(): void
+            {
+            }
+        };
+        $this->builder->route('POST', 'rp2')
+            ->mapsToMethod($controller::class, 'bar');
+        $routes = $this->builder->build()->getAll();
+        $this->assertCount(2, $routes);
+        $this->assertSame('/gp/rp1', $routes[0]->uriTemplate->pathTemplate);
+        $this->assertSame('/rp2', $routes[1]->uriTemplate->pathTemplate);
     }
 
-    public function testGroupHostWithNoDotAndRouteHostWithNoDosHasDotBetweenThem(): void
+    public function testGroupParametersToMatchOnAreMergedWithRouteParametersToMatch(): void
     {
-        $registry = new RouteCollectionBuilder();
-        $registry->group(new RouteGroupOptions('', 'example.com'), function (RouteCollectionBuilder $registry) {
+        $groupOptions = new RouteGroupOptions('foo', null, false, [], [], ['H1' => 'val1']);
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
             $controller = new class () {
                 public function bar(): void
                 {
                 }
             };
-            $registry->route('GET', '', 'foo')
-                ->mapsToMethod($controller::class, 'bar');
+            $registry->route('GET', '')
+                ->mapsToMethod($controller::class, 'bar')
+                ->withParameter('H2', 'val2');
         });
-        $routes = $registry->build()->getAll();
+        $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
-        $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
+        $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->parameters);
     }
 
     public function testGroupPathWithEmptyPathForRouteDoesNotAppendSlashToEnd(): void
@@ -323,23 +340,6 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertEquals($expectedMiddlewareBindings, $routes[0]->middlewareBindings);
     }
 
-    public function testGroupingPrependsToRoutePathTemplate(): void
-    {
-        $groupOptions = new RouteGroupOptions('foo');
-        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class () {
-                public function bar(): void
-                {
-                }
-            };
-            $registry->route('GET', 'bar')
-                ->mapsToMethod($controller::class, 'bar');
-        });
-        $routes = $this->builder->build()->getAll();
-        $this->assertCount(1, $routes);
-        $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
-    }
-
     public function testRouteAddsLeadingSlashToPath(): void
     {
         $controller = new class () {
@@ -352,20 +352,6 @@ class RouteCollectionBuilderTest extends TestCase
         $routes = $this->builder->build()->getAll();
         $this->assertCount(1, $routes);
         $this->assertSame('/foo', $routes[0]->uriTemplate->pathTemplate);
-    }
-
-    public function testRouteBuilderIsCreatedWithParametersToMatchParameter(): void
-    {
-        $controller = new class () {
-            public function bar(): void
-            {
-            }
-        };
-        $routeBuilder = $this->builder->route('GET', '')
-            ->mapsToMethod($controller::class, 'bar')
-            ->withParameter('FOO', 'BAR');
-        $route = $routeBuilder->build();
-        $this->assertEquals(['FOO' => 'BAR'], $route->parameters);
     }
 
     public function testRouteBuilderIsCreatedWithConstraints(): void
@@ -398,6 +384,20 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertInstanceOf(HttpMethodRouteConstraint::class, $httpMethodRouteConstraint);
         // HEAD is automatically inserted for GET routes
         $this->assertEquals(['GET', 'DELETE', 'HEAD'], $httpMethodRouteConstraint->getAllowedMethods());
+    }
+
+    public function testRouteBuilderIsCreatedWithParametersToMatchParameter(): void
+    {
+        $controller = new class () {
+            public function bar(): void
+            {
+            }
+        };
+        $routeBuilder = $this->builder->route('GET', '')
+            ->mapsToMethod($controller::class, 'bar')
+            ->withParameter('FOO', 'BAR');
+        $route = $routeBuilder->build();
+        $this->assertEquals(['FOO' => 'BAR'], $route->parameters);
     }
 
     public function testRouteConvenienceMethodsCreateRoutesWithProperMethods(): void

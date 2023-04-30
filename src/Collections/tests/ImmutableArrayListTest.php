@@ -19,6 +19,11 @@ use RuntimeException;
 
 class ImmutableArrayListTest extends TestCase
 {
+    public function tesContainsValueReturnsTrueEvenIfValuesIsNull(): void
+    {
+        $arrayList = new ImmutableArrayList([null]);
+        $this->assertTrue($arrayList->containsValue(null));
+    }
     public function testCheckingOffsetExists(): void
     {
         $arrayList = new ImmutableArrayList(['foo']);
@@ -31,12 +36,6 @@ class ImmutableArrayListTest extends TestCase
         $this->assertTrue($arrayList->containsValue('foo'));
         /** @psalm-suppress InvalidArgument We are explicitly checking a value that does not exist */
         $this->assertFalse($arrayList->containsValue('bar'));
-    }
-
-    public function tesContainsValueReturnsTrueEvenIfValuesIsNull(): void
-    {
-        $arrayList = new ImmutableArrayList([null]);
-        $this->assertTrue($arrayList->containsValue(null));
     }
 
     public function testCount(): void

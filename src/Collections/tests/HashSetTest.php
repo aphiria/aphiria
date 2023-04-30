@@ -99,6 +99,13 @@ class HashSetTest extends TestCase
         $this->assertEquals([], $newSet->toArray());
     }
 
+    public function testIntersectingDoesNotChangeOriginalSet(): void
+    {
+        $this->set->addRange(['foo', 'bar']);
+        $this->set->intersect(['bar']);
+        $this->assertEquals(['foo', 'bar'], $this->set->toArray());
+    }
+
     public function testIntersectingIntersectsValuesOfSetAndArray(): void
     {
         $object1 = new FakeObject();
@@ -107,13 +114,6 @@ class HashSetTest extends TestCase
         $this->set->add($object2);
         $newSet = $this->set->intersect([$object2]);
         $this->assertEquals([$object2], $newSet->toArray());
-    }
-
-    public function testIntersectingDoesNotChangeOriginalSet(): void
-    {
-        $this->set->addRange(['foo', 'bar']);
-        $this->set->intersect(['bar']);
-        $this->assertEquals(['foo', 'bar'], $this->set->toArray());
     }
 
     public function testIteratingOverValuesReturnsValuesNotHashKeys(): void
@@ -159,18 +159,18 @@ class HashSetTest extends TestCase
         $this->assertEquals(['foo', 'bar'], $this->set->toArray());
     }
 
+    public function testUnioningDoesNotChangeOriginalSet(): void
+    {
+        $this->set->add('foo');
+        $this->set->union(['bar']);
+        $this->assertEquals(['foo'], $this->set->toArray());
+    }
+
     public function testUnionUnionsValuesOfSetAndArray(): void
     {
         $object = new FakeObject();
         $this->set->add($object);
         $newSet = $this->set->union(['bar', 'baz']);
         $this->assertEquals([$object, 'bar', 'baz'], $newSet->toArray());
-    }
-
-    public function testUnioningDoesNotChangeOriginalSet(): void
-    {
-        $this->set->add('foo');
-        $this->set->union(['bar']);
-        $this->assertEquals(['foo'], $this->set->toArray());
     }
 }

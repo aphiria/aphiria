@@ -25,6 +25,12 @@ class ArrayListTest extends TestCase
         $this->arrayList = new ArrayList();
     }
 
+    public function tesContainsValueReturnsTrueEvenIfValuesIsNull(): void
+    {
+        $this->arrayList->add(null);
+        $this->assertTrue($this->arrayList->containsValue(null));
+    }
+
     public function testAdding(): void
     {
         $this->arrayList->add('foo');
@@ -58,12 +64,6 @@ class ArrayListTest extends TestCase
         $this->assertTrue($this->arrayList->containsValue('foo'));
     }
 
-    public function tesContainsValueReturnsTrueEvenIfValuesIsNull(): void
-    {
-        $this->arrayList->add(null);
-        $this->assertTrue($this->arrayList->containsValue(null));
-    }
-
     public function testCount(): void
     {
         $this->arrayList->add('foo');
@@ -76,6 +76,19 @@ class ArrayListTest extends TestCase
     {
         $this->arrayList->add('foo');
         $this->assertSame('foo', $this->arrayList->get(0));
+    }
+
+    public function testGettingAll(): void
+    {
+        $this->arrayList->add('foo');
+        $this->arrayList->add('bar');
+        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
+    }
+
+    public function testGettingAsArray(): void
+    {
+        $this->arrayList->add('foo');
+        $this->assertSame('foo', $this->arrayList[0]);
     }
 
     public function testGettingIndexGreaterThanListLengthThrowsException(): void
@@ -92,19 +105,6 @@ class ArrayListTest extends TestCase
         $this->arrayList->get(-1);
     }
 
-    public function testGettingAll(): void
-    {
-        $this->arrayList->add('foo');
-        $this->arrayList->add('bar');
-        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
-    }
-
-    public function testGettingAsArray(): void
-    {
-        $this->arrayList->add('foo');
-        $this->assertSame('foo', $this->arrayList[0]);
-    }
-
     public function testInsertingValue(): void
     {
         $this->arrayList->add('foo');
@@ -115,18 +115,18 @@ class ArrayListTest extends TestCase
         $this->assertEquals(['foo', 'baz', 'bar'], $this->arrayList->toArray());
     }
 
-    public function testIntersectingIntersectsValuesOfSetAndArray(): void
-    {
-        $this->arrayList->addRange(['foo', 'bar']);
-        $newList = $this->arrayList->intersect(['bar', 'baz']);
-        $this->assertEquals(['bar'], $newList->toArray());
-    }
-
     public function testIntersectingDoesNotChangeOriginalList(): void
     {
         $this->arrayList->addRange(['foo', 'bar']);
         $this->arrayList->intersect(['bar', 'baz']);
         $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
+    }
+
+    public function testIntersectingIntersectsValuesOfSetAndArray(): void
+    {
+        $this->arrayList->addRange(['foo', 'bar']);
+        $newList = $this->arrayList->intersect(['bar', 'baz']);
+        $this->assertEquals(['bar'], $newList->toArray());
     }
 
     public function testIteratingOverValues(): void
@@ -208,18 +208,18 @@ class ArrayListTest extends TestCase
         $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
     }
 
-    public function testUnionUnionsValuesOfSetAndArray(): void
-    {
-        $this->arrayList->add('foo');
-        $newList = $this->arrayList->union(['bar', 'baz']);
-        $this->assertEquals(['foo', 'bar', 'baz'], $newList->toArray());
-    }
-
     public function testUnioningDoesNotChangeOriginalList(): void
     {
         $this->arrayList->add('foo');
         $this->arrayList->union(['bar']);
         $this->assertEquals(['foo'], $this->arrayList->toArray());
+    }
+
+    public function testUnionUnionsValuesOfSetAndArray(): void
+    {
+        $this->arrayList->add('foo');
+        $newList = $this->arrayList->union(['bar', 'baz']);
+        $this->assertEquals(['foo', 'bar', 'baz'], $newList->toArray());
     }
 
     public function testUnsetting(): void

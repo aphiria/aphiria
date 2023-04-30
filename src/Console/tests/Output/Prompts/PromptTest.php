@@ -52,6 +52,22 @@ class PromptTest extends TestCase
         $this->assertSame('Dave', $answer);
     }
 
+    public function testAskingHiddenAnswerQuestionWillUseDriver(): void
+    {
+        $driver = $this->createMock(IDriver::class);
+        $driver->expects($this->once())
+            ->method('readHiddenInput')
+            ->with($this->output)
+            ->willReturn('foo');
+        $this->output->shouldReceive('write')
+            ->with('<question>Question</question>');
+        $this->output->shouldReceive('getDriver')
+            ->times(1)
+            ->andReturn($driver);
+        $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
+        $this->assertSame('foo', $answer);
+    }
+
     public function testAskingIndexedMultipleChoiceQuestion(): void
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
@@ -113,22 +129,6 @@ class PromptTest extends TestCase
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('Dave', $answer);
-    }
-
-    public function testAskingHiddenAnswerQuestionWillUseDriver(): void
-    {
-        $driver = $this->createMock(IDriver::class);
-        $driver->expects($this->once())
-            ->method('readHiddenInput')
-            ->with($this->output)
-            ->willReturn('foo');
-        $this->output->shouldReceive('write')
-            ->with('<question>Question</question>');
-        $this->output->shouldReceive('getDriver')
-            ->times(1)
-            ->andReturn($driver);
-        $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
-        $this->assertSame('foo', $answer);
     }
 
     public function testEmptyDefaultAnswerToIndexedChoices(): void

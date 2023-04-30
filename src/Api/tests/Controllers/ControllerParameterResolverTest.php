@@ -20,7 +20,7 @@ use Aphiria\Api\Controllers\RequestBodyDeserializationException;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
 use Aphiria\ContentNegotiation\FailedContentNegotiationException;
-use Aphiria\ContentNegotiation\IBodyNegotiator;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\StringBody;
@@ -32,13 +32,13 @@ use ReflectionParameter;
 
 class ControllerParameterResolverTest extends TestCase
 {
+    private IBodyDeserializer&MockObject $bodyDeserializer;
     private ControllerParameterResolver $resolver;
-    private IBodyNegotiator&MockObject $bodyNegotiator;
 
     protected function setUp(): void
     {
-        $this->bodyNegotiator = $this->createMock(IBodyNegotiator::class);
-        $this->resolver = new ControllerParameterResolver($this->bodyNegotiator);
+        $this->bodyDeserializer = $this->createMock(IBodyDeserializer::class);
+        $this->resolver = new ControllerParameterResolver($this->bodyDeserializer);
     }
 
     public static function scalarParameterTestDataProvider(): array
@@ -77,8 +77,8 @@ class ControllerParameterResolverTest extends TestCase
         $this->expectExceptionMessage('Failed to deserialize request body when resolving parameter user');
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        $this->bodyNegotiator->expects($this->once())
-            ->method('negotiateRequestBody')
+        $this->bodyDeserializer->expects($this->once())
+            ->method('readRequestBodyAs')
             ->with(User::class, $request)
             ->willThrowException(new SerializationException());
         $this->resolver->resolveParameter(
@@ -94,8 +94,8 @@ class ControllerParameterResolverTest extends TestCase
         $this->expectExceptionMessage('Failed to negotiate request content with type ' . User::class);
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        $this->bodyNegotiator->expects($this->once())
-            ->method('negotiateRequestBody')
+        $this->bodyDeserializer->expects($this->once())
+            ->method('readRequestBodyAs')
             ->with(User::class, $request)
             ->willThrowException(new FailedContentNegotiationException());
         $this->resolver->resolveParameter(
@@ -109,8 +109,8 @@ class ControllerParameterResolverTest extends TestCase
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        $this->bodyNegotiator->expects($this->once())
-            ->method('negotiateRequestBody')
+        $this->bodyDeserializer->expects($this->once())
+            ->method('readRequestBodyAs')
             ->with(User::class, $request)
             ->willThrowException(new SerializationException());
         $resolvedParameter = $this->resolver->resolveParameter(
@@ -125,8 +125,8 @@ class ControllerParameterResolverTest extends TestCase
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
-        $this->bodyNegotiator->expects($this->once())
-            ->method('negotiateRequestBody')
+        $this->bodyDeserializer->expects($this->once())
+            ->method('readRequestBodyAs')
             ->with(User::class, $request)
             ->willThrowException(new FailedContentNegotiationException());
         $resolvedParameter = $this->resolver->resolveParameter(
@@ -174,8 +174,8 @@ class ControllerParameterResolverTest extends TestCase
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->setBody(new StringBody('dummy body'));
         $expectedUser = new User(123, 'foo@bar.com');
-        $this->bodyNegotiator->expects($this->once())
-            ->method('negotiateRequestBody')
+        $this->bodyDeserializer->expects($this->once())
+            ->method('readRequestBodyAs')
             ->with(User::class, $request)
             ->willReturn($expectedUser);
         $resolvedParameter = $this->resolver->resolveParameter(
@@ -194,17 +194,6 @@ class ControllerParameterResolverTest extends TestCase
             ['foo' => 'bar']
         );
         $this->assertSame('bar', $resolvedParameter);
-    }
-
-    public function testResolvingScalarParameterWithUnsupportedTypeThrowsException(): void
-    {
-        $this->expectException(FailedScalarParameterConversionException::class);
-        $this->expectExceptionMessage('Failed to convert value to ');
-        $this->resolver->resolveParameter(
-            new ReflectionParameter([ControllerWithEndpoints::class, 'callableParameter'], 'foo'),
-            $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
-            []
-        );
     }
 
     /**
@@ -247,6 +236,17 @@ class ControllerParameterResolverTest extends TestCase
             [$parameterName => $rawValue]
         );
         $this->assertSame($scalarValue, $resolvedParameter);
+    }
+
+    public function testResolvingScalarParameterWithUnsupportedTypeThrowsException(): void
+    {
+        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->expectExceptionMessage('Failed to convert value to ');
+        $this->resolver->resolveParameter(
+            new ReflectionParameter([ControllerWithEndpoints::class, 'callableParameter'], 'foo'),
+            $this->createRequestWithoutBody('http://foo.com/?foo=bar'),
+            []
+        );
     }
 
     public function testResolvingStringParameterAndNoMatchingVariableThrowsException(): void

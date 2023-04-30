@@ -21,12 +21,12 @@ use OutOfBoundsException;
  */
 abstract class ApplicationBuilder implements IApplicationBuilder
 {
-    /** @var list<IModule> The list of modules */
-    private array $modules = [];
     /** @var array<class-string<IComponent>, IComponent> The mapping of prioritized component names to components */
     private array $componentsByType = [];
     /** @var array<array{type: class-string<IComponent>, priority: int}> The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
+    /** @var list<IModule> The list of modules */
+    private array $modules = [];
 
     /**
      * @inheritdoc

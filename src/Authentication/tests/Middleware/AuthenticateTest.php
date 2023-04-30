@@ -26,8 +26,8 @@ use PHPUnit\Framework\TestCase;
 
 class AuthenticateTest extends TestCase
 {
-    private Authenticate $middleware;
     private IAuthenticator&MockObject $authenticator;
+    private Authenticate $middleware;
 
     protected function setUp(): void
     {
