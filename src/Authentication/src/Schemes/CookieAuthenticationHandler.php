@@ -36,8 +36,8 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
      * @param ResponseFormatter $responseFormatter The response formatter to write cookies with
      */
     public function __construct(
-        private readonly RequestParser $requestParser = new RequestParser(),
-        private readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
+        protected readonly RequestParser $requestParser = new RequestParser(),
+        protected readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
     ) {
     }
 
@@ -47,14 +47,10 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
      */
     public function authenticate(IRequest $request, AuthenticationScheme $scheme): AuthenticationResult
     {
-        $cookies = $this->requestParser->parseCookies($request);
-        $cookieValue = null;
-
-        if (!$cookies->tryGet($scheme->options->cookieName, $cookieValue)) {
+        if (($cookieValue = $this->getCookieValueFromRequest($request, $scheme)) === null) {
             return AuthenticationResult::fail(new MissingAuthenticationDataException("Cookie {$scheme->options->cookieName} not set"));
         }
 
-        /** @var string $cookieValue */
         return $this->createAuthenticationResultFromCookie($cookieValue, $request, $scheme);
     }
 
@@ -90,7 +86,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
      */
     public function logIn(IPrincipal $user, IRequest $request, IResponse $response, AuthenticationScheme $scheme): void
     {
-        $cookieValue = $this->getCookieValueFromUser($user, $scheme);
+        $cookieValue = $this->createCookieValueForUser($user, $scheme);
         $this->responseFormatter->setCookie(
             $response,
             new Cookie(
@@ -134,11 +130,30 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
     abstract protected function createAuthenticationResultFromCookie(string $cookieValue, IRequest $request, AuthenticationScheme $scheme): AuthenticationResult;
 
     /**
-     * Gets the authentication cookie value for a user
+     * Creates the authentication cookie value for a user
      *
      * @param IPrincipal $user The current user
      * @param AuthenticationScheme<CookieAuthenticationOptions> $scheme The scheme
      * @return string|int|float The value of the cookie
      */
-    abstract protected function getCookieValueFromUser(IPrincipal $user, AuthenticationScheme $scheme): string|int|float;
+    abstract protected function createCookieValueForUser(IPrincipal $user, AuthenticationScheme $scheme): string|int|float;
+
+    /**
+     * Gets the cookie value from the request
+     *
+     * @param IRequest $request The request to retrieve the cookie value from
+     * @param AuthenticationScheme<CookieAuthenticationOptions> $scheme The scheme
+     * @return string|null The value of the cookie if one was found, otherwise null
+     */
+    protected function getCookieValueFromRequest(IRequest $request, AuthenticationScheme $scheme): ?string
+    {
+        $cookies = $this->requestParser->parseCookies($request);
+        $cookieValue = null;
+
+        if (!$cookies->tryGet($scheme->options->cookieName, $cookieValue)) {
+            return null;
+        }
+
+        return $cookieValue;
+    }
 }
