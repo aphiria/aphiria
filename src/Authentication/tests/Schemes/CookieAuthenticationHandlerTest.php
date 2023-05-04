@@ -41,7 +41,7 @@ class CookieAuthenticationHandlerTest extends TestCase
                 return $this->expectedAuthenticationResult ?? throw new RuntimeException('Expected authentication result not set');
             }
 
-            protected function getCookieValueFromUser(IPrincipal $user, AuthenticationScheme $scheme): string|int|float
+            protected function createCookieValueForUser(IPrincipal $user, AuthenticationScheme $scheme): string|int|float
             {
                 return $this->expectedCookieValue ?? throw new RuntimeException('Expected cookie value not set');
             }
