@@ -425,7 +425,7 @@ trait AphiriaComponents
             $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
-        /** @psalm-suppress PossiblyInvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
+        /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
             ->withLogLevelFactory($exceptionType, $logLevelFactory);
 
