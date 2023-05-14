@@ -41,6 +41,9 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
         return $this->objectNormalizer->denormalize($data, $type, $format, $context);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSupportedTypes(?string $format): array
     {
         return [ProblemDetails::class => true];
