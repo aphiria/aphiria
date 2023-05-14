@@ -79,7 +79,7 @@ return (new PhpCsFixer\Config())
         'return_type_declaration' => ['space_before' => 'none'],
         'single_quote' => true,
         'single_trait_insert_per_statement' => true,
-        'standardize_not_equals' => true,
+        'standardize_not_equals' => true
     ])
     ->setRiskyAllowed(true)
     ->setFinder(
