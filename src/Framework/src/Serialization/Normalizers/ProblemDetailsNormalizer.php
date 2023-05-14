@@ -33,11 +33,6 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
     {
     }
 
-    public function __call(string $name, array $arguments)
-    {
-        return $this->objectNormalizer->$name(...$arguments);
-    }
-
     /**
      * @inheritdoc
      */
@@ -48,7 +43,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
 
     public function getSupportedTypes(?string $format): array
     {
-        return $this->objectNormalizer->getSupportedTypes($format);
+        return [ProblemDetails::class => true];
     }
 
     /**
@@ -94,7 +89,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
      */
     public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
     {
-        return $this->objectNormalizer->supportsDenormalization($data, $type, $format);
+        return $type === ProblemDetails::class;
     }
 
     /**

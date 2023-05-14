@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ProblemDetailsNormalizerTest extends TestCase
 {
@@ -53,29 +54,33 @@ class ProblemDetailsNormalizerTest extends TestCase
         );
     }
 
-    public function testCallingDynamicMethodPassesCallThroughToObjectNormalizer(): void
+    public function testCallingGetSupportedTypesReturnsProblemDetails(): void
     {
-        // TODO
-    }
-
-    public function testCallingGetSupportedTypesPassesCallThroughToObjectNormalizer(): void
-    {
-        // TODO
-    }
-
-    public function testCallingGetSupportsNormalizationPassesCallThroughToObjectNormalizer(): void
-    {
-        // TODO
+        $this->assertSame([ProblemDetails::class => true], $this->normalizer->getSupportedTypes(null));
     }
 
     public function testCallingSetSerializerPassesCallThroughToObjectNormalizer(): void
     {
-        // TODO
+        $serializer = $this->createMock(SerializerInterface::class);
+        $objectNormalizer = $this->createMock(ObjectNormalizer::class);
+        $normalizer = new ProblemDetailsNormalizer($objectNormalizer);
+        $objectNormalizer->expects($this->once())
+            ->method('setSerializer')
+            ->with($serializer);
+        $normalizer->setSerializer($serializer);
     }
 
-    public function testCallingSupportsDenormalizationPassesCallThroughToObjectNormalizer(): void
+    public function testCallingSupportsDenormalizationOnlyReturnsTrueForProblemDetailsType(): void
     {
-        // TODO
+        $this->assertTrue($this->normalizer->supportsDenormalization([], ProblemDetails::class));
+        $this->assertFalse($this->normalizer->supportsDenormalization([], self::class));
+    }
+
+    public function testCallingSupportsNormalizationOnlyAcceptsProblemDetails(): void
+    {
+        $this->assertTrue($this->normalizer->supportsNormalization(new ProblemDetails()));
+        $this->assertFalse($this->normalizer->supportsNormalization([]));
+        $this->assertFalse($this->normalizer->supportsNormalization($this));
     }
 
     public function testNormalizeAddsExtensionsToTopLevelOfNormalizedArray(): void
