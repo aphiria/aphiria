@@ -178,7 +178,7 @@ class AuthorizeTest extends TestCase
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
-            ->willReturn(AuthorizationResult::pass());
+            ->willReturn(AuthorizationResult::pass($policy->name));
         $this->middleware->setParameters(['policy' => $policy]);
         $next = $this->createMock(IRequestHandler::class);
         $response = $this->createMock(IResponse::class);
@@ -201,7 +201,7 @@ class AuthorizeTest extends TestCase
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
-            ->willReturn(AuthorizationResult::pass());
+            ->willReturn(AuthorizationResult::pass($policy->name));
         $this->middleware->setParameters(['policyName' => $policy->name]);
         $next = $this->createMock(IRequestHandler::class);
         $response = $this->createMock(IResponse::class);
@@ -235,7 +235,7 @@ class AuthorizeTest extends TestCase
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user1, $policy)
-            ->willReturn(AuthorizationResult::pass());
+            ->willReturn(AuthorizationResult::pass($policy->name));
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
         $next->expects($this->once())
@@ -281,7 +281,7 @@ class AuthorizeTest extends TestCase
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
-            ->willReturn(AuthorizationResult::pass());
+            ->willReturn(AuthorizationResult::pass($policy->name));
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
         $next->expects($this->once())
@@ -303,7 +303,7 @@ class AuthorizeTest extends TestCase
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
-            ->willReturn(AuthorizationResult::fail([$this]));
+            ->willReturn(AuthorizationResult::fail($policy->name, [$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
             ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
@@ -323,7 +323,7 @@ class AuthorizeTest extends TestCase
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
-            ->willReturn(AuthorizationResult::fail([$this]));
+            ->willReturn(AuthorizationResult::fail($policy->name, [$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
             ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');

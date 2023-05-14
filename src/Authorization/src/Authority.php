@@ -67,9 +67,9 @@ class Authority implements IAuthority
         }
 
         if ($authorizationContext->allRequirementsPassed()) {
-            return AuthorizationResult::pass();
+            return AuthorizationResult::pass($policy->name);
         }
 
-        return AuthorizationResult::fail($authorizationContext->pendingRequirements->toArray());
+        return AuthorizationResult::fail($policy->name, $authorizationContext->pendingRequirements->toArray());
     }
 }
