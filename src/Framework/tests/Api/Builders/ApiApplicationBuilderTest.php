@@ -21,7 +21,6 @@ use Aphiria\Framework\Api\SynchronousApiApplication;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponseWriter;
-use Aphiria\Net\Http\Request;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
