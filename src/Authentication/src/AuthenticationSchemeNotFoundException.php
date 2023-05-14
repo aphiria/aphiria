@@ -17,6 +17,6 @@ use Exception;
 /**
  * Defines the exception that's thrown when an authentication scheme is not found
  */
-final class SchemeNotFoundException extends Exception
+final class AuthenticationSchemeNotFoundException extends Exception
 {
 }

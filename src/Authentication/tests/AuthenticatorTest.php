@@ -14,13 +14,13 @@ namespace Aphiria\Authentication\Tests;
 
 use Aphiria\Authentication\AuthenticationResult;
 use Aphiria\Authentication\AuthenticationScheme;
+use Aphiria\Authentication\AuthenticationSchemeNotFoundException;
 use Aphiria\Authentication\AuthenticationSchemeOptions;
 use Aphiria\Authentication\AuthenticationSchemeRegistry;
 use Aphiria\Authentication\Authenticator;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\NotAuthenticatedException;
-use Aphiria\Authentication\SchemeNotFoundException;
 use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
 use Aphiria\Authentication\Schemes\ILoginAuthenticationSchemeHandler;
 use Aphiria\Authentication\UnsupportedAuthenticationHandlerException;
@@ -232,14 +232,14 @@ class AuthenticatorTest extends TestCase
 
     public function testAuthenticateWithNoDefaultAuthenticationSchemeThrowsException(): void
     {
-        $this->expectException(SchemeNotFoundException::class);
+        $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No default authentication scheme found');
         $this->authenticator->authenticate($this->createMock(IRequest::class));
     }
 
     public function testAuthenticateWithNonExistentSchemeThrowsException(): void
     {
-        $this->expectException(SchemeNotFoundException::class);
+        $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $this->authenticator->authenticate($this->createMock(IRequest::class), 'foo');
     }
@@ -280,7 +280,7 @@ class AuthenticatorTest extends TestCase
 
     public function testChallengeWithNonExistentSchemeThrowsException(): void
     {
-        $this->expectException(SchemeNotFoundException::class);
+        $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $this->authenticator->challenge($this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }
@@ -298,7 +298,7 @@ class AuthenticatorTest extends TestCase
 
     public function testForbidWithNonExistentSchemeThrowsException(): void
     {
-        $this->expectException(SchemeNotFoundException::class);
+        $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $this->authenticator->forbid($this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }
@@ -324,7 +324,7 @@ class AuthenticatorTest extends TestCase
 
     public function testLogInWithNonExistentSchemeThrowsException(): void
     {
-        $this->expectException(SchemeNotFoundException::class);
+        $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $identity = $this->createMock(IIdentity::class);
         $identity->method('isAuthenticated')
@@ -380,7 +380,7 @@ class AuthenticatorTest extends TestCase
 
     public function testLogOutWithNonExistentSchemeThrowsException(): void
     {
-        $this->expectException(SchemeNotFoundException::class);
+        $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $this->authenticator->logOut($this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }

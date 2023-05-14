@@ -120,7 +120,7 @@ class Authenticator implements IAuthenticator
      * @template T of AuthenticationSchemeOptions
      * @param string|null $schemeName The name of the authentication scheme to get, or null if getting the default one
      * @return AuthenticationScheme<T> The authentication scheme
-     * @throws SchemeNotFoundException Thrown if no scheme could be found
+     * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
     private function getScheme(?string $schemeName): AuthenticationScheme
     {
@@ -128,7 +128,7 @@ class Authenticator implements IAuthenticator
             $scheme = $this->schemes->getDefaultScheme();
 
             if ($scheme === null) {
-                throw new SchemeNotFoundException('No default authentication scheme found');
+                throw new AuthenticationSchemeNotFoundException('No default authentication scheme found');
             }
 
             return $scheme;
@@ -137,7 +137,7 @@ class Authenticator implements IAuthenticator
         try {
             return $this->schemes->getScheme($schemeName);
         } catch (OutOfBoundsException $ex) {
-            throw new SchemeNotFoundException("No authentication scheme with name \"$schemeName\" found", 0, $ex);
+            throw new AuthenticationSchemeNotFoundException("No authentication scheme with name \"$schemeName\" found", 0, $ex);
         }
     }
 }

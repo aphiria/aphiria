@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Authentication\Middleware;
 
 use Aphiria\Authentication\AuthenticationResult;
+use Aphiria\Authentication\AuthenticationSchemeNotFoundException;
 use Aphiria\Authentication\IAuthenticator;
-use Aphiria\Authentication\SchemeNotFoundException;
 use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
@@ -54,22 +54,22 @@ class Authenticate extends ParameterizedMiddleware
 
         // If all the schemes failed to authenticate, handle it
         if (\count($failedAuthenticationResults) === \count($schemeNames)) {
-            return $this->handleFailedAuthenticationResult($request, $failedAuthenticationResults);
+            return $this->handleFailedAuthenticationResults($request, $failedAuthenticationResults);
         }
 
         return $next->handle($request);
     }
 
     /**
-     * Handles a failed authentication result
+     * Handles failed authentication results
      * This method can be overridden to, for example, add details about the failed authentication result to the response
      *
      * @param IRequest $request The current request
      * @param list<AuthenticationResult> $failedAuthenticationResults The list of failed authentication results
      * @return IResponse The response
-     * @throws SchemeNotFoundException Thrown if the scheme could not be found
+     * @throws AuthenticationSchemeNotFoundException Thrown if the scheme could not be found
      */
-    protected function handleFailedAuthenticationResult(IRequest $request, array $failedAuthenticationResults): IResponse
+    protected function handleFailedAuthenticationResults(IRequest $request, array $failedAuthenticationResults): IResponse
     {
         $response = new Response(HttpStatusCode::Unauthorized);
 

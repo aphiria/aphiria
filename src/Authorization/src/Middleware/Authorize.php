@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization\Middleware;
 
+use Aphiria\Authentication\AuthenticationSchemeNotFoundException;
 use Aphiria\Authentication\IAuthenticator;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\RequestPropertyUserAccessor;
-use Aphiria\Authentication\SchemeNotFoundException;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
 use Aphiria\Authorization\AuthorizationResult;
@@ -97,7 +97,7 @@ class Authorize extends ParameterizedMiddleware
      * @param AuthorizationPolicy $policy The policy that was evaluated against
      * @param AuthorizationResult $authorizationResult The failed authorization result
      * @return IResponse The response
-     * @throws SchemeNotFoundException Thrown if the scheme could not be found
+     * @throws AuthenticationSchemeNotFoundException Thrown if the scheme could not be found
      */
     protected function handleFailedAuthorizationResult(IRequest $request, AuthorizationPolicy $policy, AuthorizationResult $authorizationResult): IResponse
     {
@@ -118,7 +118,7 @@ class Authorize extends ParameterizedMiddleware
      * @param IRequest $request The current request
      * @param AuthorizationPolicy $policy The policy that was evaluated against
      * @return IResponse The response
-     * @throws SchemeNotFoundException Thrown if the scheme could not be found
+     * @throws AuthenticationSchemeNotFoundException Thrown if the scheme could not be found
      */
     protected function handleUnauthenticatedUser(IRequest $request, AuthorizationPolicy $policy): IResponse
     {
