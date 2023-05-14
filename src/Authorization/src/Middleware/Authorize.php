@@ -26,6 +26,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
+use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
 
 /**
@@ -73,7 +74,7 @@ class Authorize extends ParameterizedMiddleware
 
                 if ($authenticationResult->passed && $authenticationResult->user !== null) {
                     // If this is the first passing result, set the user.  Otherwise, merge its identities.
-                    $user = $user === null ? $authenticationResult->user : $user->mergeIdentities($authenticationResult->user);
+                    $user = $user instanceof IPrincipal ? $user->mergeIdentities($authenticationResult->user) : $authenticationResult->user;
                 }
             }
 
