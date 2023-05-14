@@ -39,11 +39,11 @@ class Authenticate extends ParameterizedMiddleware
      */
     public function handle(IRequest $request, IRequestHandler $next): IResponse
     {
+        // Default to a null scheme name if none was set
         /** @var list<string|null> $schemeNames */
         $schemeNames = $this->getParameter('schemeNames') ?? [null];
         $failedAuthenticationResults = [];
 
-        // Default to a null scheme name if none was set
         foreach ($schemeNames as $schemeName) {
             $authenticationResult = $this->authenticator->authenticate($request, $schemeName);
 
