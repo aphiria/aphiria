@@ -38,8 +38,24 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function authenticate(IRequest $request, string $schemeName = null): AuthenticationResult
+    public function authenticate(IRequest $request, string|array $schemeName = null): AuthenticationResult
     {
+        $schemeNames = \is_array($schemeName) ? $schemeName : [$schemeName];
+        $user = null;
+
+        foreach ($schemeNames as $schemeName) {
+            $scheme = $this->getScheme($schemeName);
+            $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
+            $authResult = $handler->authenticate($request, $scheme);
+
+            if ($authResult->passed && $user instanceof IPrincipal) {
+                // Combine the principals
+                $user->mergeIdentities($authResult->user);
+                // TODO: What should the scheme name be here if we're authenticating with multiple schemes?
+                $authResult = AuthenticationResult::pass($user, $schemeName);
+            }
+        }
+
         $scheme = $this->getScheme($schemeName);
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
         $authResult = $handler->authenticate($request, $scheme);
@@ -61,7 +77,7 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function challenge(IRequest $request, IResponse $response, string $schemeName = null): void
+    public function challenge(IRequest $request, IResponse $response, string|array $schemeName = null): void
     {
         $scheme = $this->getScheme($schemeName);
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
