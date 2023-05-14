@@ -17,7 +17,7 @@ namespace Aphiria\Middleware;
  */
 final class MiddlewareCollection
 {
-    /** @var array<int, array{middleware: IMiddleware, priority: int}> The list of structs that contain middleware and priorities */
+    /** @var list<array{middleware: IMiddleware, priority: int}> The list of structs that contain middleware and priorities */
     private array $middlewareWithPriorities = [];
 
     /**

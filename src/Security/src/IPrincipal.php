@@ -61,4 +61,13 @@ interface IPrincipal
      * @return bool True if the principal had the claim, otherwise false
      */
     public function hasClaim(ClaimType|string $type, mixed $value): bool;
+
+    /**
+     * Merges another principal's identities into this one's
+     *
+     * @param IPrincipal $user The principal to merge
+     * @param bool $includeUnauthenticatedIdentities Whether to include unauthenticated identities in the principal we're merging with
+     * @return IPrincipal The merged principal
+     */
+    public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal;
 }

@@ -11,6 +11,7 @@
 - Added `IBodyDeserializer` and `NegotiatedBodyDeserializer` to simplify deserializing request and response bodies ([#253](https://github.com/aphiria/aphiria/pull/253), [#255](https://github.com/aphiria/aphiria/pull/255))
 - Added ability to easily deserialize request and response bodies in integration tests ([#253](https://github.com/aphiria/aphiria/pull/253))
 - Added `PrincipalBuilder` and `IdentityBuilder` ([#257](https://github.com/aphiria/aphiria/pull/257))
+- Added `IPrincipal::mergeIdentities()` ([#262](https://github.com/aphiria/aphiria/pull/262))
 
 ## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
 

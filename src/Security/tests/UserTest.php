@@ -145,6 +145,42 @@ class UserTest extends TestCase
         $this->assertFalse($user->hasClaim('baz', 'qiz'));
     }
 
+    public function testMergingIdentitiesAndIncludingUnauthenticatedIdentitiesIncludesThem(): void
+    {
+        $user1Identities = [new Identity([new Claim('foo', 'bar', 'example.com')], 'authScheme')];
+        $user2Identities = [
+            new Identity([new Claim('baz', 'quz', 'example.com')], 'authScheme'),
+            new Identity([new Claim('qux', 'blah', 'example.com')])
+        ];
+        $user1 = new User($user1Identities);
+        $user2 = new User($user2Identities);
+        $mergedUser = $user1->mergeIdentities($user2, true);
+        $mergedIdentities = $mergedUser->getIdentities();
+        $this->assertCount(3, $mergedIdentities);
+        $this->assertSame(
+            [...$user1Identities, ...$user2Identities],
+            $mergedIdentities
+        );
+    }
+
+    public function testMergingIdentitiesExcludesUnauthenticatedIdentities(): void
+    {
+        $user1Identities = [new Identity([new Claim('foo', 'bar', 'example.com')], 'authScheme')];
+        $user2Identities = [
+            new Identity([new Claim('baz', 'quz', 'example.com')], 'authScheme'),
+            new Identity([new Claim('qux', 'blah', 'example.com')])
+        ];
+        $user1 = new User($user1Identities);
+        $user2 = new User($user2Identities);
+        $mergedUser = $user1->mergeIdentities($user2);
+        $mergedIdentities = $mergedUser->getIdentities();
+        $this->assertCount(2, $mergedIdentities);
+        $this->assertSame(
+            [...$user1Identities, $user2Identities[0]],
+            $mergedIdentities
+        );
+    }
+
     public function testPrimaryIdentityIsFirstOneByDefault(): void
     {
         $identities = [
