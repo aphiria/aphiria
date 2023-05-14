@@ -71,7 +71,7 @@ class Authorize extends ParameterizedMiddleware
             foreach ($policy->authenticationSchemeNames ?? [null] as $authenticationSchemeName) {
                 $authenticationResult = $this->authenticator->authenticate($request, $authenticationSchemeName);
 
-                if ($authenticationResult->passed) {
+                if ($authenticationResult->passed && $authenticationResult->user !== null) {
                     // If this is the first passing result, set the user.  Otherwise, merge its identities.
                     $user = $user === null ? $authenticationResult->user : $user->mergeIdentities($authenticationResult->user);
                 }

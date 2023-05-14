@@ -57,6 +57,7 @@ class AuthorizationPolicyTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Requirements cannot be empty');
+        /** @psalm-suppress ArgumentTypeCoercion We are purposely testing an empty array */
         new AuthorizationPolicy('foo', [], []);
     }
 

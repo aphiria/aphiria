@@ -39,6 +39,7 @@ readonly class AuthorizationPolicy
             $requirements = [$requirements];
         }
 
+        /** @psalm-suppress TypeDoesNotContainType We are purposely not relying on Psalm here */
         if (\count($requirements) === 0) {
             throw new InvalidArgumentException('Requirements cannot be empty');
         }
