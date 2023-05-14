@@ -64,7 +64,7 @@ class BasicAuthenticationHandlerTest extends TestCase
                 IRequest $request,
                 AuthenticationScheme $scheme
             ): AuthenticationResult {
-                return AuthenticationResult::fail('foo');
+                return AuthenticationResult::fail('foo', $scheme->name);
             }
         };
 
