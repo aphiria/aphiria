@@ -19,14 +19,18 @@ use Attribute;
 /**
  * Defines the authentication middleware
  */
-#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 final class Authenticate extends Middleware
 {
     /**
-     * @param string|null $schemeName The name of the authentication scheme to use, or null if using the default scheme
+     * @param list<string>|string|null $schemeNames The list of names or name of the authentication scheme to use, or null if using the default scheme
      */
-    public function __construct(string $schemeName = null)
+    public function __construct(array|string $schemeNames = null)
     {
-        parent::__construct(AuthenticateMiddleware::class, ['schemeName' => $schemeName]);
+        if (\is_string($schemeNames)) {
+            $schemeNames = [$schemeNames];
+        }
+
+        parent::__construct(AuthenticateMiddleware::class, ['schemeNames' => $schemeNames]);
     }
 }
