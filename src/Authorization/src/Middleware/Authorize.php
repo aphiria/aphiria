@@ -26,7 +26,6 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
-use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
 
 /**
@@ -68,20 +67,13 @@ class Authorize extends ParameterizedMiddleware
         $user = $this->userAccessor->getUser($request);
 
         if ($user === null) {
-            // Try to authenticate the user
+            // Try to authenticate the user for each authentication scheme
             foreach ($policy->authenticationSchemeNames ?? [null] as $authenticationSchemeName) {
-                $authenticationResult = $this->authenticator->authenticate($request, $authenticationSchemeName);
-
-                if ($authenticationResult->passed && $authenticationResult->user !== null) {
-                    // If this is the first passing result, set the user.  Otherwise, merge its identities.
-                    $user = $user instanceof IPrincipal ? $user->mergeIdentities($authenticationResult->user) : $authenticationResult->user;
-                }
+                $this->authenticator->authenticate($request, $authenticationSchemeName);
             }
 
-            // If we successfully authenticated the user, be sure to save the user with its merged identities
-            if ($user !== null) {
-                $this->userAccessor->setUser($user, $request);
-            }
+            // Try grabbing the user again now that we've performed authentication
+            $user = $this->userAccessor->getUser($request);
         }
 
         if ($user === null || $user->getPrimaryIdentity()?->isAuthenticated() !== true) {
