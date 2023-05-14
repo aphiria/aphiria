@@ -68,9 +68,10 @@ class AuthenticateTest extends TestCase
                 ->andReturn(AuthenticationResult::fail('foo', $schemeName ??  'schemeName'));
             $this->authenticator->shouldReceive('challenge')
                 ->withArgs(function (IRequest $actualRequest, IResponse $actualResponse, ?string $actualSchemeName) use ($request, $schemeName): bool {
+                    // Similar to the above note, the real auth result will contain a non-null scheme name
                     return $actualRequest === $request
                         && $actualResponse->getStatusCode() === HttpStatusCode::Unauthorized
-                        && $actualSchemeName === $schemeName;
+                        && $actualSchemeName === ($schemeName ?? 'schemeName');
                 });
         }
 

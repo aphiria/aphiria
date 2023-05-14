@@ -41,20 +41,20 @@ class Authenticate extends ParameterizedMiddleware
     {
         /** @var list<string|null> $schemeNames */
         $schemeNames = $this->getParameter('schemeNames') ?? [null];
-        $failedSchemeNamesToAuthenticationResults = [];
+        $failedAuthenticationResults = [];
 
         // Default to a null scheme name if none was set
         foreach ($schemeNames as $schemeName) {
             $authenticationResult = $this->authenticator->authenticate($request, $schemeName);
 
             if (!$authenticationResult->passed) {
-                $failedSchemeNamesToAuthenticationResults[] = [$schemeName, $authenticationResult];
+                $failedAuthenticationResults[] = $authenticationResult;
             }
         }
 
         // If all the schemes failed to authenticate, handle it
-        if (\count($failedSchemeNamesToAuthenticationResults) === \count($schemeNames)) {
-            return $this->handleFailedAuthenticationResult($request, $failedSchemeNamesToAuthenticationResults);
+        if (\count($failedAuthenticationResults) === \count($schemeNames)) {
+            return $this->handleFailedAuthenticationResult($request, $failedAuthenticationResults);
         }
 
         return $next->handle($request);
@@ -65,16 +65,16 @@ class Authenticate extends ParameterizedMiddleware
      * This method can be overridden to, for example, add details about the failed authentication result to the response
      *
      * @param IRequest $request The current request
-     * @param list<array{0: ?string, 1: AuthenticationResult}> $failedSchemeNamesAndAuthenticationResults The list of schemes that failed to authenticate and their authentication results
+     * @param list<AuthenticationResult> $failedAuthenticationResults The list of failed authentication results
      * @return IResponse The response
      * @throws SchemeNotFoundException Thrown if the scheme could not be found
      */
-    protected function handleFailedAuthenticationResult(IRequest $request, array $failedSchemeNamesAndAuthenticationResults): IResponse
+    protected function handleFailedAuthenticationResult(IRequest $request, array $failedAuthenticationResults): IResponse
     {
         $response = new Response(HttpStatusCode::Unauthorized);
 
-        foreach ($failedSchemeNamesAndAuthenticationResults as $failedSchemeNameAndAuthenticationResult) {
-            $this->authenticator->challenge($request, $response, $failedSchemeNameAndAuthenticationResult[0]);
+        foreach ($failedAuthenticationResults as $failedAuthenticationResult) {
+            $this->authenticator->challenge($request, $response, $failedAuthenticationResult->schemeName);
         }
 
         return $response;
