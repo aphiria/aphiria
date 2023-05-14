@@ -52,7 +52,7 @@ class Authenticator implements IAuthenticator
                 // Combine the principals
                 $user->mergeIdentities($authResult->user);
                 // TODO: What should the scheme name be here if we're authenticating with multiple schemes?
-                $authResult = AuthenticationResult::pass($user, $schemeName);
+                $authResult = AuthenticationResult::pass($user, $scheme->name);
             }
         }
 
