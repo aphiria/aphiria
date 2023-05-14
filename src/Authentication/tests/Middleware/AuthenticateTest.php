@@ -62,9 +62,10 @@ class AuthenticateTest extends TestCase
         $next = $this->createMock(IRequestHandler::class);
 
         foreach ($schemeNames as $schemeName) {
+            // The auth scheme will always be set in the auth result in a real authenticator, so we fall back to a default scheme name in this test
             $this->authenticator->shouldReceive('authenticate')
                 ->with($request, $schemeName)
-                ->andReturn(AuthenticationResult::fail('foo'));
+                ->andReturn(AuthenticationResult::fail('foo', $schemeName ??  'schemeName'));
             $this->authenticator->shouldReceive('challenge')
                 ->withArgs(function (IRequest $actualRequest, IResponse $actualResponse, ?string $actualSchemeName) use ($request, $schemeName): bool {
                     return $actualRequest === $request
@@ -88,10 +89,10 @@ class AuthenticateTest extends TestCase
 
         $this->authenticator->shouldReceive('authenticate')
             ->with($request, 'foo')
-            ->andReturn(AuthenticationResult::fail('foo'));
+            ->andReturn(AuthenticationResult::fail('foo', 'scheme'));
         $this->authenticator->shouldReceive('authenticate')
             ->with($request, 'bar')
-            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class), 'scheme'));
 
         $next->expects($this->once())
             ->method('handle')
@@ -113,7 +114,7 @@ class AuthenticateTest extends TestCase
         foreach ($schemeNames as $schemeName) {
             $this->authenticator->shouldReceive('authenticate')
                 ->with($request, $schemeName)
-                ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+                ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class), 'scheme'));
         }
 
         $next->expects($this->once())
@@ -131,10 +132,10 @@ class AuthenticateTest extends TestCase
 
         $this->authenticator->shouldReceive('authenticate')
             ->with($request, 'foo')
-            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class), 'scheme'));
         $this->authenticator->shouldReceive('authenticate')
             ->with($request, 'bar')
-            ->andReturn(AuthenticationResult::fail('foo'));
+            ->andReturn(AuthenticationResult::fail('foo', 'scheme'));
 
         $next->expects($this->once())
             ->method('handle')

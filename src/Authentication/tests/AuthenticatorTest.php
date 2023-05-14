@@ -165,7 +165,7 @@ class AuthenticatorTest extends TestCase
     public function testAuthenticateDoesNotSetUserOnFailure(): void
     {
         $request = $this->createMock(IRequest::class);
-        $expectedResult = AuthenticationResult::fail('whoops');
+        $expectedResult = AuthenticationResult::fail('whoops', 'scheme');
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->method('authenticate')
             ->with($request, $scheme)
@@ -184,7 +184,7 @@ class AuthenticatorTest extends TestCase
         $this->userAccessor->shouldReceive('setUser')
             ->with($user, $request);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $expectedResult = AuthenticationResult::pass($user);
+        $expectedResult = AuthenticationResult::pass($user, 'scheme');
         $schemeHandler->method('authenticate')
             ->with($request, $scheme)
             ->willReturn($expectedResult);
@@ -200,7 +200,7 @@ class AuthenticatorTest extends TestCase
             ->andReturn(null);
         $this->userAccessor->shouldReceive('setUser')
             ->with($user, $request);
-        $expectedResult = AuthenticationResult::pass($user);
+        $expectedResult = AuthenticationResult::pass($user, 'scheme');
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->expects($this->once())
             ->method('authenticate')
@@ -220,7 +220,7 @@ class AuthenticatorTest extends TestCase
             ->andReturn(null);
         $this->userAccessor->shouldReceive('setUser')
             ->with($user, $request);
-        $expectedResult = AuthenticationResult::pass($user);
+        $expectedResult = AuthenticationResult::pass($user, 'scheme');
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->expects($this->once())
             ->method('authenticate')
@@ -258,7 +258,7 @@ class AuthenticatorTest extends TestCase
         $this->userAccessor->shouldReceive('setUser')
             ->with($user1, $request);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $expectedResult = AuthenticationResult::pass($user2);
+        $expectedResult = AuthenticationResult::pass($user2, 'scheme');
         $schemeHandler->method('authenticate')
             ->with($request, $scheme)
             ->willReturn($expectedResult);

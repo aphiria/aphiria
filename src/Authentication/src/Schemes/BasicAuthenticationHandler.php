@@ -37,31 +37,46 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
         try {
             $authorizationHeaderValue = (string)$request->getHeaders()->getFirst('Authorization');
         } catch (OutOfBoundsException $ex) {
-            return AuthenticationResult::fail(new MissingAuthenticationDataException('Missing authorization header', previous: $ex));
+            return AuthenticationResult::fail(
+                new MissingAuthenticationDataException('Missing authorization header', previous: $ex),
+                $scheme->name
+            );
         }
 
         $explodedAuthorizationHeaderValue = \explode(' ', \trim($authorizationHeaderValue));
 
         if (\count($explodedAuthorizationHeaderValue) !== 2) {
-            return AuthenticationResult::fail(new InvalidArgumentException('Authorization header value was invalid'));
+            return AuthenticationResult::fail(
+                new InvalidArgumentException('Authorization header value was invalid'),
+                $scheme->name
+            );
         }
 
         [$authType, $base64EncodedCredentials] = $explodedAuthorizationHeaderValue;
 
         if (\strtolower($authType) !== 'basic') {
-            return AuthenticationResult::fail(new MissingAuthenticationDataException('Request did not use basic authentication'));
+            return AuthenticationResult::fail(
+                new MissingAuthenticationDataException('Request did not use basic authentication'),
+                $scheme->name
+            );
         }
 
         $base64DecodedCredentials = \base64_decode($base64EncodedCredentials, true);
 
         if ($base64DecodedCredentials === false) {
-            return AuthenticationResult::fail(new InvalidArgumentException('Authorization header did not contain valid base64-encoded value'));
+            return AuthenticationResult::fail(
+                new InvalidArgumentException('Authorization header did not contain valid base64-encoded value'),
+                $scheme->name
+            );
         }
 
         $explodedCredentials = \explode(':', $base64DecodedCredentials);
 
         if (\count($explodedCredentials) !== 2) {
-            return AuthenticationResult::fail(new InvalidArgumentException('Authorization header did not contain a base64-encoded username:password value'));
+            return AuthenticationResult::fail(
+                new InvalidArgumentException('Authorization header did not contain a base64-encoded username:password value'),
+                $scheme->name
+            );
         }
 
         [$username, $password] = $explodedCredentials;

@@ -49,7 +49,7 @@ class Authenticator implements IAuthenticator
                 // Merge this user with any previously-set user so that all the identities and claims are set for all schemes authenticated against
                 // We store this merged identity in a new authentication result, and return that one instead
                 $user->mergeIdentities($authResult->user);
-                $authResult = new AuthenticationResult($authResult->passed, $user, $authResult->failure);
+                $authResult = AuthenticationResult::pass($user, $scheme->name);
             }
 
             $this->userAccessor->setUser($authResult->user, $request);

@@ -223,10 +223,10 @@ class AuthorizeTest extends TestCase
         $user2 = new User([new Identity([], 'authScheme2')]);
         $authenticator->shouldReceive('authenticate')
             ->with($request, 'authScheme1')
-            ->andReturn(AuthenticationResult::pass($user1));
+            ->andReturn(AuthenticationResult::pass($user1, 'authScheme1'));
         $authenticator->shouldReceive('authenticate')
             ->with($request, 'authScheme2')
-            ->andReturn(AuthenticationResult::pass($user2));
+            ->andReturn(AuthenticationResult::pass($user2, 'authScheme2'));
         $this->userAccessor->shouldReceive('getUser')
             ->with($request)
             ->andReturn(null, $user1);
@@ -275,7 +275,7 @@ class AuthorizeTest extends TestCase
         $this->authenticator->expects($this->once())
             ->method('authenticate')
             ->with($request, null)
-            ->willReturn(AuthenticationResult::pass($user));
+            ->willReturn(AuthenticationResult::pass($user, 'scheme'));
         $policy = new AuthorizationPolicy('policy', [$this]);
         $this->middleware->setParameters(['policy' => $policy]);
         $this->authority->expects($this->once())
