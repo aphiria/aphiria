@@ -62,6 +62,11 @@ class RolesRequirementHandlerTest extends TestCase
             {
                 return false;
             }
+
+            public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+            {
+                return $this;
+            }
         };
         $userWithManyRolesIncludingMatchingOne = new class () implements IPrincipal {
             public function addIdentity(IIdentity $identity): void
@@ -93,6 +98,11 @@ class RolesRequirementHandlerTest extends TestCase
             public function hasClaim(ClaimType|string $type, mixed $value): bool
             {
                 return false;
+            }
+
+            public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+            {
+                return $this;
             }
         };
 
@@ -132,6 +142,11 @@ class RolesRequirementHandlerTest extends TestCase
             {
                 return false;
             }
+
+            public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+            {
+                return $this;
+            }
         };
         $userWithNoMatchingRoles = new class () implements IPrincipal {
             public function addIdentity(IIdentity $identity): void
@@ -160,6 +175,11 @@ class RolesRequirementHandlerTest extends TestCase
             public function hasClaim(ClaimType|string $type, mixed $value): bool
             {
                 return false;
+            }
+
+            public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+            {
+                return $this;
             }
         };
 

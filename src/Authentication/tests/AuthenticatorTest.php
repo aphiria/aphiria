@@ -78,6 +78,11 @@ class AuthenticatorTest extends TestCase
             {
                 return false;
             }
+
+            public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+            {
+                return $this;
+            }
         };
         $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
             public function addIdentity(IIdentity $identity): void
@@ -136,6 +141,11 @@ class AuthenticatorTest extends TestCase
             public function hasClaim(ClaimType|string $type, mixed $value): bool
             {
                 return false;
+            }
+
+            public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+            {
+                return $this;
             }
         };
 
