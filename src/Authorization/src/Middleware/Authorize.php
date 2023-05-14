@@ -66,7 +66,24 @@ class Authorize extends ParameterizedMiddleware
         /** @var AuthorizationPolicy $policy */
         $user = $this->userAccessor->getUser($request);
 
-        if ($user === null || $user->getPrimaryIdentity()?->isAuthenticated() !== true) {
+        if ($user === null) {
+            // Try to authenticate the user
+            foreach ($policy->authenticationSchemeNames ?? [null] as $authenticationSchemeName) {
+                $authenticationResult = $this->authenticator->authenticate($request, $authenticationSchemeName);
+
+                if ($authenticationResult->passed) {
+                    // If this is the first passing result, set the user.  Otherwise, merge its identities.
+                    $user = $user === null ? $authenticationResult->user : $user->mergeIdentities($authenticationResult->user);
+                }
+            }
+
+            // If we successfully authenticated the user, be sure to save the user with its merged identities
+            if ($user !== null) {
+                $this->userAccessor->setUser($user, $request);
+            }
+        }
+
+        if ($user?->getPrimaryIdentity()?->isAuthenticated() !== true) {
             return $this->handleUnauthenticatedUser($request, $policy);
         }
 

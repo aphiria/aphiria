@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization\Tests\Middleware;
 
+use Aphiria\Authentication\AuthenticationResult;
 use Aphiria\Authentication\IAuthenticator;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authorization\AuthorizationPolicy;
@@ -25,9 +26,12 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\ClaimType;
+use Aphiria\Security\Identity;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
+use Aphiria\Security\User;
 use InvalidArgumentException;
+use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,6 +52,11 @@ class AuthorizeTest extends TestCase
         $this->policies = new AuthorizationPolicyRegistry();
         $this->userAccessor = $this->createMock(IUserAccessor::class);
         $this->middleware = new Authorize($this->authority, $this->authenticator, $this->policies, $this->userAccessor);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public static function getUnauthenticatedUsers(): array
@@ -204,6 +213,42 @@ class AuthorizeTest extends TestCase
         $this->assertSame($response, $this->middleware->handle($request, $next));
     }
 
+    public function testHandlingUnauthenticatedUserMergesIdentitiesWhenPolicyContainsMultipleAuthenticationSchemeNames(): void
+    {
+        // Need to use Mockery for these tests since they require us to check successive calls with different parameters
+        $authenticator = Mockery::mock(IAuthenticator::class);
+        $middleware = new Authorize($this->authority, $authenticator, $this->policies, $this->userAccessor);
+        $request = $this->createMock(IRequest::class);
+        $this->userAccessor->method('getUser')
+            ->with($request)
+            ->willReturn(null);
+        // Must ensure the user has an authenticated identity
+        $user1 = new User([new Identity([], 'authScheme1')]);
+        $user2 = new User([new Identity([], 'authScheme2')]);
+        $authenticator->shouldReceive('authenticate')
+            ->with($request, 'authScheme1')
+            ->andReturn(AuthenticationResult::pass($user1));
+        $authenticator->shouldReceive('authenticate')
+            ->with($request, 'authScheme2')
+            ->andReturn(AuthenticationResult::pass($user2));
+        // The set user should contain a merged set of identities
+        $this->userAccessor->method('setUser')
+            ->with($user1, $request);
+        $policy = new AuthorizationPolicy('policy', [$this], ['authScheme1', 'authScheme2']);
+        $middleware->setParameters(['policy' => $policy]);
+        $this->authority->expects($this->once())
+            ->method('authorize')
+            ->with($user1, $policy)
+            ->willReturn(AuthorizationResult::pass());
+        $response = $this->createMock(IResponse::class);
+        $next = $this->createMock(IRequestHandler::class);
+        $next->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $middleware->handle($request, $next);
+    }
+
     /**
      * @param IPrincipal $user The unauthenticated user
      */
@@ -222,6 +267,35 @@ class AuthorizeTest extends TestCase
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
+    }
+
+    public function testHandlingUnauthenticatedUserWithPolicyThatHasNoAuthenticationSchemeNamesAuthenticatesWithDefaultOneBeforeAuthorizing(): void
+    {
+        $request = $this->createMock(IRequest::class);
+        $this->userAccessor->method('getUser')
+            ->with($request)
+            ->willReturn(null);
+        // Must ensure the user has an authenticated identity
+        $user = new User([new Identity([], 'authScheme')]);
+        $this->authenticator->expects($this->once())
+            ->method('authenticate')
+            ->with($request, null)
+            ->willReturn(AuthenticationResult::pass($user));
+        $this->userAccessor->method('setUser')
+            ->with($user, $request);
+        $policy = new AuthorizationPolicy('policy', [$this]);
+        $this->middleware->setParameters(['policy' => $policy]);
+        $this->authority->expects($this->once())
+            ->method('authorize')
+            ->with($user, $policy)
+            ->willReturn(AuthorizationResult::pass());
+        $response = $this->createMock(IResponse::class);
+        $next = $this->createMock(IRequestHandler::class);
+        $next->expects($this->once())
+            ->method('handle')
+            ->with($request)
+            ->willReturn($response);
+        $this->middleware->handle($request, $next);
     }
 
     public function testHandlingUnauthorizedResultForPolicyNameReturnsForbiddenResponse(): void

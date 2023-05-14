@@ -21,12 +21,12 @@ readonly class AuthorizationPolicy
 {
     /** @var list<string>|null The list of authentication schemes the requirements are evaluated against, or null if using the default scheme */
     public ?array $authenticationSchemeNames;
-    /** @var list<object> The list of requirements */
+    /** @var non-empty-list<object> The list of requirements */
     public array $requirements;
 
     /**
      * @param string $name The name of the policy
-     * @param list<object>|object $requirements The requirement or list of requirements
+     * @param non-empty-list<object>|object $requirements The requirement or list of requirements
      * @param list<string>|string|null $authenticationSchemeNames The authentication scheme name or list of scheme names the requirements are evaluated against, or null if using the default scheme
      * @throws InvalidArgumentException Thrown if the requirements were empty
      */
