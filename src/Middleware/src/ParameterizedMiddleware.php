@@ -17,7 +17,7 @@ namespace Aphiria\Middleware;
  */
 abstract class ParameterizedMiddleware implements IMiddleware
 {
-    /** @var array The middleware parameters */
+    /** @var array<string, mixed> The middleware parameters */
     private array $parameters = [];
 
     /**

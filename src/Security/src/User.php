@@ -114,6 +114,20 @@ class User implements IPrincipal
     }
 
     /**
+     * @inheritdoc
+     */
+    public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
+    {
+        foreach ($user->getIdentities() as $identity) {
+            if ($identity->isAuthenticated() || $includeUnauthenticatedIdentities) {
+                $this->addIdentity($identity);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets the primary identity
      */
     private function setPrimaryIdentity(): void
