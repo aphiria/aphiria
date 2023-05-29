@@ -44,7 +44,14 @@ class Authenticator implements IAuthenticator
         $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
         $authResult = $handler->authenticate($request, $scheme);
 
-        if ($authResult->passed) {
+        if ($authResult->passed && $authResult->user !== null) {
+            if (($user = $this->userAccessor->getUser($request)) instanceof IPrincipal) {
+                // Merge this user with any previously-set user so that all the identities and claims are set for all schemes authenticated against
+                // We store this merged identity in a new authentication result, and return that one instead
+                $user->mergeIdentities($authResult->user);
+                $authResult = new AuthenticationResult($authResult->passed, $user, $authResult->failure);
+            }
+
             $this->userAccessor->setUser($authResult->user, $request);
         }
 

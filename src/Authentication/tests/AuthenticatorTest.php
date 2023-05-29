@@ -29,6 +29,8 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -38,14 +40,19 @@ class AuthenticatorTest extends TestCase
     private IAuthenticationSchemeHandlerResolver&MockObject $authenticationHandlerResolver;
     private Authenticator $authenticator;
     private AuthenticationSchemeRegistry $schemes;
-    private IUserAccessor&MockObject $userAccessor;
+    private IUserAccessor&MockInterface $userAccessor;
 
     protected function setUp(): void
     {
         $this->schemes = new AuthenticationSchemeRegistry();
         $this->authenticationHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
-        $this->userAccessor = $this->createMock(IUserAccessor::class);
+        $this->userAccessor = Mockery::mock(IUserAccessor::class);
         $this->authenticator = new Authenticator($this->schemes, $this->authenticationHandlerResolver, $this->userAccessor);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public static function getUsersForLogin(): array
@@ -163,16 +170,21 @@ class AuthenticatorTest extends TestCase
         $schemeHandler->method('authenticate')
             ->with($request, $scheme)
             ->willReturn($expectedResult);
-        $this->userAccessor->expects($this->never())
-            ->method('setUser');
+        $this->userAccessor->shouldNotReceive('setUser');
         $this->assertSame($expectedResult, $this->authenticator->authenticate($request, 'foo'));
     }
 
     public function testAuthenticateReturnsResultFromSchemeHandler(): void
     {
         $request = $this->createMock(IRequest::class);
+        $user = $this->createMock(IPrincipal::class);
+        $this->userAccessor->shouldReceive('getUser')
+            ->with($request)
+            ->andReturn(null);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user, $request);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
+        $expectedResult = AuthenticationResult::pass($user);
         $schemeHandler->method('authenticate')
             ->with($request, $scheme)
             ->willReturn($expectedResult);
@@ -182,23 +194,33 @@ class AuthenticatorTest extends TestCase
     public function testAuthenticateSetsUserOnSuccess(): void
     {
         $request = $this->createMock(IRequest::class);
-        $expectedUser = $this->createMock(IPrincipal::class);
-        $expectedResult = AuthenticationResult::pass($expectedUser);
+        $user = $this->createMock(IPrincipal::class);
+        $this->userAccessor->shouldReceive('getUser')
+            ->with($request)
+            ->andReturn(null);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user, $request);
+        $expectedResult = AuthenticationResult::pass($user);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->expects($this->once())
             ->method('authenticate')
             ->with($request, $scheme)
             ->willReturn($expectedResult);
-        $this->userAccessor->method('setUser')
-            ->with($expectedUser, $request);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user, $request);
         $this->assertSame($expectedResult, $this->authenticator->authenticate($request, 'foo'));
     }
 
     public function testAuthenticateWithDefaultAuthenticationSchemeUsesDefaultScheme(): void
     {
         $request = $this->createMock(IRequest::class);
-        $expectedUser = $this->createMock(IPrincipal::class);
-        $expectedResult = AuthenticationResult::pass($expectedUser);
+        $user = $this->createMock(IPrincipal::class);
+        $this->userAccessor->shouldReceive('getUser')
+            ->with($request)
+            ->andReturn(null);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user, $request);
+        $expectedResult = AuthenticationResult::pass($user);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->expects($this->once())
             ->method('authenticate')
@@ -220,6 +242,29 @@ class AuthenticatorTest extends TestCase
         $this->expectException(SchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $this->authenticator->authenticate($this->createMock(IRequest::class), 'foo');
+    }
+
+    public function testAuthenticatingUserWhenOneWasPreviouslySetMergesAuthenticatedIdentitiesAndSetsTheUser(): void
+    {
+        $request = $this->createMock(IRequest::class);
+        $user1 = $this->createMock(IPrincipal::class);
+        $user2 = $this->createMock(IPrincipal::class);
+        $user1->method('mergeIdentities')
+            ->with($user2);
+        $this->userAccessor->shouldReceive('getUser')
+            ->with($request)
+            ->andReturn($user1);
+        // The second user's identities should be merged into the first one's
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user1, $request);
+        [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
+        $expectedResult = AuthenticationResult::pass($user2);
+        $schemeHandler->method('authenticate')
+            ->with($request, $scheme)
+            ->willReturn($expectedResult);
+        // Note: The authenticator will essentially clone the expected result set above, but with user 1 merged with user 2's identities
+        $actualResult = $this->authenticator->authenticate($request, 'foo');
+        $this->assertSame($user1, $actualResult->user);
     }
 
     public function testChallengeCallsSchemeHandler(): void
@@ -269,6 +314,8 @@ class AuthenticatorTest extends TestCase
         $user = $this->createMock(IPrincipal::class);
         $user->method('getPrimaryIdentity')
             ->willReturn($identity);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user, $request);
         $schemeHandler->expects($this->once())
             ->method('logIn')
             ->with($user, $request, $response, $scheme);
@@ -322,6 +369,8 @@ class AuthenticatorTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with(null, $request);
         [$scheme, $schemeHandler] = $this->createLoginSchemeAndSetUpResolver('foo');
         $schemeHandler->expects($this->once())
             ->method('logOut')

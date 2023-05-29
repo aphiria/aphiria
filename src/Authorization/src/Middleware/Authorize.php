@@ -66,6 +66,16 @@ class Authorize extends ParameterizedMiddleware
         /** @var AuthorizationPolicy $policy */
         $user = $this->userAccessor->getUser($request);
 
+        if ($user === null) {
+            // Try to authenticate the user for each authentication scheme
+            foreach ($policy->authenticationSchemeNames ?? [null] as $authenticationSchemeName) {
+                $this->authenticator->authenticate($request, $authenticationSchemeName);
+            }
+
+            // Try grabbing the user again now that we've performed authentication
+            $user = $this->userAccessor->getUser($request);
+        }
+
         if ($user === null || $user->getPrimaryIdentity()?->isAuthenticated() !== true) {
             return $this->handleUnauthenticatedUser($request, $policy);
         }

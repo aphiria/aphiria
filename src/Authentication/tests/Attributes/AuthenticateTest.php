@@ -17,9 +17,15 @@ use PHPUnit\Framework\TestCase;
 
 class AuthenticateTest extends TestCase
 {
-    public function testSchemeNameParameterIsAutomaticallySet(): void
+    public function testMultipleSchemeNamesParametersAreSet(): void
+    {
+        $attribute = new Authenticate(['foo', 'bar']);
+        $this->assertSame(['foo', 'bar'], $attribute->parameters['schemeNames']);
+    }
+
+    public function testSingleSchemeNameParameterIsSet(): void
     {
         $attribute = new Authenticate('foo');
-        $this->assertSame('foo', $attribute->parameters['schemeName']);
+        $this->assertSame(['foo'], $attribute->parameters['schemeNames']);
     }
 }

@@ -20,66 +20,122 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class AuthenticateTest extends TestCase
 {
-    private IAuthenticator&MockObject $authenticator;
+    private IAuthenticator&MockInterface $authenticator;
     private Authenticate $middleware;
 
     protected function setUp(): void
     {
-        $this->authenticator = $this->createMock(IAuthenticator::class);
+        $this->authenticator = Mockery::mock(IAuthenticator::class);
         $this->middleware = new Authenticate($this->authenticator);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public static function getSchemeNames(): array
     {
         return [
-            [null],
-            ['foo']
+            [[null]],
+            [['foo']],
+            [['foo', 'bar']]
         ];
     }
 
     /**
-     * @param string|null $schemeName The scheme name or null
+     * @param list<string|null> $schemeNames The list of scheme names to test
      */
     #[DataProvider('getSchemeNames')]
-    public function testHandlingFailingAuthenticationResultCallsChallengesTheResponse(?string $schemeName): void
+    public function testHandlingFailingAuthenticationResultCallsChallengesTheResponse(array $schemeNames): void
     {
-        $this->middleware->setParameters(['schemeName' => $schemeName]);
+        $this->middleware->setParameters(['schemeNames' => $schemeNames]);
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
-        $this->authenticator->expects($this->once())
-            ->method('authenticate')
-            ->with($request, $schemeName)
-            ->willReturn(AuthenticationResult::fail('foo'));
-        $this->authenticator->expects($this->once())
-            ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), $schemeName);
+
+        foreach ($schemeNames as $schemeName) {
+            $this->authenticator->shouldReceive('authenticate')
+                ->with($request, $schemeName)
+                ->andReturn(AuthenticationResult::fail('foo'));
+            $this->authenticator->shouldReceive('challenge')
+                ->withArgs(function (IRequest $actualRequest, IResponse $actualResponse, ?string $actualSchemeName) use ($request, $schemeName): bool {
+                    return $actualRequest === $request
+                        && $actualResponse->getStatusCode() === HttpStatusCode::Unauthorized
+                        && $actualSchemeName === $schemeName;
+                });
+        }
+
         $next->expects($this->never())
             ->method('handle')
             ->willReturn($response);
         $this->assertSame(HttpStatusCode::Unauthorized, $this->middleware->handle($request, $next)->getStatusCode());
     }
 
-    /**
-     * @param string|null $schemeName The scheme name or null
-     */
-    #[DataProvider('getSchemeNames')]
-    public function testHandlingPassingAuthenticationResultCallsNextRequestHandler(?string $schemeName): void
+    public function testHandlingFailingThenPassingAuthenticationSchemeStillCallsNextRequestHandler(): void
     {
-        $this->middleware->setParameters(['schemeName' => $schemeName]);
+        $this->middleware->setParameters(['schemeNames' => ['foo', 'bar']]);
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
-        $this->authenticator->expects($this->once())
-            ->method('authenticate')
-            ->with($request, $schemeName)
-            ->willReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+
+        $this->authenticator->shouldReceive('authenticate')
+            ->with($request, 'foo')
+            ->andReturn(AuthenticationResult::fail('foo'));
+        $this->authenticator->shouldReceive('authenticate')
+            ->with($request, 'bar')
+            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+
+        $next->expects($this->once())
+            ->method('handle')
+            ->willReturn($response);
+        $this->assertSame($response, $this->middleware->handle($request, $next));
+    }
+
+    /**
+     * @param list<string|null> $schemeNames The list of scheme names to test
+     */
+    #[DataProvider('getSchemeNames')]
+    public function testHandlingPassingAuthenticationResultCallsNextRequestHandler(array $schemeNames): void
+    {
+        $this->middleware->setParameters(['schemeNames' => $schemeNames]);
+        $request = $this->createMock(IRequest::class);
+        $response = $this->createMock(IResponse::class);
+        $next = $this->createMock(IRequestHandler::class);
+
+        foreach ($schemeNames as $schemeName) {
+            $this->authenticator->shouldReceive('authenticate')
+                ->with($request, $schemeName)
+                ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+        }
+
+        $next->expects($this->once())
+            ->method('handle')
+            ->willReturn($response);
+        $this->assertSame($response, $this->middleware->handle($request, $next));
+    }
+
+    public function testHandlingPassingThenFailingAuthenticationSchemeStillCallsNextRequestHandler(): void
+    {
+        $this->middleware->setParameters(['schemeNames' => ['foo', 'bar']]);
+        $request = $this->createMock(IRequest::class);
+        $response = $this->createMock(IResponse::class);
+        $next = $this->createMock(IRequestHandler::class);
+
+        $this->authenticator->shouldReceive('authenticate')
+            ->with($request, 'foo')
+            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class)));
+        $this->authenticator->shouldReceive('authenticate')
+            ->with($request, 'bar')
+            ->andReturn(AuthenticationResult::fail('foo'));
+
         $next->expects($this->once())
             ->method('handle')
             ->willReturn($response);
