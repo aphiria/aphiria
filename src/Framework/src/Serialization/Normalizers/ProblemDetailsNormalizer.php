@@ -15,13 +15,40 @@ namespace Aphiria\Framework\Serialization\Normalizers;
 use Aphiria\Api\Errors\ProblemDetails;
 use ArrayObject;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Defines the problem details normalizer
  */
-final class ProblemDetailsNormalizer extends ObjectNormalizer
+final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerAwareInterface, DenormalizerInterface
 {
+    /**
+     * @param ObjectNormalizer $objectNormalizer The normalizer to use
+     */
+    public function __construct(private readonly ObjectNormalizer $objectNormalizer = new ObjectNormalizer())
+    {
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    {
+        return $this->objectNormalizer->denormalize($data, $type, $format, $context);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [ProblemDetails::class => true];
+    }
+
     /**
      * @inheritdoc
      */
@@ -32,7 +59,7 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
         }
 
         /** @var array<string, mixed> $normalizedProblemDetails */
-        $normalizedProblemDetails = parent::normalize($object);
+        $normalizedProblemDetails = $this->objectNormalizer->normalize($object);
 
         if (\array_key_exists('extensions', $normalizedProblemDetails)) {
             // Remove the extensions in the off chance that there's an extension named 'extensions'
@@ -50,6 +77,22 @@ final class ProblemDetailsNormalizer extends ObjectNormalizer
         }
 
         return $normalizedProblemDetails;
+    }
+
+    /**
+     * @inheridoc
+     */
+    public function setSerializer(SerializerInterface $serializer): void
+    {
+        $this->objectNormalizer->setSerializer($serializer);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
+    {
+        return $type === ProblemDetails::class;
     }
 
     /**

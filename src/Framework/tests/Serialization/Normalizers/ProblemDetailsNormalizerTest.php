@@ -17,16 +17,70 @@ use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
 use Aphiria\Net\Http\HttpStatusCode;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class ProblemDetailsNormalizerTest extends TestCase
 {
     private ProblemDetailsNormalizer $normalizer;
+    private ObjectNormalizer $objectNormalizer;
 
     protected function setUp(): void
     {
-        $this->normalizer = new ProblemDetailsNormalizer();
+        $this->objectNormalizer = new ObjectNormalizer();
+        $this->normalizer = new ProblemDetailsNormalizer($this->objectNormalizer);
         $this->normalizer->setSerializer(new Serializer([$this->normalizer], []));
+    }
+
+    public function testCallingDenormalizePassesCallThroughToObjectNormalizer(): void
+    {
+        $normalizedData = [
+            'type' => 'foo',
+            'title' => 'title',
+            'detail' => 'details',
+            'status' => HttpStatusCode::InternalServerError->value,
+            'instance' => 'instance',
+            'extensions' => ['foo' => 'bar']
+        ];
+        $expectedProblemDetails = new ProblemDetails('foo', 'title', 'details', HttpStatusCode::InternalServerError, 'instance', ['foo' => 'bar']);
+        $this->assertEquals(
+            $expectedProblemDetails,
+            $this->objectNormalizer->denormalize($normalizedData, ProblemDetails::class)
+        );
+        $this->assertEquals(
+            $expectedProblemDetails,
+            $this->normalizer->denormalize($normalizedData, ProblemDetails::class)
+        );
+    }
+
+    public function testCallingGetSupportedTypesReturnsProblemDetails(): void
+    {
+        $this->assertSame([ProblemDetails::class => true], $this->normalizer->getSupportedTypes(null));
+    }
+
+    public function testCallingSetSerializerPassesCallThroughToObjectNormalizer(): void
+    {
+        $serializer = $this->createMock(SerializerInterface::class);
+        $objectNormalizer = $this->createMock(ObjectNormalizer::class);
+        $normalizer = new ProblemDetailsNormalizer($objectNormalizer);
+        $objectNormalizer->expects($this->once())
+            ->method('setSerializer')
+            ->with($serializer);
+        $normalizer->setSerializer($serializer);
+    }
+
+    public function testCallingSupportsDenormalizationOnlyReturnsTrueForProblemDetailsType(): void
+    {
+        $this->assertTrue($this->normalizer->supportsDenormalization([], ProblemDetails::class));
+        $this->assertFalse($this->normalizer->supportsDenormalization([], self::class));
+    }
+
+    public function testCallingSupportsNormalizationOnlyAcceptsProblemDetails(): void
+    {
+        $this->assertTrue($this->normalizer->supportsNormalization(new ProblemDetails()));
+        $this->assertFalse($this->normalizer->supportsNormalization([]));
+        $this->assertFalse($this->normalizer->supportsNormalization($this));
     }
 
     public function testNormalizeAddsExtensionsToTopLevelOfNormalizedArray(): void
