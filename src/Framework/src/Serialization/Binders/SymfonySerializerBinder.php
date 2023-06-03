@@ -83,22 +83,13 @@ final class SymfonySerializerBinder extends Binder
                     ]);
                     break;
                 case ObjectNormalizer::class:
-                    $nameConverter = $nameConverterName = null;
-
-                    if (GlobalConfiguration::tryGetString('aphiria.serialization.nameConverter', $nameConverterName)) {
-                        $nameConverter = match ($nameConverterName) {
-                            CamelCaseToSnakeCaseNameConverter::class => new CamelCaseToSnakeCaseNameConverter(),
-                            default => null
-                        };
-                    }
-
-                    $normalizers[] = new ObjectNormalizer(null, $nameConverter);
+                    $normalizers[] = $this->createObjectNormalizer();
                     break;
                 case ArrayDenormalizer::class:
                     $normalizers[] = new ArrayDenormalizer();
                     break;
                 case ProblemDetailsNormalizer::class:
-                    $normalizers[] = new ProblemDetailsNormalizer();
+                    $normalizers[] = new ProblemDetailsNormalizer($this->createObjectNormalizer());
                     break;
                 case BackedEnumNormalizer::class:
                     $normalizers[] = new BackedEnumNormalizer();
@@ -116,5 +107,24 @@ final class SymfonySerializerBinder extends Binder
 
         $serializer = new Serializer($normalizers, $encoders);
         $container->bindInstance([SerializerInterface::class, Serializer::class], $serializer);
+    }
+
+    /**
+     * Creates an object normalizer for use in a serializer
+     *
+     * @return ObjectNormalizer The object normalizer
+     */
+    protected function createObjectNormalizer(): ObjectNormalizer
+    {
+        $nameConverter = $nameConverterName = null;
+
+        if (GlobalConfiguration::tryGetString('aphiria.serialization.nameConverter', $nameConverterName)) {
+            $nameConverter = match ($nameConverterName) {
+                CamelCaseToSnakeCaseNameConverter::class => new CamelCaseToSnakeCaseNameConverter(),
+                default => null
+            };
+        }
+
+        return new ObjectNormalizer(nameConverter: $nameConverter);
     }
 }
