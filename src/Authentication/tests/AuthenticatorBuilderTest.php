@@ -45,8 +45,7 @@ class AuthenticatorBuilderTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $instance2 = $this->authenticatorBuilder->withScheme(new AuthenticationScheme('foo', $schemeHandler::class));
-        $instance3 = $this->authenticatorBuilder->withUserAccessor($this->createMock(IUserAccessor::class));
-        $this->assertTrue($instance1 === $instance2 && $instance2 === $instance3);
+        $this->assertTrue($instance1 === $instance2 && $instance2);
     }
 
     public function testWithSchemeAddsSchemeToAuthenticator(): void
