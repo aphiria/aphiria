@@ -21,10 +21,10 @@ use PHPUnit\Framework\TestCase;
 class AuthorizeRolesTest extends TestCase
 {
     /**
-     * @param list<string>|string|null $authenticationSchemeNames The authentication scheme name or list of scheme names, or null if using the default scheme name
+     * @param list<string|null>|string|null $authenticationSchemeNames The authentication scheme name or list of scheme names, or null if using the default scheme name
      */
-    #[TestWith(['foo', 'bar'])]
-    #[TestWith(['foo'])]
+    #[TestWith([['foo', 'bar']])]
+    #[TestWith([['foo']])]
     #[TestWith([null])]
     public function testAuthenticationSchemeNamesParameterIsAutomaticallySet(array|string|null $authenticationSchemeNames): void
     {

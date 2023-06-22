@@ -19,7 +19,7 @@ use InvalidArgumentException;
  */
 readonly class AuthorizationPolicy
 {
-    /** @var list<string>|null The list of authentication schemes the requirements are evaluated against, or null if using the default scheme */
+    /** @var list<string|null>|null The list of authentication schemes the requirements are evaluated against, or null if using the default scheme */
     public ?array $authenticationSchemeNames;
     /** @var non-empty-list<object> The list of requirements */
     public array $requirements;
@@ -27,7 +27,7 @@ readonly class AuthorizationPolicy
     /**
      * @param string $name The name of the policy
      * @param non-empty-list<object>|object $requirements The requirement or list of requirements
-     * @param list<string>|string|null $authenticationSchemeNames The authentication scheme name or list of scheme names the requirements are evaluated against, or null if using the default scheme
+     * @param list<string|null>|string|null $authenticationSchemeNames The authentication scheme name or list of scheme names the requirements are evaluated against, or null if using the default scheme
      * @throws InvalidArgumentException Thrown if the requirements were empty
      */
     public function __construct(

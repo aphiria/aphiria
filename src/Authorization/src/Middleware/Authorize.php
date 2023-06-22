@@ -26,6 +26,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
+use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
 
 /**
@@ -68,12 +69,12 @@ class Authorize extends ParameterizedMiddleware
 
         if ($user === null) {
             // Try to authenticate the user for each authentication scheme
-            foreach ($policy->authenticationSchemeNames ?? [null] as $authenticationSchemeName) {
-                $this->authenticator->authenticate($request, $authenticationSchemeName);
-            }
+            $authenticationResult = $this->authenticator->authenticate($request, $policy->authenticationSchemeNames);
 
-            // Try grabbing the user again now that we've performed authentication
-            $user = $this->userAccessor->getUser($request);
+            if ($authenticationResult->passed && $authenticationResult->user instanceof IPrincipal) {
+                $user = $authenticationResult->user;
+                $this->userAccessor->setUser($authenticationResult->user, $request);
+            }
         }
 
         if ($user === null || $user->getPrimaryIdentity()?->isAuthenticated() !== true) {
@@ -102,11 +103,7 @@ class Authorize extends ParameterizedMiddleware
     protected function handleFailedAuthorizationResult(IRequest $request, AuthorizationPolicy $policy, AuthorizationResult $authorizationResult): IResponse
     {
         $response = new Response(HttpStatusCode::Forbidden);
-        $authenticationSchemeNames = $policy->authenticationSchemeNames === null || \count($policy->authenticationSchemeNames) === 0 ? [null] : $policy->authenticationSchemeNames;
-
-        foreach ($authenticationSchemeNames as $authenticationSchemeName) {
-            $this->authenticator->forbid($request, $response, $authenticationSchemeName);
-        }
+        $this->authenticator->forbid($request, $response, $policy->authenticationSchemeNames);
 
         return $response;
     }
@@ -123,11 +120,7 @@ class Authorize extends ParameterizedMiddleware
     protected function handleUnauthenticatedUser(IRequest $request, AuthorizationPolicy $policy): IResponse
     {
         $response = new Response(HttpStatusCode::Unauthorized);
-        $authenticationSchemeNames = $policy->authenticationSchemeNames === null || \count($policy->authenticationSchemeNames) === 0 ? [null] : $policy->authenticationSchemeNames;
-
-        foreach ($authenticationSchemeNames as $authenticationSchemeName) {
-            $this->authenticator->challenge($request, $response, $authenticationSchemeName);
-        }
+        $this->authenticator->challenge($request, $response, $policy->authenticationSchemeNames);
 
         return $response;
     }

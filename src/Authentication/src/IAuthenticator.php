@@ -25,7 +25,7 @@ interface IAuthenticator
      * Attempts to authenticate a request
      *
      * @param IRequest $request The current request
-     * @param list<string>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
+     * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
      * @return AuthenticationResult The result of authentication
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
@@ -36,7 +36,7 @@ interface IAuthenticator
      *
      * @param IRequest $request The current request
      * @param IResponse $response The current response
-     * @param list<string>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
+     * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
     public function challenge(IRequest $request, IResponse $response, array|string $schemeNames = null): void;
@@ -46,7 +46,7 @@ interface IAuthenticator
      *
      * @param IRequest $request The current request
      * @param IResponse $response The current response
-     * @param list<string>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
+     * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
     public function forbid(IRequest $request, IResponse $response, array|string $schemeNames = null): void;
@@ -57,7 +57,7 @@ interface IAuthenticator
      * @param IPrincipal $user The user to log in
      * @param IRequest $request The current request
      * @param IResponse $response The current response
-     * @param list<string>|string|null $schemeNames The name or names of the authentication scheme used, or null if using the default one
+     * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme used, or null if using the default one
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      * @throws NotAuthenticatedException Thrown if the user's primary identity was not authenticated or set
      * @throws UnsupportedAuthenticationHandlerException Thrown if the scheme's handler does not support login
@@ -69,7 +69,7 @@ interface IAuthenticator
      *
      * @param IRequest $request The current request
      * @param IResponse $response The current response
-     * @param list<string>|string|null $schemeNames The name or names of the authentication scheme used, or null if using the default one
+     * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme used, or null if using the default one
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      * @throws UnsupportedAuthenticationHandlerException Thrown if the scheme's handler does not support login
      */

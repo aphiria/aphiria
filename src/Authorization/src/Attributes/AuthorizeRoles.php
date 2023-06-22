@@ -26,13 +26,12 @@ final class AuthorizeRoles extends Middleware
 {
     /**
      * @param list<string>|string $roles The role or list of roles that will be OR'd together for authorization
-     * @param list<string>|string|null $authenticationSchemeNames The authentication scheme or schemes to use, or null if using the default one
+     * @param list<string|null>|string|null $authenticationSchemeNames The authentication scheme or schemes to use, or null if using the default one
      */
     public function __construct(
         array|string $roles,
         array|string $authenticationSchemeNames = null
     ) {
-        $authenticationSchemeNames = \is_string($authenticationSchemeNames) ? [$authenticationSchemeNames] : $authenticationSchemeNames;
         $policy = new AuthorizationPolicy('roles', new RolesRequirement($roles), $authenticationSchemeNames);
 
         parent::__construct(Authorize::class, ['policy' => $policy]);

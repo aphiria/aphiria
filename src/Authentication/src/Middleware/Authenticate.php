@@ -15,6 +15,8 @@ namespace Aphiria\Authentication\Middleware;
 use Aphiria\Authentication\AuthenticationResult;
 use Aphiria\Authentication\AuthenticationSchemeNotFoundException;
 use Aphiria\Authentication\IAuthenticator;
+use Aphiria\Authentication\IUserAccessor;
+use Aphiria\Authentication\RequestPropertyUserAccessor;
 use Aphiria\Middleware\ParameterizedMiddleware;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
@@ -29,9 +31,12 @@ class Authenticate extends ParameterizedMiddleware
 {
     /**
      * @param IAuthenticator $authenticator The authenticator to use
+     * @param IUserAccessor $userAccessor The user accessor we'll store the authenticated user in
      */
-    public function __construct(private readonly IAuthenticator $authenticator)
-    {
+    public function __construct(
+        private readonly IAuthenticator $authenticator,
+        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+    ) {
     }
 
     /**
@@ -42,41 +47,31 @@ class Authenticate extends ParameterizedMiddleware
         // Default to a null scheme name if none was set
         /** @var list<string|null> $schemeNames */
         $schemeNames = $this->getParameter('schemeNames') ?? [null];
-        $failedAuthenticationResults = [];
+        $authenticationResult = $this->authenticator->authenticate($request, $schemeNames);
 
-        foreach ($schemeNames as $schemeName) {
-            // TODO: Should we actually set the user here rather than inside the authenticator?  Could help with abstraction since callers sort of know that the authenticator is setting the user under the hood.
-            $authenticationResult = $this->authenticator->authenticate($request, $schemeName);
-
-            if (!$authenticationResult->passed) {
-                $failedAuthenticationResults[] = $authenticationResult;
-            }
+        if (!$authenticationResult->passed) {
+            return $this->handleFailedAuthenticationResult($request, $authenticationResult);
         }
 
-        // If all the schemes failed to authenticate, handle it
-        if (\count($failedAuthenticationResults) === \count($schemeNames)) {
-            return $this->handleFailedAuthenticationResults($request, $failedAuthenticationResults);
-        }
+        // Persist the user so that it can be retrieved in controllers
+        $this->userAccessor->setUser($authenticationResult->user, $request);
 
         return $next->handle($request);
     }
 
     /**
-     * Handles failed authentication results
+     * Handles a failed authentication result
      * This method can be overridden to, for example, add details about the failed authentication result to the response
      *
      * @param IRequest $request The current request
-     * @param list<AuthenticationResult> $failedAuthenticationResults The list of failed authentication results
+     * @param AuthenticationResult $failedAuthenticationResult The failed authentication result
      * @return IResponse The response
      * @throws AuthenticationSchemeNotFoundException Thrown if the scheme could not be found
      */
-    protected function handleFailedAuthenticationResults(IRequest $request, array $failedAuthenticationResults): IResponse
+    protected function handleFailedAuthenticationResult(IRequest $request, AuthenticationResult $failedAuthenticationResult): IResponse
     {
         $response = new Response(HttpStatusCode::Unauthorized);
-
-        foreach ($failedAuthenticationResults as $failedAuthenticationResult) {
-            $this->authenticator->challenge($request, $response, $failedAuthenticationResult->schemeNames);
-        }
+        $this->authenticator->challenge($request, $response, $failedAuthenticationResult->schemeNames);
 
         return $response;
     }

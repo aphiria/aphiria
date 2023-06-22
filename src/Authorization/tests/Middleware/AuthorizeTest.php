@@ -212,39 +212,6 @@ class AuthorizeTest extends TestCase
         $this->assertSame($response, $this->middleware->handle($request, $next));
     }
 
-    public function testHandlingUnauthenticatedUserGrabsTheUserFromTheAccessorAfterAuthenticatingAgainstMultipleSchemeNames(): void
-    {
-        // Need to use Mockery for these tests since they require us to check successive calls with different parameters
-        $authenticator = Mockery::mock(IAuthenticator::class);
-        $middleware = new Authorize($this->authority, $authenticator, $this->policies, $this->userAccessor);
-        $request = $this->createMock(IRequest::class);
-        // Must ensure the user has an authenticated identity
-        $user1 = new User([new Identity([], 'authScheme1')]);
-        $user2 = new User([new Identity([], 'authScheme2')]);
-        $authenticator->shouldReceive('authenticate')
-            ->with($request, 'authScheme1')
-            ->andReturn(AuthenticationResult::pass($user1, 'authScheme1'));
-        $authenticator->shouldReceive('authenticate')
-            ->with($request, 'authScheme2')
-            ->andReturn(AuthenticationResult::pass($user2, 'authScheme2'));
-        $this->userAccessor->shouldReceive('getUser')
-            ->with($request)
-            ->andReturn(null, $user1);
-        $policy = new AuthorizationPolicy('policy', [$this], ['authScheme1', 'authScheme2']);
-        $middleware->setParameters(['policy' => $policy]);
-        $this->authority->expects($this->once())
-            ->method('authorize')
-            ->with($user1, $policy)
-            ->willReturn(AuthorizationResult::pass($policy->name));
-        $response = $this->createMock(IResponse::class);
-        $next = $this->createMock(IRequestHandler::class);
-        $next->expects($this->once())
-            ->method('handle')
-            ->with($request)
-            ->willReturn($response);
-        $middleware->handle($request, $next);
-    }
-
     /**
      * @param IPrincipal $user The unauthenticated user
      */
@@ -258,26 +225,30 @@ class AuthorizeTest extends TestCase
         $policy = new AuthorizationPolicy('policy', [$this], 'scheme');
         $this->authenticator->expects($this->once())
             ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), 'scheme');
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), ['scheme']);
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
     }
 
-    public function testHandlingUnauthenticatedUserWithPolicyThatHasNoAuthenticationSchemeNamesAuthenticatesWithDefaultOneBeforeAuthorizing(): void
+    public function testHandlingUnauthenticatedUserSetsUserAfterAuthenticatingAgainstMultipleSchemeNames(): void
     {
+        // Need to use Mockery for these tests since they require us to check successive calls with different parameters
+        $authenticator = Mockery::mock(IAuthenticator::class);
+        $middleware = new Authorize($this->authority, $authenticator, $this->policies, $this->userAccessor);
         $request = $this->createMock(IRequest::class);
         // Must ensure the user has an authenticated identity
-        $user = new User([new Identity([], 'authScheme')]);
+        $user = new User([new Identity([], 'authScheme1')]);
+        $authenticator->shouldReceive('authenticate')
+            ->with($request, ['authScheme1', 'authScheme2'])
+            ->andReturn(AuthenticationResult::pass($user, ['authScheme1', 'authScheme2']));
         $this->userAccessor->shouldReceive('getUser')
             ->with($request)
-            ->andReturn(null, $user);
-        $this->authenticator->expects($this->once())
-            ->method('authenticate')
-            ->with($request, null)
-            ->willReturn(AuthenticationResult::pass($user, 'scheme'));
-        $policy = new AuthorizationPolicy('policy', [$this]);
-        $this->middleware->setParameters(['policy' => $policy]);
+            ->andReturn(null);
+        $this->userAccessor->shouldReceive('setUser')
+            ->with($user, $request);
+        $policy = new AuthorizationPolicy('policy', [$this], ['authScheme1', 'authScheme2']);
+        $middleware->setParameters(['policy' => $policy]);
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
@@ -288,7 +259,7 @@ class AuthorizeTest extends TestCase
             ->method('handle')
             ->with($request)
             ->willReturn($response);
-        $this->middleware->handle($request, $next);
+        $middleware->handle($request, $next);
     }
 
     public function testHandlingUnauthorizedResultForPolicyNameReturnsForbiddenResponse(): void
@@ -306,7 +277,7 @@ class AuthorizeTest extends TestCase
             ->willReturn(AuthorizationResult::fail($policy->name, [$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), ['scheme']);
         $this->middleware->setParameters(['policyName' => $policy->name]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
@@ -326,7 +297,7 @@ class AuthorizeTest extends TestCase
             ->willReturn(AuthorizationResult::fail($policy->name, [$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), 'scheme');
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), ['scheme']);
         $this->middleware->setParameters(['policy' => $policy]);
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
