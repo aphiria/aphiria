@@ -18,7 +18,6 @@ use Aphiria\Authentication\AuthenticationSchemeRegistry;
 use Aphiria\Authentication\Authenticator;
 use Aphiria\Authentication\AuthenticatorBuilder;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
-use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
