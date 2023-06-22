@@ -5,6 +5,10 @@
 ### Changed
 
 - Updated to PHPUnit 10.1 ([#248](https://github.com/aphiria/aphiria/pull/248), [#250](https://github.com/aphiria/aphiria/pull/250))
+- Updated `IAuthenticator::authenticate()`, `IAuthenticator::challenge()`, `IAuthenticator::forbid()`, `IAuthenticator::logIn()`, and `IAuthenticator::logOut()` to take in no, one, or many authentication scheme names ([#269](https://github.com/aphiria/aphiria/pull/269))
+- Added the authentication scheme name(s) to `AuthenticationResult` ([#269](https://github.com/aphiria/aphiria/pull/269))
+- Removed `IUserAccessor` property from `Authenticator` ([#269](https://github.com/aphiria/aphiria/pull/269))
+- Renamed `SchemeNotFoundException` to `AuthenticationSchemeNotFoundException` ([#269](https://github.com/aphiria/aphiria/pull/269))
 
 ### Added
 
@@ -13,6 +17,7 @@
 - Added ability to easily deserialize request and response bodies in integration tests ([#253](https://github.com/aphiria/aphiria/pull/253))
 - Added `PrincipalBuilder` and `IdentityBuilder` ([#257](https://github.com/aphiria/aphiria/pull/257))
 - Added `IPrincipal::mergeIdentities()` ([#262](https://github.com/aphiria/aphiria/pull/262))
+- Added `AggregateAuthenticationException` when authenticating against multiple schemes and all of them failing ([#269](https://github.com/aphiria/aphiria/pull/269))
 
 ## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
 
