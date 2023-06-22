@@ -19,7 +19,7 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
  */
 final class ObjectConstraintsRegistryBuilder
 {
-    /** @var ObjectConstraintsBuilder The constraints builders we've created */
+    /** @var list<ObjectConstraintsBuilder> The constraints builders we've created */
     private array $objectConstraintsBuilders = [];
 
     /**

@@ -23,7 +23,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
     private array $componentsByType = [];
     /** @var array<array{type: class-string<IComponent>, priority: int}> The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
-    /** @var IModule The list of modules */
+    /** @var list<IModule> The list of modules */
     private array $modules = [];
 
     /**

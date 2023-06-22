@@ -20,9 +20,9 @@ use Closure;
  */
 final class RouteCollectionBuilder
 {
-    /** @var RouteBuilder The stack of route group options */
+    /** @var list<RouteGroupOptions> The stack of route group options */
     private array $groupOptionsStack = [];
-    /** @var RouteBuilder The list of registered route builders */
+    /** @var list<RouteBuilder> The list of registered route builders */
     private array $routeBuilders = [];
 
     /**
