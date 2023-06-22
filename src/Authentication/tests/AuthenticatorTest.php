@@ -208,8 +208,11 @@ class AuthenticatorTest extends TestCase
         $actualResult = $this->authenticator->authenticate($request, ['foo', 'bar']);
         $this->assertFalse($actualResult->passed);
         $this->assertSame('All authentication schemes failed to authenticate', $actualResult->failure?->getMessage());
-        $this->assertInstanceOf(AggregateAuthenticationException::class, $actualResult->failure);
-        $this->assertCount(2, $actualResult->failure?->innerExceptions ?? []);
+        // I had to combine this check into one instance to make Psalm happy
+        $this->assertTrue(
+            $actualResult->failure instanceof AggregateAuthenticationException
+            && \count($actualResult->failure->innerExceptions) === 2
+        );
     }
 
     public function testAuthenticatingMultipleSchemesThatMultiplePassReturnsPassingResultWithMergedUserIdentity(): void
