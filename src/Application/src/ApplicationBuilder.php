@@ -28,9 +28,6 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress InvalidReturnType Psalm gets tripped up with template return types that return an interface - bug
-     * @psalm-suppress InvalidReturnStatement Ditto - bug
      */
     public function getComponent(string $type): IComponent
     {

@@ -317,7 +317,6 @@ trait AphiriaComponents
             $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
-        /** @psalm-suppress PossiblyInvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
             ->withConsoleOutputWriter($exceptionType, $callback);
 
@@ -425,7 +424,6 @@ trait AphiriaComponents
             $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
-        /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
             ->withLogLevelFactory($exceptionType, $logLevelFactory);
 
@@ -511,7 +509,6 @@ trait AphiriaComponents
             $appBuilder->withComponent(new ExceptionHandlerComponent(Container::$globalInstance));
         }
 
-        /** @psalm-suppress PossiblyInvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
         $appBuilder->getComponent(ExceptionHandlerComponent::class)
             ->withProblemDetails($exceptionType, $type, $title, $detail, $status, $instance, $extensions);
 
