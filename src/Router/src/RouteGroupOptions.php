@@ -10,9 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Builders;
+namespace Aphiria\Routing;
 
-use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
 
 /**
@@ -24,8 +23,8 @@ class RouteGroupOptions
      * @param string $path The path template that applies to the entire group
      * @param string|null $host The host template that applies to the entire group, or null
      * @param bool $isHttpsOnly Whether or not the entire group is HTTPS-only
-     * @param list<IRouteConstraint> $constraints The list of route constraints that applies to the entire group
-     * @param list<MiddlewareBinding> $middlewareBindings The list of middleware bindings that applies to the entire group
+     * @param MiddlewareBinding $constraints The list of route constraints that applies to the entire group
+     * @param MiddlewareBinding $middlewareBindings The list of middleware bindings that applies to the entire group
      * @param array<string, mixed> $parameters The mapping of custom parameter names => values to match on for the entire group
      */
     public function __construct(

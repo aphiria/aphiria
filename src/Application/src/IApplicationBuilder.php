@@ -10,11 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Application\Builders;
+namespace Aphiria\Application;
 
-use Aphiria\Application\IApplication;
-use Aphiria\Application\IComponent;
-use Aphiria\Application\IModule;
 use OutOfBoundsException;
 use RuntimeException;
 
@@ -36,7 +33,7 @@ interface IApplicationBuilder
      *
      * @template T of IComponent
      * @param class-string<T> $type The type of component to get
-     * @return T The component, if one was found
+     * @return IComponent The component, if one was found
      * @throws OutOfBoundsException Thrown if there was no component with that type
      */
     public function getComponent(string $type): IComponent;

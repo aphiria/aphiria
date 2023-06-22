@@ -10,10 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Builders;
+namespace Aphiria\Routing;
 
-use Aphiria\Routing\IRouteRegistrant;
-use Aphiria\Routing\RouteCollection;
 use Closure;
 
 /**
@@ -21,11 +19,11 @@ use Closure;
  */
 final class RouteCollectionBuilderRouteRegistrant implements IRouteRegistrant
 {
-    /** @var list<Closure(RouteCollectionBuilder): void> The list of closures that take in a RouteCollectionBuilder instance and register routes */
+    /** @var Closure The list of closures that take in a RouteCollectionBuilder instance and register routes */
     private array $routeCollectionBuilderClosures;
 
     /**
-     * @param list<Closure(RouteCollectionBuilder): void>|Closure(RouteCollectionBuilder): void $routeCollectionBuilderClosures The list of closures that take in a RouteCollectionBuilder instance and register routes
+     * @param Closure|Closure(RouteCollectionBuilder): void $routeCollectionBuilderClosures The list of closures that take in a RouteCollectionBuilder instance and register routes
      */
     public function __construct(Closure|array $routeCollectionBuilderClosures)
     {

@@ -10,13 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Builders;
+namespace Aphiria\Routing;
 
 use Aphiria\Routing\Matchers\Constraints\HttpMethodRouteConstraint;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
-use Aphiria\Routing\Route;
-use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use InvalidArgumentException;
 use LogicException;
@@ -28,9 +26,9 @@ class RouteBuilder
 {
     /** @var RouteAction|null ?RouteAction The action the route takes */
     private ?RouteAction $action = null;
-    /** @var list<IRouteConstraint> The list of constraints */
+    /** @var MiddlewareBinding The list of constraints */
     private array $constraints = [];
-    /** @var list<MiddlewareBinding> The list of middleware bindings on this route */
+    /** @var MiddlewareBinding The list of middleware bindings on this route */
     private array $middlewareBindings = [];
     /** @var string|null The name of this route */
     private ?string $name = null;
@@ -98,7 +96,7 @@ class RouteBuilder
     /**
      * Binds constraints to this route
      *
-     * @param list<IRouteConstraint> $constraints The constraints to add
+     * @param MiddlewareBinding $constraints The constraints to add
      * @return static For chaining
      */
     public function withManyConstraints(array $constraints): static
@@ -111,7 +109,7 @@ class RouteBuilder
     /**
      * Binds many middleware bindings to the route
      *
-     * @param list<MiddlewareBinding|class-string|string> $middlewareBindings The list of middleware bindings to add, or a single
+     * @param MiddlewareBinding $middlewareBindings The list of middleware bindings to add, or a single
      *      class name without properties
      * @return static For chaining
      * @throws InvalidArgumentException Thrown if the middleware bindings are not the correct type

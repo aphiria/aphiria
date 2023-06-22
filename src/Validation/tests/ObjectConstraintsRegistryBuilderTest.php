@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Tests\Builders;
+namespace Aphiria\Validation\Tests;
 
-use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\ObjectConstraints;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use PHPUnit\Framework\TestCase;
 
 class ObjectConstraintsRegistryBuilderTest extends TestCase

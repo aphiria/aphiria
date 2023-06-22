@@ -15,11 +15,11 @@ namespace Aphiria\Framework\Validation\Components;
 use Aphiria\Application\IComponent;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Validation\Builders\ObjectConstraintsBuilderRegistrant;
-use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
+use Aphiria\Validation\ObjectConstraintsBuilderRegistrant;
+use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use Closure;
 use RuntimeException;
 

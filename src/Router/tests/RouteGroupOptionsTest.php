@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\Builders;
+namespace Aphiria\Routing\Tests;
 
-use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\RouteGroupOptions;
 use PHPUnit\Framework\TestCase;
 
 class RouteGroupOptionsTest extends TestCase
 {
-    /** @var list<IRouteConstraint> The list of constraints */
+    /** @var MiddlewareBinding The list of constraints */
     private array $constraints;
-    /** @var list<MiddlewareBinding> The list of middleware bindings in the options */
+    /** @var MiddlewareBinding The list of middleware bindings in the options */
     private array $middlewareBindings = [];
     private RouteGroupOptions $routeGroupOptions;
 

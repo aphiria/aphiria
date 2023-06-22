@@ -10,10 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Application\Builders;
+namespace Aphiria\Application;
 
-use Aphiria\Application\IComponent;
-use Aphiria\Application\IModule;
 use OutOfBoundsException;
 
 /**
@@ -25,7 +23,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
     private array $componentsByType = [];
     /** @var array<array{type: class-string<IComponent>, priority: int}> The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
-    /** @var list<IModule> The list of modules */
+    /** @var IModule The list of modules */
     private array $modules = [];
 
     /**

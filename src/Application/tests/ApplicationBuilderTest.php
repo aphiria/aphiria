@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Application\Tests\Builders;
+namespace Aphiria\Application\Tests;
 
-use Aphiria\Application\Builders\ApplicationBuilder;
-use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\ApplicationBuilder;
 use Aphiria\Application\IApplication;
+use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use OutOfBoundsException;

@@ -14,12 +14,12 @@ namespace Aphiria\Framework\Tests\Validation\Components;
 
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Validation\Components\ValidationComponent;
-use Aphiria\Validation\Builders\ObjectConstraintsBuilder;
-use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
 use Aphiria\Validation\Constraints\Attributes\AttributeObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistrantCollection;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 use Aphiria\Validation\Constraints\RequiredConstraint;
+use Aphiria\Validation\ObjectConstraintsBuilder;
+use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 

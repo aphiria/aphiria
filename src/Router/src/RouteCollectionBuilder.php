@@ -10,9 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Builders;
+namespace Aphiria\Routing;
 
-use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use Closure;
 
@@ -21,9 +20,9 @@ use Closure;
  */
 final class RouteCollectionBuilder
 {
-    /** @var list<RouteGroupOptions> The stack of route group options */
+    /** @var RouteBuilder The stack of route group options */
     private array $groupOptionsStack = [];
-    /** @var list<RouteBuilder> The list of registered route builders */
+    /** @var RouteBuilder The list of registered route builders */
     private array $routeBuilders = [];
 
     /**

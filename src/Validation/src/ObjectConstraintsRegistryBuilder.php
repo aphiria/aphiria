@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Builders;
+namespace Aphiria\Validation;
 
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
 
@@ -19,7 +19,7 @@ use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;
  */
 final class ObjectConstraintsRegistryBuilder
 {
-    /** @var list<ObjectConstraintsBuilder> The constraints builders we've created */
+    /** @var ObjectConstraintsBuilder The constraints builders we've created */
     private array $objectConstraintsBuilders = [];
 
     /**

@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\Builders;
+namespace Aphiria\Routing\Tests;
 
-use Aphiria\Routing\Builders\RouteCollectionBuilder;
-use Aphiria\Routing\Builders\RouteCollectionBuilderRouteRegistrant;
 use Aphiria\Routing\RouteCollection;
+use Aphiria\Routing\RouteCollectionBuilder;
+use Aphiria\Routing\RouteCollectionBuilderRouteRegistrant;
 use PHPUnit\Framework\TestCase;
 
 class RouteCollectionBuilderRouteRegistrantTest extends TestCase
