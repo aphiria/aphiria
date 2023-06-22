@@ -19,7 +19,6 @@ use Aphiria\Authentication\Authenticator;
 use Aphiria\Authentication\AuthenticatorBuilder;
 use Aphiria\Authentication\IAuthenticationSchemeHandlerResolver;
 use Aphiria\Authentication\IUserAccessor;
-use Aphiria\Authentication\RequestPropertyUserAccessor;
 use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -38,15 +37,6 @@ class AuthenticatorBuilderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No handler resolver was specified');
         $this->authenticatorBuilder->build();
-    }
-
-    public function testBuildWithoutUserAccessorUsesDefaultOne(): void
-    {
-        $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
-        $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
-            ->build();
-        $expectedAuthenticator = new Authenticator(new AuthenticationSchemeRegistry(), $schemeHandlerResolver, new RequestPropertyUserAccessor());
-        $this->assertEquals($expectedAuthenticator, $authenticator);
     }
 
     public function testWithMethodsReturnSameInstance(): void
@@ -86,17 +76,6 @@ class AuthenticatorBuilderTest extends TestCase
         $expectedSchemes = new AuthenticationSchemeRegistry();
         $expectedSchemes->registerScheme($scheme, true);
         $expectedAuthenticator = new Authenticator($expectedSchemes, $schemeHandlerResolver);
-        $this->assertEquals($expectedAuthenticator, $authenticator);
-    }
-
-    public function testWithUserAccessorSetsUserAccessor(): void
-    {
-        $schemeHandlerResolver = $this->createMock(IAuthenticationSchemeHandlerResolver::class);
-        $userAccessor = $this->createMock(IUserAccessor::class);
-        $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
-            ->withUserAccessor($userAccessor)
-            ->build();
-        $expectedAuthenticator = new Authenticator(new AuthenticationSchemeRegistry(), $schemeHandlerResolver, $userAccessor);
         $this->assertEquals($expectedAuthenticator, $authenticator);
     }
 }

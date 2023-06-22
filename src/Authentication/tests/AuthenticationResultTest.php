@@ -50,8 +50,11 @@ class AuthenticationResultTest extends TestCase
         $this->assertFalse($result->passed);
     }
 
+    /**
+     * @param list<string>|string $schemeNames The scheme names to test
+     */
     #[TestWith(['foo', ['foo', 'bar']])]
-    public function testFailSetsSchemeNames(string|array $schemeNames): void
+    public function testFailSetsSchemeNames(array|string $schemeNames): void
     {
         $result = AuthenticationResult::fail(new RuntimeException('foo'), $schemeNames);
         $this->assertSame((array)$schemeNames, $result->schemeNames);
@@ -70,6 +73,9 @@ class AuthenticationResultTest extends TestCase
         $this->assertTrue($result->passed);
     }
 
+    /**
+     * @param list<string>|string $schemeNames The scheme names to test
+     */
     #[TestWith(['foo', ['foo', 'bar']])]
     public function testPassSetsSchemeNames(string|array $schemeNames): void
     {

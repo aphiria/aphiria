@@ -65,9 +65,9 @@ class Authenticator implements IAuthenticator
             }
         }
 
-        if (\count($resolvedSchemeNames) === 1) {
+        // Auth result will never be null, but the check below makes Psalm happy
+        if ($authResult instanceof AuthenticationResult && \count($resolvedSchemeNames) === 1) {
             // Just pass back the auth result directly
-            /** @psalm-suppress NullableReturnStatement There will always be at least one auth result because we do not allow an empty list of scheme names */
             return $authResult;
         }
 
@@ -144,7 +144,7 @@ class Authenticator implements IAuthenticator
     /**
      * Normalizes scheme names into an array of scheme names
      *
-     * @param list<string>|string|null $schemeNames The scheme name or names to normalize
+     * @param list<string|null>|string|null $schemeNames The scheme name or names to normalize
      * @return list<string|null> The normalized scheme names
      */
     private static function normalizeSchemeNames(array|string|null $schemeNames): array

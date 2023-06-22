@@ -209,7 +209,7 @@ class AuthenticatorTest extends TestCase
         $this->assertFalse($actualResult->passed);
         $this->assertSame('All authentication schemes failed to authenticate', $actualResult->failure?->getMessage());
         $this->assertInstanceOf(AggregateAuthenticationException::class, $actualResult->failure);
-        $this->assertCount(2, $actualResult->failure?->innerExceptions);
+        $this->assertCount(2, $actualResult->failure?->innerExceptions ?? []);
     }
 
     public function testAuthenticatingMultipleSchemesThatMultiplePassReturnsPassingResultWithMergedUserIdentity(): void

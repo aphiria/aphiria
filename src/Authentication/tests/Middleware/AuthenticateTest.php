@@ -64,9 +64,11 @@ class AuthenticateTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
+        // Authenticator will resolve null scheme names to the default scheme.  So, we'll create a dummy list of resolved scheme names that do not contain null.
+        $resolvedSchemeNames = \array_fill(0, \count($schemeNames), 'scheme');
         $this->authenticator->shouldReceive('authenticate')
             ->with($request, $schemeNames)
-            ->andReturn(AuthenticationResult::fail('foo', $schemeNames));
+            ->andReturn(AuthenticationResult::fail('foo', $resolvedSchemeNames));
         $this->authenticator->shouldReceive('challenge')
             ->withArgs(function (IRequest $actualRequest, IResponse $actualResponse, array|string $actualSchemeNames) use ($request, $schemeNames): bool {
                 // Similar to the above note, the real auth result will contain a non-null scheme name
@@ -90,9 +92,11 @@ class AuthenticateTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
+        // Authenticator will resolve null scheme names to the default scheme.  So, we'll create a dummy list of resolved scheme names that do not contain null.
+        $resolvedSchemeNames = \array_fill(0, \count($schemeNames), 'scheme');
         $this->authenticator->shouldReceive('authenticate')
             ->with($request, $schemeNames)
-            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class), $schemeNames));
+            ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class), $resolvedSchemeNames));
         $next->expects($this->once())
             ->method('handle')
             ->willReturn($response);

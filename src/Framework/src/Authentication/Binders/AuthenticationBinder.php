@@ -38,7 +38,7 @@ class AuthenticationBinder extends Binder
         $container->bindInstance(IAuthenticationSchemeHandlerResolver::class, $schemeHandlerResolver);
         $userAccessor = $this->getUserAccessor($container);
         $container->bindInstance(IUserAccessor::class, $userAccessor);
-        $authenticator = new Authenticator($schemes, $schemeHandlerResolver, $userAccessor);
+        $authenticator = new Authenticator($schemes, $schemeHandlerResolver);
         $container->bindInstance(IAuthenticator::class, $authenticator);
     }
 

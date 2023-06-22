@@ -21,9 +21,15 @@ use Exception;
  */
 readonly class MockAuthenticationResult extends AuthenticationResult
 {
+    /**
+     * @param bool $passed
+     * @param list<string>|string $schemeName
+     * @param IPrincipal|null $user
+     * @param Exception|null $failure
+     */
     public function __construct(
         bool $passed,
-        string $schemeName,
+        array|string $schemeName,
         ?IPrincipal $user = null,
         ?Exception $failure = null
     ) {
