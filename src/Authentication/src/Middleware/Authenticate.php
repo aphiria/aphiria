@@ -45,6 +45,7 @@ class Authenticate extends ParameterizedMiddleware
         $failedAuthenticationResults = [];
 
         foreach ($schemeNames as $schemeName) {
+            // TODO: Should we actually set the user here rather than inside the authenticator?  Could help with abstraction since callers sort of know that the authenticator is setting the user under the hood.
             $authenticationResult = $this->authenticator->authenticate($request, $schemeName);
 
             if (!$authenticationResult->passed) {
@@ -74,7 +75,7 @@ class Authenticate extends ParameterizedMiddleware
         $response = new Response(HttpStatusCode::Unauthorized);
 
         foreach ($failedAuthenticationResults as $failedAuthenticationResult) {
-            $this->authenticator->challenge($request, $response, $failedAuthenticationResult->schemeName);
+            $this->authenticator->challenge($request, $response, $failedAuthenticationResult->schemeNames);
         }
 
         return $response;

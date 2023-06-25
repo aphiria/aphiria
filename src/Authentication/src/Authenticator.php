@@ -16,6 +16,8 @@ use Aphiria\Authentication\Schemes\ILoginAuthenticationSchemeHandler;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
+use Exception;
+use InvalidArgumentException;
 use OutOfBoundsException;
 
 /**
@@ -26,108 +28,134 @@ class Authenticator implements IAuthenticator
     /**
      * @param AuthenticationSchemeRegistry $schemes The registry of authentication schemes
      * @param IAuthenticationSchemeHandlerResolver $handlerResolver The resolver for authentication handlers
-     * @param IUserAccessor $userAccessor What we'll use to access the current user
      */
     public function __construct(
         private readonly AuthenticationSchemeRegistry $schemes,
-        private readonly IAuthenticationSchemeHandlerResolver $handlerResolver,
-        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        private readonly IAuthenticationSchemeHandlerResolver $handlerResolver
     ) {
     }
 
     /**
      * @inheritdoc
      */
-    public function authenticate(IRequest $request, string|array $schemeName = null): AuthenticationResult
+    public function authenticate(IRequest $request, array|string $schemeNames = null): AuthenticationResult
     {
-        $schemeNames = \is_array($schemeName) ? $schemeName : [$schemeName];
-        $user = null;
+        // This will contain resolved (ie non-null) scheme names
+        $resolvedSchemeNames = [];
+        // This will contain all failed authentication results' failures
+        $authResultFailures = [];
+        $user = $authResult = null;
 
-        foreach ($schemeNames as $schemeName) {
+        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
             $scheme = $this->getScheme($schemeName);
+            $resolvedSchemeNames[] = $scheme->name;
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
             $authResult = $handler->authenticate($request, $scheme);
 
-            if ($authResult->passed && $user instanceof IPrincipal) {
-                // Combine the principals
-                $user->mergeIdentities($authResult->user);
-                // TODO: What should the scheme name be here if we're authenticating with multiple schemes?
-                $authResult = AuthenticationResult::pass($user, $scheme->name);
+            if ($authResult->passed) {
+                if ($user instanceof IPrincipal && $authResult->user instanceof IPrincipal) {
+                    // We've successfully authenticated with another scheme, so merge identities
+                    $user->mergeIdentities($authResult->user);
+                } else {
+                    // This was the first successful authentication result
+                    $user = $authResult->user;
+                }
+            } elseif ($authResult->failure instanceof Exception) {
+                $authResultFailures[] = $authResult->failure;
             }
         }
 
-        $scheme = $this->getScheme($schemeName);
-        $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
-        $authResult = $handler->authenticate($request, $scheme);
-
-        if ($authResult->passed && $authResult->user !== null) {
-            if (($user = $this->userAccessor->getUser($request)) instanceof IPrincipal) {
-                // Merge this user with any previously-set user so that all the identities and claims are set for all schemes authenticated against
-                // We store this merged identity in a new authentication result, and return that one instead
-                $user->mergeIdentities($authResult->user);
-                $authResult = AuthenticationResult::pass($user, $scheme->name);
-            }
-
-            $this->userAccessor->setUser($authResult->user, $request);
+        if (\count($resolvedSchemeNames) === 1) {
+            // Just pass back the auth result directly
+            /** @psalm-suppress NullableReturnStatement There will always be at least one auth result because we do not allow an empty list of scheme names */
+            return $authResult;
         }
 
-        return $authResult;
+        if ($user === null) {
+            // Authentication did not pass, so aggregate the failures
+            return AuthenticationResult::fail(new AggregateAuthenticationException('All authentication schemes failed to authenticate', $authResultFailures), $resolvedSchemeNames);
+        }
+
+        return AuthenticationResult::pass($user, $resolvedSchemeNames);
     }
 
     /**
      * @inheritdoc
      */
-    public function challenge(IRequest $request, IResponse $response, string|array $schemeName = null): void
+    public function challenge(IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
-        $scheme = $this->getScheme($schemeName);
-        $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
-        $handler->challenge($request, $response, $scheme);
+        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
+            $scheme = $this->getScheme($schemeName);
+            $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
+            $handler->challenge($request, $response, $scheme);
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function forbid(IRequest $request, IResponse $response, string $schemeName = null): void
+    public function forbid(IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
-        $scheme = $this->getScheme($schemeName);
-        $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
-        $handler->forbid($request, $response, $scheme);
+        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
+            $scheme = $this->getScheme($schemeName);
+            $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
+            $handler->forbid($request, $response, $scheme);
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function logIn(IPrincipal $user, IRequest $request, IResponse $response, string $schemeName = null): void
+    public function logIn(IPrincipal $user, IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
         if (!($user->getPrimaryIdentity()?->isAuthenticated() ?? false)) {
             throw new NotAuthenticatedException('User identity must be set and authenticated to log in');
         }
 
-        $scheme = $this->getScheme($schemeName);
-        $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
+        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
+            $scheme = $this->getScheme($schemeName);
+            $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
 
-        if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
-            throw new UnsupportedAuthenticationHandlerException($handler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
+            if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
+                throw new UnsupportedAuthenticationHandlerException($handler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
+            }
+
+            $handler->logIn($user, $request, $response, $scheme);
         }
-
-        $handler->logIn($user, $request, $response, $scheme);
-        $this->userAccessor->setUser($user, $request);
     }
 
     /**
      * @inheritdoc
      */
-    public function logOut(IRequest $request, IResponse $response, string $schemeName = null): void
+    public function logOut(IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
-        $scheme = $this->getScheme($schemeName);
-        $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
+        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
+            $scheme = $this->getScheme($schemeName);
+            $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
 
-        if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
-            throw new UnsupportedAuthenticationHandlerException($handler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
+            if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
+                throw new UnsupportedAuthenticationHandlerException($handler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
+            }
+
+            $handler->logOut($request, $response, $scheme);
+        }
+    }
+
+    /**
+     * Normalizes scheme names into an array of scheme names
+     *
+     * @param list<string>|string|null $schemeNames The scheme name or names to normalize
+     * @return list<string|null> The normalized scheme names
+     */
+    private static function normalizeSchemeNames(array|string|null $schemeNames): array
+    {
+        $normalizedSchemeNames = \is_array($schemeNames) ? $schemeNames : [$schemeNames];
+
+        if (\count($normalizedSchemeNames) === 0) {
+            throw new InvalidArgumentException('You must specify at least one scheme name or pass in null if using the default scheme');
         }
 
-        $handler->logOut($request, $response, $scheme);
-        $this->userAccessor->setUser(null, $request);
+        return $normalizedSchemeNames;
     }
 
     /**

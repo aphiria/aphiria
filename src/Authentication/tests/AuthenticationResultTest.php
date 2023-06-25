@@ -17,6 +17,7 @@ use Aphiria\Authentication\Tests\Mocks\MockAuthenticationResult;
 use Aphiria\Security\IPrincipal;
 use Exception;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -49,10 +50,11 @@ class AuthenticationResultTest extends TestCase
         $this->assertFalse($result->passed);
     }
 
-    public function testFailSetsSchemeName(): void
+    #[TestWith(['foo', ['foo', 'bar']])]
+    public function testFailSetsSchemeNames(string|array $schemeNames): void
     {
-        $result = AuthenticationResult::fail(new RuntimeException('foo'), 'foo');
-        $this->assertSame('foo', $result->schemeName);
+        $result = AuthenticationResult::fail(new RuntimeException('foo'), $schemeNames);
+        $this->assertSame((array)$schemeNames, $result->schemeNames);
     }
 
     public function testPassingWithoutUserSetThrowsException(): void
@@ -68,9 +70,10 @@ class AuthenticationResultTest extends TestCase
         $this->assertTrue($result->passed);
     }
 
-    public function testPassSetsSchemeName(): void
+    #[TestWith(['foo', ['foo', 'bar']])]
+    public function testPassSetsSchemeNames(string|array $schemeNames): void
     {
-        $result = AuthenticationResult::pass($this->createMock(IPrincipal::class), 'foo');
-        $this->assertSame('foo', $result->schemeName);
+        $result = AuthenticationResult::pass($this->createMock(IPrincipal::class), $schemeNames);
+        $this->assertSame((array)$schemeNames, $result->schemeNames);
     }
 }
