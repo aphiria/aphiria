@@ -69,11 +69,11 @@ class Request implements IRequest
      */
     public function __toString(): string
     {
-        $startLine = "{$this->method} {$this->getRequestTarget()} HTTP/{$this->protocolVersion}";
+        $startLine = "$this->method {$this->getRequestTarget()} HTTP/$this->protocolVersion";
         $headers = '';
 
         if (\count($this->headers) > 0) {
-            $headers .= "\r\n{$this->headers}";
+            $headers .= "\r\n$this->headers";
         }
 
         $serializedRequest = $startLine . $headers . "\r\n\r\n";
@@ -183,8 +183,8 @@ class Request implements IRequest
                 return $this->uri->getAuthority(false) ?? '';
             case RequestTargetType::AsteriskForm:
                 return '*';
-            case RequestTargetType::AbsoluteForm:
             default:
+                // Includes the absolute form
                 return (string)$this->uri;
         }
     }
@@ -197,7 +197,7 @@ class Request implements IRequest
     private function validateProperties(): void
     {
         if (!isset(self::$validMethods[$this->method])) {
-            throw new InvalidArgumentException("Invalid HTTP method {$this->method}");
+            throw new InvalidArgumentException("Invalid HTTP method $this->method");
         }
     }
 }
