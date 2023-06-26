@@ -46,20 +46,16 @@ class Authenticator implements IAuthenticator
         $authResultFailures = [];
         $user = $authResult = null;
 
-        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
-            $scheme = $this->getScheme($schemeName);
+        foreach ($this->getSchemes($schemeNames) as $scheme) {
             $resolvedSchemeNames[] = $scheme->name;
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
             $authResult = $handler->authenticate($request, $scheme);
 
             if ($authResult->passed) {
-                if ($user instanceof IPrincipal && $authResult->user instanceof IPrincipal) {
-                    // We've successfully authenticated with another scheme, so merge identities
-                    $user->mergeIdentities($authResult->user);
-                } else {
-                    // This was the first successful authentication result
-                    $user = $authResult->user;
-                }
+                // If we've successfully authenticated before, merge identities
+                $user = $user instanceof IPrincipal && $authResult->user instanceof IPrincipal
+                    ? $user->mergeIdentities($authResult->user)
+                    : $authResult->user;
             } elseif ($authResult->failure instanceof Exception) {
                 $authResultFailures[] = $authResult->failure;
             }
@@ -84,8 +80,7 @@ class Authenticator implements IAuthenticator
      */
     public function challenge(IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
-        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
-            $scheme = $this->getScheme($schemeName);
+        foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
             $handler->challenge($request, $response, $scheme);
         }
@@ -96,8 +91,7 @@ class Authenticator implements IAuthenticator
      */
     public function forbid(IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
-        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
-            $scheme = $this->getScheme($schemeName);
+        foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
             $handler->forbid($request, $response, $scheme);
         }
@@ -112,8 +106,7 @@ class Authenticator implements IAuthenticator
             throw new NotAuthenticatedException('User identity must be set and authenticated to log in');
         }
 
-        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
-            $scheme = $this->getScheme($schemeName);
+        foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
 
             if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
@@ -129,8 +122,7 @@ class Authenticator implements IAuthenticator
      */
     public function logOut(IRequest $request, IResponse $response, array|string $schemeNames = null): void
     {
-        foreach (self::normalizeSchemeNames($schemeNames) as $schemeName) {
-            $scheme = $this->getScheme($schemeName);
+        foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
 
             if (!$handler instanceof ILoginAuthenticationSchemeHandler) {
@@ -142,12 +134,15 @@ class Authenticator implements IAuthenticator
     }
 
     /**
-     * Normalizes scheme names into an array of scheme names
+     * Gets authentication schemes by name
      *
-     * @param list<string|null>|string|null $schemeNames The scheme name or names to normalize
-     * @return list<string|null> The normalized scheme names
+     * @template T of AuthenticationSchemeOptions
+     * @param list<string|null>|string|null $schemeNames The scheme name or names to retrieve
+     * @return list<AuthenticationScheme<T>> The authentication schemes
+     * @throws AuthenticationSchemeNotFoundException Thrown if a scheme could not be found
+     * @throws InvalidArgumentException Thrown if the list of scheme names was empty
      */
-    private static function normalizeSchemeNames(array|string|null $schemeNames): array
+    private function getSchemes(array|string|null $schemeNames): array
     {
         $normalizedSchemeNames = \is_array($schemeNames) ? $schemeNames : [$schemeNames];
 
@@ -155,33 +150,26 @@ class Authenticator implements IAuthenticator
             throw new InvalidArgumentException('You must specify at least one scheme name or pass in null if using the default scheme');
         }
 
-        return $normalizedSchemeNames;
-    }
+        $schemes = [];
 
-    /**
-     * Gets an authentication scheme by name
-     *
-     * @template T of AuthenticationSchemeOptions
-     * @param string|null $schemeName The name of the authentication scheme to get, or null if getting the default one
-     * @return AuthenticationScheme<T> The authentication scheme
-     * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
-     */
-    private function getScheme(?string $schemeName): AuthenticationScheme
-    {
-        if ($schemeName === null) {
-            $scheme = $this->schemes->getDefaultScheme();
+        foreach ($normalizedSchemeNames as $schemeName) {
+            if ($schemeName === null) {
+                $scheme = $this->schemes->getDefaultScheme();
 
-            if ($scheme === null) {
-                throw new AuthenticationSchemeNotFoundException('No default authentication scheme found');
+                if ($scheme === null) {
+                    throw new AuthenticationSchemeNotFoundException('No default authentication scheme found');
+                }
+
+                $schemes[] = $scheme;
+            } else {
+                try {
+                    $schemes[] = $this->schemes->getScheme($schemeName);
+                } catch (OutOfBoundsException $ex) {
+                    throw new AuthenticationSchemeNotFoundException("No authentication scheme with name \"$schemeName\" found", 0, $ex);
+                }
             }
-
-            return $scheme;
         }
 
-        try {
-            return $this->schemes->getScheme($schemeName);
-        } catch (OutOfBoundsException $ex) {
-            throw new AuthenticationSchemeNotFoundException("No authentication scheme with name \"$schemeName\" found", 0, $ex);
-        }
+        return $schemes;
     }
 }

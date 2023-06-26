@@ -221,7 +221,8 @@ class AuthenticatorTest extends TestCase
         $user1 = $this->createMock(IPrincipal::class);
         $user2 = $this->createMock(IPrincipal::class);
         $user1->method('mergeIdentities')
-            ->with($user2);
+            ->with($user2)
+            ->willReturn($user1);
         [$scheme1, $scheme1Handler] = $this->createSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createSchemeAndSetUpResolver('bar');
         $scheme1Handler->method('authenticate')
