@@ -21,10 +21,12 @@ readonly class AuthorizationResult
 {
     /**
      * @param bool $passed Whether or not the authorization was successful
+     * @param string $policyName The name of the policy used
      * @param list<object> $failedRequirements The list of requirements that failed
      */
-    public function __construct(
+    protected function __construct(
         public bool $passed,
+        public string $policyName,
         public array $failedRequirements = []
     ) {
     }
@@ -32,21 +34,23 @@ readonly class AuthorizationResult
     /**
      * Creates a failed authorization result
      *
+     * @param string $policyName The name of the policy used
      * @param list<object> $failedRequirements The list of requirements that failed, or nothing if we're explicitly failing
      * @return static A failed authorization result
      */
-    public static function fail(array $failedRequirements = []): static
+    public static function fail(string $policyName, array $failedRequirements = []): static
     {
-        return new static(false, $failedRequirements);
+        return new static(false, $policyName, $failedRequirements);
     }
 
     /**
      * Creates a passing authorization result
      *
+     * @param string $policyName The name of the policy used
      * @return static A passing authorization result
      */
-    public static function pass(): static
+    public static function pass(string $policyName): static
     {
-        return new static(true);
+        return new static(true, $policyName);
     }
 }

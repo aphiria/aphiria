@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Authorization\Middleware;
 
+use Aphiria\Authentication\AuthenticationSchemeNotFoundException;
 use Aphiria\Authentication\IAuthenticator;
 use Aphiria\Authentication\IUserAccessor;
 use Aphiria\Authentication\RequestPropertyUserAccessor;
-use Aphiria\Authentication\SchemeNotFoundException;
 use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\AuthorizationPolicyRegistry;
 use Aphiria\Authorization\AuthorizationResult;
@@ -26,6 +26,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
+use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
 
 /**
@@ -68,12 +69,12 @@ class Authorize extends ParameterizedMiddleware
 
         if ($user === null) {
             // Try to authenticate the user for each authentication scheme
-            foreach ($policy->authenticationSchemeNames ?? [null] as $authenticationSchemeName) {
-                $this->authenticator->authenticate($request, $authenticationSchemeName);
-            }
+            $authenticationResult = $this->authenticator->authenticate($request, $policy->authenticationSchemeNames);
 
-            // Try grabbing the user again now that we've performed authentication
-            $user = $this->userAccessor->getUser($request);
+            if ($authenticationResult->passed && $authenticationResult->user instanceof IPrincipal) {
+                $user = $authenticationResult->user;
+                $this->userAccessor->setUser($authenticationResult->user, $request);
+            }
         }
 
         if ($user === null || $user->getPrimaryIdentity()?->isAuthenticated() !== true) {
@@ -97,16 +98,12 @@ class Authorize extends ParameterizedMiddleware
      * @param AuthorizationPolicy $policy The policy that was evaluated against
      * @param AuthorizationResult $authorizationResult The failed authorization result
      * @return IResponse The response
-     * @throws SchemeNotFoundException Thrown if the scheme could not be found
+     * @throws AuthenticationSchemeNotFoundException Thrown if the scheme could not be found
      */
     protected function handleFailedAuthorizationResult(IRequest $request, AuthorizationPolicy $policy, AuthorizationResult $authorizationResult): IResponse
     {
         $response = new Response(HttpStatusCode::Forbidden);
-        $authenticationSchemeNames = $policy->authenticationSchemeNames === null || \count($policy->authenticationSchemeNames) === 0 ? [null] : $policy->authenticationSchemeNames;
-
-        foreach ($authenticationSchemeNames as $authenticationSchemeName) {
-            $this->authenticator->forbid($request, $response, $authenticationSchemeName);
-        }
+        $this->authenticator->forbid($request, $response, $policy->authenticationSchemeNames);
 
         return $response;
     }
@@ -118,16 +115,12 @@ class Authorize extends ParameterizedMiddleware
      * @param IRequest $request The current request
      * @param AuthorizationPolicy $policy The policy that was evaluated against
      * @return IResponse The response
-     * @throws SchemeNotFoundException Thrown if the scheme could not be found
+     * @throws AuthenticationSchemeNotFoundException Thrown if the scheme could not be found
      */
     protected function handleUnauthenticatedUser(IRequest $request, AuthorizationPolicy $policy): IResponse
     {
         $response = new Response(HttpStatusCode::Unauthorized);
-        $authenticationSchemeNames = $policy->authenticationSchemeNames === null || \count($policy->authenticationSchemeNames) === 0 ? [null] : $policy->authenticationSchemeNames;
-
-        foreach ($authenticationSchemeNames as $authenticationSchemeName) {
-            $this->authenticator->challenge($request, $response, $authenticationSchemeName);
-        }
+        $this->authenticator->challenge($request, $response, $policy->authenticationSchemeNames);
 
         return $response;
     }

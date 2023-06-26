@@ -21,8 +21,6 @@ class AuthenticatorBuilder
 {
     /** @var IAuthenticationSchemeHandlerResolver|null The handler resolver to use, or null if none is set */
     private ?IAuthenticationSchemeHandlerResolver $handlerResolver = null;
-    /** @var IUserAccessor|null The user accessor to use, or null if none is set */
-    private ?IUserAccessor $userAccessor = null;
 
     /**
      * @param AuthenticationSchemeRegistry $schemes The authentication schemes to use
@@ -44,13 +42,7 @@ class AuthenticatorBuilder
             throw new RuntimeException('No handler resolver was specified');
         }
 
-        if ($this->userAccessor === null) {
-            $authenticator = new Authenticator($this->schemes, $this->handlerResolver);
-        } else {
-            $authenticator = new Authenticator($this->schemes, $this->handlerResolver, $this->userAccessor);
-        }
-
-        return $authenticator;
+        return new Authenticator($this->schemes, $this->handlerResolver);
     }
 
     /**
@@ -77,19 +69,6 @@ class AuthenticatorBuilder
     public function withScheme(AuthenticationScheme $scheme, bool $isDefault = false): static
     {
         $this->schemes->registerScheme($scheme, $isDefault);
-
-        return $this;
-    }
-
-    /**
-     * Sets the user accessor the authenticator will use
-     *
-     * @param IUserAccessor $userAccessor The user accessor to use
-     * @return static For chaining
-     */
-    public function withUserAccessor(IUserAccessor $userAccessor): static
-    {
-        $this->userAccessor = $userAccessor;
 
         return $this;
     }

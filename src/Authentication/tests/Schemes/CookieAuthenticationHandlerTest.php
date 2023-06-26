@@ -70,7 +70,7 @@ class CookieAuthenticationHandlerTest extends TestCase
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
-        $this->schemeHandler->expectedAuthenticationResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
+        $this->schemeHandler->expectedAuthenticationResult = AuthenticationResult::pass($this->createMock(IPrincipal::class), $scheme->name);
         $this->assertSame(
             $this->schemeHandler->expectedAuthenticationResult,
             $this->schemeHandler->authenticate($request, $scheme)

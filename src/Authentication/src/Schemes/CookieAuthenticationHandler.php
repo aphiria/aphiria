@@ -48,7 +48,10 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
     public function authenticate(IRequest $request, AuthenticationScheme $scheme): AuthenticationResult
     {
         if (($cookieValue = $this->getCookieValueFromRequest($request, $scheme)) === null) {
-            return AuthenticationResult::fail(new MissingAuthenticationDataException("Cookie {$scheme->options->cookieName} not set"));
+            return AuthenticationResult::fail(
+                new MissingAuthenticationDataException("Cookie {$scheme->options->cookieName} not set"),
+                $scheme->name
+            );
         }
 
         return $this->createAuthenticationResultFromCookie($cookieValue, $request, $scheme);

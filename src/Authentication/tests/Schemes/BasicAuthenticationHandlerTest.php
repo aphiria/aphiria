@@ -64,7 +64,7 @@ class BasicAuthenticationHandlerTest extends TestCase
                 IRequest $request,
                 AuthenticationScheme $scheme
             ): AuthenticationResult {
-                return AuthenticationResult::fail('foo');
+                return AuthenticationResult::fail('foo', $scheme->name);
             }
         };
 
@@ -139,7 +139,7 @@ class BasicAuthenticationHandlerTest extends TestCase
         $request->method('getHeaders')
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
-        $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class));
+        $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class), 'foo');
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $this->assertSame($this->schemeHandler->expectedResult, $this->schemeHandler->authenticate($request, $scheme));
         $this->assertSame('foo', $this->schemeHandler->actualUsername);

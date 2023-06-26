@@ -19,22 +19,27 @@ class AuthorizationResultTest extends TestCase
 {
     public function testFailSetsFailedRequirementsAndPassedToFalse(): void
     {
-        $result = AuthorizationResult::fail([$this]);
+        $result = AuthorizationResult::fail('policy', [$this]);
         $this->assertFalse($result->passed);
         $this->assertSame([$this], $result->failedRequirements);
+    }
+
+    public function testFailSetsPolicyName(): void
+    {
+        $result = AuthorizationResult::fail('policy', [$this]);
+        $this->assertSame('policy', $result->policyName);
     }
 
     public function testPassSetsPassedToTrue(): void
     {
-        $result = AuthorizationResult::pass();
+        $result = AuthorizationResult::pass('policy');
         $this->assertTrue($result->passed);
         $this->assertEmpty($result->failedRequirements);
     }
 
-    public function testPropertiesSetInConstructor(): void
+    public function testPassSetsPolicyName(): void
     {
-        $result = new AuthorizationResult(false, [$this]);
-        $this->assertFalse($result->passed);
-        $this->assertSame([$this], $result->failedRequirements);
+        $result = AuthorizationResult::pass('policy');
+        $this->assertSame('policy', $result->policyName);
     }
 }
