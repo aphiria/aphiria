@@ -93,7 +93,8 @@
         "psr/log": "~1.1",
         "symfony/dotenv": "^6.1",
         "symfony/property-access": "^6.1",
-        "symfony/serializer": "^6.1"
+        "symfony/serializer": "^6.1",
+        "symfony/yaml": "^6.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.6",
