@@ -37,7 +37,7 @@ class YamlConfigurationFileReader implements IConfigurationFileReader
                 throw new InvalidConfigurationFileException("YAML in $path does not parse to an associative array");
             }
         } catch (ParseException $ex) {
-            throw new InvalidConfigurationFileException("Invalid YAML in $path");
+            throw new InvalidConfigurationFileException("Invalid YAML in $path", 0, $ex);
         }
 
         /** @var array<string, mixed> $hashTable */
