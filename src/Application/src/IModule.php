@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Application;
 
-use Aphiria\Application\Builders\IApplicationBuilder;
-
 /**
  * Defines the interface implemented by classes that configure whole modules of code
  */

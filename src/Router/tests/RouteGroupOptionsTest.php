@@ -10,11 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Tests\Builders;
+namespace Aphiria\Routing\Tests;
 
-use Aphiria\Routing\Builders\RouteGroupOptions;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
+use Aphiria\Routing\RouteGroupOptions;
 use PHPUnit\Framework\TestCase;
 
 class RouteGroupOptionsTest extends TestCase

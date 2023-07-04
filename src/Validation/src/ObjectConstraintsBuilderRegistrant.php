@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Builders;
+namespace Aphiria\Validation;
 
 use Aphiria\Validation\Constraints\IObjectConstraintsRegistrant;
 use Aphiria\Validation\Constraints\ObjectConstraintsRegistry;

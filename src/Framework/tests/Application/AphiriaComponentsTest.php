@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Application;
 
-use Aphiria\Application\Builders\IApplicationBuilder;
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
+use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Authentication\AuthenticationScheme;
@@ -41,8 +41,8 @@ use Aphiria\Framework\Validation\Components\ValidationComponent;
 use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCode;
-use Aphiria\Routing\Builders\RouteCollectionBuilder;
-use Aphiria\Validation\Builders\ObjectConstraintsRegistryBuilder;
+use Aphiria\Routing\RouteCollectionBuilder;
+use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
 use Mockery;

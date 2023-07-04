@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Builders;
+namespace Aphiria\Routing;
 
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;

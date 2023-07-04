@@ -10,10 +10,10 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Validation\Tests\Builders;
+namespace Aphiria\Validation\Tests;
 
-use Aphiria\Validation\Builders\ObjectConstraintsBuilder;
 use Aphiria\Validation\Constraints\IConstraint;
+use Aphiria\Validation\ObjectConstraintsBuilder;
 use PHPUnit\Framework\TestCase;
 
 class ObjectConstraintsBuilderTest extends TestCase

@@ -10,10 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Routing\Builders;
+namespace Aphiria\Routing;
 
-use Aphiria\Routing\IRouteRegistrant;
-use Aphiria\Routing\RouteCollection;
 use Closure;
 
 /**

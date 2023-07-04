@@ -10,10 +10,8 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Application\Builders;
+namespace Aphiria\Application;
 
-use Aphiria\Application\IComponent;
-use Aphiria\Application\IModule;
 use OutOfBoundsException;
 
 /**
@@ -30,9 +28,6 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @inheritdoc
-     *
-     * @psalm-suppress InvalidReturnType Psalm gets tripped up with template return types that return an interface - bug
-     * @psalm-suppress InvalidReturnStatement Ditto - bug
      */
     public function getComponent(string $type): IComponent
     {

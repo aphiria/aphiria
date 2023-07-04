@@ -4,6 +4,12 @@
 
 ### Changed
 
+- Moved all builder classes into the namespace of the things they build ([#273](https://github.com/aphiria/aphiria/pull/273))
+  - `Aphiria\Application\Builders` => `Aphiria\Application`
+  - `Aphiria\Framework\Api\Builders` => `Aphiria\Framework\Api`
+  - `Aphiria\Framework\Console\Builders` => `Aphiria\Framework\Console`
+  - `Aphiria\Routing\Builders` => `Aphiria\Routing`
+  - `Aphiria\Validation\Builders` => `Aphiria\Validation`
 - Updated to PHPUnit 10.1 ([#248](https://github.com/aphiria/aphiria/pull/248), [#250](https://github.com/aphiria/aphiria/pull/250))
 - Updated `IAuthenticator::authenticate()`, `IAuthenticator::challenge()`, `IAuthenticator::forbid()`, `IAuthenticator::logIn()`, and `IAuthenticator::logOut()` to take in no, one, or many authentication scheme names ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Added the authentication scheme name(s) to `AuthenticationResult` ([#269](https://github.com/aphiria/aphiria/pull/269))

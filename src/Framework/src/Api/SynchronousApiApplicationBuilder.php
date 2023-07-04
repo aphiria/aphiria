@@ -10,12 +10,11 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Api\Builders;
+namespace Aphiria\Framework\Api;
 
-use Aphiria\Application\Builders\ApplicationBuilder;
+use Aphiria\Application\ApplicationBuilder;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
-use Aphiria\Framework\Api\SynchronousApiApplication;
 use RuntimeException;
 
 /**

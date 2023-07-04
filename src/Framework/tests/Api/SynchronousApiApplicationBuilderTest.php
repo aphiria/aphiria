@@ -10,21 +10,21 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Api\Builders;
+namespace Aphiria\Framework\Tests\Api;
 
-use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\DependencyInjection\Container;
-use Aphiria\Framework\Api\Builders\SynchronousApiApplicationBuilder;
 use Aphiria\Framework\Api\SynchronousApiApplication;
+use Aphiria\Framework\Api\SynchronousApiApplicationBuilder;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponseWriter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class ApiApplicationBuilderTest extends TestCase
+class SynchronousApiApplicationBuilderTest extends TestCase
 {
     private SynchronousApiApplicationBuilder $appBuilder;
     private Container $container;

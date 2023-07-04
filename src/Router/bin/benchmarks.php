@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Aphiria\Routing\Builders\RouteCollectionBuilder;
 use Aphiria\Routing\Matchers\TrieRouteMatcher;
 use Aphiria\Routing\RouteCollection as AphiriaRouteCollection;
+use Aphiria\Routing\RouteCollectionBuilder;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
 use FastRoute\RouteCollector;
 use Symfony\Component\Routing\Matcher\CompiledUrlMatcher;

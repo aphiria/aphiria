@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Framework\Tests\Console\Builders;
+namespace Aphiria\Framework\Tests\Console;
 
-use Aphiria\Application\Builders\IApplicationBuilder;
+use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\ICommandHandler;
@@ -23,8 +23,8 @@ use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\UniversalContext;
-use Aphiria\Framework\Console\Builders\ConsoleApplicationBuilder;
 use Aphiria\Framework\Console\ConsoleApplication;
+use Aphiria\Framework\Console\ConsoleApplicationBuilder;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
