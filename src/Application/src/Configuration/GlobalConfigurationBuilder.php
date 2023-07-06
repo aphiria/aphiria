@@ -20,7 +20,7 @@ use InvalidArgumentException;
  */
 class GlobalConfigurationBuilder
 {
-    /** @var array<array-key, array{type: string, value: IConfiguration|Closure(): IConfiguration}> The list of structs that store data about the configuration sources */
+    /** @var list<array{type: string, value: IConfiguration|Closure(): IConfiguration}> The list of structs that store data about the configuration sources */
     private array $configurationSourceStructs = [];
 
     /**
