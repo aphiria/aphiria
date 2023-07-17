@@ -24,7 +24,7 @@ use Exception;
  */
 class ConsoleExceptionRenderer implements IExceptionRenderer
 {
-    /** @var array<class-string<Exception>, Closure(Exception, IOutput): void|Closure(Exception, IOutput): int|Closure(Exception, IOutput): StatusCode> The mapping of exception types to callbacks that write output and return status codes */
+    /** @var class-string-map<T as Exception, Closure(T, IOutput): void|Closure(T, IOutput): int|Closure(T, IOutput): StatusCode> The mapping of exception types to callbacks that write output and return status codes */
     protected array $outputWriters = [];
 
     /**
@@ -40,8 +40,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     /**
      * Registers many writers that can use exceptions to write output and return status codes
      *
-     * @template T of Exception
-     * @param array<class-string<T>, Closure(T, IOutput): void|Closure(T, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
+     * @param class-string-map<T as Exception, Closure(T, IOutput): void|Closure(T, IOutput): int> $exceptionTypesToCallbacks The mapping of exception types to callbacks
      */
     public function registerManyOutputWriters(array $exceptionTypesToCallbacks): void
     {

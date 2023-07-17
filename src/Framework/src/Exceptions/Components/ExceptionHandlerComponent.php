@@ -30,7 +30,7 @@ use Exception;
  */
 class ExceptionHandlerComponent implements IComponent
 {
-    /** @var class-string-map<T as Exception, Closure(T, IOutput): void|Closure(mixed, IOutput): int|Closure(mixed, IOutput): StatusCode The mapping of exception types to console result factories */
+    /** @var class-string-map<T as Exception, Closure(T, IOutput): void|Closure(mixed, IOutput): int|Closure(mixed, IOutput): StatusCode> The mapping of exception types to console result factories */
     private array $consoleOutputWriters = [];
     /** @var class-string-map<T as Exception, array{type: string|Closure(T): string|null, title: string|Closure(T): string|null, detail: string|Closure(T): string|null, status: HttpStatusCode|int|Closure(T): HttpStatusCode|Closure(T): int, instance: string|Closure(T): string|null, extensions: array|Closure(T): array|null}> The mapping of exception types to problem detail settings */
     private array $exceptionProblemDetailMappings = [];
