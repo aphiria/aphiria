@@ -19,7 +19,7 @@ use OutOfBoundsException;
  */
 abstract class ApplicationBuilder implements IApplicationBuilder
 {
-    /** @var class-string-map<T as IComponent, T>, IComponent> The mapping of prioritized component names to components */
+    /** @var class-string-map<T as IComponent, T> The mapping of prioritized component names to components */
     private array $componentsByType = [];
     /** @var array<array{type: class-string<IComponent>, priority: int}> The list of structs that contain component types and priorities */
     private array $componentTypesAndPriorities = [];
