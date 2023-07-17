@@ -19,6 +19,7 @@
 ### Added
 
 - Added automatic authentication to `Authorize` middleware when authentication has not previously happened ([#264](https://github.com/aphiria/aphiria/pull/264))
+- Added `ResponseAssertions::assertCookieIsUnset()` ([#276](https://github.com/aphiria/aphiria/pull/276))
 - Added `IBodyDeserializer` and `NegotiatedBodyDeserializer` to simplify deserializing request and response bodies ([#253](https://github.com/aphiria/aphiria/pull/253), [#255](https://github.com/aphiria/aphiria/pull/255))
 - Added ability to easily deserialize request and response bodies in integration tests ([#253](https://github.com/aphiria/aphiria/pull/253))
 - Added `PrincipalBuilder` and `IdentityBuilder` ([#257](https://github.com/aphiria/aphiria/pull/257))

@@ -127,10 +127,11 @@ class ResponseAssertionsTest extends TestCase
      * Note: We test with both an array of values to try matching against all values for the header
      * We also test with a single value to try matching against the first header value
      *
-     * @param mixed $expectedValue The expected value
+     * @param string|list<string> $expectedValue The expected value
      */
-    #[TestWith([['bar'], 'bar'])]
-    public function testAssertHeaderEqualsDoesNotThrowOnMatch(mixed $expectedValue): void
+    #[TestWith([['bar']])]
+    #[TestWith(['bar'])]
+    public function testAssertHeaderEqualsDoesNotThrowOnMatch(string|array $expectedValue): void
     {
         $response = new Response(200, new Headers([new KeyValuePair('Foo', 'bar')]));
         $this->assertions->assertHeaderEquals($expectedValue, $response, 'Foo');
