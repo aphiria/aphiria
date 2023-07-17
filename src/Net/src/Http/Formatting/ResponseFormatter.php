@@ -28,7 +28,7 @@ use RuntimeException;
 class ResponseFormatter
 {
     /**
-     * @param ResponseHeaderFormatter $headerFormatter The response header formatter to use, or null if using the default one
+     * @param ResponseHeaderFormatter $headerFormatter The response header formatter to use
      */
     public function __construct(private readonly ResponseHeaderFormatter $headerFormatter = new ResponseHeaderFormatter())
     {

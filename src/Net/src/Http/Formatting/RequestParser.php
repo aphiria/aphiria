@@ -34,9 +34,9 @@ class RequestParser
     private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
 
     /**
-     * @param RequestHeaderParser $headerParser The header parser to use, or null if using the default parser
-     * @param BodyParser $bodyParser The body parser to use, or null if using the default parser
-     * @param UriParser $uriParser The URI parser to use, or null if using the default parser
+     * @param RequestHeaderParser $headerParser The header parser to use
+     * @param BodyParser $bodyParser The body parser to use
+     * @param UriParser $uriParser The URI parser to use
      */
     public function __construct(
         private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),

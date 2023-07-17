@@ -50,7 +50,7 @@ interface IRequestBuilder
     public function withHeader(string $name, string|int|float|array $values, bool $append = false): static;
 
     /**
-     * Adds a header to the request
+     * Adds many headers to the request
      *
      * @param array<string, string|int|float|list<string|int|float>> $headers The mapping of header names to values
      * @return static For chaining

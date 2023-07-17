@@ -22,6 +22,7 @@ use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Net\Http\Formatting\ResponseParser;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpClient;
 use Aphiria\Net\Http\IRequest;
@@ -51,6 +52,8 @@ trait IntegrationTest
      * @var IHttpClient
      */
     private IHttpClient $client;
+    /** @var ResponseParser The response parser */
+    private ResponseParser $responseParser;
 
     /**
      * Gets the built application that will handle requests
@@ -74,6 +77,7 @@ trait IntegrationTest
         $this->requestBuilder = $this->createRequestBuilder($container);
         $this->responseAssertions = $this->createResponseAssertions($container);
         $this->bodyDeserializer = $this->createBodyDeserializer($container);
+        $this->responseParser = $this->createResponseParser($container);
     }
 
     /**
@@ -137,6 +141,18 @@ trait IntegrationTest
     protected function createResponseAssertions(IContainer $container): ResponseAssertions
     {
         return $container->resolve(ResponseAssertions::class);
+    }
+
+    /**
+     * Creates a response parser
+     *
+     * @param IContainer $container The DI container
+     * @return ResponseParser The response parser
+     * @throws ResolutionException Thrown if the response parser could not be resolved
+     */
+    protected function createResponseParser(IContainer $container): ResponseParser
+    {
+        return $container->resolve(ResponseParser::class);
     }
 
     /**
