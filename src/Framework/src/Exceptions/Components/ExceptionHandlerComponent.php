@@ -78,7 +78,6 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function withConsoleOutputWriter(string $exceptionType, Closure $callback): static
     {
-        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->consoleOutputWriters[$exceptionType] = $callback;
 
         return $this;
@@ -94,7 +93,6 @@ class ExceptionHandlerComponent implements IComponent
      */
     public function withLogLevelFactory(string $exceptionType, Closure $logLevelFactory): static
     {
-        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->logLevelFactories[$exceptionType] = $logLevelFactory;
 
         return $this;
@@ -122,7 +120,6 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure $instance = null,
         array|Closure $extensions = null
     ): static {
-        /** @psalm-suppress PropertyTypeCoercion Psalm doesn't like mixing generics of different types */
         $this->exceptionProblemDetailMappings[$exceptionType] = [
             'type' => $type,
             'title' => $title,

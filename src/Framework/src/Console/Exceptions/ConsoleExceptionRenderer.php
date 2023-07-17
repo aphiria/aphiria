@@ -58,7 +58,6 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      */
     public function registerOutputWriter(string $exceptionType, Closure $callback): void
     {
-        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->outputWriters[$exceptionType] = $callback;
     }
 
