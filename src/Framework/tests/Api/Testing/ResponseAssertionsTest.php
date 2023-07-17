@@ -15,6 +15,7 @@ namespace Aphiria\Framework\Tests\Api\Testing;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\ContentNegotiation\ContentNegotiator;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\Framework\Api\Testing\AssertionFailedException;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
 use Aphiria\Net\Http\Headers;
@@ -22,6 +23,7 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 class ResponseAssertionsTest extends TestCase
@@ -55,6 +57,30 @@ class ResponseAssertionsTest extends TestCase
         $this->expectExceptionMessage('Failed to assert that cookie foo has expected value');
         $response = new Response(200);
         $this->assertions->assertCookieEquals('baz', $response, 'foo');
+    }
+
+    public function testAssertCookieIsUnsetDoesNotThrowIfCookieUnset(): void
+    {
+        $response = new Response(200, new Headers([new KeyValuePair('Set-Cookie', 'Foo=; Max-Age=0')]));
+        $this->assertions->assertCookieIsUnset($response, 'Foo');
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testAssertCookieIsUnsetThrowsIfCookieSet(): void
+    {
+        $this->expectException(AssertionFailedException::class);
+        $this->expectExceptionMessage('Failed to assert that cookie Foo is unset');
+        $response = new Response(200, new Headers([new KeyValuePair('Set-Cookie', 'Foo=bar')]));
+        $this->assertions->assertCookieIsUnset($response, 'Foo');
+    }
+
+    public function testAssertCookieIsUnsetThrowsIfCookieWasNotSetAtAll(): void
+    {
+        $this->expectException(AssertionFailedException::class);
+        $this->expectExceptionMessage('Failed to assert that cookie Foo is unset');
+        $response = new Response(200, new Headers([new KeyValuePair('Foo', 'bar')]));
+        $this->assertions->assertCookieIsUnset($response, 'Foo');
     }
 
     public function testAssertHasCookieDoesNotThrowWhenCookieExists(): void
@@ -97,10 +123,17 @@ class ResponseAssertionsTest extends TestCase
         $this->assertions->assertHasHeader($response, 'Foo');
     }
 
-    public function testAssertHeaderEqualsDoesNotThrowOnMatch(): void
+    /**
+     * Note: We test with both an array of values to try matching against all values for the header
+     * We also test with a single value to try matching against the first header value
+     *
+     * @param mixed $expectedValue The expected value
+     */
+    #[TestWith([['bar'], 'bar'])]
+    public function testAssertHeaderEqualsDoesNotThrowOnMatch(mixed $expectedValue): void
     {
         $response = new Response(200, new Headers([new KeyValuePair('Foo', 'bar')]));
-        $this->assertions->assertHeaderEquals(['bar'], $response, 'Foo');
+        $this->assertions->assertHeaderEquals($expectedValue, $response, 'Foo');
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -160,7 +193,7 @@ class ResponseAssertionsTest extends TestCase
             ->with(self::class, $request)
             ->willReturn(null);
         $contentNegotiator = new ContentNegotiator(mediaTypeFormatterMatcher: $mediaTypeFormatterMatcher);
-        $assertions = new ResponseAssertions($contentNegotiator);
+        $assertions = new ResponseAssertions(new NegotiatedBodyDeserializer($contentNegotiator));
         $assertions->assertParsedBodyEquals($this, $request, $response);
     }
 
@@ -232,7 +265,7 @@ class ResponseAssertionsTest extends TestCase
             ->with(self::class, $request)
             ->willReturn(null);
         $contentNegotiator = new ContentNegotiator(mediaTypeFormatterMatcher: $mediaTypeFormatterMatcher);
-        $assertions = new ResponseAssertions($contentNegotiator);
+        $assertions = new ResponseAssertions(new NegotiatedBodyDeserializer($contentNegotiator));
         $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn (mixed $parsedBody): bool => true);
     }
 
