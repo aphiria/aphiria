@@ -51,6 +51,8 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @inheritdoc
+     * @template T of IComponent
+     * @param T $component The component to register
      */
     public function withComponent(IComponent $component, int $priority = null): static
     {

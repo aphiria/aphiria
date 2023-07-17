@@ -49,7 +49,8 @@ interface IApplicationBuilder
     /**
      * Adds a component to the application
      *
-     * @param IComponent $component The component to register
+     * @template T of IComponent
+     * @param T $component The component to register
      * @param int|null $priority The optional priority of this component (lower number => higher priority)
      * @return static For chaining
      */
