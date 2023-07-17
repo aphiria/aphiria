@@ -43,6 +43,8 @@ trait IntegrationTest
     protected NegotiatedRequestBuilder $requestBuilder;
     /** @var ResponseAssertions The response assertions */
     protected ResponseAssertions $responseAssertions;
+    /** @var ResponseParser The response parser */
+    protected ResponseParser $responseParser;
     /** @var IBodyDeserializer What to use when wanting to deserialize request or response bodies in integration tests */
     private IBodyDeserializer $bodyDeserializer;
     /**
@@ -52,8 +54,6 @@ trait IntegrationTest
      * @var IHttpClient
      */
     private IHttpClient $client;
-    /** @var ResponseParser The response parser */
-    private ResponseParser $responseParser;
 
     /**
      * Gets the built application that will handle requests
