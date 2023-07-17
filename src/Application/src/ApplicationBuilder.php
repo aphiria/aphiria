@@ -31,6 +31,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
      * @template T of IComponent
      * @param class-string<T> $type The type of component to get
      * @return T The component, if one was found
+     * @psalm-suppress InvalidReturnType This does return type T - bug
      */
     public function getComponent(string $type): IComponent
     {
