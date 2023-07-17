@@ -28,6 +28,9 @@ abstract class ApplicationBuilder implements IApplicationBuilder
 
     /**
      * @inheritdoc
+     * @template T of IComponent
+     * @param class-string<T> $type The type of component to get
+     * @return T The component, if one was found
      */
     public function getComponent(string $type): IComponent
     {
