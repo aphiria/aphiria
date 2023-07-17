@@ -71,7 +71,7 @@ class ExceptionHandlerComponent implements IComponent
     /**
      * Adds a console exception output writer
      *
-     * @template T of Exception
+     * @template T as Exception
      * @param class-string<T> $exceptionType The type of exception that's thrown
      * @param Closure(T, IOutput): void|Closure(T, IOutput): int|Closure(mixed, IOutput): StatusCode $callback The factory that takes in the exception and output, and writes messages/returns a status code
      * @return static For chaining
