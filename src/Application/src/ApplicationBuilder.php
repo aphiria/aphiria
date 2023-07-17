@@ -38,6 +38,7 @@ abstract class ApplicationBuilder implements IApplicationBuilder
             throw new OutOfBoundsException("No component of type $type found");
         }
 
+        /** @psalm-suppress InvalidReturnStatement We're purposely avoiding using class-string-map due to its poor IDE support */
         return $this->componentsByType[$type];
     }
 
