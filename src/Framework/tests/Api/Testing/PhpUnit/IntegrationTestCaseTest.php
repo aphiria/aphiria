@@ -226,6 +226,22 @@ class IntegrationTestCaseTest extends TestCase
         );
     }
 
+    public function testAssertCookieIsUnsetDoesNotThrowOnSuccess(): void
+    {
+        $response = new Response(200, new Headers([new KeyValuePair('Set-Cookie', 'foo=; Max-Age=0')]));
+        $this->integrationTests->assertCookieIsUnset($response, 'foo');
+    }
+
+    public function testAssertCookieIsUnsetThrowsOnFailure(): void
+    {
+        $response = new Response(200);
+        $this->integrationTests->assertCookieIsUnset($response, 'foo');
+        $this->assertSame(
+            'Failed to assert that cookie foo is unset',
+            $this->integrationTests->getFailMessage()
+        );
+    }
+
     public function testAssertHasCookieDoesNotThrowOnSuccess(): void
     {
         $response = new Response(200, new Headers([new KeyValuePair('Set-Cookie', 'foo=bar')]));
