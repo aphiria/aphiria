@@ -20,7 +20,7 @@ use OutOfBoundsException;
 final class AuthorizationRequirementHandlerRegistry
 {
     /**
-     * @param class-string-map<TRequirement as object, IAuthorizationRequirementHandler<TRequirement, TResource as ?object>> $requirementTypesToHandlers The requirement types to handlers
+     * @param class-string-map<TRequirement of object, IAuthorizationRequirementHandler<TRequirement, TResource of ?object>> $requirementTypesToHandlers The requirement types to handlers
      */
     public function __construct(private array $requirementTypesToHandlers = [])
     {
