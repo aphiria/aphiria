@@ -48,15 +48,13 @@ class LogLevelFactory
      */
     public function registerLogLevelFactory(string $exceptionType, Closure $factory): void
     {
-        /** @psalm-suppress InvalidPropertyAssignmentValue This is valid - bug */
         $this->logLevelFactories[$exceptionType] = $factory;
     }
 
     /**
      * Registers an exception log level factory for an exception type
      *
-     * @template T of Exception
-     * @param class-string-map<T, Closure(T): string> $exceptionTypesToFactories The exception types to factories
+     * @param class-string-map<T as Exception, Closure(T): string> $exceptionTypesToFactories The exception types to factories
      */
     public function registerManyLogLevelFactories(array $exceptionTypesToFactories): void
     {
