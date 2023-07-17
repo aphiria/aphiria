@@ -32,7 +32,7 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
-    /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
+    /** @var class-string-map<T as Exception, Closure(T): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IRequest|null The current request, if one is set, otherwise null */
     protected ?IRequest $request = null;

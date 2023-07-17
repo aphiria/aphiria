@@ -21,7 +21,7 @@ use Psr\Log\LogLevel;
  */
 class LogLevelFactory
 {
-    /** @var array<class-string<Exception>, Closure(Exception): string> The mapping of exception types to log level factories */
+    /** @var class-string-map<T as Exception, Closure(T): string> The mapping of exception types to log level factories */
     private array $logLevelFactories = [];
 
     /**
@@ -56,7 +56,7 @@ class LogLevelFactory
      * Registers an exception log level factory for an exception type
      *
      * @template T of Exception
-     * @param array<class-string<T>, Closure(T): string> $exceptionTypesToFactories The exception types to factories
+     * @param class-string-map<T, Closure(T): string> $exceptionTypesToFactories The exception types to factories
      */
     public function registerManyLogLevelFactories(array $exceptionTypesToFactories): void
     {
