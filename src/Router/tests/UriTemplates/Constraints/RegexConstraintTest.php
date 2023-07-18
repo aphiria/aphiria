@@ -27,7 +27,6 @@ class RegexConstraintTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Regex cannot be empty');
-        /** @psalm-suppress InvalidArgument We are testing this */
         new RegexConstraint('');
     }
 
