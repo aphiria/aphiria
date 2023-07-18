@@ -61,4 +61,13 @@ interface IIdentity
      * @return bool True if the identity has been authenticated, otherwise false
      */
     public function isAuthenticated(): bool;
+
+    /**
+     * Sets the authentication scheme name for this identity
+     * Note: This is mostly useful with mocking authentication
+     *
+     * @param string $authenticationSchemeName The authentication scheme name
+     * @internal
+     */
+    public function setAuthenticationSchemeName(string $authenticationSchemeName): void;
 }

@@ -21,7 +21,7 @@ class Identity implements IIdentity
      * @param list<Claim<mixed>> $claims The list of claims for this identity
      * @param string|null $authenticationSchemeName The authentication scheme name used to authenticate this identity, or null if it has not been authenticated
      */
-    public function __construct(private readonly array $claims, private readonly ?string $authenticationSchemeName = null)
+    public function __construct(private readonly array $claims, private ?string $authenticationSchemeName = null)
     {
     }
 
@@ -96,5 +96,13 @@ class Identity implements IIdentity
     public function isAuthenticated(): bool
     {
         return $this->authenticationSchemeName !== null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAuthenticationSchemeName(string $authenticationSchemeName): void
+    {
+        $this->authenticationSchemeName = $authenticationSchemeName;
     }
 }
