@@ -26,7 +26,7 @@ class RegexConstraint extends Constraint
 
     /**
      * @inheritdoc
-     * @param non-empty-string $regex The regular expression to run
+     * @param string $regex The regular expression to run
      * @throws InvalidArgumentException Thrown if the regex is empty
      */
     public function __construct(string $regex, string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID)

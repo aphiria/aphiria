@@ -23,7 +23,7 @@ final class RegexConstraint implements IRouteVariableConstraint
     private readonly string $regex;
 
     /**
-     * @param non-empty-string $regex The regex the input must match
+     * @param string $regex The regex the input must match
      * @throws InvalidArgumentException Thrown if the regex was empty
      */
     public function __construct(string $regex)
