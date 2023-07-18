@@ -24,7 +24,7 @@ final class VariableTrieNode extends TrieNode
     public readonly array $parts;
     /** @var bool Whether or not this node contains just a single variable part (for performance reasons) */
     private readonly bool $onlyContainsVariable;
-    /** @var non-empty-string The regex to use for matching */
+    /** @var string The regex to use for matching */
     private string $regex = '';
 
     /**

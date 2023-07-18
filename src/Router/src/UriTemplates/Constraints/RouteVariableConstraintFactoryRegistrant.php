@@ -20,7 +20,7 @@ final class RouteVariableConstraintFactoryRegistrant
     /**
      * Registers the built-in constraint factories
      *
-     * @param RouteVariableConstraintFactory The constraint factory to register new factories to
+     * @param RouteVariableConstraintFactory $constraintFactory The constraint factory to register new factories to
      * @return RouteVariableConstraintFactory The constraint factory with all the registered factories (for chaining)
      */
     public function registerConstraintFactories(
