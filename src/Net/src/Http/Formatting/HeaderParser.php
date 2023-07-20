@@ -65,7 +65,7 @@ class HeaderParser
     /**
      * Parses the Content-Type header
      *
-     * @param Headers $headers The request headers to parse
+     * @param Headers $headers The headers to parse
      * @return ContentTypeHeaderValue|null The parsed header if one exists, otherwise null
      * @throws InvalidArgumentException Thrown if the headers were incorrectly formatted
      */

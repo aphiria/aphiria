@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http\Formatting;
 
+use Aphiria\Collections\IImmutableDictionary;
+use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\Headers\Cookie;
@@ -23,20 +25,21 @@ use Aphiria\Net\Http\Headers\SameSiteMode;
 class ResponseHeaderParser extends HeaderParser
 {
     /**
-     * Parses the response headers for all set cookie
+     * Parses the response headers for all set cookies
      *
      * @param Headers $headers The headers to parse
-     * @return list<Cookie> The list of set cookies
+     * @return IImmutableDictionary<string, Cookie> The mapping of cookie names to cookies
      */
-    public function parseCookies(Headers $headers): array
+    public function parseCookies(Headers $headers): IImmutableDictionary
     {
+        /** @var list<KeyValuePair<string, Cookie>> $cookieNamesToCookies */
+        $cookieNamesToCookies = [];
         $setCookieHeaders = null;
 
         if (!$headers->tryGet('Set-Cookie', $setCookieHeaders)) {
-            return [];
+            return new ImmutableHashTable($cookieNamesToCookies);
         }
 
-        $cookies = [];
         /** @var list<string> $setCookieHeaders */
         $numSetCookieHeaders = \count($setCookieHeaders);
 
@@ -77,18 +80,21 @@ class ResponseHeaderParser extends HeaderParser
                 continue;
             }
 
-            $cookies[] = new Cookie(
+            $cookieNamesToCookies[] = new KeyValuePair(
                 $name,
-                $cookieValue,
-                $maxAge,
-                $path,
-                $domain,
-                $isSecure,
-                $isHttpOnly,
-                $sameSite
+                new Cookie(
+                    $name,
+                    $cookieValue,
+                    $maxAge,
+                    $path,
+                    $domain,
+                    $isSecure,
+                    $isHttpOnly,
+                    $sameSite
+                )
             );
         }
 
-        return $cookies;
+        return new ImmutableHashTable($cookieNamesToCookies);
     }
 }

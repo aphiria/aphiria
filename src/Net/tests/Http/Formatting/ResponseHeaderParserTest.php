@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Formatting;
 
+use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\Headers;
@@ -33,9 +34,12 @@ class ResponseHeaderParserTest extends TestCase
         $headers = new Headers([
             new KeyValuePair('Set-Cookie', 'foo=value; Max-Age=3600; Domain=example.com; Path=/path; HttpOnly; Secure; SameSite=strict')
         ]);
-        $expectedCookies = [
-            new Cookie('foo', 'value', 3600, '/path', 'example.com', true, true, SameSiteMode::Strict)
-        ];
+        $expectedCookies = new ImmutableHashTable([
+            new KeyValuePair(
+                'foo',
+                new Cookie('foo', 'value', 3600, '/path', 'example.com', true, true, SameSiteMode::Strict)
+            )
+         ]);
         $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }
 
@@ -44,10 +48,16 @@ class ResponseHeaderParserTest extends TestCase
         $headers = new Headers();
         $headers->add('Set-Cookie', 'foo=value1; Max-Age=3600; Domain=example1.com; Path=/path1; HttpOnly; Secure; SameSite=strict');
         $headers->add('Set-Cookie', 'bar=value2; Max-Age=7200; Domain=example2.com; Path=/path2; HttpOnly; Secure; SameSite=strict', true);
-        $expectedCookies = [
-            new Cookie('foo', 'value1', 3600, '/path1', 'example1.com', true, true, SameSiteMode::Strict),
-            new Cookie('bar', 'value2', 7200, '/path2', 'example2.com', true, true, SameSiteMode::Strict)
-        ];
+        $expectedCookies = new ImmutableHashTable([
+            new KeyValuePair(
+                'foo',
+                new Cookie('foo', 'value1', 3600, '/path1', 'example1.com', true, true, SameSiteMode::Strict)
+            ),
+            new KeyValuePair(
+                'bar',
+                new Cookie('bar', 'value2', 7200, '/path2', 'example2.com', true, true, SameSiteMode::Strict)
+            )
+        ]);
         $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }
 
@@ -60,9 +70,12 @@ class ResponseHeaderParserTest extends TestCase
     {
         $headers = new Headers();
         $headers->add('Set-Cookie', 'foo=bar; Max-Age=3600');
-        $expectedCookies = [
-            new Cookie('foo', 'bar', 3600, null, null, false, false, null)
-        ];
+        $expectedCookies = new ImmutableHashTable([
+            new KeyValuePair(
+                'foo',
+                new Cookie('foo', 'bar', 3600, null, null, false, false, null)
+            )
+        ]);
         $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }
 
@@ -77,9 +90,12 @@ class ResponseHeaderParserTest extends TestCase
     {
         $headers = new Headers();
         $headers->add('Set-Cookie', 'foo=bar; Max-Age=3600');
-        $expectedCookies = [
-            new Cookie('foo', 'bar', 3600, null, null, false, false, null)
-        ];
+        $expectedCookies = new ImmutableHashTable([
+            new KeyValuePair(
+                'foo',
+                new Cookie('foo', 'bar', 3600, null, null, false, false, null)
+            )
+        ]);
         $this->assertEquals($expectedCookies, $this->parser->parseCookies($headers));
     }
 }
