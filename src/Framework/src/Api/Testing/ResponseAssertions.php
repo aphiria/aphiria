@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Api\Testing;
 
-use Aphiria\ContentNegotiation\ContentNegotiator;
-use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\FailedContentNegotiationException;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
+use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\Net\Http\Formatting\ResponseHeaderParser;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IBody;
@@ -30,11 +31,11 @@ use InvalidArgumentException;
 class ResponseAssertions
 {
     /**
-     * @param IContentNegotiator $contentNegotiator The content negotiator
+     * @param IBodyDeserializer $bodyDeserializer The body deserializer
      * @param ResponseHeaderParser $responseHeaderParser The response header parser
      */
     public function __construct(
-        private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
+        private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
         private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser()
     ) {
     }
@@ -56,6 +57,28 @@ class ResponseAssertions
         }
 
         throw new AssertionFailedException("Failed to assert that cookie $cookieName has expected value");
+    }
+
+    /**
+     * Asserts that a response unsets a cookie
+     *
+     * @param IResponse $response The response to inspect
+     * @param string $cookieName The name of the cookie to look for
+     * @throws AssertionFailedException Thrown if the assertion failed
+     */
+    public function assertCookieIsUnset(IResponse $response, string $cookieName): void
+    {
+        foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
+            if (
+                $cookie->getName() === $cookieName
+                && ($cookie->value === '' || $cookie->value === null)
+                && ($cookie->maxAge === 0 || $cookie->maxAge === null)
+            ) {
+                return;
+            }
+        }
+
+        throw new AssertionFailedException("Failed to assert that cookie $cookieName is unset");
     }
 
     /**
@@ -100,11 +123,14 @@ class ResponseAssertions
      */
     public function assertHeaderEquals(mixed $expectedValue, IResponse $response, string $headerName): void
     {
-        $actualHeaderValue = null;
-
-        if (!$response->getHeaders()->tryGet($headerName, $actualHeaderValue)) {
+        if (!$response->getHeaders()->containsKey($headerName)) {
             throw new AssertionFailedException("No header value for $headerName is set");
         }
+
+        // If the expected value is an array, then get all the header values, otherwise grab just the first
+        $actualHeaderValue = \is_array($expectedValue)
+            ? $response->getHeaders()->get($headerName)
+            : $response->getHeaders()->getFirst($headerName);
 
         if ($expectedValue !== $actualHeaderValue) {
             throw new AssertionFailedException('Expected header value ' . \print_r($expectedValue, true) . ', got ' . \print_r($actualHeaderValue, true));
@@ -148,10 +174,10 @@ class ResponseAssertions
                 if ($response->getBody() != $expectedValue) {
                     throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
                 }
-            } elseif ($this->getParsedResponseBody($request, $response, TypeResolver::resolveType($expectedValue)) != $expectedValue) {
+            } elseif ($this->bodyDeserializer->readResponseBodyAs(TypeResolver::resolveType($expectedValue), $request, $response, ) != $expectedValue) {
                 throw new AssertionFailedException('Failed to assert that the response body matches the expected value');
             }
-        } catch (SerializationException | InvalidArgumentException $ex) {
+        } catch (SerializationException | InvalidArgumentException | FailedContentNegotiationException $ex) {
             throw new AssertionFailedException('Failed to parse the response body', 0, $ex);
         }
     }
@@ -168,10 +194,10 @@ class ResponseAssertions
     public function assertParsedBodyPassesCallback(IRequest $request, IResponse $response, string $type, Closure $callback): void
     {
         try {
-            if (!$callback($this->getParsedResponseBody($request, $response, $type))) {
+            if (!$callback($this->bodyDeserializer->readResponseBodyAs($type, $request, $response))) {
                 throw new AssertionFailedException('Failed to assert that the response body passes the callback');
             }
-        } catch (SerializationException | InvalidArgumentException $ex) {
+        } catch (SerializationException | InvalidArgumentException | FailedContentNegotiationException $ex) {
             throw new AssertionFailedException('Failed to parse the response body', 0, $ex);
         }
     }
@@ -191,31 +217,5 @@ class ResponseAssertions
         if ($actualStatusCodeAsInt !== $expectedStatusCodeAsInt) {
             throw new AssertionFailedException("Expected status code $expectedStatusCodeAsInt, got $actualStatusCodeAsInt");
         }
-    }
-
-    /**
-     * Gets a parsed body from the response
-     *
-     * @param IRequest $request The request that generated the response (used for content negotiation)
-     * @param IResponse $response The response whose body we want
-     * @param string $type The type to deserialize the body to
-     * @return float|object|int|bool|array|string|null An instance of type, or null if the body is not set
-     * @throws SerializationException Thrown if the body could not be read
-     * TODO: REMOVE
-     */
-    private function getParsedResponseBody(IRequest $request, IResponse $response, string $type): float|object|int|bool|array|string|null
-    {
-        if (($body = $response->getBody()) === null) {
-            return null;
-        }
-
-        $contentNegotiationResult = $this->contentNegotiator->negotiateResponseContent($type, $request);
-        $mediaTypeFormatter = $contentNegotiationResult->formatter;
-
-        if ($mediaTypeFormatter === null) {
-            throw new InvalidArgumentException("No media type formatter available for $type");
-        }
-
-        return $mediaTypeFormatter->readFromStream($body->readAsStream(), $type);
     }
 }
