@@ -51,6 +51,23 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /**
+     * Asserts that a cookie is unset
+     *
+     * @param IResponse $response The response to inspect
+     * @param string $cookieName The name of the cookie to inspect
+     */
+    public function assertCookieIsUnset(IResponse $response, string $cookieName): void
+    {
+        try {
+            $this->responseAssertions->assertCookieIsUnset($response, $cookieName);
+            // Dummy assertion
+            $this->assertTrue(true);
+        } catch (AssertionFailedException $ex) {
+            $this->failWithMessage($ex->getMessage());
+        }
+    }
+
+    /**
      * Asserts that a response has a cookie
      *
      * @param IResponse $response The response to inspect
