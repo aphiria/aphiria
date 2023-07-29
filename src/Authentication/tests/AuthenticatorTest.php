@@ -142,6 +142,10 @@ class AuthenticatorTest extends TestCase
                     {
                         return false;
                     }
+
+                    public function setAuthenticationSchemeName(string $authenticationSchemeName): void
+                    {
+                    }
                 };
             }
 

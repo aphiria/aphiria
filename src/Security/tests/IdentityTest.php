@@ -91,4 +91,12 @@ class IdentityTest extends TestCase
         $unauthenticatedIdentity = new Identity([]);
         $this->assertFalse($unauthenticatedIdentity->isAuthenticated());
     }
+
+    public function testSettingAuthenticationSchemeName(): void
+    {
+        $identity = new Identity([]);
+        $this->assertNull($identity->getAuthenticationSchemeName());
+        $identity->setAuthenticationSchemeName('foo');
+        $this->assertSame('foo', $identity->getAuthenticationSchemeName());
+    }
 }
