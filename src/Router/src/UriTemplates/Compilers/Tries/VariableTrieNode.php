@@ -88,6 +88,7 @@ final class VariableTrieNode extends TrieNode
 
         $matches = [];
 
+        /** @psalm-suppress ArgumentTypeCoercion At this point, the regex will definitely be non-empty */
         if (\preg_match($this->regex, $segmentValue, $matches, PREG_UNMATCHED_AS_NULL) !== 1) {
             return false;
         }

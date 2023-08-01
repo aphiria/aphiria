@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Tests\UriTemplates\Constraints;
 
 use Aphiria\Routing\UriTemplates\Constraints\RegexConstraint;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class RegexConstraintTest extends TestCase
@@ -20,6 +21,13 @@ class RegexConstraintTest extends TestCase
     public function testCorrectSlugIsReturned(): void
     {
         $this->assertSame('regex', RegexConstraint::getSlug());
+    }
+
+    public function testEmptyRegexThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Regex cannot be empty');
+        new RegexConstraint('');
     }
 
     public function testMatchingStringsPass(): void

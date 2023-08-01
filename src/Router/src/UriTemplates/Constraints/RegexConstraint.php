@@ -12,16 +12,27 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates\Constraints;
 
+use InvalidArgumentException;
+
 /**
  * Defines the regex constraint
  */
 final class RegexConstraint implements IRouteVariableConstraint
 {
+    /** @var non-empty-string The regex the input must match */
+    private readonly string $regex;
+
     /**
      * @param string $regex The regex the input must match
+     * @throws InvalidArgumentException Thrown if the regex was empty
      */
-    public function __construct(private readonly string $regex)
+    public function __construct(string $regex)
     {
+        if (empty($regex)) {
+            throw new InvalidArgumentException('Regex cannot be empty');
+        }
+
+        $this->regex = $regex;
     }
 
     /**

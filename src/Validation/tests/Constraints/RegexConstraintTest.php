@@ -13,10 +13,18 @@ declare(strict_types=1);
 namespace Aphiria\Validation\Tests\Constraints;
 
 use Aphiria\Validation\Constraints\RegexConstraint;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class RegexConstraintTest extends TestCase
 {
+    public function testEmptyRegexThrowsException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Regex cannot be empty');
+        new RegexConstraint('');
+    }
+
     public function testGettingErrorMessageId(): void
     {
         $constraint = new RegexConstraint('/foo/', 'foo');

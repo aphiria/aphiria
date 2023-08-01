@@ -144,9 +144,14 @@ class ResponseAssertions
      * @param IResponse $response The response to inspect
      * @param string $headerName The name of the header to inspect
      * @throws AssertionFailedException Thrown if the assertion failed
+     * @throws InvalidArgumentException Thrown if the regex was empty
      */
     public function assertHeaderMatchesRegex(string $regex, IResponse $response, string $headerName): void
     {
+        if (empty($regex)) {
+            throw new InvalidArgumentException('Regex cannot be empty');
+        }
+
         $actualHeaderValue = null;
 
         if (!$response->getHeaders()->tryGetFirst($headerName, $actualHeaderValue)) {
