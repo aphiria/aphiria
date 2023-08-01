@@ -23,6 +23,7 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
@@ -163,6 +164,13 @@ class ResponseAssertionsTest extends TestCase
         $this->assertions->assertHeaderMatchesRegex('/^bar$/', $response, 'Foo');
         // Dummy assertion
         $this->assertTrue(true);
+    }
+
+    public function testAssertHeaderMatchesRegexThrowsForEmptyRegex(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Regex cannot be empty');
+        $this->assertions->assertHeaderMatchesRegex('', new Response(), 'foo');
     }
 
     public function testAssertHeaderMatchesRegexThrowsOnNoMatch(): void
