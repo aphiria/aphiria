@@ -57,7 +57,7 @@ class IntegrationTestCaseTest extends TestCase
 {
     private IRequestHandler&MockObject $apiGateway;
     private IApplication&MockObject $app;
-    private (MockObject&IAuthenticator)|(MockObject&IMockAuthenticator) $authenticator;
+    private (MockObject&IAuthenticator)|(MockObject&IMockAuthenticator)|null $authenticator;
     private IBodyDeserializer&MockObject $bodyDeserializer;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;
