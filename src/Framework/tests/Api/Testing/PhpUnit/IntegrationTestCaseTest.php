@@ -69,6 +69,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway = $this->createMock(IRequestHandler::class);
         $this->bodyDeserializer = $this->createMock(IBodyDeserializer::class);
         $this->authenticator = $this->createMock(IAuthenticator::class);
+        /** @psalm-suppress InvalidPropertyAssignmentValue We have to make the authenticator a pretty flexible type to be able to test it */
         $this->integrationTests = new class ($this->app, $this->apiGateway, $this->bodyDeserializer, $this->authenticator) extends IntegrationTestCase {
             private static ?string $failMessage = null;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
