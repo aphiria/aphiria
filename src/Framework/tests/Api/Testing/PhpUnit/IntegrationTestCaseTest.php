@@ -178,7 +178,7 @@ class IntegrationTestCaseTest extends TestCase
                 return $this->app;
             }
 
-            protected function createAuthenticator(IContainer $container): IAuthenticator
+            protected function createAuthenticator(IContainer $container): IAuthenticator|IMockAuthenticator|null
             {
                 if ($this->authenticator === null) {
                     throw new LogicException('The authenticator was not set in the integration test');
