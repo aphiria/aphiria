@@ -123,10 +123,11 @@ trait IntegrationTest
      * Creates the authenticator
      *
      * @param IContainer $container The DI container
-     * @return IAuthenticator|null The authenticator if one could be created, otherwise null
+     * @return IAuthenticator|IMockAuthenticator|null The authenticator if one could be created, otherwise null
      */
-    protected function createAuthenticator(IContainer $container): IAuthenticator|null
+    protected function createAuthenticator(IContainer $container): IAuthenticator|IMockAuthenticator|null
     {
+        /** @var IAuthenticator|IMockAuthenticator|null $authenticator */
         $authenticator = null;
         $container->tryResolve(IAuthenticator::class, $authenticator);
 
