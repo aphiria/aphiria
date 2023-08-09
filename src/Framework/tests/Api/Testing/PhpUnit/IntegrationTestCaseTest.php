@@ -57,7 +57,7 @@ class IntegrationTestCaseTest extends TestCase
 {
     private IRequestHandler&MockObject $apiGateway;
     private IApplication&MockObject $app;
-    private IAuthenticator&MockObject $authenticator;
+    private (MockObject&IAuthenticator)|(MockObject&IMockAuthenticator) $authenticator;
     private IBodyDeserializer&MockObject $bodyDeserializer;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;
@@ -242,7 +242,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testActingAsCallsMockAuthenticator(): void
     {
         $user = new User([new Identity([])]);
-        $callback = fn () => true;
+        $callback = fn (): bool => true;
         $this->authenticator = $this->createMock(IMockAuthenticator::class);
         $this->authenticator->method('actingAs')
             ->with($user, $callback)
