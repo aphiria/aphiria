@@ -26,12 +26,11 @@ Aphiria is a suite of small, decoupled PHP libraries that make up a REST API fra
 
 ```php
 // Define some controller endpoints
-#[RouteGroup('/users')]
 class UserController extends Controller
 {
     public function __construct(private IUserService $users) {}
 
-    #[Post('')]
+    #[Post('/users')]
     public function createUser(User $user): IResponse
     {
         $this->users->create($user);
@@ -39,7 +38,7 @@ class UserController extends Controller
         return $this->created("/users/{$user->id}", $user);
     }
 
-    #[Get('/:id')]
+    #[Get('/users/:id')]
     #[AuthorizeRoles('admin')]
     public function getUserById(int $id): User
     {

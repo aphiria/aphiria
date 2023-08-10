@@ -12,6 +12,7 @@
   - `Aphiria\Validation\Builders` => `Aphiria\Validation`
 - Updated to PHPUnit 10.1 ([#248](https://github.com/aphiria/aphiria/pull/248), [#250](https://github.com/aphiria/aphiria/pull/250))
 - Updated `IAuthenticator::authenticate()`, `IAuthenticator::challenge()`, `IAuthenticator::forbid()`, `IAuthenticator::logIn()`, and `IAuthenticator::logOut()` to take in no, one, or many authentication scheme names ([#269](https://github.com/aphiria/aphiria/pull/269))
+- Replaced `#[RouteGroup]` attribute with `#[Controller]` ([#295](https://github.com/aphiria/aphiria/pull/295))
 - Added the authentication scheme name(s) to `AuthenticationResult` ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Removed `IUserAccessor` property from `Authenticator` ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Renamed `SchemeNotFoundException` to `AuthenticationSchemeNotFoundException` ([#269](https://github.com/aphiria/aphiria/pull/269))

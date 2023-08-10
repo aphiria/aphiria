@@ -20,5 +20,17 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 final class Controller
 {
-    // Don't do anything
+    /**
+     * @param string $path The path prefix to apply to all the routes in the controller (defaults to an empty path)
+     * @param string|null $host The host to apply to all the routes in the controller
+     * @param bool $isHttpsOnly Whether or not all the routes in the controller are HTTPS only
+     * @param array<string, mixed> $parameters The mapping of custom parameter names to values for all the routes in the controller
+     */
+    public function __construct(
+        public string $path = '',
+        public ?string $host = null,
+        public bool $isHttpsOnly = false,
+        public array $parameters = []
+    ) {
+    }
 }
