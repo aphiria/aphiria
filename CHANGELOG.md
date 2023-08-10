@@ -29,6 +29,10 @@
 - Added `AggregateAuthenticationException` when authenticating against multiple schemes and all of them failing ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Added `YamlConfigurationFileReader` ([#270](https://github.com/aphiria/aphiria/pull/270))
 
+### Fixed
+
+- Fixed bug that caused console input to not be trimmed ([#292](https://github.com/aphiria/aphiria/pull/292))
+
 ## [v1.0.0-alpha8](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha7...v1.0.0-alpha8) (2022-12-10)
 
 ### Changed

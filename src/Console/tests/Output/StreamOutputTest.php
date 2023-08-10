@@ -15,6 +15,7 @@ namespace Aphiria\Console\Tests\Output;
 use Aphiria\Console\Output\Compilers\OutputCompiler;
 use Aphiria\Console\Output\StreamOutput;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -30,6 +31,16 @@ class StreamOutputTest extends TestCase
         $this->inputStream = \fopen('php://memory', 'wb');
         $this->compiler = new OutputCompiler();
         $this->output = new StreamOutput(\fopen('php://memory', 'wb'), $this->inputStream, $this->compiler);
+    }
+
+    /**
+     * Provides input for readln tests
+     *
+     * @return list<array<string, string>> The list of untrimmed input and expected trimmed input
+     */
+    public static function provideReadlnInput(): array
+    {
+        return [['foo' . PHP_EOL, 'foo'], [' foo ', 'foo']];
     }
 
     public function testClearDoesNothing(): void
@@ -64,6 +75,14 @@ class StreamOutputTest extends TestCase
         $this->expectExceptionMessage('Failed to read line');
         $this->inputStream = false;
         $this->output->readLine();
+    }
+
+    #[DataProvider('provideReadlnInput')]
+    public function testReadingLineTrimsInput(string $rawInput, string $cleanedInput): void
+    {
+        \fwrite($this->inputStream, $rawInput);
+        \rewind($this->inputStream);
+        $this->assertSame($cleanedInput, $this->output->readLine());
     }
 
     public function testWritelnOnArray(): void
