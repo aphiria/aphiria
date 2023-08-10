@@ -36,7 +36,7 @@ class StreamOutputTest extends TestCase
     /**
      * Provides input for readln tests
      *
-     * @return list<array<string, string>> The list of untrimmed input and expected trimmed input
+     * @return list<array{0: string, 1: string}> The list of untrimmed input and expected trimmed input
      */
     public static function provideReadlnInput(): array
     {
