@@ -51,8 +51,8 @@ class UserController extends Controller
 $container->bindInstance(IUserService::class, new UserService());
 
 // Run an integration test
-$createResponse = $this->post('/users', new User('Dave'));
-$user = $this->readResponseBodyAs(User::class, $createResponse);
+$postResponse = $this->post('/users', new User('Dave'));
+$user = $this->readResponseBodyAs(User::class, $postResponse);
 $admin = (new PrincipalBuilder('example.com'))->withRoles('admin')
     ->build();
 $getResponse = $this->actingAs($admin, fn () => $this->get("/users/$user->id"));
