@@ -18,6 +18,14 @@ namespace Aphiria\Security;
 interface IIdentity
 {
     /**
+     * Gets all claims with the input type
+     *
+     * @param ClaimType|string $type The claim type to filter on
+     * @return list<Claim<mixed>> The list of claims for this identity with the input type
+     */
+    public function filterClaims(ClaimType|string $type): array;
+
+    /**
      * Gets the authentication scheme used to authenticate this identity
      *
      * @return string|null The authentication scheme, eg Bearer, Cookie, etc, or null if the identity has not been authenticated
@@ -27,10 +35,9 @@ interface IIdentity
     /**
      * Gets all the claims associated with this identity
      *
-     * @param ClaimType|string|null $type The claim type to filter on, or null if returning all claims
      * @return list<Claim<mixed>> The list of claims for this identity
      */
-    public function getClaims(ClaimType|string $type = null): array;
+    public function getClaims(): array;
 
     /**
      * A helper method around getting the name claim value

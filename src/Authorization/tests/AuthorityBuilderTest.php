@@ -39,7 +39,7 @@ class AuthorityBuilderTest extends TestCase
             ->withRequirementHandler(RolesRequirement::class, new RolesRequirementHandler())
             ->build();
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getClaims')
+        $user->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'dev', 'example.com')]);
         // The first requirement will fail, but not the second one

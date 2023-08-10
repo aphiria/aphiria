@@ -71,7 +71,12 @@ class AuthorizeTest extends TestCase
             {
             }
 
-            public function getClaims(ClaimType|string $type = null): array
+            public function filterClaims(ClaimType|string $type): array
+            {
+                return [];
+            }
+
+            public function getClaims(): array
             {
                 return [];
             }
@@ -105,7 +110,12 @@ class AuthorizeTest extends TestCase
             {
             }
 
-            public function getClaims(ClaimType|string $type = null): array
+            public function filterClaims(ClaimType|string $type): array
+            {
+                return [];
+            }
+
+            public function getClaims(): array
             {
                 return [];
             }
@@ -118,6 +128,11 @@ class AuthorizeTest extends TestCase
             public function getPrimaryIdentity(): ?IIdentity
             {
                 return new class () implements IIdentity {
+                    public function filterClaims(ClaimType|string $type): array
+                    {
+                        return [];
+                    }
+
                     public function getAuthenticationSchemeName(): ?string
                     {
                         return null;

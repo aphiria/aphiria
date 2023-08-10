@@ -32,12 +32,19 @@ interface IPrincipal
     public function addManyIdentities(array $identities): void;
 
     /**
+     * Gets all the claims with the input type associated with this principal
+     *
+     * @param ClaimType|string $type The claim type to filter on
+     * @return list<Claim<mixed>> The list of claims for this principal with the input type
+     */
+    public function filterClaims(ClaimType|string $type): array;
+
+    /**
      * Gets all the claims associated with this principal
      *
-     * @param ClaimType|string|null $type The claim type to filter on, or null if returning all claims
      * @return list<Claim<mixed>> The list of claims for this principal
      */
-    public function getClaims(ClaimType|string $type = null): array;
+    public function getClaims(): array;
 
     /**
      * Gets the list of identities a principal has

@@ -15,6 +15,7 @@
 - Added the authentication scheme name(s) to `AuthenticationResult` ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Removed `IUserAccessor` property from `Authenticator` ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Renamed `SchemeNotFoundException` to `AuthenticationSchemeNotFoundException` ([#269](https://github.com/aphiria/aphiria/pull/269))
+- Moved filtering of principal and identity claims out of `getClaims()` and into a new method `filterClaims()` ([#290](https://github.com/aphiria/aphiria/pull/290))
 
 ### Added
 
