@@ -142,11 +142,11 @@ class RouteActionInvoker implements IRouteActionInvoker
 
     /**
      * Reflects a route action delegate
-     * Note: This is split out primarily for testability
      *
      * @param Closure $routeActionDelegate The route action delegate to reflect
      * @return ReflectionFunctionAbstract The reflected method/function
      * @throws ReflectionException Thrown if there was an error reflecting the delegate
+     * @note This is split out primarily for testability
      * @internal
      */
     protected function reflectRouteActionDelegate(Closure $routeActionDelegate): ReflectionFunctionAbstract

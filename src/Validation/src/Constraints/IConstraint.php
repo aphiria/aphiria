@@ -19,9 +19,9 @@ interface IConstraint
 {
     /**
      * Gets the ID of the error message associated with this constraint
-     * Note: If not supporting localization, this could contains the error message itself
      *
      * @return string The error message ID
+     * @note If not supporting localization, this could contains the error message itself
      */
     public function getErrorMessageId(): string;
 

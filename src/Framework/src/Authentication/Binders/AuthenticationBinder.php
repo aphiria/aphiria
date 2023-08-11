@@ -75,9 +75,9 @@ class AuthenticationBinder extends Binder
 
     /**
      * Gets whether we're in the testing environment
-     * Note: If you use different environment variable values for testing, override this
      *
      * @return bool True if we're in the testing environment, otherwise false
+     * @note If you use different environment variable values for testing, override this
      */
     protected function inTestingEnvironment(): bool
     {

@@ -27,9 +27,9 @@ final class Headers extends HashTable
 {
     /**
      * Gets the headers as a string
-     * Note: This can be used for the headers of a raw HTTP message
      *
      * @return string The serialized headers
+     * @note This can be used for the headers of a raw HTTP message
      */
     public function __toString(): string
     {

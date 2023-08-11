@@ -20,7 +20,7 @@ interface IComponent
     /**
      * Actually builds the component
      *
-     * Note: This will occur once services are resolvable
+     * @note This will occur once services are resolvable
      */
     public function build(): void;
 }

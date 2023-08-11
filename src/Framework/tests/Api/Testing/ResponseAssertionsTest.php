@@ -125,10 +125,8 @@ class ResponseAssertionsTest extends TestCase
     }
 
     /**
-     * Note: We test with both an array of values to try matching against all values for the header
-     * We also test with a single value to try matching against the first header value
-     *
      * @param string|list<string> $expectedValue The expected value
+     * @note We test with both an array of values to try matching against all values for the header. We also test with a single value to try matching against the first header value.
      */
     #[TestWith([['bar']])]
     #[TestWith(['bar'])]

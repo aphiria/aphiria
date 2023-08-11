@@ -71,9 +71,9 @@ interface IIdentity
 
     /**
      * Sets the authentication scheme name for this identity
-     * Note: This is mostly useful with mocking authentication
      *
      * @param string $authenticationSchemeName The authentication scheme name
+     * @note This is mostly useful with mocking authentication
      * @internal
      */
     public function setAuthenticationSchemeName(string $authenticationSchemeName): void;

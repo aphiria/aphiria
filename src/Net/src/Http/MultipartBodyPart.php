@@ -27,9 +27,9 @@ readonly class MultipartBodyPart
 
     /**
      * Gets the multipart body part as a string
-     * Note: This can be used in raw HTTP messages
      *
      * @return string The body part as a string
+     * @note This can be used in raw HTTP messages
      */
     public function __toString(): string
     {

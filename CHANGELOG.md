@@ -17,6 +17,7 @@
 - Removed `IUserAccessor` property from `Authenticator` ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Renamed `SchemeNotFoundException` to `AuthenticationSchemeNotFoundException` ([#269](https://github.com/aphiria/aphiria/pull/269))
 - Moved filtering of principal and identity claims out of `getClaims()` and into a new method `filterClaims()` ([#291](https://github.com/aphiria/aphiria/pull/291))
+- `AuthenitcationSchemeRegistry::getDefaultScheme()` now returns a scheme if it is the only one registered, even if it was not marked as the default ([#296](https://github.com/aphiria/aphiria/pull/296))
 
 ### Added
 
