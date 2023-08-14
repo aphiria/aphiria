@@ -106,7 +106,7 @@ class MultipartBodyTest extends TestCase
          * stream 2
          * \r\n--{boundary}--
          */
-        $this->assertSame(5 + 4+ 1+ 7 + 4 + 2 + 9, $body->getLength());
+        $this->assertSame(5 + 4 + 1 + 7 + 4 + 2 + 9, $body->getLength());
     }
 
     public function testGettingPartsReturnsParts(): void

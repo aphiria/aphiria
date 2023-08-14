@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Authentication;
 
+use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
 use Aphiria\Authentication\Schemes\ILoginAuthenticationSchemeHandler;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -49,7 +50,7 @@ class Authenticator implements IAuthenticator
         foreach ($this->getSchemes($schemeNames) as $scheme) {
             $resolvedSchemeNames[] = $scheme->name;
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
-            $authResult = $handler->authenticate($request, $scheme);
+            $authResult = $this->authenticateWithScheme($request, $scheme, $handler);
 
             if ($authResult->passed) {
                 // If we've successfully authenticated before, merge identities
@@ -131,6 +132,23 @@ class Authenticator implements IAuthenticator
 
             $handler->logOut($request, $response, $scheme);
         }
+    }
+
+    /**
+     * Authenticates against a scheme
+     * Note: This is protected so that it can be overridden in integration tests
+     *
+     * @param IRequest $request The current request
+     * @param AuthenticationScheme $scheme The scheme being authenticated against
+     * @param IAuthenticationSchemeHandler $schemeHandler The scheme handler to authenticate with
+     * @return AuthenticationResult The authentication result
+     */
+    protected function authenticateWithScheme(
+        IRequest $request,
+        AuthenticationScheme $scheme,
+        IAuthenticationSchemeHandler $schemeHandler
+    ): AuthenticationResult {
+        return $schemeHandler->authenticate($request, $scheme);
     }
 
     /**
