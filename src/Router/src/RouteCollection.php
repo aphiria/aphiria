@@ -40,7 +40,7 @@ final class RouteCollection
         $this->routes[] = $route;
 
         if ($route->name !== null) {
-            $this->namedRoutes[$route->name] = & $route;
+            $this->namedRoutes[$route->name] = &$route;
         }
     }
 
@@ -56,7 +56,7 @@ final class RouteCollection
             $this->routes[] = $route;
 
             if ($route->name !== null) {
-                $this->namedRoutes[$route->name] = & $route;
+                $this->namedRoutes[$route->name] = &$route;
             }
         }
     }
