@@ -282,7 +282,7 @@ class IdentityBuilder
     }
 
     /**
-     * Adds a RSA claim to the identity
+     * Adds an RSA claim to the identity
      *
      * @param string $value The RSA
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
