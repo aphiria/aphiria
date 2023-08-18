@@ -176,14 +176,14 @@ class PrincipalBuilderTest extends TestCase
         $user = $principalBuilder->build();
         $this->assertCount(2, $user->getIdentities());
         $this->assertSame('foo', $user->getIdentities()[0]->getClaims(ClaimType::NameIdentifier)[0]->value);
-        $this->assertSame('foo', $user->getPrimaryIdentity()->getClaims(ClaimType::NameIdentifier)[0]->value);
+        $this->assertSame('foo', $user->getPrimaryIdentity()?->getClaims(ClaimType::NameIdentifier)[0]?->value);
     }
 
     public function testWithAuthenticationSchemeNameAddsItToPrimaryIdentity(): void
     {
         $user = (new PrincipalBuilder('example.com'))->withAuthenticationSchemeName('foo')
             ->build();
-        $this->assertSame('foo', $user->getPrimaryIdentity()->getAuthenticationSchemeName());
+        $this->assertSame('foo', $user->getPrimaryIdentity()?->getAuthenticationSchemeName());
     }
 
     public function testWithClaimsForMultipleClaimsAddsThemToPrimaryIdentity(): void
@@ -194,7 +194,7 @@ class PrincipalBuilderTest extends TestCase
         ];
         $user = (new PrincipalBuilder('example.com'))->withClaims($expectedClaims)
             ->build();
-        $this->assertSame($expectedClaims, $user->getPrimaryIdentity()->getClaims());
+        $this->assertSame($expectedClaims, $user->getPrimaryIdentity()?->getClaims());
     }
 
     public function testWithClaimsForSingleClaimsAddsItToPrimaryIdentity(): void
@@ -204,6 +204,6 @@ class PrincipalBuilderTest extends TestCase
         ];
         $user = (new PrincipalBuilder('example.com'))->withClaims($expectedClaims[0])
             ->build();
-        $this->assertSame($expectedClaims, $user->getPrimaryIdentity()->getClaims());
+        $this->assertSame($expectedClaims, $user->getPrimaryIdentity()?->getClaims());
     }
 }
