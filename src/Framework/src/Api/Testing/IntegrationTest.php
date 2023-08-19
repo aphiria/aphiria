@@ -123,12 +123,15 @@ trait IntegrationTest
      * Creates the authenticator
      *
      * @param IContainer $container The DI container
-     * @return IAuthenticator The authenticator
-     * @throws ResolutionException Thrown if the authenticator could not be resolved
+     * @return IAuthenticator|IMockAuthenticator|null The authenticator if one could be created, otherwise null
      */
-    protected function createAuthenticator(IContainer $container): IAuthenticator
+    protected function createAuthenticator(IContainer $container): IAuthenticator|IMockAuthenticator|null
     {
-        return $container->resolve(IAuthenticator::class);
+        /** @var IAuthenticator|IMockAuthenticator|null $authenticator */
+        $authenticator = null;
+        $container->tryResolve(IAuthenticator::class, $authenticator);
+
+        return $authenticator;
     }
 
     /**
