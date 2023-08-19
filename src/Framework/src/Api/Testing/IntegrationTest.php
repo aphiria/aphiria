@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Api\Testing;
 
 use Aphiria\Application\IApplication;
+use Aphiria\Authentication\IAuthenticator;
+use Aphiria\Authentication\IMockAuthenticator;
 use Aphiria\ContentNegotiation\FailedContentNegotiationException;
 use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
@@ -22,6 +24,7 @@ use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Framework\Authentication\Binders\AuthenticationBinder;
 use Aphiria\Net\Http\Formatting\ResponseParser;
 use Aphiria\Net\Http\HttpException;
 use Aphiria\Net\Http\IHttpClient;
@@ -29,7 +32,10 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IRequestHandler;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Uri;
+use Aphiria\Security\IPrincipal;
+use Closure;
 use InvalidArgumentException;
+use LogicException;
 use RuntimeException;
 
 /**
@@ -37,6 +43,8 @@ use RuntimeException;
  */
 trait IntegrationTest
 {
+    /** @var IAuthenticator|IMockAuthenticator|null The authenticator */
+    protected IAuthenticator|IMockAuthenticator|null $authenticator = null;
     /** @var IRequest|null The most recently sent request from the helper methods in this class */
     protected ?IRequest $lastRequest = null;
     /** @var NegotiatedRequestBuilder The request builder */
@@ -64,6 +72,24 @@ trait IntegrationTest
     abstract protected function createApplication(IContainer $container): IApplication;
 
     /**
+     * Mocks the next authentication call to act as the input principal
+     *
+     * @template T The return type of the closure
+     * @param IPrincipal $user The principal to act as for authentication calls
+     * @param Closure(): T $callback The callback that will make calls as the acting principal
+     * @return T The return value of the callback
+     * @throws LogicException Thrown if the authenticator does not implement the mockable authenticator
+     */
+    protected function actingAs(IPrincipal $user, Closure $callback): mixed
+    {
+        if (!$this->authenticator instanceof IMockAuthenticator) {
+            throw new LogicException('The bound authenticator does not implement ' . IMockAuthenticator::class . '.  You may have to customize ' . AuthenticationBinder::class . '::inTestingEnvironment().');
+        }
+
+        return $this->authenticator->actingAs($user, $callback);
+    }
+
+    /**
      * Initializes dependencies before each test
      *
      * @throws ResolutionException Thrown if dependencies could not be resolved
@@ -78,6 +104,7 @@ trait IntegrationTest
         $this->responseAssertions = $this->createResponseAssertions($container);
         $this->bodyDeserializer = $this->createBodyDeserializer($container);
         $this->responseParser = $this->createResponseParser($container);
+        $this->authenticator = $this->createAuthenticator($container);
     }
 
     /**
@@ -90,6 +117,18 @@ trait IntegrationTest
     protected function createApiGateway(IContainer $container): IRequestHandler
     {
         return $container->resolve(IRequestHandler::class);
+    }
+
+    /**
+     * Creates the authenticator
+     *
+     * @param IContainer $container The DI container
+     * @return IAuthenticator The authenticator
+     * @throws ResolutionException Thrown if the authenticator could not be resolved
+     */
+    protected function createAuthenticator(IContainer $container): IAuthenticator
+    {
+        return $container->resolve(IAuthenticator::class);
     }
 
     /**

@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Api\Testing\PhpUnit;
 
 use Aphiria\Application\IApplication;
+use Aphiria\Authentication\IAuthenticator;
+use Aphiria\Authentication\IMockAuthenticator;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
@@ -26,6 +28,7 @@ use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Testing\PhpUnit\IntegrationTestCase;
 use Aphiria\Framework\Api\Testing\ResponseAssertions;
+use Aphiria\Framework\Authentication\Binders\AuthenticationBinder;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Net\Http\IRequest;
@@ -35,8 +38,13 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
+use Aphiria\Security\Identity;
+use Aphiria\Security\IPrincipal;
+use Aphiria\Security\User;
+use Closure;
 use DateTime;
 use InvalidArgumentException;
+use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -49,6 +57,7 @@ class IntegrationTestCaseTest extends TestCase
 {
     private IRequestHandler&MockObject $apiGateway;
     private IApplication&MockObject $app;
+    private (MockObject&IAuthenticator)|(MockObject&IMockAuthenticator)|null $authenticator;
     private IBodyDeserializer&MockObject $bodyDeserializer;
     private IntegrationTestCase $integrationTests;
     private string $prevAppUrl;
@@ -59,14 +68,18 @@ class IntegrationTestCaseTest extends TestCase
         $this->app = $this->createMock(IApplication::class);
         $this->apiGateway = $this->createMock(IRequestHandler::class);
         $this->bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-        $this->integrationTests = new class ($this->app, $this->apiGateway, $this->bodyDeserializer) extends IntegrationTestCase {
+        $this->authenticator = $this->createMock(IAuthenticator::class);
+        /** @psalm-suppress InvalidPropertyAssignmentValue We have to make the authenticator a pretty flexible type to be able to test it */
+        $this->integrationTests = new class ($this->app, $this->apiGateway, $this->bodyDeserializer, $this->authenticator) extends IntegrationTestCase {
             private static ?string $failMessage = null;
             private IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
 
             public function __construct(
                 private IApplication $app,
                 private IRequestHandler $apiGateway,
-                private IBodyDeserializer $bodyDeserializer
+                private IBodyDeserializer $bodyDeserializer,
+                // This has to be set by reference so we can override it when testing mock authentication
+                protected IAuthenticator|IMockAuthenticator|null &$authenticator
             ) {
                 /** @psalm-suppress InternalMethod We need to call this internal method */
                 parent::__construct('foo');
@@ -77,6 +90,11 @@ class IntegrationTestCaseTest extends TestCase
                     new HtmlMediaTypeFormatter(),
                     new PlainTextMediaTypeFormatter()
                 ]);
+            }
+
+            public function actingAs(IPrincipal $user, Closure $callback): mixed
+            {
+                return parent::actingAs($user, $callback);
             }
 
             // Make this an instance method just for ease of access (static methods on anon classes are a pain)
@@ -160,6 +178,18 @@ class IntegrationTestCaseTest extends TestCase
                 return $this->app;
             }
 
+            protected function createAuthenticator(IContainer $container): IAuthenticator
+            {
+                if ($this->authenticator === null) {
+                    throw new LogicException('The authenticator was not set in the integration test');
+                }
+
+                // Make sure the DI container can resolve this
+                $container->bindInstance(IAuthenticator::class, $this->authenticator);
+
+                return parent::createAuthenticator($container);
+            }
+
             protected function createBodyDeserializer(IContainer $container): IBodyDeserializer
             {
                 // Ensure that the body negotiator is resolvable after this method is invoked
@@ -208,6 +238,25 @@ class IntegrationTestCaseTest extends TestCase
         }
 
         return $uris;
+    }
+
+    public function testActingAsCallsMockAuthenticator(): void
+    {
+        $user = new User([new Identity([])]);
+        $callback = fn (): bool => true;
+        $this->authenticator = $this->createMock(IMockAuthenticator::class);
+        $this->authenticator->method('actingAs')
+            ->with($user, $callback)
+            ->willReturn($callback());
+        $this->assertSame($callback(), $this->integrationTests->actingAs($user, $callback));
+    }
+
+    public function testActingAsThrowsExceptionIfAuthenticatorIsNotMockable(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('The bound authenticator does not implement ' . IMockAuthenticator::class . '.  You may have to customize ' . AuthenticationBinder::class . '::inTestingEnvironment().');
+        $user = new User([new Identity([])]);
+        $this->integrationTests->actingAs($user, fn () => null);
     }
 
     public function testAssertCookieEqualsDoesNotThrowOnSuccess(): void
