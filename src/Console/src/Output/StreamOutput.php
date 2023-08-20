@@ -65,7 +65,7 @@ class StreamOutput extends Output
             throw new RuntimeException('Failed to read line');
         }
 
-        return $input;
+        return \trim($input);
     }
 
     /**
