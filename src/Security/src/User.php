@@ -72,12 +72,26 @@ class User implements IPrincipal
     /**
      * @inheritdoc
      */
-    public function getClaims(ClaimType|string $type = null): array
+    public function filterClaims(ClaimType|string $type): array
     {
         $claims = [];
 
         foreach ($this->identities as $identity) {
-            $claims = [...$claims, ...$identity->getClaims($type)];
+            $claims = [...$claims, ...$identity->filterClaims($type)];
+        }
+
+        return $claims;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClaims(): array
+    {
+        $claims = [];
+
+        foreach ($this->identities as $identity) {
+            $claims = [...$claims, ...$identity->getClaims()];
         }
 
         return $claims;

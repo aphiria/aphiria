@@ -77,7 +77,7 @@ class UserTest extends TestCase
         $this->assertSame($identity2, $user->getPrimaryIdentity());
     }
 
-    public function testGettingClaimsWithFilterOnlyReturnsClaimsOfThatType(): void
+    public function testFilteringClaimsOnlyReturnsClaimsOfThatType(): void
     {
         $identity1Claims = [
             new Claim('foo', 'bar', 'http://example.com'),
@@ -92,7 +92,7 @@ class UserTest extends TestCase
         $user = new User([new Identity($identity1Claims), new Identity($identity2Claims)]);
         $this->assertSame(
             [$identity1Claims[0], $identity1Claims[1], $identity2Claims[0], $identity2Claims[1]],
-            $user->getClaims('foo')
+            $user->filterClaims('foo')
         );
     }
 

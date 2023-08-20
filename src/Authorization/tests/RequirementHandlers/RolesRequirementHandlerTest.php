@@ -43,7 +43,12 @@ class RolesRequirementHandlerTest extends TestCase
             {
             }
 
-            public function getClaims(ClaimType|string $type = null): array
+            public function filterClaims(ClaimType|string $type): array
+            {
+                return [new Claim(ClaimType::Role, 'admin', 'example.com')];
+            }
+
+            public function getClaims(): array
             {
                 return [new Claim(ClaimType::Role, 'admin', 'example.com')];
             }
@@ -77,7 +82,15 @@ class RolesRequirementHandlerTest extends TestCase
             {
             }
 
-            public function getClaims(ClaimType|string $type = null): array
+            public function filterClaims(ClaimType|string $type): array
+            {
+                return [
+                    new Claim(ClaimType::Role, 'admin', 'example.com'),
+                    new Claim(ClaimType::Role, 'dev', 'example.com')
+                ];
+            }
+
+            public function getClaims(): array
             {
                 return [
                     new Claim(ClaimType::Role, 'admin', 'example.com'),
@@ -123,7 +136,12 @@ class RolesRequirementHandlerTest extends TestCase
             {
             }
 
-            public function getClaims(ClaimType|string $type = null): array
+            public function filterClaims(ClaimType|string $type): array
+            {
+                return [];
+            }
+
+            public function getClaims(): array
             {
                 return [];
             }
@@ -157,7 +175,12 @@ class RolesRequirementHandlerTest extends TestCase
             {
             }
 
-            public function getClaims(ClaimType|string $type = null): array
+            public function filterClaims(ClaimType|string $type): array
+            {
+                return [new Claim(ClaimType::Role, 'unused', 'example.com')];
+            }
+
+            public function getClaims(): array
             {
                 return [new Claim(ClaimType::Role, 'unused', 'example.com')];
             }

@@ -17,12 +17,34 @@ namespace Aphiria\Security;
  */
 class Identity implements IIdentity
 {
+    /** @var array<string, list<Claim<mixed>>> The mapping of claim types to claims */
+    private readonly array $claimTypesToClaims;
+
     /**
      * @param list<Claim<mixed>> $claims The list of claims for this identity
      * @param string|null $authenticationSchemeName The authentication scheme name used to authenticate this identity, or null if it has not been authenticated
      */
-    public function __construct(private readonly array $claims, private ?string $authenticationSchemeName = null)
+    public function __construct(array $claims = [], private ?string $authenticationSchemeName = null)
     {
+        $claimTypesToClaims = [];
+
+        foreach ($claims as $claim) {
+            if (!isset($claimTypesToClaims[$claim->type])) {
+                $claimTypesToClaims[$claim->type] = [];
+            }
+
+            $claimTypesToClaims[$claim->type][] = $claim;
+        }
+
+        $this->claimTypesToClaims = $claimTypesToClaims;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function filterClaims(ClaimType|string $type): array
+    {
+        return $this->claimTypesToClaims[$type instanceof ClaimType ? $type->value : $type] ?? [];
     }
 
     /**
@@ -36,22 +58,15 @@ class Identity implements IIdentity
     /**
      * @inheritdoc
      */
-    public function getClaims(ClaimType|string $type = null): array
+    public function getClaims(): array
     {
-        if ($type === null) {
-            return $this->claims;
+        $allClaims = [];
+
+        foreach ($this->claimTypesToClaims as $claims) {
+            $allClaims = [...$allClaims, ...$claims];
         }
 
-        $claims = [];
-        $stringClaimType = $type instanceof ClaimType ? $type->value : $type;
-
-        foreach ($this->claims as $claim) {
-            if ($claim->type === $stringClaimType) {
-                $claims[] = $claim;
-            }
-        }
-
-        return $claims;
+        return $allClaims;
     }
 
     /**
@@ -59,9 +74,9 @@ class Identity implements IIdentity
      */
     public function getName(): ?string
     {
-        $idClaims = $this->getClaims(ClaimType::Name);
+        $nameClaims = $this->filterClaims(ClaimType::Name);
 
-        return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
+        return \count($nameClaims) === 0 ? null : (string)$nameClaims[0]->value;
     }
 
     /**
@@ -69,7 +84,7 @@ class Identity implements IIdentity
      */
     public function getNameIdentifier(): ?string
     {
-        $idClaims = $this->getClaims(ClaimType::NameIdentifier);
+        $idClaims = $this->filterClaims(ClaimType::NameIdentifier);
 
         return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
     }
@@ -79,9 +94,7 @@ class Identity implements IIdentity
      */
     public function hasClaim(ClaimType|string $type, mixed $value): bool
     {
-        $claims = $this->getClaims($type);
-
-        foreach ($claims as $claim) {
+        foreach ($this->filterClaims($type) as $claim) {
             if ($claim->value === $value) {
                 return true;
             }

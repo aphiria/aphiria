@@ -242,7 +242,7 @@ class IntegrationTestCaseTest extends TestCase
 
     public function testActingAsCallsMockAuthenticator(): void
     {
-        $user = new User([new Identity([])]);
+        $user = new User([new Identity()]);
         $callback = fn (): bool => true;
         $this->authenticator = $this->createMock(IMockAuthenticator::class);
         $this->authenticator->method('actingAs')
@@ -255,7 +255,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The bound authenticator does not implement ' . IMockAuthenticator::class . '.  You may have to customize ' . AuthenticationBinder::class . '::inTestingEnvironment().');
-        $user = new User([new Identity([])]);
+        $user = new User([new Identity()]);
         $this->integrationTests->actingAs($user, fn () => null);
     }
 

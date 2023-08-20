@@ -47,7 +47,7 @@ class MockAuthenticatorTest extends TestCase
     public function testAuthenticatingWhileActingAsPrincipalAuthenticatesSuccessfullyAndDoesNotCallUnderlyingSchemeHandler(): void
     {
         $request = Mockery::mock(IRequest::class);
-        $user = new User([new Identity([])]);
+        $user = new User([new Identity()]);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->shouldNotReceive('authenticate');
         $this->schemes->registerScheme($scheme, true);
@@ -61,7 +61,7 @@ class MockAuthenticatorTest extends TestCase
     public function testAuthenticatingWhileActingAsPrincipalAuthenticatesSuccessfullyOnlyForTheScopedAuthenticationCall(): void
     {
         $request = Mockery::mock(IRequest::class);
-        $user = new User([new Identity([])]);
+        $user = new User([new Identity()]);
         [$fooScheme, $fooSchemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $fooSchemeHandler->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::fail('foo', 'foo'));
@@ -86,7 +86,7 @@ class MockAuthenticatorTest extends TestCase
     public function testAuthenticatingWhileNotActingAsPrincipalAuthenticatesSuccessfullyForValidRequest(): void
     {
         $request = Mockery::mock(IRequest::class);
-        $user = new User([new Identity([])]);
+        $user = new User([new Identity()]);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::pass($user, 'foo'));
@@ -101,7 +101,6 @@ class MockAuthenticatorTest extends TestCase
     public function testAuthenticatingWhileNotActingAsPrincipalAuthenticatesUnsuccessfullyForInvalidRequest(): void
     {
         $request = Mockery::mock(IRequest::class);
-        $user = new User([new Identity([])]);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::fail('foo', 'foo'));

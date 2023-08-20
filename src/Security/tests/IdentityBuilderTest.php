@@ -69,8 +69,8 @@ class IdentityBuilderTest extends TestCase
         $identityBuilder = new IdentityBuilder('example.com');
         $claimsCall($identityBuilder);
         $identity = $identityBuilder->build();
-        $this->assertCount(1, $identity->getClaims($type));
-        $this->assertSame($value, $identity->getClaims($type)[0]->value);
+        $this->assertCount(1, $identity->filterClaims($type));
+        $this->assertSame($value, $identity->filterClaims($type)[0]->value);
     }
 
     public function testAddingMultipleClaimObjectsAtOnceAddsThemToIdentity(): void
@@ -90,11 +90,11 @@ class IdentityBuilderTest extends TestCase
         $identity = (new IdentityBuilder())
             ->withRoles(['admin', 'dev'], 'example.com')
             ->build();
-        $this->assertCount(2, $identity->getClaims(ClaimType::Role));
-        $this->assertSame('admin', $identity->getClaims(ClaimType::Role)[0]->value);
-        $this->assertSame('example.com', $identity->getClaims(ClaimType::Role)[0]->issuer);
-        $this->assertSame('dev', $identity->getClaims(ClaimType::Role)[1]->value);
-        $this->assertSame('example.com', $identity->getClaims(ClaimType::Role)[1]->issuer);
+        $this->assertCount(2, $identity->filterClaims(ClaimType::Role));
+        $this->assertSame('admin', $identity->filterClaims(ClaimType::Role)[0]->value);
+        $this->assertSame('example.com', $identity->filterClaims(ClaimType::Role)[0]->issuer);
+        $this->assertSame('dev', $identity->filterClaims(ClaimType::Role)[1]->value);
+        $this->assertSame('example.com', $identity->filterClaims(ClaimType::Role)[1]->issuer);
     }
 
     public function testAddingSingleClaimObjectAddsItToIdentity(): void
