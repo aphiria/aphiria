@@ -32,7 +32,7 @@ class UserController extends Controller
     public function __construct(private IUserService $users) {}
 
     #[Post('')]
-    public function createUser(User $user): IHttpResponse
+    public function createUser(User $user): IResponse
     {
         $this->users->create($user);
         
