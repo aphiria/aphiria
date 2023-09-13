@@ -51,8 +51,11 @@ class UserController extends Controller
 $container->bindInstance(IUserService::class, new UserService());
 
 // Run an integration test
-$this->post('/users', new User(1, 'Dave'));
-$this->assertParsedBodyEquals(new User(1, 'Dave'), $this->get('/users/1'));
+$user = $this->readResponseBodyAs(User::class, $this->post('/users', new User('Dave')));
+$admin = (new PrincipalBuilder('example.com'))->withRoles('admin')
+    ->build();
+$response = $this->actingAs($admin, fn () => $this->get("/users/$user->id"));
+$this->assertParsedBodyEquals($user, $response);
 ```
 
 ## Installation
