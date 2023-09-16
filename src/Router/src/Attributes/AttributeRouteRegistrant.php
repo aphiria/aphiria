@@ -113,19 +113,19 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             $routeConstraints[] = new $routeConstraintClassName(...$routeConstraintAttributeInstance->constructorParameters);
         }
 
-        foreach ($controller->getAttributes(RouteGroup::class) as $routeGroupAttribute) {
-            $routeGroupAttributeInstance = $routeGroupAttribute->newInstance();
+        foreach ($controller->getAttributes(ControllerAttribute::class) as $controllerAttribute) {
+            $controllerAttributeInstance = $controllerAttribute->newInstance();
             $routeGroupOptions = new RouteGroupOptions(
-                $routeGroupAttributeInstance->path,
-                $routeGroupAttributeInstance->host,
-                $routeGroupAttributeInstance->isHttpsOnly,
+                $controllerAttributeInstance->path,
+                $controllerAttributeInstance->host,
+                $controllerAttributeInstance->isHttpsOnly,
                 $routeConstraints,
                 $middlewareBindings,
-                $routeGroupAttributeInstance->parameters
+                $controllerAttributeInstance->parameters
             );
         }
 
-        // If there was no route group options attributes, but there were constraints or middleware, then create some route group options and add them
+        // If there was no controller attributes, but there were constraints or middleware, then create some route group options and add them
         if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings))) {
             $routeGroupOptions = new RouteGroupOptions('');
             $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
