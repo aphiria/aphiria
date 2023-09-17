@@ -1,6 +1,20 @@
 # Changelog
 
-## [v1.0.0-alpha9](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha8...v1.0.0-alpha9) (2023-?-?)
+## [v1.0.0-alpha10](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha9...v1.0.0-alpha10) (?)
+
+### Changed
+
+- Nothing
+
+### Added
+
+- Nothing
+
+### Fixed
+
+- Nothing
+
+## [v1.0.0-alpha9](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha8...v1.0.0-alpha9) (2023-9-24)
 
 ### Changed
 
