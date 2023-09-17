@@ -33,6 +33,21 @@ class AuthenticationSchemeRegistryTest extends TestCase
         $this->assertNull($this->schemes->getDefaultScheme());
     }
 
+    public function testGetDefaultSchemeReturnsSchemeIfItIsTheOnlyOneRegistered(): void
+    {
+        $this->assertNull($this->schemes->getDefaultScheme());
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler1 */
+        $schemeHandler1 = $this->createMock(IAuthenticationSchemeHandler::class);
+        $scheme1 = new AuthenticationScheme('foo', $schemeHandler1::class, new AuthenticationSchemeOptions());
+        $this->schemes->registerScheme($scheme1);
+        $this->assertSame($scheme1, $this->schemes->getDefaultScheme());
+        /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler2 */
+        $schemeHandler2 = $this->createMock(IAuthenticationSchemeHandler::class);
+        $scheme2 = new AuthenticationScheme('bar', $schemeHandler2::class, new AuthenticationSchemeOptions());
+        $this->schemes->registerScheme($scheme2);
+        $this->assertNull($this->schemes->getDefaultScheme());
+    }
+
     public function testGetSchemeWithMatchingSchemeReturnsIt(): void
     {
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */

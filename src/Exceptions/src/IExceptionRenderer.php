@@ -21,9 +21,9 @@ interface IExceptionRenderer
 {
     /**
      * Renders an exception
-     * Note: This should be done by writing to output directly, not returning an output value
      *
      * @param Exception $ex The exception that was thrown
+     * @note This should be done by writing to output directly, not returning an output value
      */
     public function render(Exception $ex): void;
 }

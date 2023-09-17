@@ -32,7 +32,7 @@ class SessionTest extends TestCase
     private ISession&MockObject $session;
     /**
      * @var SessionHandlerInterface&MockObject
-     * Note: Psalm has an issue with intersection types on built-in interfaces, which is why we aren't using native intersection types here
+     * @note Psalm has an issue with intersection types on built-in interfaces, which is why we aren't using native intersection types here
      * @link https://github.com/vimeo/psalm/issues/7520
      */
     private SessionHandlerInterface $sessionHandler;

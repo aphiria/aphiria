@@ -171,10 +171,10 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 
     /**
      * Creates the default error response
-     * Note: It is very important that this method never throws an exception
      *
      * @param Exception $ex The exception that was thrown
      * @return IResponse The created response
+     * @note It is very important that this method never throws an exception
      */
     protected function createDefaultResponse(Exception $ex): IResponse
     {

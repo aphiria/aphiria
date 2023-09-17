@@ -35,10 +35,10 @@ class StreamResponseWriter implements IResponseWriter
 
     /**
      * Sets a response header
-     * Note: This method is useful for mocking header()
      *
      * @param string $value The value of the header
      * @param bool $replace Whether or not to replace existing header values
+     * @note This method is useful for mocking header()
      */
     public function header(string $value, bool $replace = true): void
     {

@@ -74,10 +74,10 @@ class RequestParser
 
     /**
      * Gets the MIME type that was specified by the client (eg browser)
-     * Note: This may not be the actual MIME type
      *
      * @param MultipartBodyPart $bodyPart The body part whose MIME type we want
      * @return string|null The MIME type if one could be determined, otherwise null
+     * @note This may not be the actual MIME type
      */
     public function getClientMimeType(MultipartBodyPart $bodyPart): ?string
     {
@@ -225,11 +225,11 @@ class RequestParser
 
     /**
      * Parses a request as a multipart request
-     * Note: This method should only be called once for best performance
      *
      * @param IRequest|MultipartBodyPart $request The request or multipart body part to parse
      * @return MultipartBody|null The multipart body if it was set, otherwise null
      * @throws RuntimeException Thrown if the headers' hash keys could not be calculated
+     * @note This method should only be called once for best performance
      */
     public function readAsMultipart(IRequest|MultipartBodyPart $request): ?MultipartBody
     {

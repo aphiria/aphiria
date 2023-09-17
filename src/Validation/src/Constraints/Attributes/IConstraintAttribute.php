@@ -16,7 +16,8 @@ use Aphiria\Validation\Constraints\IConstraint;
 
 /**
  * Defines the interface that all validation constraint attributes must validate
- * Note: This interface simplifies our search for validation constraints by having a common parent type
+ *
+ * @note This interface simplifies our search for validation constraints by having a common parent type
  */
 interface IConstraintAttribute
 {

@@ -29,12 +29,17 @@ final class AuthenticationSchemeRegistry
      *
      * @template T of AuthenticationSchemeOptions
      * @return AuthenticationScheme<T>|null The default authentication scheme if one is set, otherwise null
+     * @note If only a single scheme is registered, it'll be returned as the default
      * @psalm-suppress InvalidReturnStatement Psalm does not handle collections of different generics
      * @psalm-suppress InvalidReturnType Ditto
      */
     public function getDefaultScheme(): ?AuthenticationScheme
     {
-        return $this->defaultScheme;
+        if ($this->defaultScheme !== null) {
+            return $this->defaultScheme;
+        }
+
+        return \count($this->schemesByName) === 1 ? \array_values($this->schemesByName)[0] : null;
     }
 
     /**

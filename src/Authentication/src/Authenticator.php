@@ -136,12 +136,12 @@ class Authenticator implements IAuthenticator
 
     /**
      * Authenticates against a scheme
-     * Note: This is protected so that it can be overridden in integration tests
      *
      * @param IRequest $request The current request
      * @param AuthenticationScheme $scheme The scheme being authenticated against
      * @param IAuthenticationSchemeHandler $schemeHandler The scheme handler to authenticate with
      * @return AuthenticationResult The authentication result
+     * @note This is protected so that it can be overridden in integration tests
      */
     protected function authenticateWithScheme(
         IRequest $request,
