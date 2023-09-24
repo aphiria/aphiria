@@ -46,13 +46,11 @@ use DateTime;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-#[IgnoreMethodForCodeCoverage(IntegrationTestCase::class, 'failWithMessage')]
 class IntegrationTestCaseTest extends TestCase
 {
     private IRequestHandler&MockObject $apiGateway;

@@ -24,6 +24,7 @@ class WindowsDriver extends Driver
 
     /**
      * @inheritdoc
+     * @codeCoverageIgnore
      * @psalm-suppress ForbiddenCode We purposely are running an external executable
      */
     public function readHiddenInput(IOutput $output): ?string
@@ -48,6 +49,7 @@ class WindowsDriver extends Driver
      * Gets the CLI dimensions from the console mode as a tuple
      *
      * @return array|null The dimensions (width x height) as a tuple if found, otherwise null
+     * @codeCoverageIgnore
      */
     protected function getCliDimensionsFromConsoleMode(): ?array
     {
@@ -65,6 +67,7 @@ class WindowsDriver extends Driver
 
     /**
      * @inheritdoc
+     * @codeCoverageIgnore
      */
     protected function getCliDimensionsFromOS(): ?array
     {

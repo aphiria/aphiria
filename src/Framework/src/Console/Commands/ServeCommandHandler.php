@@ -46,6 +46,7 @@ class ServeCommandHandler implements ICommandHandler
      * Runs the PHP command
      *
      * @param string $command The command to run
+     * @codeCoverageIgnore
      */
     protected function runPhpCommand(string $command): void
     {
