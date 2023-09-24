@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - '*.x'
+    tags:
+      - '*'
   pull_request:
   schedule:
     - cron: '0 0 * * *'
