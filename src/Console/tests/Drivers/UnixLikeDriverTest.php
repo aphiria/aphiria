@@ -12,18 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Drivers;
 
-use Aphiria\Console\Drivers\Driver;
 use Aphiria\Console\Drivers\HiddenInputNotSupportedException;
 use Aphiria\Console\Drivers\UnixLikeDriver;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
-use PHPUnit\Framework\Attributes\IgnoreMethodForCodeCoverage;
 use PHPUnit\Framework\TestCase;
 
-#[IgnoreMethodForCodeCoverage(UnixLikeDriver::class, 'getCliDimensionsFromOS')]
-#[IgnoreMethodForCodeCoverage(Driver::class, 'getCliDimensionsFromStty')]
-#[IgnoreMethodForCodeCoverage(Driver::class, 'runProcess')]
-#[IgnoreMethodForCodeCoverage(Driver::class, 'supportsStty')]
 class UnixLikeDriverTest extends TestCase
 {
     private string|bool $ansicon;

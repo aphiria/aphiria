@@ -89,6 +89,7 @@ abstract class Driver implements IDriver
      * Gets the CLI dimensions from STTY as a tuple
      *
      * @return array|null The dimensions (width x height) as a tuple if found, otherwise null
+     * @codeCoverageIgnore
      */
     protected function getCliDimensionsFromStty(): ?array
     {
@@ -113,6 +114,7 @@ abstract class Driver implements IDriver
      *
      * @param string $command The command to run in the process
      * @return string|null The output of the process
+     * @codeCoverageIgnore
      */
     protected function runProcess(string $command): ?string
     {
@@ -141,6 +143,7 @@ abstract class Driver implements IDriver
      * Gets whether or not this driver supports stty
      *
      * @return bool Whether or not STTY is supported
+     * @codeCoverageIgnore
      */
     protected function supportsStty(): bool
     {

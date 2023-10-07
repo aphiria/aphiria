@@ -204,6 +204,7 @@ abstract class IntegrationTestCase extends TestCase
      *
      * @param string $message The message to fail with
      * @internal
+     * @codeCoverageIgnore
      */
     protected function failWithMessage(string $message): void
     {

@@ -46,6 +46,7 @@ class UnixLikeDriver extends Driver
 
     /**
      * @inheritdoc
+     * @codeCoverageIgnore
      */
     protected function getCliDimensionsFromOS(): ?array
     {
