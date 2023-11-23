@@ -81,7 +81,7 @@ class UnixLikeDriverTest extends TestCase
     {
         $sttyOutput = \exec('(stty -a | grep columns) 2>&1', $output, $statusCode);
 
-        if ($statusCode !== StatusCode::Ok->value) {
+        if ($statusCode !== StatusCode::Ok->value || $sttyOutput === false) {
             $this->markTestSkipped('This test can only be run on *nix systems with STTY support');
         }
 
