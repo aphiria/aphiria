@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Nothing
+- Added support for PHP 8.3
 
 ### Added
 
