@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Added support for PHP 8.3
+- Added support for PHP 8.3 ([#303](https://github.com/aphiria/aphiria/pull/303))
 
 ### Added
 

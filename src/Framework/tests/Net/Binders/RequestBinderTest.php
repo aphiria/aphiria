@@ -18,7 +18,7 @@ use Aphiria\Net\Http\IRequest;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
+use ReflectionClass;
 
 class RequestBinderTest extends TestCase
 {
@@ -32,8 +32,8 @@ class RequestBinderTest extends TestCase
     protected function tearDown(): void
     {
         // Make sure to reset the overriding request after each test
-        $reflectionProperty = new ReflectionProperty(RequestBinder::class, 'overridingRequest');
-        $reflectionProperty->setValue(null);
+        $reflectionClass = new ReflectionClass(RequestBinder::class);
+        $reflectionClass->setstaticpropertyvalue('overridingRequest', null);
     }
 
     public function testOverriddenRequestIsUsedIfSpecified(): void
