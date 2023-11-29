@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Required PHP 8.3 ([#303](https://github.com/aphiria/aphiria/pull/303))
+- Required PHP 8.3 ([#303](https://github.com/aphiria/aphiria/pull/303), [#305](https://github.com/aphiria/aphiria/pull/305))
 
 ### Added
 
