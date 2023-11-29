@@ -50,7 +50,7 @@
         "friendsofphp/php-cs-fixer": "^3.5",
         "nikic/fast-route": "1.2",
         "phpunit/phpunit": "^10.1",
-        "symfony/routing": "^6.1"
+        "symfony/routing": "^7.0"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

@@ -39,8 +39,8 @@
     },
     "require": {
         "php": "^8.3",
-        "symfony/dotenv": "^6.1",
-        "symfony/yaml": "^6.1"
+        "symfony/dotenv": "^7.0",
+        "symfony/yaml": "^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",

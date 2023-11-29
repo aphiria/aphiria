@@ -36,7 +36,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
     /**
      * @inheritdoc
      */
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         return $this->objectNormalizer->denormalize($data, $type, $format, $context);
     }
@@ -90,7 +90,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
     /**
      * @inheritdoc
      */
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === ProblemDetails::class;
     }
@@ -98,7 +98,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
     /**
      * @inheritdoc
      */
-    public function supportsNormalization(mixed $data, string $format = null): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         return $data instanceof ProblemDetails;
     }

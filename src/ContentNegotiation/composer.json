@@ -45,8 +45,8 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "php": "^8.3",
-        "symfony/property-access": "^6.1",
-        "symfony/serializer": "^6.1"
+        "symfony/property-access": "^7.0",
+        "symfony/serializer": "^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
