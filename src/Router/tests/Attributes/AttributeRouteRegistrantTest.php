@@ -31,7 +31,7 @@ use PHPUnit\Framework\TestCase;
 
 class AttributeRouteRegistrantTest extends TestCase
 {
-    private const PATH = __DIR__;
+    private const string PATH = __DIR__;
     private AttributeRouteRegistrant $registrant;
     private ITypeFinder&MockObject $typeFinder;
 

@@ -25,7 +25,7 @@ use RuntimeException;
 class RequestFactory
 {
     /** @const The name of the request property that stores the client IP address */
-    private const CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
+    private const string CLIENT_IP_ADDRESS_PROPERTY_NAME = 'CLIENT_IP_ADDRESS';
     /** @var array<string, string> $trustedHeaderNames The mapping of additional header names to trusted header names */
     protected readonly array $trustedHeaderNames;
     /** @var array<string, string> The default mapping of header names to trusted proxy header names */

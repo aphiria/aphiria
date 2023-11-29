@@ -26,11 +26,11 @@ use RuntimeException;
 class HeaderParser
 {
     /** @const The regex used to split a parameter into a key-value pair */
-    private const PARAMETER_KEY_VALUE_REGEX = '/<[^>]+>|[^=]+/';
+    private const string PARAMETER_KEY_VALUE_REGEX = '/<[^>]+>|[^=]+/';
     /** @const The regex used to split parameter values */
-    private const PARAMETER_SPLIT_REGEX = '/;(?=([^"]*"[^"]*")*[^"]*$)/';
+    private const string PARAMETER_SPLIT_REGEX = '/;(?=([^"]*"[^"]*")*[^"]*$)/';
     /** @const The list of trimmed characters from parameters */
-    private const PARAMETER_TRIMMED_CHARS = "\"'  \n\t\r";
+    private const string PARAMETER_TRIMMED_CHARS = "\"'  \n\t\r";
 
     /**
      * Gets whether or not the headers have a JSON content type

@@ -24,10 +24,10 @@ use Throwable;
  */
 class GlobalExceptionHandler implements IGlobalExceptionHandler
 {
-    /** @const The default name to use for the logger */
-    private const DEFAULT_LOGGER_NAME = 'app';
     /** @const The amount of reserved memory in bytes to keep */
-    private const RESERVED_MEMORY_BYTES = 10240;
+    private const int RESERVED_MEMORY_BYTES = 10240;
+    /** @const The default name to use for the logger */
+    private const string DEFAULT_LOGGER_NAME = 'app';
     /** @var LoggerInterface The PSR-3 logger */
     protected readonly LoggerInterface $logger;
     /** @var string|null Reserved memory that we'll use in case we run out of memory so that we can still display error messages */

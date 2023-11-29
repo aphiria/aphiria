@@ -23,8 +23,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - php: '8.2'
-            stability: prefer-stable
           - php: '8.3'
             stability: prefer-stable
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
@@ -45,7 +43,7 @@ jobs:
       - name: Run Tests
         run: composer phpunit
       - name: Run Linter
-        run: PHP_CS_FIXER_IGNORE_ENV=1 composer phpcs-test
+        run: composer phpcs-test
       - name: Run Psalm Static Analysis
         if: inputs.run-psalm == true
         run: composer psalm -- --shepherd

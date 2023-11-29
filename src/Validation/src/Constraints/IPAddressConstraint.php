@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 class IPAddressConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is not a valid IP address';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field is not a valid IP address';
 
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint

@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 
 class AttributeConstraintsRegistrantTest extends TestCase
 {
-    private const PATH = __DIR__;
+    private const string PATH = __DIR__;
     private AttributeObjectConstraintsRegistrant $registrant;
     private ITypeFinder&MockObject $typeFinder;
 

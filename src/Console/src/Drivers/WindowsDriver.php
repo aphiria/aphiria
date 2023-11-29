@@ -20,7 +20,7 @@ use Aphiria\Console\Output\IOutput;
 class WindowsDriver extends Driver
 {
     /** @var string The path to the hidden input exe */
-    private const HIDDEN_INPUT_EXE_PATH = __DIR__ . '/../../bin/hiddeninput.exe';
+    private const string HIDDEN_INPUT_EXE_PATH = __DIR__ . '/../../bin/hiddeninput.exe';
 
     /**
      * @inheritdoc

@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 class RequiredConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is required';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field is required';
 
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint

@@ -31,7 +31,7 @@ use RuntimeException;
 class RequestParser
 {
     /** @const The name of the request property that stores the client IP address */
-    private const CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
+    private const string CLIENT_IP_ADDRESS_PROPERTY = 'CLIENT_IP_ADDRESS';
 
     /**
      * @param RequestHeaderParser $headerParser The header parser to use

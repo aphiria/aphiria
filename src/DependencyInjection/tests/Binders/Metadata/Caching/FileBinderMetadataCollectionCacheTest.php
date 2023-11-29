@@ -22,7 +22,7 @@ use RuntimeException;
 class FileBinderMetadataCollectionCacheTest extends TestCase
 {
     /** string The path to the cache */
-    private const FILE_PATH = __DIR__ . '/tmp/cache.txt';
+    private const string FILE_PATH = __DIR__ . '/tmp/cache.txt';
     private FileBinderMetadataCollectionCache $cache;
 
     protected function setUp(): void

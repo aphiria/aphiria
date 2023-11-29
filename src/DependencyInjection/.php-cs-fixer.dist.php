@@ -13,7 +13,7 @@ return (new PhpCsFixer\Config())
         '@PSR12' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => true,
-        'compact_nullable_typehint' => true,
+        'compact_nullable_type_declaration' => true,
         'concat_space' => ['spacing' => 'one'],
         'declare_equal_normalize' => ['space' => 'none'],
         'declare_strict_types' => true,
@@ -26,7 +26,7 @@ return (new PhpCsFixer\Config())
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         // A very tiny micro-optimization to reduce the number of opcodes for native function calls
         'native_function_invocation' => ['include' => ['@all']],
-        'new_with_braces' => true,
+        'new_with_parentheses ' => true,
         'no_empty_comment' => true,
         'no_empty_statement' => true,
         'no_leading_import_slash' => true,

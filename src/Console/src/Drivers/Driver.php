@@ -20,9 +20,9 @@ use Aphiria\Console\StatusCode;
 abstract class Driver implements IDriver
 {
     /** @var int The default height */
-    protected const DEFAULT_HEIGHT = 60;
+    protected const int DEFAULT_HEIGHT = 60;
     /** @var int The default width */
-    protected const DEFAULT_WIDTH = 80;
+    protected const int DEFAULT_WIDTH = 80;
     /** @var int|null The determined height of the CLI */
     protected ?int $height = null;
     /** @var bool|null Whether or not the CLI support STTY, or null if we haven't checked */

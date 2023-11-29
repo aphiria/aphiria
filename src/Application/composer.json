@@ -38,7 +38,7 @@
         }
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "symfony/dotenv": "^6.1",
         "symfony/yaml": "^6.1"
     },

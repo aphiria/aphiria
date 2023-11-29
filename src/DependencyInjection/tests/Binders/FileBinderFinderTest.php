@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileBinderFinderTest extends TestCase
 {
-    private const BINDER_DIRECTORY = __DIR__ . '/Mocks/Finder';
+    private const string BINDER_DIRECTORY = __DIR__ . '/Mocks/Finder';
     private FileBinderFinder $binderFinder;
 
     protected function setUp(): void

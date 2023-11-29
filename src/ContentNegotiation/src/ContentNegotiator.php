@@ -27,7 +27,7 @@ use InvalidArgumentException;
 final class ContentNegotiator implements IContentNegotiator
 {
     /** @const The default media type if none is found (RFC 7231) */
-    private const DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';
+    private const string DEFAULT_REQUEST_MEDIA_TYPE = 'application/octet-stream';
     /** @var IMediaTypeFormatterMatcher The media type formatter matcher */
     private readonly IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher;
 

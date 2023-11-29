@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileSessionDriverTest extends TestCase
 {
-    private const BASE_PATH = __DIR__ . '/tmp';
+    private const string BASE_PATH = __DIR__ . '/tmp';
     private FileSessionDriver $driver;
 
     public static function setUpBeforeClass(): void

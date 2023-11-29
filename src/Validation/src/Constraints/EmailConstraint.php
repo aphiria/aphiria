@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 final class EmailConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is not a valid email address';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field is not a valid email address';
 
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint

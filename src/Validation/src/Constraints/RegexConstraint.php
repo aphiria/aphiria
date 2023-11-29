@@ -20,7 +20,7 @@ use InvalidArgumentException;
 class RegexConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
     /** @var non-empty-string The regular expression to run */
     private readonly string $regex;
 

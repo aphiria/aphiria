@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 final class IntegerConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be an integer';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field must be an integer';
 
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint
