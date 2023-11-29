@@ -21,7 +21,7 @@ use Aphiria\Security\IPrincipal;
 final class RequestPropertyUserAccessor implements IUserAccessor
 {
     /** @const The key to store the user object in */
-    private const USER_KEY = '__aphiria_request_user';
+    private const string USER_KEY = '__aphiria_request_user';
 
     /**
      * @inheritdoc

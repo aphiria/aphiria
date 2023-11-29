@@ -18,7 +18,7 @@ namespace Aphiria\Routing\UriTemplates\Constraints;
 final class UuidV4Constraint implements IRouteVariableConstraint
 {
     /** @var string The UUIDV4 regex */
-    private const UUIDV4_REGEX = '/^\{?[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}\}?$/i';
+    private const string UUIDV4_REGEX = '/^\{?[a-f\d]{8}-(?:[a-f\d]{4}-){3}[a-f\d]{12}\}?$/i';
 
     /**
      * Gets the slug that will be used to actually add a constraint in a URI template

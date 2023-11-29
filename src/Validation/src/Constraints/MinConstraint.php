@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 class MinConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be more than {min}';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field must be more than {min}';
 
     /**
      * @inheritdoc

@@ -18,7 +18,7 @@ namespace Aphiria\Console\Output\Formatters;
 class ProgressBarFormatterOptions
 {
     /** @const The default width of the progress bar (including delimiters) */
-    private const DEFAULT_PROGRESS_BAR_WIDTH = 80;
+    private const int DEFAULT_PROGRESS_BAR_WIDTH = 80;
 
     /**
      * @param int $progressBarWidth The progress bar width (including delimiters)

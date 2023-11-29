@@ -24,7 +24,7 @@ use RuntimeException;
 class FileCommandRegistryCacheTest extends TestCase
 {
     /** @var string The path to the command cache */
-    private const PATH = __DIR__ . '/tmp/command.cache';
+    private const string PATH = __DIR__ . '/tmp/command.cache';
     private FileCommandRegistryCache $cache;
 
     protected function setUp(): void

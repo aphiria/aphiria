@@ -20,7 +20,7 @@ use Closure;
 class CallbackConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must pass callback';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field must pass callback';
 
     /**
      * @inheritdoc

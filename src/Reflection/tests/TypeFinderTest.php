@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 class TypeFinderTest extends TestCase
 {
-    private const DIRECTORY = __DIR__ . '/Mocks/Finder';
+    private const string DIRECTORY = __DIR__ . '/Mocks/Finder';
     private TypeFinder $finder;
 
     protected function setUp(): void

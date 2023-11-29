@@ -22,7 +22,7 @@ use RuntimeException;
 class FileObjectConstraintsRegistryCacheTest extends TestCase
 {
     /** @var string The path to the constraint cache */
-    private const PATH = __DIR__ . '/tmp/constraint.cache';
+    private const string PATH = __DIR__ . '/tmp/constraint.cache';
     private FileObjectConstraintsRegistryCache $cache;
 
     protected function setUp(): void

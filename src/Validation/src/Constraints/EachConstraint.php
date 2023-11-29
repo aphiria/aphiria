@@ -20,7 +20,7 @@ use InvalidArgumentException;
 final class EachConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field is invalid';
     /** @var list<IConstraint> The list of constraints to apply on each value */
     private readonly array $constraints;
 

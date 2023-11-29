@@ -26,9 +26,9 @@ use InvalidArgumentException;
 final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
 {
     /** @const The type of formatter to match on for requests */
-    private const FORMATTER_TYPE_INPUT = 'input';
+    private const string FORMATTER_TYPE_INPUT = 'input';
     /** @const The type of formatter to match on for responses */
-    private const FORMATTER_TYPE_OUTPUT = 'output';
+    private const string FORMATTER_TYPE_OUTPUT = 'output';
 
     /**
      * @param list<IMediaTypeFormatter> $mediaTypeFormatters The list of supported media type formatters

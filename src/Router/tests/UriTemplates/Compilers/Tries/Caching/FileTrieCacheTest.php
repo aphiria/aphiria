@@ -27,7 +27,7 @@ use RuntimeException;
 class FileTrieCacheTest extends TestCase
 {
     /** @var string The path to the trie cache */
-    private const PATH = __DIR__ . '/tmp/routes.cache';
+    private const string PATH = __DIR__ . '/tmp/routes.cache';
     private FileTrieCache $cache;
 
     protected function setUp(): void

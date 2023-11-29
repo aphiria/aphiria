@@ -18,7 +18,7 @@ namespace Aphiria\Validation\Constraints;
 class MaxConstraint extends Constraint
 {
     /** @var string The default error message ID */
-    private const DEFAULT_ERROR_MESSAGE_ID = 'Field must be less than {max}';
+    private const string DEFAULT_ERROR_MESSAGE_ID = 'Field must be less than {max}';
 
     /**
      * @inheritdoc

@@ -34,7 +34,7 @@ use ReflectionFunctionAbstract;
 class RouteActionInvoker implements IRouteActionInvoker
 {
     /** @const The name of the property to store the parsed body in */
-    private const PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
+    private const string PARSED_BODY_PROPERTY_NAME = '__APHIRIA_PARSED_BODY';
     /** @var IControllerParameterResolver The controller parameter resolver to use */
     private readonly IControllerParameterResolver $controllerParameterResolver;
     /** @var IResponseFactory The response factory */

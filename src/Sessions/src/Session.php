@@ -22,9 +22,9 @@ use InvalidArgumentException;
 class Session implements ISession
 {
     /** The key for new flash keys */
-    public const NEW_FLASH_KEYS_KEY = '__APHIRIA_NEW_FLASH_KEYS';
+    public const string NEW_FLASH_KEYS_KEY = '__APHIRIA_NEW_FLASH_KEYS';
     /** The key for stale flash keys */
-    public const STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
+    public const string STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
 
     /** @var int|string The session Id */
     private int|string $id = '';

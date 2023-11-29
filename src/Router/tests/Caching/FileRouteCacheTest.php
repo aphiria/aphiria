@@ -25,7 +25,7 @@ use RuntimeException;
 class FileRouteCacheTest extends TestCase
 {
     /** @var string The path to the route cache */
-    private const PATH = __DIR__ . '/tmp/routes.cache';
+    private const string PATH = __DIR__ . '/tmp/routes.cache';
     private FileRouteCache $cache;
 
     protected function setUp(): void
