@@ -43,6 +43,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
 
     /**
      * @inheritdoc
+     * @return array<string, bool|null>
      */
     public function getSupportedTypes(?string $format): array
     {
