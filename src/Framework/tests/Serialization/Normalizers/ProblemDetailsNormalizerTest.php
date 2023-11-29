@@ -16,6 +16,7 @@ use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Framework\Serialization\Normalizers\ProblemDetailsNormalizer;
 use Aphiria\Net\Http\HttpStatusCode;
 use PHPUnit\Framework\TestCase;
+use ReflectionObject;
 use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -62,12 +63,11 @@ class ProblemDetailsNormalizerTest extends TestCase
     public function testCallingSetSerializerPassesCallThroughToObjectNormalizer(): void
     {
         $serializer = $this->createMock(SerializerInterface::class);
-        $objectNormalizer = $this->createMock(ObjectNormalizer::class);
+        $objectNormalizer = new ObjectNormalizer();
         $normalizer = new ProblemDetailsNormalizer($objectNormalizer);
-        $objectNormalizer->expects($this->once())
-            ->method('setSerializer')
-            ->with($serializer);
         $normalizer->setSerializer($serializer);
+        $reflection = new ReflectionObject($objectNormalizer);
+        $this->assertSame($serializer, $reflection->getProperty('serializer')->getValue($objectNormalizer));
     }
 
     public function testCallingSupportsDenormalizationOnlyReturnsTrueForProblemDetailsType(): void

@@ -5,6 +5,7 @@
 ### Changed
 
 - Required PHP 8.3 ([#303](https://github.com/aphiria/aphiria/pull/303), [#305](https://github.com/aphiria/aphiria/pull/305))
+- Updated to Symfony 7.0 ([#306](https://github.com/aphiria/aphiria/pull/306))
 
 ### Added
 
