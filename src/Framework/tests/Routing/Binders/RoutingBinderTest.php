@@ -45,7 +45,7 @@ class RoutingBinderTest extends TestCase
         $this->binder = new RoutingBinder();
         $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
-        $this->currEnvironment = \getenv('APP_ENV') ?: null;
+        $this->currEnvironment = ($appEnv = \getenv('APP_ENV')) === false ? null : $appEnv;
 
         if (!\file_exists(\dirname(self::ROUTE_CACHE_PATH))) {
             \mkdir(\dirname(self::ROUTE_CACHE_PATH));

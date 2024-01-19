@@ -44,7 +44,7 @@ class ValidationBinderTest extends TestCase
         $this->binder = new ValidationBinder();
         $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
-        $this->currEnvironment = \getenv('APP_ENV') ?: null;
+        $this->currEnvironment = ($appEnv = \getenv('APP_ENV')) === false ? null : $appEnv;
     }
 
     protected function tearDown(): void

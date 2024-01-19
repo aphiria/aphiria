@@ -186,8 +186,8 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeBuilder->withManyConstraints($routeConstraints);
                 }
 
-                if (!empty($routeAttributeInstance->name)) {
-                    $routeBuilder->withName($routeAttributeInstance->name);
+                if (!empty((string)$routeAttributeInstance->name)) {
+                    $routeBuilder->withName((string)$routeAttributeInstance->name);
                 }
 
                 if (!empty($routeAttributeInstance->parameters)) {

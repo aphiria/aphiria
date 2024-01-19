@@ -42,7 +42,7 @@ class CommandBinderTest extends TestCase
         $this->binder = new CommandBinder();
         $this->container = Mockery::mock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
-        $this->currEnvironment = \getenv('APP_ENV') ?: null;
+        $this->currEnvironment = ($appEnv = \getenv('APP_ENV')) === false ? null : $appEnv;
         $this->setUpContainer();
     }
 

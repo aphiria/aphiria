@@ -183,7 +183,7 @@ class RequestFactory
         }
 
         $rawProtocol = isset($server['SERVER_PROTOCOL']) ? \strtolower((string)$server['SERVER_PROTOCOL']) : 'http/1.1';
-        $scheme = \substr($rawProtocol, 0, (\strpos($rawProtocol, '/') ?: 0)) . ($isSecure ? 's' : '');
+        $scheme = \substr($rawProtocol, 0, (($slashIndex = \strpos($rawProtocol, '/')) === false ? 0 : $slashIndex)) . ($isSecure ? 's' : '');
         /** @var string|null $user */
         $user = $server['PHP_AUTH_USER'] ?? null;
         /** @var string|null $password */
@@ -216,7 +216,7 @@ class RequestFactory
         $host = \strtolower(\preg_replace("/:\d+$/", '', \trim($hostWithPort)));
 
         // Check for forbidden characters
-        if (!empty($host) && !empty(\preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
+        if (!empty($host) && !empty((string)\preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
             throw new InvalidArgumentException("Invalid host \"$host\"");
         }
 

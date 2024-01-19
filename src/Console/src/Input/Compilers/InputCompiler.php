@@ -240,7 +240,7 @@ final class InputCompiler implements IInputCompiler
             $nextToken = \array_shift($remainingTokens);
 
             // Check if the next token is also an option
-            if (empty($nextToken) || \str_starts_with((string)$nextToken, '-')) {
+            if (empty((string)$nextToken) || \str_starts_with((string)$nextToken, '-')) {
                 // The option must have not had a value, so put the next token back
                 \array_unshift($remainingTokens, $nextToken);
 

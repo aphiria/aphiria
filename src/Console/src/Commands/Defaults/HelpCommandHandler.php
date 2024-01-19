@@ -88,7 +88,7 @@ EOF;
                 [
                     \str_repeat('-', $output->getDriver()->getCliWidth()),
                     $this->commandFormatter->format($command),
-                    empty($command->description) ? 'No description' : $command->description,
+                    $command->description === null || $command->description === '' ? 'No description' : $command->description,
                     $command->name,
                     $this->getArgumentText($command),
                     $this->getOptionText($command),
