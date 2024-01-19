@@ -152,7 +152,7 @@ class BodyParser
 
         foreach ($rawBodyParts as $rawBodyPart) {
             $headerStartIndex = \strlen("\r\n");
-            $headerEndIndex = \strpos($rawBodyPart, "\r\n\r\n") ?: 0;
+            $headerEndIndex = ($index = \strpos($rawBodyPart, "\r\n\r\n")) === false ? 0 : $index;
             $bodyStartIndex = $headerEndIndex + \strlen("\r\n\r\n");
             $bodyEndIndex = \strlen($rawBodyPart) - \strlen("\r\n");
             $rawHeaders = \explode("\r\n", \substr($rawBodyPart, $headerStartIndex, $headerEndIndex - $headerStartIndex));

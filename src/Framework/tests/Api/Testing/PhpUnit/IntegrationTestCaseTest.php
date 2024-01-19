@@ -62,7 +62,7 @@ class IntegrationTestCaseTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->prevAppUrl = \getenv('APP_URL') ?: '';
+        $this->prevAppUrl = ($appUrl = \getenv('APP_URL')) === false ? '' : $appUrl;
         $this->app = $this->createMock(IApplication::class);
         $this->apiGateway = $this->createMock(IRequestHandler::class);
         $this->bodyDeserializer = $this->createMock(IBodyDeserializer::class);

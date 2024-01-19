@@ -36,7 +36,7 @@ class AuthenticationBinderTest extends TestCase
     protected function setUp(): void
     {
         // Grab the current app environment so we can reset it when done
-        $this->currAppEnv = \getenv('APP_ENV') ?: '';
+        $this->currAppEnv = ($appEnv = \getenv('APP_ENV')) === false ? '' : $appEnv;
         $this->container = Mockery::mock(IContainer::class);
         $this->binder = new AuthenticationBinder();
     }

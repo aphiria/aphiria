@@ -228,7 +228,7 @@ final class RouteCollectionBuilder
             $groupPath .= empty($groupOptions->path)
                 ? ''
                 : '/' . \ltrim($groupOptions->path, '/');
-            $groupHost = empty($groupOptions->host)
+            $groupHost = empty((string)$groupOptions->host)
                 ? ''
                 : \rtrim($groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;

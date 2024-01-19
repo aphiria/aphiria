@@ -244,7 +244,7 @@ trait IntegrationTest
      */
     protected function getAppUri(): ?string
     {
-        $appUrl = \getenv('APP_URL');
+        $appUrl = (string)\getenv('APP_URL');
 
         if (empty($appUrl)) {
             return null;
