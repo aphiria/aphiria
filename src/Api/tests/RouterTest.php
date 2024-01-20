@@ -238,7 +238,7 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(__CLASS__, __METHOD__),
+                new RouteAction(__CLASS__, \substr(__METHOD__, (int)\strpos(__METHOD__, '::') + 2)),
                 [],
                 []
             ),
