@@ -23,16 +23,16 @@ readonly class MockAuthenticationResult extends AuthenticationResult
 {
     /**
      * @param bool $passed
-     * @param list<string>|string $schemeName
+     * @param list<string>|string $schemeNames
      * @param IPrincipal|null $user
      * @param Exception|null $failure
      */
     public function __construct(
         bool $passed,
-        array|string $schemeName,
+        array|string $schemeNames,
         ?IPrincipal $user = null,
         ?Exception $failure = null
     ) {
-        parent::__construct($passed, $schemeName, $user, $failure);
+        parent::__construct($passed, $schemeNames, $user, $failure);
     }
 }

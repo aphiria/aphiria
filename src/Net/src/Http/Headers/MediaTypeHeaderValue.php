@@ -43,11 +43,11 @@ class MediaTypeHeaderValue
      */
     public function __construct(public readonly string $mediaType, IImmutableDictionary $parameters = null)
     {
-        /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> parameters */
+        /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> $this->parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
         $mediaTypeParts = \explode('/', $mediaType);
 
-        if (\count($mediaTypeParts) !== 2 || empty($mediaTypeParts[0]) || empty($mediaTypeParts[1])) {
+        if (\count($mediaTypeParts) !== 2 || $mediaTypeParts[0] === '' || $mediaTypeParts[1] === '') {
             throw new InvalidArgumentException("Media type must be in format {type}/{sub-type}, received $mediaType");
         }
 

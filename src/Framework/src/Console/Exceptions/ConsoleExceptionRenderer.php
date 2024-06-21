@@ -69,6 +69,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     public function render(Exception $ex): void
     {
         if (isset($this->outputWriters[$ex::class])) {
+            /** @psalm-suppress PossiblyNullFunctionCall This will never be null - bug */
             $statusCode = $this->outputWriters[$ex::class]($ex, $this->output) ?? StatusCode::Fatal;
         } else {
             $statusCode  = StatusCode::Fatal;
