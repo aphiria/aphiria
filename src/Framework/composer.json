@@ -39,7 +39,7 @@
     },
     "require": {
         "aphiria/aphiria": "1.x-dev",
-        "php": "^8.3",
+        "php": "^8.4",
         "psr/log": "^3.0",
         "symfony/dotenv": "^7.0"
     },

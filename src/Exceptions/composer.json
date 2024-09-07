@@ -39,7 +39,7 @@
     },
     "require": {
         "monolog/monolog": "~2.1",
-        "php": "^8.3",
+        "php": "^8.4",
         "psr/log": "^3.0"
     },
     "require-dev": {

@@ -44,7 +44,7 @@
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "php": "^8.3",
+        "php": "^8.4",
         "symfony/property-access": "^7.0",
         "symfony/serializer": "^7.0"
     },

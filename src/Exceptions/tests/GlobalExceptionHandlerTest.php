@@ -46,6 +46,7 @@ class GlobalExceptionHandlerTest extends TestCase
     {
         \error_reporting($this->prevErrorReporting);
         \restore_exception_handler();
+        \restore_error_handler();
     }
 
     public function testHandleShutdownThrowsErrorsAsExceptions(): void

@@ -42,7 +42,7 @@
         "aphiria/authentication": "1.x-dev",
         "aphiria/middleware": "1.x-dev",
         "aphiria/net": "1.x-dev",
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
