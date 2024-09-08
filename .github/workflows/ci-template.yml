@@ -7,6 +7,11 @@ on:
         required: false
         type: boolean
         default: false
+      run-php-cs-fixer:
+        description: Whether or not to run PHP-CS-Fixer
+        required: false
+        type: boolean
+        default: true
       run-psalm:
         description: Whether or not to run Psalm static analysis
         required: false
