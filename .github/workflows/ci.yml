@@ -10,7 +10,7 @@ on:
     - cron: '0 0 * * *'
 jobs:
   ci:
-    uses: ./.github/workflows/ci-template.yml
+    uses: ./.github/workflows/ci-template.yml@php-8.4
     with:
       split-subtrees: true
       run-php-cs-fixer: false
