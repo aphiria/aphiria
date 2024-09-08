@@ -44,7 +44,7 @@ jobs:
           tools: composer:v2
           coverage: xdebug
       - name: Install Dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
       - name: Run Tests
         run: composer phpunit
       - name: Run Linter
