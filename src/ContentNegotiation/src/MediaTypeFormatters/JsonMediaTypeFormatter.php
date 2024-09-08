@@ -30,7 +30,7 @@ final class JsonMediaTypeFormatter extends SerializerMediaTypeFormatter
     /**
      * @param SerializerInterface|null $serializer The JSON serializer to use
      */
-    public function __construct(SerializerInterface $serializer = null)
+    public function __construct(?SerializerInterface $serializer = null)
     {
         parent::__construct($serializer ?? new Serializer([new ObjectNormalizer()], [new JsonEncoder()]), 'json');
     }

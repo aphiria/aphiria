@@ -40,7 +40,7 @@ class MockAuthenticator extends Authenticator implements IMockAuthenticator
     /**
      * @inheritdoc
      */
-    public function authenticate(IRequest $request, array|string $schemeNames = null): AuthenticationResult
+    public function authenticate(IRequest $request, array|string|null $schemeNames = null): AuthenticationResult
     {
         $authResult = parent::authenticate($request, $schemeNames);
         // We only act as a principal for a single authentication call

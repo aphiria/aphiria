@@ -26,7 +26,11 @@ interface IErrorMessageInterpolator
      * @return string The interpolated error message
      * @throws ErrorMessageInterpolationException Thrown if the error message could not be interpolated
      */
-    public function interpolate(string $errorMessageId, array $errorMessagePlaceholders = [], string $locale = null): string;
+    public function interpolate(
+        string $errorMessageId,
+        array $errorMessagePlaceholders = [],
+        ?string $locale = null
+    ): string;
 
     /**
      * Sets the default locale

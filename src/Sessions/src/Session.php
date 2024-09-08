@@ -36,7 +36,7 @@ class Session implements ISession
      * @param IIdGenerator $idGenerator The Id generator to use, or null if using the default one
      */
     public function __construct(
-        int|string $id = null,
+        int|string|null $id = null,
         private readonly IIdGenerator $idGenerator = new UuidV4IdGenerator()
     ) {
         if ($id === null) {

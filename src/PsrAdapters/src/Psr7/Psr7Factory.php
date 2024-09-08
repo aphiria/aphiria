@@ -60,7 +60,7 @@ class Psr7Factory implements IPsr7Factory
         private readonly UploadedFileFactoryInterface $psr7UploadedFileFactory,
         private readonly UriFactoryInterface $psr7UriFactory,
         private readonly RequestHeaderParser $aphiriaRequestHeaderParser = new RequestHeaderParser(),
-        RequestParser $aphiriaRequestParser = null
+        ?RequestParser $aphiriaRequestParser = null
     ) {
         $this->aphiriaRequestParser = $aphiriaRequestParser ?? new RequestParser($this->aphiriaRequestHeaderParser);
     }

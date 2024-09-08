@@ -29,7 +29,7 @@ final class LiteralTrieNode extends TrieNode
         public readonly string $value,
         array $children,
         Route|array $routes = [],
-        TrieNode $hostTrie = null
+        ?TrieNode $hostTrie = null
     ) {
         parent::__construct($children, $routes, $hostTrie);
     }

@@ -37,8 +37,11 @@ class Authority implements IAuthority
      * @template TResource of ?object
      * @param TResource $resource
      */
-    public function authorize(IPrincipal $user, AuthorizationPolicy|string $policy, object $resource = null): AuthorizationResult
-    {
+    public function authorize(
+        IPrincipal $user,
+        AuthorizationPolicy|string $policy,
+        ?object $resource = null
+    ): AuthorizationResult {
         if (\is_string($policy)) {
             $policyName = $policy;
 

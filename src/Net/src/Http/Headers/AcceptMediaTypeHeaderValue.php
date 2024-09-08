@@ -27,7 +27,7 @@ final class AcceptMediaTypeHeaderValue extends MediaTypeHeaderValue implements I
      * @inheritdoc
      * @param IImmutableDictionary<string, string|null> $parameters
      */
-    public function __construct(string $mediaType, IImmutableDictionary $parameters = null)
+    public function __construct(string $mediaType, ?IImmutableDictionary $parameters = null)
     {
         parent::__construct($mediaType, $parameters);
 

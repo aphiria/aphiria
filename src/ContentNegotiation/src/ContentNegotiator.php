@@ -46,7 +46,7 @@ final class ContentNegotiator implements IContentNegotiator
             new HtmlMediaTypeFormatter(),
             new PlainTextMediaTypeFormatter()
         ],
-        IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
+        ?IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
         private readonly IEncodingMatcher $encodingMatcher = new AcceptCharsetEncodingMatcher(),
         private readonly ILanguageMatcher $languageMatcher = new AcceptLanguageMatcher(['en']),
         private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()

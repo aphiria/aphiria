@@ -26,7 +26,7 @@ final class MiddlewareCollection
      * @param IMiddleware $middleware The middleware to add
      * @param int|null $priority The optional priority of the middleware (lower number => higher priority)
      */
-    public function add(IMiddleware $middleware, int $priority = null): void
+    public function add(IMiddleware $middleware, ?int $priority = null): void
     {
         $this->middlewareWithPriorities[] = ['middleware' => $middleware, 'priority' => $priority ?? \PHP_INT_MAX];
     }

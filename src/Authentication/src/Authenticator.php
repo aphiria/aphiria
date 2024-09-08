@@ -39,7 +39,7 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function authenticate(IRequest $request, array|string $schemeNames = null): AuthenticationResult
+    public function authenticate(IRequest $request, array|string|null $schemeNames = null): AuthenticationResult
     {
         // This will contain resolved (ie non-null) scheme names
         $resolvedSchemeNames = [];
@@ -79,7 +79,7 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function challenge(IRequest $request, IResponse $response, array|string $schemeNames = null): void
+    public function challenge(IRequest $request, IResponse $response, array|string|null $schemeNames = null): void
     {
         foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
@@ -90,7 +90,7 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function forbid(IRequest $request, IResponse $response, array|string $schemeNames = null): void
+    public function forbid(IRequest $request, IResponse $response, array|string|null $schemeNames = null): void
     {
         foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);
@@ -101,8 +101,12 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function logIn(IPrincipal $user, IRequest $request, IResponse $response, array|string $schemeNames = null): void
-    {
+    public function logIn(
+        IPrincipal $user,
+        IRequest $request,
+        IResponse $response,
+        array|string|null $schemeNames = null
+    ): void {
         if (!($user->getPrimaryIdentity()?->isAuthenticated() ?? false)) {
             throw new NotAuthenticatedException('User identity must be set and authenticated to log in');
         }
@@ -121,7 +125,7 @@ class Authenticator implements IAuthenticator
     /**
      * @inheritdoc
      */
-    public function logOut(IRequest $request, IResponse $response, array|string $schemeNames = null): void
+    public function logOut(IRequest $request, IResponse $response, array|string|null $schemeNames = null): void
     {
         foreach ($this->getSchemes($schemeNames) as $scheme) {
             $handler = $this->handlerResolver->resolve($scheme->handlerClassName);

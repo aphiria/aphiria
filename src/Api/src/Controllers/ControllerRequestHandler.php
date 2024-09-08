@@ -43,7 +43,7 @@ final class ControllerRequestHandler implements IRequestHandler
         private readonly Closure $routeActionDelegate,
         private readonly array $routeVariables,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
-        IRouteActionInvoker $routeActionInvoker = null,
+        ?IRouteActionInvoker $routeActionInvoker = null,
         private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);

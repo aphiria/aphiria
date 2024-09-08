@@ -56,7 +56,7 @@ class Router implements IRequestHandler
         private readonly IRouteMatcher $routeMatcher,
         private readonly IServiceResolver $serviceResolver,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
-        IRouteActionInvoker $routeActionInvoker = null,
+        ?IRouteActionInvoker $routeActionInvoker = null,
         private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);

@@ -40,7 +40,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
      */
     public function __construct(
         protected readonly IExceptionRenderer $exceptionRenderer,
-        LoggerInterface $logger = null,
+        ?LoggerInterface $logger = null,
         protected readonly LogLevelFactory $logLevelFactory = new LogLevelFactory()
     ) {
         // Storing a long string will make sure we've reserved enough memory to be able to display error messages
@@ -88,7 +88,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
      * @inheritdoc
      * @param array|null $error The error that was thrown (only used for testing)
      */
-    public function handleShutdown(array $error = null): void
+    public function handleShutdown(?array $error = null): void
     {
         /** @var array{type: int, message: string, file: string, line: int}|null $error */
         $error = $error ?? \error_get_last();

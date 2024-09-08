@@ -33,7 +33,7 @@ abstract class Output implements IOutput
      */
     public function __construct(
         protected readonly IOutputCompiler $outputCompiler = new OutputCompiler(),
-        IDriver $driver = null
+        ?IDriver $driver = null
     ) {
         $this->driver = $driver ?? (new DriverSelector())->select();
     }

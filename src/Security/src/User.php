@@ -32,7 +32,7 @@ class User implements IPrincipal
      */
     public function __construct(
         array|IIdentity $identities,
-        Closure $primaryIdentitySelector = null
+        ?Closure $primaryIdentitySelector = null
     ) {
         if (\is_array($identities)) {
             $this->identities = $identities;

@@ -66,10 +66,10 @@ class MiddlewareComponent implements IComponent
      * Adds global middleware to the collection
      *
      * @param MiddlewareBinding|MiddlewareBinding[] $middlewareBindings The middleware binding to add
-     * @param int|null The optional priority to apply to the middleware (lower number => higher priority)
+     * @param int|null $priority The optional priority to apply to the middleware (lower number => higher priority)
      * @return static For chaining
      */
-    public function withGlobalMiddleware(MiddlewareBinding|array $middlewareBindings, int $priority = null): static
+    public function withGlobalMiddleware(MiddlewareBinding|array $middlewareBindings, ?int $priority = null): static
     {
         $middlewareBindings = \is_array($middlewareBindings) ? $middlewareBindings : [$middlewareBindings];
 

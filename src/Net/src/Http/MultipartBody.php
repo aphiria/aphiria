@@ -32,7 +32,7 @@ class MultipartBody extends StreamBody
      * @throws RuntimeException Thrown if the boundary could not be generated
      * @throws InvalidArgumentException Thrown if the internal stream could not be generated
      */
-    public function __construct(public readonly array $parts, string $boundary = null)
+    public function __construct(public readonly array $parts, ?string $boundary = null)
     {
         $this->boundary = $boundary ?? self::createDefaultBoundary();
         $stream = new MultiStream();

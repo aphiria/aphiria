@@ -41,32 +41,32 @@ class ControllerTest extends TestCase
     {
         // Allow us to more easily test the convenience methods
         $this->controller = new class () extends Controller {
-            public function accepted(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function accepted(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::accepted($body, $headers);
             }
 
-            public function badRequest(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function badRequest(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::badRequest($body, $headers);
             }
 
-            public function conflict(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function conflict(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::conflict($body, $headers);
             }
 
-            public function created(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function created(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::created($uri, $body, $headers);
             }
 
-            public function forbidden(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function forbidden(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::forbidden($body, $headers);
             }
 
-            public function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function found(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::found($uri, $body, $headers);
             }
@@ -76,27 +76,27 @@ class ControllerTest extends TestCase
                 return parent::getUser();
             }
 
-            public function internalServerError(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function internalServerError(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::internalServerError($body, $headers);
             }
 
-            public function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function movedPermanently(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::movedPermanently($uri, $body, $headers);
             }
 
-            public function noContent(Headers $headers = null): IResponse
+            public function noContent(?Headers $headers = null): IResponse
             {
                 return parent::noContent($headers);
             }
 
-            public function notFound(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function notFound(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::notFound($body, $headers);
             }
 
-            public function ok(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function ok(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::ok($body, $headers);
             }
@@ -106,7 +106,7 @@ class ControllerTest extends TestCase
                 return parent::readRequestBodyAs($type);
             }
 
-            public function unauthorized(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+            public function unauthorized(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::unauthorized($body, $headers);
             }

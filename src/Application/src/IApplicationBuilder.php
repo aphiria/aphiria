@@ -53,7 +53,7 @@ interface IApplicationBuilder
      * @param int|null $priority The optional priority of this component (lower number => higher priority)
      * @return static For chaining
      */
-    public function withComponent(IComponent $component, int $priority = null): static;
+    public function withComponent(IComponent $component, ?int $priority = null): static;
 
     /**
      * Adds an entire module to the application

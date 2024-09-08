@@ -29,7 +29,7 @@ final class BinderMetadataCollectionFactory
      */
     public function __construct(
         private readonly IContainer $container,
-        IBinderMetadataCollector $binderMetadataCollector = null
+        ?IBinderMetadataCollector $binderMetadataCollector = null
     ) {
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }

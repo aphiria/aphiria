@@ -28,7 +28,7 @@ class MockNormalizer implements NormalizerInterface
     /**
      * @inheritdoc
      */
-    public function normalize(mixed $object, string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
     {
         return ['foo' => 'bar'];
     }
@@ -36,7 +36,7 @@ class MockNormalizer implements NormalizerInterface
     /**
      * @inheritdoc
      */
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return true;
     }

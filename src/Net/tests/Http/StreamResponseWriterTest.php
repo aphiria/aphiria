@@ -81,7 +81,7 @@ class StreamResponseWriterTest extends TestCase
         $responseWriter = new class ($this->outputStream) extends StreamResponseWriter {
             public array $headers = [];
 
-            public function header(string $value, bool $replace = true, int $statusCode = null): void
+            public function header(string $value, bool $replace = true, ?int $statusCode = null): void
             {
                 $this->headers[] = $value;
             }

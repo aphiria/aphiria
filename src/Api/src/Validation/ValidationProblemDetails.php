@@ -28,9 +28,9 @@ final class ValidationProblemDetails extends ProblemDetails
         public array $errors,
         string $type = 'https://tools.ietf.org/html/rfc7231#section-6.5.1',
         string $title = 'One or more validation errors occurred',
-        string $detail = null,
+        ?string $detail = null,
         HttpStatusCode|int $status = HttpStatusCode::BadRequest,
-        string $instance = null
+        ?string $instance = null
     ) {
         parent::__construct($type, $title, $detail, $status, $instance);
     }

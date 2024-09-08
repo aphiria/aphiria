@@ -40,7 +40,7 @@ final class TokenStream
      *      Any '%s' in the message is first populated with the expected type, and then with the expected value
      * @throws UnexpectedTokenException Thrown if the current token didn't match the expected type and value
      */
-    public function expect(TokenType $type, mixed $value = null, string $message = null): void
+    public function expect(TokenType $type, mixed $value = null, ?string $message = null): void
     {
         if ($this->test($type, $value)) {
             return;

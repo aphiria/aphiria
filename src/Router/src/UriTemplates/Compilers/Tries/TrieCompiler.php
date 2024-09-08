@@ -39,7 +39,7 @@ final class TrieCompiler implements ITrieCompiler
      * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer
      */
     public function __construct(
-        RouteVariableConstraintFactory $constraintFactory = null,
+        ?RouteVariableConstraintFactory $constraintFactory = null,
         private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
         private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
     ) {

@@ -426,7 +426,7 @@ class TrieCompilerTest extends TestCase
      * @param string|null $hostTemplate The host template for the route
      * @return Route The route
      */
-    private function createRoute(string $pathTemplate, string $hostTemplate = null): Route
+    private function createRoute(string $pathTemplate, ?string $hostTemplate = null): Route
     {
         $controller = new class () {
             public function bar(): void

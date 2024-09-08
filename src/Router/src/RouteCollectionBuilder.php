@@ -49,7 +49,7 @@ final class RouteCollectionBuilder
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function delete(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
+    public function delete(string $path, ?string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
         return $this->route('DELETE', $path, $host, $isHttpsOnly);
     }
@@ -62,7 +62,7 @@ final class RouteCollectionBuilder
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function get(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
+    public function get(string $path, ?string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
         return $this->route('GET', $path, $host, $isHttpsOnly);
     }
@@ -88,7 +88,7 @@ final class RouteCollectionBuilder
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function options(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
+    public function options(string $path, ?string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
         return $this->route('OPTIONS', $path, $host, $isHttpsOnly);
     }
@@ -101,7 +101,7 @@ final class RouteCollectionBuilder
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function patch(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
+    public function patch(string $path, ?string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
         return $this->route('PATCH', $path, $host, $isHttpsOnly);
     }
@@ -114,7 +114,7 @@ final class RouteCollectionBuilder
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function post(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
+    public function post(string $path, ?string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
         return $this->route('POST', $path, $host, $isHttpsOnly);
     }
@@ -127,7 +127,7 @@ final class RouteCollectionBuilder
      * @param bool $isHttpsOnly Whether or not the route is HTTPS-only
      * @return RouteBuilder The configured route builder
      */
-    public function put(string $path, string $host = null, bool $isHttpsOnly = false): RouteBuilder
+    public function put(string $path, ?string $host = null, bool $isHttpsOnly = false): RouteBuilder
     {
         return $this->route('PUT', $path, $host, $isHttpsOnly);
     }
@@ -144,7 +144,7 @@ final class RouteCollectionBuilder
     public function route(
         string|array $httpMethods,
         string $path,
-        string $host = null,
+        ?string $host = null,
         bool $isHttpsOnly = false
     ): RouteBuilder {
         $this->applyGroupRouteTemplates($path, $host, $isHttpsOnly);
@@ -217,7 +217,7 @@ final class RouteCollectionBuilder
      */
     private function applyGroupRouteTemplates(
         string &$path,
-        string &$host = null,
+        ?string &$host = null,
         bool &$isHttpsOnly = false
     ): void {
         $groupPath = '';

@@ -35,7 +35,7 @@ class TableFormatter
      * @param TableFormatterOptions|null $options The options to use, or null if using the default options
      * @return string The formatted table
      */
-    public function format(array $rows, array $headers = [], TableFormatterOptions $options = null): string
+    public function format(array $rows, array $headers = [], ?TableFormatterOptions $options = null): string
     {
         $options ??= $this->defaultOptions;
         $numRows = \count($rows);

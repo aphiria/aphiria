@@ -28,7 +28,7 @@ class StreamResponseWriter implements IResponseWriter
     /**
      * @param IStream|null $outputStream The output stream to write the body to (null defaults to PHP's output stream)
      */
-    public function __construct(IStream $outputStream = null)
+    public function __construct(?IStream $outputStream = null)
     {
         $this->outputStream = $outputStream ?? new Stream(\fopen('php://output', 'wb'));
     }

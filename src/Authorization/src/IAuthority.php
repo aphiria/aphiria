@@ -30,5 +30,9 @@ interface IAuthority
      * @throws PolicyNotFoundException Thrown if the policy could not be found
      * @throws RequirementHandlerNotFoundException Thrown if the requirement handler could not be found
      */
-    public function authorize(IPrincipal $user, AuthorizationPolicy|string $policy, object $resource = null): AuthorizationResult;
+    public function authorize(
+        IPrincipal $user,
+        AuthorizationPolicy|string $policy,
+        ?object $resource = null
+    ): AuthorizationResult;
 }

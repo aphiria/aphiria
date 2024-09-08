@@ -31,7 +31,7 @@ final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
      * @param IImmutableDictionary<string, string|null>|null $parameters The dictionary of parameters, or null if there are no parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
-    public function __construct(public readonly string $charset, IImmutableDictionary $parameters = null)
+    public function __construct(public readonly string $charset, ?IImmutableDictionary $parameters = null)
     {
         /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);

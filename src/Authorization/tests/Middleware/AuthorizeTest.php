@@ -138,7 +138,7 @@ class AuthorizeTest extends TestCase
                         return null;
                     }
 
-                    public function getClaims(ClaimType|string $type = null): array
+                    public function getClaims(ClaimType|string|null $type = null): array
                     {
                         return [];
                     }

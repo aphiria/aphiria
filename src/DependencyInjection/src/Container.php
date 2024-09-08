@@ -318,7 +318,7 @@ class Container implements IContainer
      * @param class-string|null $target The target whose bindings we're checking
      * @return bool True if the targeted binding exists, otherwise false
      */
-    protected function hasTargetedBinding(string $interface, string $target = null): bool
+    protected function hasTargetedBinding(string $interface, ?string $target = null): bool
     {
         return isset($this->bindings[$target][$interface]);
     }

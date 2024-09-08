@@ -36,8 +36,11 @@ final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolat
     /**
      * @inheritdoc
      */
-    public function interpolate(string $errorMessageId, array $errorMessagePlaceholders = [], string $locale = null): string
-    {
+    public function interpolate(
+        string $errorMessageId,
+        array $errorMessagePlaceholders = [],
+        ?string $locale = null
+    ): string {
         $interpolatedErrorMessage = MessageFormatter::formatMessage(
             $locale ?? $this->defaultLocale,
             $this->errorMessageTemplates->getErrorMessageTemplate($errorMessageId, $locale),

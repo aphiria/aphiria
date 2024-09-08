@@ -95,12 +95,12 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     public function mapExceptionToProblemDetails(
         string $exceptionType,
-        string|Closure $type = null,
-        string|Closure $title = null,
-        string|Closure $detail = null,
+        string|Closure|null $type = null,
+        string|Closure|null $title = null,
+        string|Closure|null $detail = null,
         HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
-        string|Closure $instance = null,
-        array|Closure $extensions = null
+        string|Closure|null $instance = null,
+        array|Closure|null $extensions = null
     ): void {
         /** @psalm-suppress InvalidArgument PHPDoc doesn't allow us to (easily) specify param types in closures when setting a variable to that closure */
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {

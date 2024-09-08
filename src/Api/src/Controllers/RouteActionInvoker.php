@@ -49,8 +49,8 @@ class RouteActionInvoker implements IRouteActionInvoker
     public function __construct(
         IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         private readonly ?IRequestBodyValidator $requestBodyValidator = null,
-        IResponseFactory $responseFactory = null,
-        IControllerParameterResolver $controllerParameterResolver = null
+        ?IResponseFactory $responseFactory = null,
+        ?IControllerParameterResolver $controllerParameterResolver = null
     ) {
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver

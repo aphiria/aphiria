@@ -25,7 +25,7 @@ final class Authenticate extends Middleware
     /**
      * @param list<string>|string|null $schemeNames The list of names or name of the authentication scheme to use, or null if using the default scheme
      */
-    public function __construct(array|string $schemeNames = null)
+    public function __construct(array|string|null $schemeNames = null)
     {
         if (\is_string($schemeNames)) {
             $schemeNames = [$schemeNames];

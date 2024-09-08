@@ -49,7 +49,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withActor(string $value, string $issuer = null): static
+    public function withActor(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Actor, $value, $issuer);
 
@@ -90,7 +90,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withCountry(string $value, string $issuer = null): static
+    public function withCountry(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Country, $value, $issuer);
 
@@ -104,7 +104,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withDateOfBirth(DateTimeInterface $value, string $issuer = null): static
+    public function withDateOfBirth(DateTimeInterface $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::DateOfBirth, $value, $issuer);
 
@@ -118,7 +118,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withDns(string $value, string $issuer = null): static
+    public function withDns(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Dns, $value, $issuer);
 
@@ -132,7 +132,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withEmail(string $value, string $issuer = null): static
+    public function withEmail(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Email, $value, $issuer);
 
@@ -146,7 +146,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withGender(mixed $value, string $issuer = null): static
+    public function withGender(mixed $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Gender, $value, $issuer);
 
@@ -160,7 +160,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withGivenName(string $value, string $issuer = null): static
+    public function withGivenName(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::GivenName, $value, $issuer);
 
@@ -174,7 +174,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withHomePhone(string $value, string $issuer = null): static
+    public function withHomePhone(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::HomePhone, $value, $issuer);
 
@@ -188,7 +188,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withLocality(string $value, string $issuer = null): static
+    public function withLocality(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Locality, $value, $issuer);
 
@@ -202,7 +202,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withMobilePhone(string $value, string $issuer = null): static
+    public function withMobilePhone(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::MobilePhone, $value, $issuer);
 
@@ -216,7 +216,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withName(string $value, string $issuer = null): static
+    public function withName(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Name, $value, $issuer);
 
@@ -230,7 +230,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withNameIdentifier(mixed $value, string $issuer = null): static
+    public function withNameIdentifier(mixed $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::NameIdentifier, $value, $issuer);
 
@@ -244,7 +244,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withOtherPhone(string $value, string $issuer = null): static
+    public function withOtherPhone(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::OtherPhone, $value, $issuer);
 
@@ -258,7 +258,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withPostalCode(string|int $value, string $issuer = null): static
+    public function withPostalCode(string|int $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::PostalCode, $value, $issuer);
 
@@ -272,7 +272,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withRoles(string|array $value, string $issuer = null): static
+    public function withRoles(string|array $value, ?string $issuer = null): static
     {
         foreach ((array)$value as $role) {
             $this->addClaim(ClaimType::Role, $role, $issuer);
@@ -288,7 +288,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withRsa(string $value, string $issuer = null): static
+    public function withRsa(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Rsa, $value, $issuer);
 
@@ -302,7 +302,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withSid(string $value, string $issuer = null): static
+    public function withSid(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Sid, $value, $issuer);
 
@@ -316,7 +316,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withStateOrProvince(string $value, string $issuer = null): static
+    public function withStateOrProvince(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::StateOrProvince, $value, $issuer);
 
@@ -330,7 +330,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withStreetAddress(string $value, string $issuer = null): static
+    public function withStreetAddress(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::StreetAddress, $value, $issuer);
 
@@ -344,7 +344,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withSurname(string $value, string $issuer = null): static
+    public function withSurname(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Surname, $value, $issuer);
 
@@ -358,7 +358,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withThumbprint(string $value, string $issuer = null): static
+    public function withThumbprint(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Thumbprint, $value, $issuer);
 
@@ -372,7 +372,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withUpn(string $value, string $issuer = null): static
+    public function withUpn(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Upn, $value, $issuer);
 
@@ -386,7 +386,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withUri(string $value, string $issuer = null): static
+    public function withUri(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::Uri, $value, $issuer);
 
@@ -400,7 +400,7 @@ class IdentityBuilder
      * @param string|null $issuer The issuer of the claim, which will otherwise default to the one set in the constructor
      * @return static For chaining
      */
-    public function withX500DistinguishedName(string $value, string $issuer = null): static
+    public function withX500DistinguishedName(string $value, ?string $issuer = null): static
     {
         $this->addClaim(ClaimType::X500DistinguishedName, $value, $issuer);
 

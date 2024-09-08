@@ -29,7 +29,7 @@ interface IAuthenticator
      * @return AuthenticationResult The result of authentication
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
-    public function authenticate(IRequest $request, array|string $schemeNames = null): AuthenticationResult;
+    public function authenticate(IRequest $request, array|string|null $schemeNames = null): AuthenticationResult;
 
     /**
      * Challenges an unauthenticated request
@@ -39,7 +39,7 @@ interface IAuthenticator
      * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
-    public function challenge(IRequest $request, IResponse $response, array|string $schemeNames = null): void;
+    public function challenge(IRequest $request, IResponse $response, array|string|null $schemeNames = null): void;
 
     /**
      * Forbids a request from accessing a resource
@@ -49,7 +49,7 @@ interface IAuthenticator
      * @param list<string|null>|string|null $schemeNames The name or names of the authentication scheme to use, or null if using the default one
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      */
-    public function forbid(IRequest $request, IResponse $response, array|string $schemeNames = null): void;
+    public function forbid(IRequest $request, IResponse $response, array|string|null $schemeNames = null): void;
 
     /**
      * Logs in a user
@@ -62,7 +62,12 @@ interface IAuthenticator
      * @throws NotAuthenticatedException Thrown if the user's primary identity was not authenticated or set
      * @throws UnsupportedAuthenticationHandlerException Thrown if the scheme's handler does not support login
      */
-    public function logIn(IPrincipal $user, IRequest $request, IResponse $response, array|string $schemeNames = null): void;
+    public function logIn(
+        IPrincipal $user,
+        IRequest $request,
+        IResponse $response,
+        array|string|null $schemeNames = null
+    ): void;
 
     /**
      * Logs out a user
@@ -73,5 +78,5 @@ interface IAuthenticator
      * @throws AuthenticationSchemeNotFoundException Thrown if no scheme could be found
      * @throws UnsupportedAuthenticationHandlerException Thrown if the scheme's handler does not support login
      */
-    public function logOut(IRequest $request, IResponse $response, array|string $schemeNames = null): void;
+    public function logOut(IRequest $request, IResponse $response, array|string|null $schemeNames = null): void;
 }
