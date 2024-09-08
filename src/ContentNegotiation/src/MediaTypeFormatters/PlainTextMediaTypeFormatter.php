@@ -17,24 +17,12 @@ namespace Aphiria\ContentNegotiation\MediaTypeFormatters;
  */
 final class PlainTextMediaTypeFormatter extends TextMediaTypeFormatter
 {
-    /** @var list<string> The list of supported character encodings */
-    private static array $supportedEncodings = ['utf-8'];
-    /** @var list<string> The list of supported media types */
-    private static array $supportedMediaTypes = ['text/plain'];
-
-    /**
-     * @inheritdoc
-     */
-    public function getSupportedEncodings(): array
-    {
-        return self::$supportedEncodings;
+    /** @inheritdoc */
+    public array $supportedEncodings {
+        get => ['utf-8'];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSupportedMediaTypes(): array
-    {
-        return self::$supportedMediaTypes;
+    /** @inheritdoc */
+    public array $supportedMediaTypes {
+        get => ['text/plain'];
     }
 }

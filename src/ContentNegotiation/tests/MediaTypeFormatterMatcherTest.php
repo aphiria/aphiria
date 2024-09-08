@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IRequest;
@@ -36,7 +36,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function tesBestFormatterMatchesWildcardTypeWithHigherQualityScoreThanSpecificMediaType(): void
     {
-        $formatter = $this->createFormatterMock(['application/json', 'text/html'], 1);
+        $formatter = $this->createFormatterMock(['application/json', 'text/html']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -52,12 +52,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterCanMatchWithWildcardSubType(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
         $formatter1->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html']);
         $formatter2->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -72,12 +72,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterCanMatchWithWildcardType(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
         $formatter1->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter2 = $this->createFormatterMock(['text/html'], 0);
+        $formatter2 = $this->createFormatterMock(['text/html']);
         $this->headers->add('Accept', '*/*');
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
@@ -88,12 +88,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreAndHaveNoWildcards(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
         $formatter1->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter2 = $this->createFormatterMock(['text/json'], 0);
+        $formatter2 = $this->createFormatterMock(['text/json']);
         $matcher = new MediaTypeFormatterMatcher([$formatter1, $formatter2]);
         $this->headers->add('Accept', 'application/json');
         $this->headers->add('Accept', 'text/json', true);
@@ -105,7 +105,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreAndOneHasWilcardSubTypeAndOtherDoesNot(): void
     {
-        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter = $this->createFormatterMock(['application/json']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -121,7 +121,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoresAndOneHasWildcardType(): void
     {
-        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter = $this->createFormatterMock(['application/json']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -137,7 +137,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreWildcardSubTypes(): void
     {
-        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter = $this->createFormatterMock(['application/json']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -153,7 +153,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterIsFirstSupportedWhenAllContentTypesAreEqualScoreWildcardTypes(): void
     {
-        $formatter = $this->createFormatterMock(['application/json'], 1);
+        $formatter = $this->createFormatterMock(['application/json']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -169,12 +169,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterIsSelectedByMatchingSupportedMediaTypesInContentTypeHeader(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
         $formatter1->expects($this->once())
             ->method('canReadType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html']);
         $formatter2->expects($this->once())
             ->method('canReadType')
             ->with(User::class)
@@ -189,8 +189,8 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterMatchesHigherQualityScoreWhenBothMediaTypesAreFullyQualified(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
-        $formatter2 = $this->createFormatterMock(['text/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
+        $formatter2 = $this->createFormatterMock(['text/json']);
         $formatter2->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -206,17 +206,17 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterMatchesMostSpecificMediaTypeWithEqualQualityMediaTypes(): void
     {
-        $formatter1 = $this->createFormatterMock(['text/plain'], 1);
+        $formatter1 = $this->createFormatterMock(['text/plain']);
         $formatter1->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter2 = $this->createFormatterMock(['text/xml'], 1);
+        $formatter2 = $this->createFormatterMock(['text/xml']);
         $formatter2->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter3 = $this->createFormatterMock(['text/html'], 1);
+        $formatter3 = $this->createFormatterMock(['text/html']);
         $formatter3->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -233,7 +233,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterMatchesWildcardSubTypeWithHigherQualityScoreThanSpecificMediaType(): void
     {
-        $formatter = $this->createFormatterMock(['text/plain', 'text/html'], 1);
+        $formatter = $this->createFormatterMock(['text/plain', 'text/html']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -250,7 +250,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
     public function testBestFormatterThatMatchesZeroQualityMediaTypeReturnsNullMatch(): void
     {
         // The media type should be filtered out of the list of media types to check against
-        $formatter = $this->createFormatterMock(['text/html'], 0);
+        $formatter = $this->createFormatterMock(['text/html']);
         $this->headers->add('Accept', 'text/html; q=0.0');
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
         $match = $matcher->getBestResponseMediaTypeFormatterMatch(User::class, $this->request);
@@ -259,7 +259,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterWithInvalidMediaTypeThrowsException(): void
     {
-        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
 
         try {
@@ -289,12 +289,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestRequestFormatterIsSkippedIfItCannotReadType(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
         $formatter1->expects($this->once())
             ->method('canReadType')
             ->with(User::class)
             ->willReturn(false);
-        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html']);
         $formatter2->expects($this->once())
             ->method('canReadType')
             ->with(User::class)
@@ -309,12 +309,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestResponseFormatterIsSkippedIfItCannotWriteType(): void
     {
-        $formatter1 = $this->createFormatterMock(['application/json'], 1);
+        $formatter1 = $this->createFormatterMock(['application/json']);
         $formatter1->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(false);
-        $formatter2 = $this->createFormatterMock(['text/html'], 1);
+        $formatter2 = $this->createFormatterMock(['text/html']);
         $formatter2->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -338,17 +338,12 @@ class MediaTypeFormatterMatcherTest extends TestCase
      * Creates a mock media type formatter with a list of supported media types
      *
      * @param list<string> $supportedMediaTypes The list of supported media types
-     * @param int $numTimesSupportedMediaTypesCalled The number of times the formatter's supported media types will be checked
-     * @return IMediaTypeFormatter&MockObject The mocked formatter
+     * @return MockableMediaTypeFormatter&MockObject The mocked formatter
      */
-    private function createFormatterMock(
-        array $supportedMediaTypes,
-        int $numTimesSupportedMediaTypesCalled
-    ): IMediaTypeFormatter&MockObject {
-        $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->expects($this->exactly($numTimesSupportedMediaTypesCalled))
-            ->method('getSupportedMediaTypes')
-            ->willReturn($supportedMediaTypes);
+    private function createFormatterMock(array $supportedMediaTypes): MockableMediaTypeFormatter&MockObject
+    {
+        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $formatter->supportedMediaTypes = $supportedMediaTypes;
 
         return $formatter;
     }

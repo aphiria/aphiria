@@ -69,7 +69,7 @@ final class ContentNegotiator implements IContentNegotiator
             if ($mediaTypeFormatter->canWriteType($type)) {
                 $acceptableMediaTypes = [
                     ...$acceptableMediaTypes,
-                    ...$mediaTypeFormatter->getSupportedMediaTypes()
+                    ...$mediaTypeFormatter->supportedMediaTypes
                 ];
             }
         }
@@ -103,7 +103,7 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $mediaTypeFormatterMatch->formatter->getSupportedEncodings(),
+            $mediaTypeFormatterMatch->formatter->supportedEncodings,
             $request,
             $mediaTypeFormatterMatch->mediaTypeHeaderValue
         );
@@ -137,7 +137,7 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $mediaTypeFormatterMatch->formatter->getSupportedEncodings(),
+            $mediaTypeFormatterMatch->formatter->supportedEncodings,
             $request,
             $mediaTypeFormatterMatch->mediaTypeHeaderValue
         );
@@ -178,13 +178,13 @@ final class ContentNegotiator implements IContentNegotiator
         }
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
-            $selectedMediaTypeFormatter->getSupportedEncodings(),
+            $selectedMediaTypeFormatter->supportedEncodings,
             $request
         );
 
         return new ContentNegotiationResult(
             $selectedMediaTypeFormatter,
-            $selectedMediaTypeFormatter->getDefaultMediaType(),
+            $selectedMediaTypeFormatter->defaultMediaType,
             $encoding,
             $language
         );

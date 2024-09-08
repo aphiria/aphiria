@@ -56,7 +56,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . " cannot write type $type");
         }
 
-        $encoding ??= $this->getDefaultEncoding();
+        $encoding ??= $this->defaultEncoding;
 
         if (!$this->encodingIsSupported($encoding)) {
             throw new InvalidArgumentException("$encoding is not supported for " . static::class);

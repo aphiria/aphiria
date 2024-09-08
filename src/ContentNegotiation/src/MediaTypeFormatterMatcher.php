@@ -157,7 +157,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
             [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->mediaType);
 
             foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
-                foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
+                foreach ($mediaTypeFormatter->supportedMediaTypes as $supportedMediaType) {
                     if ($ioType === self::FORMATTER_TYPE_INPUT && !$mediaTypeFormatter->canReadType($type)) {
                         continue;
                     }

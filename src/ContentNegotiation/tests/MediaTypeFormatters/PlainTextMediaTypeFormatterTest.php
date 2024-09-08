@@ -42,22 +42,22 @@ class PlainTextMediaTypeFormatterTest extends TestCase
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8'], $this->formatter->supportedEncodings);
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['text/plain'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(['text/plain'], $this->formatter->supportedMediaTypes);
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
     {
-        $this->assertSame('utf-8', $this->formatter->getDefaultEncoding());
+        $this->assertSame('utf-8', $this->formatter->defaultEncoding);
     }
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertSame('text/plain', $this->formatter->getDefaultMediaType());
+        $this->assertSame('text/plain', $this->formatter->defaultMediaType);
     }
 
     public function testReadingAsArrayOfStringsThrowsException(): void

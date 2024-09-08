@@ -15,9 +15,9 @@ namespace Aphiria\ContentNegotiation\Tests;
 use Aphiria\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\ContentNegotiation\FailedContentNegotiationException;
 use Aphiria\ContentNegotiation\IContentNegotiator;
-use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
+use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\IBody;
@@ -43,7 +43,7 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $request->method('getBody')
             ->willReturn($this->createMock(IBody::class));
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->willThrowException(new SerializationException());
         $contentNegotiationResult = new ContentNegotiationResult($mediaTypeFormatter, null, null, null);
@@ -60,7 +60,7 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $response = $this->createMock(IResponse::class);
         $response->method('getBody')
             ->willReturn($this->createMock(IBody::class));
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->willThrowException(new SerializationException());
         $contentNegotiationResult = new ContentNegotiationResult($mediaTypeFormatter, null, null, null);
@@ -117,7 +117,7 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $request->method('getBody')
             ->willReturn($requestBody);
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->with($requestBody->readAsStream(), User::class)
             ->willReturn($expectedUser);
@@ -139,7 +139,7 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $response = $this->createMock(IResponse::class);
         $response->method('getBody')
             ->willReturn($responseBody);
-        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->with($responseBody->readAsStream(), User::class)
             ->willReturn($expectedUser);

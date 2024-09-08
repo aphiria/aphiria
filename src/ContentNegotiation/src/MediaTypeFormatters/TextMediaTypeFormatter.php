@@ -59,7 +59,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
         }
 
         /** @var string $value We've verified that the value is a string above */
-        $encoding = $encoding ?? $this->getDefaultEncoding();
+        $encoding = $encoding ?? $this->defaultEncoding;
 
         if (!$this->encodingIsSupported($encoding)) {
             throw new InvalidArgumentException("$encoding is not supported for " . static::class);
