@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Console\Exceptions;
 
+use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\IOutput;
+use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Exception;
 use InvalidArgumentException;
@@ -27,7 +29,17 @@ class ConsoleExceptionRendererTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = Mockery::mock(IOutput::class);
+        $this->output = Mockery::mock(WritableDriverOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $this->output->driver = $driver;
         $this->exceptionRenderer = new ConsoleExceptionRenderer($this->output, false);
     }
 
@@ -92,7 +104,17 @@ class ConsoleExceptionRendererTest extends TestCase
 
     public function testSettingOutputUsesNewOutputToWriteExceptionMessages(): void
     {
-        $newOutput = $this->createMock(IOutput::class);
+        $newOutput = $this->createMock(WritableDriverOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $newOutput->driver = $driver;
         $newOutput->expects($this->once())
             ->method('writeln')
             ->with('foo');

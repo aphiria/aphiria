@@ -16,8 +16,10 @@ use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
+use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -42,7 +44,18 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->input = new Input('foo');
         $this->container->bindInstance(IServiceResolver::class, $this->container);
         $this->container->bindInstance(Input::class, $this->input);
-        $this->container->bindInstance(IOutput::class, $this->createMock(IOutput::class));
+        $output = $this->createMock(WritableDriverOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $output->driver = $driver;
+        $this->container->bindInstance(IOutput::class, $output);
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void

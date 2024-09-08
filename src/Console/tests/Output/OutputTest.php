@@ -46,7 +46,7 @@ class OutputTest extends TestCase
             }
         };
         $output = new Output($this->createMock(IOutputCompiler::class), $driver);
-        $this->assertSame($driver, $output->getDriver());
+        $this->assertSame($driver, $output->driver);
     }
 
     public function testWritingMultipleMessagesWithNewLines(): void

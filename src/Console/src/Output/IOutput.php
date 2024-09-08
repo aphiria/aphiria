@@ -20,17 +20,13 @@ use RuntimeException;
  */
 interface IOutput
 {
+    /** @var IDriver The CLI driver of the output */
+    public IDriver $driver { get; }
+
     /**
      * Clears the output from view
      */
     public function clear(): void;
-
-    /**
-     * Gets the CLI driver for the output
-     *
-     * @return IDriver The CLI driver
-     */
-    public function getDriver(): IDriver;
 
     /**
      * Sets whether or not messages should be styled

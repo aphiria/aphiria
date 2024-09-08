@@ -13,9 +13,11 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Console;
 
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
+use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
 use Aphiria\Framework\Console\ConsoleApplication;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -33,7 +35,17 @@ class ConsoleApplicationTest extends TestCase
     {
         $this->consoleGateway = $this->createMock(ICommandHandler::class);
         $this->input = new Input('foo', [], []);
-        $this->output = $this->createMock(IOutput::class);
+        $this->output = $this->createMock(WritableDriverOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $this->output->driver = $driver;
         $this->app = new ConsoleApplication($this->consoleGateway, $this->input, $this->output);
     }
 

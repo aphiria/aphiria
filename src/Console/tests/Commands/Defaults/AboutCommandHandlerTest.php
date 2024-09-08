@@ -19,6 +19,7 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
+use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +31,7 @@ class AboutCommandHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = $this->createMock(IOutput::class);
+        $this->output = $this->createMock(WritableDriverOutput::class);
         $this->commands = new CommandRegistry();
         $this->handler = new AboutCommandHandler($this->commands);
         $driver = new class () implements IDriver {
@@ -42,8 +43,7 @@ class AboutCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('getDriver')
-            ->willReturn($driver);
+        $this->output->driver = $driver;
     }
 
     public function testCommandsAreAlphabeticallySortedByCategories(): void

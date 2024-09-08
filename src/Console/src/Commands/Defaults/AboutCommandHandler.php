@@ -51,7 +51,7 @@ EOF;
         // Compile the template
         $compiledTemplate = \str_replace(
             ['{{commands}}', '{{hr}}'],
-            [$this->getCommandText(), \str_repeat('-', $output->getDriver()->cliWidth)],
+            [$this->getCommandText(), \str_repeat('-', $output->driver->cliWidth)],
             self::$template
         );
 

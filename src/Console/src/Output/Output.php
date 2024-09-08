@@ -22,8 +22,8 @@ use Aphiria\Console\Output\Compilers\OutputCompiler;
  */
 abstract class Output implements IOutput
 {
-    /** @var IDriver The driver */
-    protected readonly IDriver $driver;
+    /** @inheritdoc */
+    public readonly IDriver $driver;
     /** @var bool Whether or not to include styling on output messages */
     protected bool $includeStyles = true;
 
@@ -36,14 +36,6 @@ abstract class Output implements IOutput
         ?IDriver $driver = null
     ) {
         $this->driver = $driver ?? (new DriverSelector())->select();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDriver(): IDriver
-    {
-        return $this->driver;
     }
 
     /**

@@ -16,6 +16,7 @@ use Aphiria\Console\Drivers\HiddenInputNotSupportedException;
 use Aphiria\Console\Drivers\UnixLikeDriver;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
+use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
 use PHPUnit\Framework\TestCase;
 
 class UnixLikeDriverTest extends TestCase
@@ -124,6 +125,8 @@ class UnixLikeDriverTest extends TestCase
                 return false;
             }
         };
-        $driver->readHiddenInput($this->createMock(IOutput::class));
+        $output = $this->createMock(WritableDriverOutput::class);
+        $output->driver = $driver;
+        $driver->readHiddenInput($output);
     }
 }

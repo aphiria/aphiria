@@ -24,6 +24,7 @@ use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
+use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -37,7 +38,7 @@ class HelpCommandHandlerTest extends TestCase
     {
         $this->commands = new CommandRegistry();
         $this->handler = new HelpCommandHandler($this->commands);
-        $this->output = $this->createMock(IOutput::class);
+        $this->output = $this->createMock(WritableDriverOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -47,8 +48,7 @@ class HelpCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('getDriver')
-            ->willReturn($driver);
+        $this->output->driver = $driver;
     }
 
     public function testHandlingCommandNameThatIsNotRegisteredReturnsError(): void
