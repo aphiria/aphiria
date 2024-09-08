@@ -91,7 +91,7 @@ class StreamTest extends TestCase
         $handle = \fopen('php://temp', 'rb');
         $stream = new Stream($handle, 724);
         $stream->close();
-        $stream->getLength();
+        $stream->length;
     }
 
     public function testGettingPositionThrowsExceptionIfStreamIsClosed(): void
@@ -100,7 +100,7 @@ class StreamTest extends TestCase
         $handle = \fopen('php://temp', 'rb');
         $stream = new Stream($handle);
         $stream->close();
-        $stream->getPosition();
+        $stream->length;
     }
 
     public function testIsEofReturnsFalseForStreamsThatAreNotAtEof(): void
@@ -108,7 +108,7 @@ class StreamTest extends TestCase
         $handle = \fopen('php://temp', 'w+b');
         $stream = new Stream($handle);
         $stream->write('foo');
-        $this->assertFalse($stream->isEof());
+        $this->assertFalse($stream->isEof);
     }
 
     public function testIsEofReturnsTrueForStreamsAtEof(): void
@@ -117,7 +117,7 @@ class StreamTest extends TestCase
         $stream = new Stream($handle);
         $stream->write('foo');
         $stream->readToEnd();
-        $this->assertTrue($stream->isEof());
+        $this->assertTrue($stream->isEof);
     }
 
     public function testIsEofThrowsExceptionForClosedStream(): void
@@ -127,24 +127,24 @@ class StreamTest extends TestCase
         $stream = new Stream($handle);
         $stream->write('foo');
         $stream->close();
-        $stream->isEof();
+        $stream->isEof;
     }
 
     public function testIsReadableReturnsCorrectValueBasedOnItsMode(): void
     {
         $readableHandle = \fopen('php://temp', 'rb');
         $readableStream = new Stream($readableHandle);
-        $this->assertTrue($readableStream->isReadable());
+        $this->assertTrue($readableStream->isReadable);
         $unreadableHandle = \fopen(self::TEMP_FILE, 'wb');
         $unreadableStream = new Stream($unreadableHandle);
-        $this->assertFalse($unreadableStream->isReadable());
+        $this->assertFalse($unreadableStream->isReadable);
     }
 
     public function testIsSeekableReturnsCorrectValueBasedOnItsMode(): void
     {
         $seekableHandle = \fopen('php://temp', 'r+b');
         $seekableStream = new Stream($seekableHandle);
-        $this->assertTrue($seekableStream->isSeekable());
+        $this->assertTrue($seekableStream->isSeekable);
         // Testing unseekable streams is not possible
     }
 
@@ -152,17 +152,17 @@ class StreamTest extends TestCase
     {
         $writableHandle = \fopen('php://temp', 'wb');
         $writableStream = new Stream($writableHandle);
-        $this->assertTrue($writableStream->isWritable());
+        $this->assertTrue($writableStream->isWritable);
         $unwritableHandle = \fopen('php://temp', 'rb');
         $unwritableStream = new Stream($unwritableHandle);
-        $this->assertFalse($unwritableStream->isWritable());
+        $this->assertFalse($unwritableStream->isWritable);
     }
 
     public function testKnownLengthOfStreamIsAlwaysReturned(): void
     {
         $handle = \fopen('php://temp', 'rb');
         $stream = new Stream($handle, 724);
-        $this->assertSame(724, $stream->getLength());
+        $this->assertSame(724, $stream->length);
     }
 
     public function testNonResourceThrowsException(): void
@@ -177,7 +177,7 @@ class StreamTest extends TestCase
         $handle = \fopen('php://temp', 'w+b');
         $stream = new Stream($handle);
         $stream->write('foo');
-        $this->assertSame(3, $stream->getPosition());
+        $this->assertSame(3, $stream->position);
     }
 
     public function testReadingFromClosedStreamThrowsException(): void
@@ -223,7 +223,7 @@ class StreamTest extends TestCase
         $handle = \fopen('php://temp', 'rb');
         $expectedLength = \fstat($handle)['size'];
         $stream = new Stream($handle);
-        $this->assertSame($expectedLength, $stream->getLength());
+        $this->assertSame($expectedLength, $stream->length);
     }
 
     public function testRewindSeeksToBeginningOfStream(): void

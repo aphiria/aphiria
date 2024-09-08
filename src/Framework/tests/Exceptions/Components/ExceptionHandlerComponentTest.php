@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Tests\Exceptions\Components;
 use Aphiria\Api\Errors\ProblemDetails;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Exceptions\LogLevelFactory;
@@ -52,7 +52,7 @@ class ExceptionHandlerComponentTest extends TestCase
 
     public function testBuildWithConsoleOutputWriterRegistersCallback(): void
     {
-        $output = $this->createMock(WritableDriverOutput::class);
+        $output = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

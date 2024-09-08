@@ -19,7 +19,7 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\DependencyInjection\IServiceResolver;
@@ -44,7 +44,7 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->input = new Input('foo');
         $this->container->bindInstance(IServiceResolver::class, $this->container);
         $this->container->bindInstance(Input::class, $this->input);
-        $output = $this->createMock(WritableDriverOutput::class);
+        $output = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

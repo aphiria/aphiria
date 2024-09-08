@@ -17,7 +17,7 @@ use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\Framework\Console\ConsoleApplication;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -35,7 +35,7 @@ class ConsoleApplicationTest extends TestCase
     {
         $this->consoleGateway = $this->createMock(ICommandHandler::class);
         $this->input = new Input('foo', [], []);
-        $this->output = $this->createMock(WritableDriverOutput::class);
+        $this->output = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

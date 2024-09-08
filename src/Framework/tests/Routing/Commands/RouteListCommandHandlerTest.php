@@ -17,7 +17,7 @@ use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\Formatters\PaddingFormatter;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\Framework\Routing\Commands\RouteListCommandHandler;
 use Aphiria\Framework\Tests\Routing\Commands\Mocks\MiddlewareA;
 use Aphiria\Framework\Tests\Routing\Commands\Mocks\MiddlewareB;
@@ -49,7 +49,7 @@ class RouteListCommandHandlerTest extends TestCase
         $this->paddingFormatter = new PaddingFormatter();
         $this->commandHandler = new RouteListCommandHandler($this->routes, $this->middleware, $this->paddingFormatter);
         $this->input = new Input('route:list', [], []);
-        $this->output = $this->createMock(WritableDriverOutput::class);
+        $this->output = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

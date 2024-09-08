@@ -12,9 +12,8 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\StringBody;
-use PHPUnit\Framework\MockObject\MockObject;
+use Aphiria\Net\Tests\Http\Mocks\MockableStream;
 use PHPUnit\Framework\TestCase;
 
 class StringBodyTest extends TestCase
@@ -53,8 +52,7 @@ class StringBodyTest extends TestCase
 
     public function testWritingToStreamActuallyWritesContentsToStream(): void
     {
-        /** @var IStream&MockObject $stream */
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $stream->expects($this->once())
             ->method('write')
             ->with('foo');

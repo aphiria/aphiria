@@ -39,7 +39,7 @@ class StreamBody implements IBody
      */
     public function getLength(): ?int
     {
-        return $this->stream->getLength();
+        return $this->stream->length;
     }
 
     /**
@@ -63,7 +63,7 @@ class StreamBody implements IBody
      */
     public function writeToStream(IStream $stream): void
     {
-        if ($this->stream->isSeekable()) {
+        if ($this->stream->isSeekable) {
             $this->stream->rewind();
         }
 

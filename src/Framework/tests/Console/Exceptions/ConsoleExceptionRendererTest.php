@@ -14,7 +14,7 @@ namespace Aphiria\Framework\Tests\Console\Exceptions;
 
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Exception;
 use InvalidArgumentException;
@@ -29,7 +29,7 @@ class ConsoleExceptionRendererTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = Mockery::mock(WritableDriverOutput::class);
+        $this->output = Mockery::mock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -104,7 +104,7 @@ class ConsoleExceptionRendererTest extends TestCase
 
     public function testSettingOutputUsesNewOutputToWriteExceptionMessages(): void
     {
-        $newOutput = $this->createMock(WritableDriverOutput::class);
+        $newOutput = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

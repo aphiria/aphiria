@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests\MediaTypeFormatters;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatters\XmlMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
 use InvalidArgumentException;
@@ -92,12 +93,12 @@ class XmlMediaTypeFormatterTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('foo is not supported for %s', XmlMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
-        $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
+        $this->formatter->writeToStream($user, $this->createMock(MockableStream::class), 'foo');
     }
 
     public function testWritingWithNullEncodingUsesDefaultEncoding(): void
     {
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $user = new User(123, 'foo@bar.com');
         $xml = '<?xml version="1.0"?>' . \PHP_EOL . '<response><id>123</id><email>foo@bar.com</email></response>' . \PHP_EOL;
         $expectedEncodedValue = \mb_convert_encoding($xml, 'utf-8');
@@ -115,7 +116,7 @@ class XmlMediaTypeFormatterTest extends TestCase
      */
     private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $stream->expects($this->once())
             ->method('write')
             ->with($body);
@@ -131,7 +132,7 @@ class XmlMediaTypeFormatterTest extends TestCase
      */
     private function createStreamWithStringBody(string $body): IStream&MockObject
     {
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $stream->expects($this->once())
             ->method('__toString')
             ->willReturn($body);

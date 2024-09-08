@@ -27,7 +27,7 @@ use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
 use Aphiria\Console\Tests\Output\Mocks\Output;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Exception;
 use Mockery;
@@ -56,7 +56,7 @@ class ConsoleGatewayTest extends TestCase
 
     public function testHandlingCommandWithNoHandlerThrowsException(): void
     {
-        $output = Mockery::mock(WritableDriverOutput::class);
+        $output = Mockery::mock(MockableOutput::class);
         $output->shouldReceive('writeln')
             ->with('<fatal>' . CommandNotFoundException::class . '</fatal>: <info>No command found with name "foo"</info>');
         $output->shouldReceive('writeln')

@@ -246,7 +246,7 @@ class Psr7Factory implements IPsr7Factory
         $stream->rewind();
         $handle = \fopen('php://temp', 'r+b');
 
-        while (!$stream->isEof()) {
+        while (!$stream->isEof) {
             \fwrite($handle, $stream->read(8192));
         }
 

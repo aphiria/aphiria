@@ -20,6 +20,28 @@ use RuntimeException;
 interface IStream
 {
     /**
+     * @var bool Whether or not the stream is at the end of file
+     * @throws RuntimeException Thrown if the stream is closed or EOF cannot be determined
+     */
+    public bool $isEof { get; }
+    /** @var bool Whether or not the stream is readable */
+    public bool $isReadable { get; }
+    /** @var bool Whether or not the stream is seekable */
+    public bool $isSeekable { get; }
+    /** @var bool Whether or not the stream is writable */
+    public bool $isWritable { get; }
+    /**
+     * @var int|null The length of the stream if it is knowable, otherwise null
+     * @throws RuntimeException Thrown if the stream is closed
+     */
+    public ?int $length { get; }
+    /**
+     * @var int The current stream position
+     * @throws RuntimeException Thrown if the stream is closed
+     */
+    public int $position { get; }
+
+    /**
      * Rewinds the stream and reads it to the end as a string
      * This could result in a lot of data being loaded into memory
      *
@@ -42,51 +64,6 @@ interface IStream
      * @throws RuntimeException Thrown if the source stream is closed
      */
     public function copyToStream(IStream $stream, int $bufferSize = 8192): void;
-
-    /**
-     * Gets the length of the stream
-     *
-     * @return int|null The length of the stream if knowable, otherwise null
-     * @throws RuntimeException Thrown if the stream is closed
-     */
-    public function getLength(): ?int;
-
-    /**
-     * Gets the current stream position
-     *
-     * @return int The current position of the stream
-     * @throws RuntimeException Thrown if the position cannot be determined
-     */
-    public function getPosition(): int;
-
-    /**
-     * Gets whether or not the stream is at the end of file
-     *
-     * @return bool True if the stream is end of file, otherwise false
-     * @throws RuntimeException Thrown if the stream is closed or EOF cannot be determined
-     */
-    public function isEof(): bool;
-
-    /**
-     * Gets whether or not the stream is readable
-     *
-     * @return bool True if the stream is readable, otherwise false
-     */
-    public function isReadable(): bool;
-
-    /**
-     * Gets whether or not the stream is seekable
-     *
-     * @return bool True if the stream is seekable, otherwise false
-     */
-    public function isSeekable(): bool;
-
-    /**
-     * Gets whether or not the stream is writable
-     *
-     * @return bool True if the stream is writable, otherwise false
-     */
-    public function isWritable(): bool;
 
     /**
      * Reads a chunk of the stream

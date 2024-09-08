@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests\MediaTypeFormatters;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatters\JsonMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
 use InvalidArgumentException;
@@ -90,12 +91,12 @@ class JsonMediaTypeFormatterTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('foo is not supported for %s', JsonMediaTypeFormatter::class));
         $user = new User(123, 'foo@bar.com');
-        $this->formatter->writeToStream($user, $this->createMock(IStream::class), 'foo');
+        $this->formatter->writeToStream($user, $this->createMock(MockableStream::class), 'foo');
     }
 
     public function testWritingWithNullEncodingUsesDefaultEncoding(): void
     {
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $user = new User(123, 'foo@bar.com');
         $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
         $stream->expects($this->once())
@@ -112,7 +113,7 @@ class JsonMediaTypeFormatterTest extends TestCase
      */
     private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $stream->expects($this->once())
             ->method('write')
             ->with($body);
@@ -128,7 +129,7 @@ class JsonMediaTypeFormatterTest extends TestCase
      */
     private function createStreamWithStringBody(string $body): IStream&MockObject
     {
-        $stream = $this->createMock(IStream::class);
+        $stream = $this->createMock(MockableStream::class);
         $stream->expects($this->once())
             ->method('__toString')
             ->willReturn($body);

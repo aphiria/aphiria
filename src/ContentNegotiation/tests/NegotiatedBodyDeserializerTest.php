@@ -18,8 +18,8 @@ use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
-use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -41,8 +41,11 @@ class NegotiatedBodyDeserializerTest extends TestCase
     {
         $this->expectException(SerializationException::class);
         $request = $this->createMock(IRequest::class);
+        $body = $this->createMock(IBody::class);
+        $body->method('readAsStream')
+            ->willReturn($this->createMock(MockableStream::class));
         $request->method('getBody')
-            ->willReturn($this->createMock(IBody::class));
+            ->willReturn($body);
         $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->willThrowException(new SerializationException());
@@ -58,8 +61,11 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $this->expectException(SerializationException::class);
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
+        $body = $this->createMock(IBody::class);
+        $body->method('readAsStream')
+            ->willReturn($this->createMock(MockableStream::class));
         $response->method('getBody')
-            ->willReturn($this->createMock(IBody::class));
+            ->willReturn($body);
         $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->willThrowException(new SerializationException());
@@ -113,7 +119,7 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $expectedUser = new User(123, 'foo@bar.com');
         $requestBody = $this->createMock(IBody::class);
         $requestBody->method('readAsStream')
-            ->willReturn($this->createMock(IStream::class));
+            ->willReturn($this->createMock(MockableStream::class));
         $request = $this->createMock(IRequest::class);
         $request->method('getBody')
             ->willReturn($requestBody);
@@ -135,7 +141,7 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $responseBody = $this->createMock(IBody::class);
         $responseBody->method('readAsStream')
-            ->willReturn($this->createMock(IStream::class));
+            ->willReturn($this->createMock(MockableStream::class));
         $response = $this->createMock(IResponse::class);
         $response->method('getBody')
             ->willReturn($responseBody);

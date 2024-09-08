@@ -18,7 +18,7 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Output\Prompts\MultipleChoice;
 use Aphiria\Console\Output\Prompts\Prompt;
 use Aphiria\Console\Output\Prompts\Question;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
@@ -32,7 +32,7 @@ class PromptTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = Mockery::mock(WritableDriverOutput::class);
+        $this->output = Mockery::mock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

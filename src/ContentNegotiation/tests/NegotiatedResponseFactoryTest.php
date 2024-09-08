@@ -17,6 +17,7 @@ use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
+use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
@@ -89,10 +90,8 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseFromStreamWillSetContentLengthHeader(): void
     {
-        $rawBody = $this->createMock(IStream::class);
-        $rawBody->expects($this->once())
-            ->method('getLength')
-            ->willReturn(123);
+        $rawBody = $this->createMock(MockableStream::class);
+        $rawBody->length = 123;
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertSame(123, $response->getHeaders()->getFirst('Content-Length'));
@@ -100,10 +99,8 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseFromStreamWithUnknownLengthWillNotSetContentLengthHeader(): void
     {
-        $rawBody = $this->createMock(IStream::class);
-        $rawBody->expects($this->once())
-            ->method('getLength')
-            ->willReturn(null);
+        $rawBody = $this->createMock(MockableStream::class);
+        $rawBody->length = null;
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertFalse($response->getHeaders()->containsKey('Content-Length'));
@@ -277,7 +274,7 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void
     {
-        $rawBody = $this->createMock(IStream::class);
+        $rawBody = $this->createMock(MockableStream::class);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, null, $rawBody);
         $this->assertInstanceOf(StreamBody::class, $response->getBody());
     }

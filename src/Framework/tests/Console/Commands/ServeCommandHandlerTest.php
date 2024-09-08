@@ -15,7 +15,7 @@ namespace Aphiria\Framework\Tests\Console\Commands;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\Framework\Console\Commands\ServeCommandHandler;
 use PHPUnit\Framework\TestCase;
 
@@ -23,7 +23,7 @@ class ServeCommandHandlerTest extends TestCase
 {
     public function testHandlingRunCorrectPhpCommandAndWritesCorrectOutput(): void
     {
-        $output = $this->createMock(WritableDriverOutput::class);
+        $output = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

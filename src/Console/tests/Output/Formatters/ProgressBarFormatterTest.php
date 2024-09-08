@@ -16,7 +16,7 @@ use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\Formatters\ProgressBarFormatter;
 use Aphiria\Console\Output\Formatters\ProgressBarFormatterOptions;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\WritableDriverOutput;
+use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Exception;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,7 +29,7 @@ class ProgressBarFormatterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = $this->createMock(WritableDriverOutput::class);
+        $this->output = $this->createMock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -76,7 +76,7 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
         // Use a redraw frequency of 0 so that it redraws every time
-        $output = Mockery::mock(WritableDriverOutput::class);
+        $output = Mockery::mock(MockableOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;

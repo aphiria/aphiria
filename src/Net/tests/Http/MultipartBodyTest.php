@@ -12,13 +12,13 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http;
 
-use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\MultiStream;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
+use Aphiria\Net\Tests\Http\Mocks\MockableStream;
 use PHPUnit\Framework\TestCase;
 
 class MultipartBodyTest extends TestCase
@@ -37,25 +37,17 @@ class MultipartBodyTest extends TestCase
 
     public function testGettingLengthWithABodyPartWithNullLengthReturnsNull(): void
     {
-        $streamMock1 = $this->createMock(IStream::class);
-        $streamMock1->expects($this->once())
-            ->method('isReadable')
-            ->willReturn(true);
-        $streamMock1->expects($this->once())
-            ->method('getLength')
-            ->willReturn(1);
+        $streamMock1 = $this->createMock(MockableStream::class);
+        $streamMock1->isReadable = true;
+        $streamMock1->length = 1;
         $body1 = $this->createMock(IBody::class);
         $body1->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock1);
         $body2 = $this->createMock(IBody::class);
-        $streamMock2 = $this->createMock(IStream::class);
-        $streamMock2->expects($this->once())
-            ->method('isReadable')
-            ->willReturn(true);
-        $streamMock2->expects($this->once())
-            ->method('getLength')
-            ->willReturn(null);
+        $streamMock2 = $this->createMock(MockableStream::class);
+        $streamMock2->isReadable = true;
+        $streamMock2->length = null;
         $body2->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock2);
@@ -69,25 +61,17 @@ class MultipartBodyTest extends TestCase
 
     public function testGettingLengthWithBodyPartsWithLengthsReturnsSumOfLengths(): void
     {
-        $streamMock1 = $this->createMock(IStream::class);
-        $streamMock1->expects($this->once())
-            ->method('isReadable')
-            ->willReturn(true);
-        $streamMock1->expects($this->once())
-            ->method('getLength')
-            ->willReturn(1);
+        $streamMock1 = $this->createMock(MockableStream::class);
+        $streamMock1->isReadable = true;
+        $streamMock1->length = 1;
         $body1 = $this->createMock(IBody::class);
         $body1->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock1);
         $body2 = $this->createMock(IBody::class);
-        $streamMock2 = $this->createMock(IStream::class);
-        $streamMock2->expects($this->once())
-            ->method('isReadable')
-            ->willReturn(true);
-        $streamMock2->expects($this->once())
-            ->method('getLength')
-            ->willReturn(2);
+        $streamMock2 = $this->createMock(MockableStream::class);
+        $streamMock2->isReadable = true;
+        $streamMock2->length = 2;
         $body2->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock2);

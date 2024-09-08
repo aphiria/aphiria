@@ -20,10 +20,48 @@ use RuntimeException;
  */
 final class MultiStream implements IStream
 {
-    /** @var bool Whether or not this stream is seekable */
-    private bool $isSeekable = true;
-    /** @var int The current position inside the substreams */
-    private int $position = 0;
+    /** @inheritdoc */
+    public bool $isEof {
+        get {
+            if (\count($this->streams) === 0) {
+                throw new RuntimeException('Unable to tell if at EOF on closed stream');
+            }
+
+            return $this->streamIndex === \count($this->streams) - 1 && $this->streams[$this->streamIndex]->isEof;
+        }
+    }
+    /** @inheritdoc */
+    public bool $isReadable {
+        get => true;
+    }
+    /** @inheritdoc */
+    public private(set) bool $isSeekable = true;
+    /** @inheritdoc */
+    public bool $isWritable {
+        get => false;
+    }
+    /** @inheritdoc */
+    public ?int $length {
+        get {
+            if (\count($this->streams) === 0) {
+                return null;
+            }
+
+            $length = 0;
+
+            foreach ($this->streams as $stream) {
+                if (($substreamLength = $stream->length) === null) {
+                    return null;
+                }
+
+                $length += $substreamLength;
+            }
+
+            return $length;
+        }
+    }
+    /** @inheritdoc */
+    public private(set) int $position = 0;
     /** @var int The index of the currently read stream */
     private int $streamIndex = 0;
     /** @var list<IStream> The list of sub-streams */
@@ -69,11 +107,11 @@ final class MultiStream implements IStream
      */
     public function addStream(IStream $stream): void
     {
-        if (!$stream->isReadable()) {
+        if (!$stream->isReadable) {
             throw new InvalidArgumentException('Stream must be readable');
         }
 
-        $this->isSeekable = $this->isSeekable && $stream->isSeekable();
+        $this->isSeekable = $this->isSeekable && $stream->isSeekable;
         $this->streams[] = $stream;
     }
 
@@ -98,75 +136,9 @@ final class MultiStream implements IStream
      */
     public function copyToStream(IStream $stream, int $bufferSize = 8192): void
     {
-        while (!$this->isEof()) {
+        while (!$this->isEof) {
             $stream->write($this->read($bufferSize));
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLength(): ?int
-    {
-        if (\count($this->streams) === 0) {
-            return null;
-        }
-
-        $length = 0;
-
-        foreach ($this->streams as $stream) {
-            if (($substreamLength = $stream->getLength()) === null) {
-                return null;
-            }
-
-            $length += $substreamLength;
-        }
-
-        return $length;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPosition(): int
-    {
-        return $this->position;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isEof(): bool
-    {
-        if (\count($this->streams) === 0) {
-            throw new RuntimeException('Unable to tell if at EOF on closed stream');
-        }
-
-        return $this->streamIndex === \count($this->streams) - 1 && $this->streams[$this->streamIndex]->isEof();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isReadable(): bool
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isSeekable(): bool
-    {
-        return $this->isSeekable;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isWritable(): bool
-    {
-        return false;
     }
 
     /**
@@ -218,7 +190,7 @@ final class MultiStream implements IStream
             $this->streamIndex = (int)$streamIndex;
         }
 
-        $this->position = $this->getLength() ?? 0;
+        $this->position = $this->length ?? 0;
 
         return $buffer;
     }
@@ -241,7 +213,7 @@ final class MultiStream implements IStream
             throw new RuntimeException('Cannot seek an unseekable stream');
         }
 
-        if ($this->getLength() === null) {
+        if ($this->length === null) {
             throw new RuntimeException('Cannot seek a stream whose length is not known');
         }
 
@@ -250,7 +222,7 @@ final class MultiStream implements IStream
                 $this->position += $offset;
                 break;
             case SEEK_END:
-                $this->position = ($this->getLength() ?? 0) + $offset;
+                $this->position = ($this->length ?? 0) + $offset;
                 break;
             case SEEK_SET:
                 $this->position = $offset;
@@ -265,7 +237,7 @@ final class MultiStream implements IStream
         foreach ($this->streams as $streamIndex => $stream) {
             /** @psalm-suppress RedundantCast We do not want to rely on PHPDoc alone */
             $this->streamIndex = (int)$streamIndex;
-            $currStreamLength = $stream->getLength() ?? 0;
+            $currStreamLength = $stream->length ?? 0;
 
             // Check if this is the stream that contains the desired offset
             if ($this->position < $currPosition + $currStreamLength) {

@@ -18,7 +18,7 @@ use Aphiria\Console\Output\IOutput;
 /**
  * Defines an output whose driver is writable (useful for mocking)
  */
-abstract class WritableDriverOutput implements IOutput
+abstract class MockableOutput implements IOutput
 {
     public IDriver $driver;
 }
