@@ -26,6 +26,30 @@ use Traversable;
  */
 class ImmutableHashTable implements IImmutableDictionary
 {
+    /** @var list<TKey> The list of keys */
+    public array $keys {
+        get {
+            $keys = [];
+
+            foreach ($this->hashKeysToKvps as $kvp) {
+                $keys[] = $kvp->key;
+            }
+
+            return $keys;
+        }
+    }
+    /** @var list<TValue> The list of values */
+    public array $values {
+        get {
+            $values = [];
+
+            foreach ($this->hashKeysToKvps as $kvp) {
+                $values[] = $kvp->value;
+            }
+
+            return $values;
+        }
+    }
     /** @var array<string, KeyValuePair<TKey, TValue>> The mapping of hash keys to key-value pairs */
     protected array $hashKeysToKvps = [];
     /** @var KeyHasher The key hasher to use */
@@ -102,34 +126,6 @@ class ImmutableHashTable implements IImmutableDictionary
     public function getIterator(): Traversable
     {
         return new KeyValuePairIterator(\array_values($this->hashKeysToKvps));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getKeys(): array
-    {
-        $keys = [];
-
-        foreach ($this->hashKeysToKvps as $kvp) {
-            $keys[] = $kvp->key;
-        }
-
-        return $keys;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getValues(): array
-    {
-        $values = [];
-
-        foreach ($this->hashKeysToKvps as $kvp) {
-            $values[] = $kvp->value;
-        }
-
-        return $values;
     }
 
     /**

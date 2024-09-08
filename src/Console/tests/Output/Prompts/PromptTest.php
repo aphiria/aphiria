@@ -54,11 +54,15 @@ class PromptTest extends TestCase
 
     public function testAskingHiddenAnswerQuestionWillUseDriver(): void
     {
-        $driver = $this->createMock(IDriver::class);
-        $driver->expects($this->once())
-            ->method('readHiddenInput')
-            ->with($this->output)
-            ->willReturn('foo');
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return 'foo';
+            }
+        };
         $this->output->shouldReceive('write')
             ->with('<question>Question</question>');
         $this->output->shouldReceive('getDriver')

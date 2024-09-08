@@ -86,7 +86,7 @@ EOF;
             $compiledTemplate = \str_replace(
                 ['{{hr}}', '{{command}}', '{{description}}', '{{name}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
                 [
-                    \str_repeat('-', $output->getDriver()->getCliWidth()),
+                    \str_repeat('-', $output->getDriver()->cliWidth),
                     $this->commandFormatter->format($command),
                     $command->description === null || $command->description === '' ? 'No description' : $command->description,
                     $command->name,

@@ -14,6 +14,7 @@ namespace Aphiria\Console\Tests\Output;
 
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\Compilers\IOutputCompiler;
+use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Tests\Output\Mocks\Output;
 use PHPUnit\Framework\TestCase;
 
@@ -35,7 +36,15 @@ class OutputTest extends TestCase
 
     public function testGetDriverReturnsOneSetInConstructor(): void
     {
-        $driver = $this->createMock(IDriver::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
         $output = new Output($this->createMock(IOutputCompiler::class), $driver);
         $this->assertSame($driver, $output->getDriver());
     }

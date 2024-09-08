@@ -76,7 +76,7 @@ class HeaderParser
         }
 
         $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type');
-        $contentType = (string)$contentTypeHeaderParameters->getKeys()[0];
+        $contentType = (string)$contentTypeHeaderParameters->keys[0];
 
         return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
     }

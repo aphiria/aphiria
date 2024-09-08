@@ -33,10 +33,15 @@ class AboutCommandHandlerTest extends TestCase
         $this->output = $this->createMock(IOutput::class);
         $this->commands = new CommandRegistry();
         $this->handler = new AboutCommandHandler($this->commands);
-        $driver = $this->createMock(IDriver::class);
-        $driver->expects($this->once())
-            ->method('getCliWidth')
-            ->willReturn(3);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
         $this->output->method('getDriver')
             ->willReturn($driver);
     }
@@ -59,7 +64,8 @@ class AboutCommandHandlerTest extends TestCase
             . '  <info>ant:bar</info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:foo</info>';
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }
@@ -81,7 +87,8 @@ class AboutCommandHandlerTest extends TestCase
         $body = '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>' . \PHP_EOL
             . '  <info>cat:foo</info>';
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }
@@ -89,7 +96,8 @@ class AboutCommandHandlerTest extends TestCase
     public function testHavingNoCommandsDisplaysMessageSayingSo(): void
     {
         $body = '  <info>No commands</info>';
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }
@@ -119,7 +127,8 @@ class AboutCommandHandlerTest extends TestCase
             . '  <info>foo    </info>' . \PHP_EOL
             . '<comment>cat</comment>' . \PHP_EOL
             . '  <info>cat:bar</info>';
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput($body));
         $this->handler->handle(new Input('about', [], []), $this->output);
     }

@@ -38,6 +38,17 @@ class HelpCommandHandlerTest extends TestCase
         $this->commands = new CommandRegistry();
         $this->handler = new HelpCommandHandler($this->commands);
         $this->output = $this->createMock(IOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $this->output->method('getDriver')
+            ->willReturn($driver);
     }
 
     public function testHandlingCommandNameThatIsNotRegisteredReturnsError(): void
@@ -50,7 +61,6 @@ class HelpCommandHandlerTest extends TestCase
 
     public function testHandlingCommandWithHelpTextIncludesIt(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -66,14 +76,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options', 'The help text'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingCommandWithNoDescriptionStillHasDefaultDescription(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -88,14 +98,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingCommandWithNoHelpTextDoesNotIncludeHelpText(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -110,14 +120,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingWithArgumentIncludesItInArgumentDescriptionAndParsedCommand(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -132,14 +142,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo arg1', 'The description', '  <info>arg1</info> - Arg1 description', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -154,14 +164,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingWithNoOptionsStillHasDefaultArgumentDescription(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -176,14 +186,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingWithOptionsIncludesOptionDescriptionsAndOptionsInParsedCommand(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -198,14 +208,14 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1]', 'The description', '  No arguments', '  <info>--opt1</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
 
     public function testHandlingWithOptionWithShortNameIncludesOptionShortNameInDescriptionsAndParsedCommand(): void
     {
-        $this->assertCliWidthIsCalled();
         $commandHandler = new class () implements ICommandHandler {
             public function handle(Input $input, IOutput $output): void
             {
@@ -220,7 +230,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->method('writeln')
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1|-o]', 'The description', '  No arguments', '  <info>--opt1|-o</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
     }
@@ -280,18 +291,5 @@ EOF;
             [$commandName, $parsedCommand, $description, $arguments, $options, self::compileHelpText($helpText)],
             $template
         );
-    }
-
-    /**
-     * Asserts that the CLI width is called
-     */
-    private function assertCliWidthIsCalled(): void
-    {
-        $driver = $this->createMock(IDriver::class);
-        $driver->expects($this->once())
-            ->method('getCliWidth')
-            ->willReturn(3);
-        $this->output->method('getDriver')
-            ->willReturn($driver);
     }
 }

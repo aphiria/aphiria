@@ -28,6 +28,11 @@ use RuntimeException;
  */
 interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
 {
+    /** @var list<TKey> The list of keys in the dictionary */
+    public array $keys { get; }
+    /** @var list<TValue> The list of values in the dictionary */
+    public array $values { get; }
+
     /**
      * Gets whether or not the key exists
      *
@@ -54,20 +59,6 @@ interface IImmutableDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
     public function get(mixed $key): mixed;
-
-    /**
-     * Gets the list of keys in the dictionary
-     *
-     * @return list<TKey> The list of keys in the dictionary
-     */
-    public function getKeys(): array;
-
-    /**
-     * Gets the list of values in the dictionary
-     *
-     * @return list<TValue> The list of values in the dictionary
-     */
-    public function getValues(): array;
 
     /**
      * Gets all of the values as an array of key-value pairs

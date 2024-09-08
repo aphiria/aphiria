@@ -44,24 +44,24 @@ class MediaTypeHeaderValueTest extends TestCase
 
     public function testGettingSubTypeReturnsCorrectSubType(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->subType);
     }
 
     public function testGettingSubTypeWithoutSuffixForSubTypeWithoutSuffixReturnsCorrectSubType(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->getSubTypeWithoutSuffix());
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('foo', $value->type);
     }
@@ -76,15 +76,15 @@ class MediaTypeHeaderValueTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         new MediaTypeHeaderValue($incorrectlyFormattedMediaType, $parameters);
     }
 
-    public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
+    public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly()
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new MediaTypeHeaderValue('application/foo+json', $parameters);
         $this->assertSame('application', $value->type);
         $this->assertSame('foo+json', $value->subType);

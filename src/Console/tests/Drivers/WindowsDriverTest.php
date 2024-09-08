@@ -57,8 +57,8 @@ class WindowsDriverTest extends TestCase
                 return null;
             }
         };
-        $this->assertSame(60, $driver->getCliHeight());
-        $this->assertSame(80, $driver->getCliWidth());
+        $this->assertSame(60, $driver->cliHeight);
+        $this->assertSame(80, $driver->cliWidth);
     }
 
     public function testCliDimensionsCanBeReadFromAnsicon(): void
@@ -66,8 +66,8 @@ class WindowsDriverTest extends TestCase
         \putenv('COLUMNS');
         \putenv('LINES');
         \putenv('ANSICON=10x15');
-        $this->assertSame(10, $this->driver->getCliWidth());
-        $this->assertSame(15, $this->driver->getCliHeight());
+        $this->assertSame(10, $this->driver->cliWidth);
+        $this->assertSame(15, $this->driver->cliHeight);
     }
 
     public function testCliDimensionsCanBeReadFromOS(): void
@@ -81,8 +81,8 @@ class WindowsDriverTest extends TestCase
                 return [10, 15];
             }
         };
-        $this->assertSame(10, $driver->getCliWidth());
-        $this->assertSame(15, $driver->getCliHeight());
+        $this->assertSame(10, $driver->cliWidth);
+        $this->assertSame(15, $driver->cliHeight);
     }
 
     public function testCliDimensionsCanBeReadFromSttyIfEnabled(): void
@@ -106,23 +106,23 @@ class WindowsDriverTest extends TestCase
             $this->fail('Dimensions could not be read from STTY output');
         }
 
-        $this->assertSame((int)$matches[2], $this->driver->getCliWidth());
-        $this->assertSame((int)$matches[1], $this->driver->getCliHeight());
+        $this->assertSame((int)$matches[2], $this->driver->cliWidth);
+        $this->assertSame((int)$matches[1], $this->driver->cliHeight);
     }
 
     public function testCliHeightIsMemoized(): void
     {
         \putenv('LINES=10');
-        $this->assertSame(10, $this->driver->getCliHeight());
+        $this->assertSame(10, $this->driver->cliHeight);
         \putenv('LINES=0');
-        $this->assertSame(10, $this->driver->getCliHeight());
+        $this->assertSame(10, $this->driver->cliHeight);
     }
 
     public function testCliWidthIsMemoized(): void
     {
         \putenv('COLUMNS=10');
-        $this->assertSame(10, $this->driver->getCliWidth());
+        $this->assertSame(10, $this->driver->cliWidth);
         \putenv('COLUMNS=0');
-        $this->assertSame(10, $this->driver->getCliWidth());
+        $this->assertSame(10, $this->driver->cliWidth);
     }
 }

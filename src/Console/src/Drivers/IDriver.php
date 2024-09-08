@@ -19,19 +19,10 @@ use Aphiria\Console\Output\IOutput;
  */
 interface IDriver
 {
-    /**
-     * Gets the height of the CLI
-     *
-     * @return int The height of the CLI
-     */
-    public function getCliHeight(): int;
-
-    /**
-     * Gets the width of the CLI
-     *
-     * @return int The width of the CLI
-     */
-    public function getCliWidth(): int;
+    /** @var The height of the CLI */
+    public int $cliHeight { get; }
+    /** @var The width of the CLI */
+    public int $cliWidth { get; }
 
     /**
      * Gets the hidden input value
