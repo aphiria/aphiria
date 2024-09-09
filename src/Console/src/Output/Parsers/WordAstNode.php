@@ -17,11 +17,8 @@ namespace Aphiria\Console\Output\Parsers;
  */
 final class WordAstNode extends AstNode
 {
-    /**
-     * @inheritdoc
-     */
-    public function isTag(): bool
-    {
-        return false;
+    /** @inheritdoc */
+    public bool $isTag {
+        get => false;
     }
 }

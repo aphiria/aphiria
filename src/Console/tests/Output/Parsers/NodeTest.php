@@ -31,8 +31,8 @@ class NodeTest extends TestCase
         $parent = new AstNode('foo');
         $child = new AstNode('bar');
         $this->assertSame($parent, $parent->addChild($child));
-        $this->assertFalse($parent->isLeaf());
-        $this->assertTrue($child->isLeaf());
+        $this->assertFalse($parent->isLeaf);
+        $this->assertTrue($child->isLeaf);
     }
 
     public function testCheckingIfRoots(): void
@@ -40,8 +40,8 @@ class NodeTest extends TestCase
         $parent = new AstNode('foo');
         $child = new AstNode('bar');
         $parent->addChild($child);
-        $this->assertTrue($parent->isRoot());
-        $this->assertFalse($child->isRoot());
+        $this->assertTrue($parent->isRoot);
+        $this->assertFalse($child->isRoot);
     }
 
     public function testGettingValue(): void

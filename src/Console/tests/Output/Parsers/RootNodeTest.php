@@ -20,13 +20,13 @@ class RootNodeTest extends TestCase
     public function testIsRoot(): void
     {
         $node = new RootAstNode();
-        $this->assertTrue($node->isRoot());
+        $this->assertTrue($node->isRoot);
     }
 
     public function testIsTag(): void
     {
         $node = new RootAstNode();
-        $this->assertFalse($node->isTag());
+        $this->assertFalse($node->isTag);
     }
 
     public function testParentIsNull(): void

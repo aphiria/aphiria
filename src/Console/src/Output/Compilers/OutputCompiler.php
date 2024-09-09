@@ -67,9 +67,9 @@ final class OutputCompiler implements IOutputCompiler
      */
     private function compileNode(AstNode $node): string
     {
-        if ($node->isLeaf()) {
+        if ($node->isLeaf) {
             // Don't compile a leaf that is a tag because that means it doesn't have any content
-            if ($node->isTag()) {
+            if ($node->isTag) {
                 return '';
             }
 
@@ -79,7 +79,7 @@ final class OutputCompiler implements IOutputCompiler
         $output = '';
 
         foreach ($node->children as $childNode) {
-            if ($node->isTag()) {
+            if ($node->isTag) {
                 $style = $this->elements->getElement((string)$node->value)->style;
                 $output .= $style->format($this->compileNode($childNode));
             } else {

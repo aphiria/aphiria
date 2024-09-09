@@ -20,6 +20,6 @@ class WordNodeTest extends TestCase
     public function testIsTag(): void
     {
         $node = new WordAstNode('foo');
-        $this->assertFalse($node->isTag());
+        $this->assertFalse($node->isTag);
     }
 }

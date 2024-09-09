@@ -17,16 +17,13 @@ namespace Aphiria\Console\Output\Parsers;
  */
 final class RootAstNode extends AstNode
 {
+    /** @inheritdoc */
+    public bool $isTag {
+        get => false;
+    }
+
     public function __construct()
     {
         parent::__construct();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isTag(): bool
-    {
-        return false;
     }
 }

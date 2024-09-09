@@ -19,11 +19,8 @@ use Aphiria\Console\Output\Parsers\AstNode as BaseNode;
  */
 class AstNode extends BaseNode
 {
-    /**
-     * @inheritdoc
-     */
-    public function isTag(): bool
-    {
-        return false;
+    /** @inheritdoc */
+    public bool $isTag {
+        get => false;
     }
 }

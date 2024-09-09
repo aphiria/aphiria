@@ -17,6 +17,16 @@ namespace Aphiria\Console\Output\Parsers;
  */
 abstract class AstNode
 {
+    /** @var bool Whether or not this is a tag node */
+    abstract public bool $isTag { get; }
+    /** @var bool Whether or not this is a leaf node */
+    public bool $isLeaf {
+        get => \count($this->children) === 0;
+    }
+    /** @var bool Whether or not this is a root node */
+    public bool $isRoot {
+        get => $this->parent === null;
+    }
     /** @var list<AstNode> The child nodes */
     public array $children = [];
     /** @var AstNode|null The parent node */
@@ -30,13 +40,6 @@ abstract class AstNode
     }
 
     /**
-     * Gets whether or not this is a tag node
-     *
-     * @return bool True if this is a tag node, otherwise false
-     */
-    abstract public function isTag(): bool;
-
-    /**
      * Adds a child to this node
      *
      * @param AstNode $node The child to add
@@ -48,25 +51,5 @@ abstract class AstNode
         $this->children[] = $node;
 
         return $this;
-    }
-
-    /**
-     * Gets whether or not this node is a leaf
-     *
-     * @return bool True if this is a leaf, otherwise false
-     */
-    public function isLeaf(): bool
-    {
-        return \count($this->children) === 0;
-    }
-
-    /**
-     * Gets whether or not this node is the root
-     *
-     * @return bool True if this is a root node, otherwise false
-     */
-    public function isRoot(): bool
-    {
-        return $this->parent === null;
     }
 }

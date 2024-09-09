@@ -58,11 +58,11 @@ final class OutputParser implements IOutputParser
 
                     break;
                 case OutputTokenType::Eof:
-                    if ($currNode === null || !$currNode->isRoot()) {
+                    if ($currNode === null || !$currNode->isRoot) {
                         throw new RuntimeException(
                             \sprintf(
                                 'Unclosed %s "%s"',
-                                $currNode?->isTag() ? 'tag' : 'node',
+                                $currNode?->isTag ? 'tag' : 'node',
                                 (string)($currNode?->value ?? 'null')
                             )
                         );
