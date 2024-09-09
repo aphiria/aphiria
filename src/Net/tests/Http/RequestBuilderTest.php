@@ -49,7 +49,7 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
-        $this->assertSame('1.1', $request->getProtocolVersion());
+        $this->assertSame('1.1', $request->protocolVersion);
     }
 
     public function testRequestDefaultsToOriginFormRequestTargetType(): void
@@ -58,7 +58,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost/path')
             ->build();
         $this->assertSame('GET /path HTTP/1.1', \explode("\r\n", (string)$request)[0]);
-        $this->assertSame('localhost', $request->getHeaders()->getFirst('Host'));
+        $this->assertSame('localhost', $request->headers->getFirst('Host'));
     }
 
     public function testWithBodyWithHttpBodyUsesThatBody(): void
@@ -68,7 +68,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody($body)
             ->build();
-        $this->assertSame($body, $request->getBody());
+        $this->assertSame($body, $request->body);
     }
 
     public function testWithBodyWithNullBodySetsBodyToNull(): void
@@ -77,7 +77,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody(null)
             ->build();
-        $this->assertNull($request->getBody());
+        $this->assertNull($request->body);
     }
 
     public function testWithHeaderCanAppendToHeader(): void
@@ -87,7 +87,7 @@ class RequestBuilderTest extends TestCase
             ->withHeader('Foo', 'bar')
             ->withHeader('Foo', 'baz', true)
             ->build();
-        $this->assertEquals(['bar', 'baz'], $request->getHeaders()->get('Foo'));
+        $this->assertEquals(['bar', 'baz'], $request->headers->get('Foo'));
     }
 
     public function testWithHeaderSetsHeader(): void
@@ -96,7 +96,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withHeader('Foo', 'bar')
             ->build();
-        $this->assertEquals(['bar'], $request->getHeaders()->get('Foo'));
+        $this->assertEquals(['bar'], $request->headers->get('Foo'));
     }
 
     public function testWithManyHeadersSetsHeaders(): void
@@ -105,8 +105,8 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withManyHeaders(['Foo' => 'bar', 'Baz' => ['blah', 'dave']])
             ->build();
-        $this->assertEquals(['bar'], $request->getHeaders()->get('Foo'));
-        $this->assertEquals(['blah', 'dave'], $request->getHeaders()->get('Baz'));
+        $this->assertEquals(['bar'], $request->headers->get('Foo'));
+        $this->assertEquals(['blah', 'dave'], $request->headers->get('Baz'));
     }
 
     public function testWithMethodSetsMethod(): void
@@ -114,7 +114,7 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('POST')
             ->withUri('http://localhost')
             ->build();
-        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('POST', $request->method);
     }
 
     public function testWithPropertyAddsProperty(): void
@@ -123,7 +123,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withProperty('foo', 'bar')
             ->build();
-        $this->assertSame('bar', $request->getProperties()->get('foo'));
+        $this->assertSame('bar', $request->properties->get('foo'));
     }
 
     public function testWithProtocolVersionSetsProtocolVersion(): void
@@ -149,7 +149,7 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
-        $this->assertSame('http://localhost', (string)$request->getUri());
+        $this->assertSame('http://localhost', (string)$request->uri);
     }
 
     public function testWithUriSetsRequestUri(): void
@@ -158,6 +158,6 @@ class RequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri($uri)
             ->build();
-        $this->assertSame($uri, $request->getUri());
+        $this->assertSame($uri, $request->uri);
     }
 }

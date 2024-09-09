@@ -26,7 +26,7 @@ class ResponseTest extends TestCase
     public function testDefaultReasonPhraseIsSet(): void
     {
         $response = new Response(200);
-        $this->assertEquals(HttpStatusCode::getDefaultReasonPhrase(200), $response->getReasonPhrase());
+        $this->assertEquals(HttpStatusCode::getDefaultReasonPhrase(200), $response->reasonPhrase);
     }
 
     public function testGettingAndSettingBody(): void
@@ -34,11 +34,11 @@ class ResponseTest extends TestCase
         /** @var IBody $body1 */
         $body1 = $this->createMock(IBody::class);
         $response = new Response(200, body: $body1);
-        $this->assertSame($body1, $response->getBody());
+        $this->assertSame($body1, $response->body);
         /** @var IBody $body2 */
         $body2 = $this->createMock(IBody::class);
-        $response->setBody($body2);
-        $this->assertSame($body2, $response->getBody());
+        $response->body = $body2;
+        $this->assertSame($body2, $response->body);
     }
 
     /**
@@ -50,28 +50,28 @@ class ResponseTest extends TestCase
     public function testGettingAndSettingStatusCode(HttpStatusCode|int $inputStatusCode, HttpStatusCode $expectedStatusCode): void
     {
         $response = new Response();
-        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
-        $response->setStatusCode($inputStatusCode);
-        $this->assertSame($expectedStatusCode, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Ok, $response->statusCode);
+        $response->statusCode = $inputStatusCode;
+        $this->assertSame($expectedStatusCode, $response->statusCode);
     }
 
     public function testGettingHeaders(): void
     {
         $headers = new Headers();
         $response = new Response(200, $headers);
-        $this->assertSame($headers, $response->getHeaders());
+        $this->assertSame($headers, $response->headers);
     }
 
     public function testGettingProtocolVersion(): void
     {
         $response = new Response(200, protocolVersion: '2.0');
-        $this->assertSame('2.0', $response->getProtocolVersion());
+        $this->assertSame('2.0', $response->protocolVersion);
     }
 
     public function testIntStatusCodeIsConvertedToEnum(): void
     {
         $response = new Response(200);
-        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Ok, $response->statusCode);
     }
 
     public function testInvalidStatusCodeThrowsException(): void
@@ -84,29 +84,22 @@ class ResponseTest extends TestCase
     public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
     {
         $response = new Response();
-        $response->getHeaders()->add('Foo', 'bar');
-        $response->getHeaders()->add('Foo', 'baz', true);
+        $response->headers->add('Foo', 'bar');
+        $response->headers->add('Foo', 'baz', true);
         $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar, baz\r\n\r\n", (string)$response);
-    }
-
-    public function testReasonPhraseIsIncludedOnlyIfDefined(): void
-    {
-        $response = new Response();
-        $response->setStatusCode(200, 'OK');
-        $this->assertSame("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
     }
 
     public function testResponseWithHeadersAndBodyEndsWithBody(): void
     {
         $response = new Response(200, new Headers(), new StringBody('foo'));
-        $response->getHeaders()->add('Foo', 'bar');
+        $response->headers->add('Foo', 'bar');
         $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string)$response);
     }
 
     public function testResponseWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $response = new Response();
-        $response->getHeaders()->add('Foo', 'bar');
+        $response->headers->add('Foo', 'bar');
         $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\n", (string)$response);
     }
 
@@ -120,6 +113,6 @@ class ResponseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid HTTP status code -1');
-        (new Response())->setStatusCode(-1);
+        (new Response())->statusCode = -1;
     }
 }

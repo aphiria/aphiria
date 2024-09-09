@@ -20,6 +20,10 @@ use Aphiria\IO\Streams\Stream;
  */
 class StringBody implements IBody
 {
+    /** @inheritdoc */
+    public ?int $length {
+        get => \mb_strlen($this->content);
+    }
     /** @var IStream|null The underlying stream */
     private ?IStream $stream = null;
 
@@ -36,14 +40,6 @@ class StringBody implements IBody
     public function __toString(): string
     {
         return $this->readAsString();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLength(): ?int
-    {
-        return \mb_strlen($this->content);
     }
 
     /**

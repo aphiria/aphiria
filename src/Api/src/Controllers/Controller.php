@@ -462,7 +462,7 @@ class Controller
             $headers,
             $body
         );
-        $response->getHeaders()->add('Location', $uriString);
+        $response->headers->add('Location', $uriString);
 
         return $response;
     }

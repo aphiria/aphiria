@@ -48,7 +48,7 @@ class ResponseFormatterTest extends TestCase
                 return $body instanceof StringBody && $body->readAsString() === \json_encode(['foo' => 'bar']);
             }));
         $this->formatter->writeJson($this->response, ['foo' => 'bar']);
-        $this->assertSame('application/json', $this->response->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/json', $this->response->headers->getFirst('Content-Type'));
     }
 
     public function testDeletingCookieSetsCookiesToExpire(): void

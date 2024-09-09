@@ -37,7 +37,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      */
     public function getBestLanguageMatch(IRequest $request): ?string
     {
-        $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($request->getHeaders());
+        $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($request->headers);
 
         if (\count($acceptLanguageHeaders) === 0) {
             return null;

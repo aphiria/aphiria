@@ -78,7 +78,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
         if (
             $body !== null
             && !$headers->containsKey('Content-Length')
-            && ($contentLength = $body->getLength()) !== null
+            && ($contentLength = $body->length) !== null
         ) {
             $headers->add('Content-Length', $contentLength);
         }

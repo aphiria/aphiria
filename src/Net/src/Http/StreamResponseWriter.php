@@ -62,15 +62,15 @@ class StreamResponseWriter implements IResponseWriter
             return;
         }
 
-        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()->value}";
+        $startLine = "HTTP/{$response->protocolVersion} {$response->statusCode->value}";
 
-        if (($reasonPhrase = $response->getReasonPhrase()) !== null) {
+        if (($reasonPhrase = $response->uri) !== null) {
             $startLine .= " $reasonPhrase";
         }
 
         $this->header($startLine);
 
-        foreach ($response->getHeaders() as $key => $value) {
+        foreach ($response->headers as $key => $value) {
             $headerName = (string)$key;
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
@@ -83,7 +83,7 @@ class StreamResponseWriter implements IResponseWriter
             }
         }
 
-        if (($body = $response->getBody()) !== null) {
+        if (($body = $response->body) !== null) {
             $body->writeToStream($this->outputStream);
         }
     }

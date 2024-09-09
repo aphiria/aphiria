@@ -27,7 +27,7 @@ class StringBodyTest extends TestCase
     public function testGettingLengthReturnsStringLength(): void
     {
         $body = new StringBody('foo');
-        $this->assertSame(3, $body->getLength());
+        $this->assertSame(3, $body->length);
     }
 
     public function testReadingAsStreamReturnsSameStreamInstanceEveryTime(): void

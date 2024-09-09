@@ -55,7 +55,7 @@ class ResponseFormatter
         ?SameSiteMode $sameSite = null
     ): void {
         $this->headerFormatter->deleteCookie(
-            $response->getHeaders(),
+            $response->headers,
             $name,
             $path,
             $domain,
@@ -81,8 +81,8 @@ class ResponseFormatter
             $uriString = (string)$uri;
         }
 
-        $response->setStatusCode($statusCode);
-        $response->getHeaders()->add('Location', $uriString);
+        $response->statusCode = $statusCode;
+        $response->headers->add('Location', $uriString);
     }
 
     /**
@@ -93,7 +93,7 @@ class ResponseFormatter
      */
     public function setCookie(IResponse $response, Cookie $cookie): void
     {
-        $this->headerFormatter->setCookie($response->getHeaders(), $cookie);
+        $this->headerFormatter->setCookie($response->headers, $cookie);
     }
 
     /**
@@ -104,7 +104,7 @@ class ResponseFormatter
      */
     public function setCookies(IResponse $response, array $cookies): void
     {
-        $this->headerFormatter->setCookies($response->getHeaders(), $cookies);
+        $this->headerFormatter->setCookies($response->headers, $cookies);
     }
 
     /**
@@ -123,7 +123,7 @@ class ResponseFormatter
             throw new InvalidArgumentException('Failed to JSON encode content', 0, $ex);
         }
 
-        $response->getHeaders()->add('Content-Type', 'application/json');
-        $response->setBody(new StringBody($json));
+        $response->headers->add('Content-Type', 'application/json');
+        $response->body = new StringBody($json);
     }
 }

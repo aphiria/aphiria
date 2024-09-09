@@ -43,20 +43,20 @@ class ProblemDetailsResponseMutatorTest extends TestCase
     {
         $this->headers->add('Content-Type', 'application/json');
         $mutatedResponse = $this->mutator->mutateResponse($this->response);
-        $this->assertSame('application/problem+json', $mutatedResponse->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/problem+json', $mutatedResponse->headers->getFirst('Content-Type'));
         $this->headers->add('Content-Type', 'text/json');
         $mutatedResponse = $this->mutator->mutateResponse($this->response);
-        $this->assertSame('application/problem+json', $mutatedResponse->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/problem+json', $mutatedResponse->headers->getFirst('Content-Type'));
     }
 
     public function testMutatingResponseWithAcceptableXmlContentTypesGetChangedToProblemDetailsXmlContentType(): void
     {
         $this->headers->add('Content-Type', 'application/xml');
         $mutatedResponse = $this->mutator->mutateResponse($this->response);
-        $this->assertSame('application/problem+xml', $mutatedResponse->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/problem+xml', $mutatedResponse->headers->getFirst('Content-Type'));
         $this->headers->add('Content-Type', 'text/xml');
         $mutatedResponse = $this->mutator->mutateResponse($this->response);
-        $this->assertSame('application/problem+xml', $mutatedResponse->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/problem+xml', $mutatedResponse->headers->getFirst('Content-Type'));
     }
 
     public function testMutatingResponseWithNoContentTypeDoesNothing(): void
@@ -64,7 +64,7 @@ class ProblemDetailsResponseMutatorTest extends TestCase
         $mutatedResponse = $this->mutator->mutateResponse($this->response);
         $this->assertEquals($this->response, $mutatedResponse);
         $contentType = null;
-        $this->assertFalse($mutatedResponse->getHeaders()->tryGetFirst('Content-Type', $contentType));
+        $this->assertFalse($mutatedResponse->headers->tryGetFirst('Content-Type', $contentType));
         $this->assertNull($contentType);
     }
 
@@ -72,6 +72,6 @@ class ProblemDetailsResponseMutatorTest extends TestCase
     {
         $this->headers->add('Content-Type', 'foo/bar');
         $mutatedResponse = $this->mutator->mutateResponse($this->response);
-        $this->assertSame('foo/bar', $mutatedResponse->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('foo/bar', $mutatedResponse->headers->getFirst('Content-Type'));
     }
 }

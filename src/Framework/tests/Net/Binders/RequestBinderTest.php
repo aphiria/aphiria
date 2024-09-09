@@ -54,7 +54,7 @@ class RequestBinderTest extends TestCase
                 /** @var IRequest $request */
                 $request = $factory();
 
-                return (string)$request->getUri() === 'http://localhost';
+                return (string)$request->uri === 'http://localhost';
             }));
         (new RequestBinder())->bind($this->container);
     }
@@ -67,7 +67,7 @@ class RequestBinderTest extends TestCase
                 /** @var IRequest $request */
                 $request = $factory();
 
-                return (string)$request->getUri() === 'http://localhost';
+                return (string)$request->uri === 'http://localhost';
             }));
         $binder = new class () extends RequestBinder {
             protected function isRunningInConsole(): bool
@@ -89,7 +89,7 @@ class RequestBinderTest extends TestCase
                 /** @var IRequest $request */
                 $request = $factory();
 
-                return (string)$request->getUri() === 'http://example.com';
+                return (string)$request->uri === 'http://example.com';
             }));
         $binder = new class () extends RequestBinder {
             protected function isRunningInConsole(): bool

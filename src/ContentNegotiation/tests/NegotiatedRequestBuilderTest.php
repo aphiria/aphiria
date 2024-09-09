@@ -51,7 +51,7 @@ class NegotiatedRequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
-        $this->assertEquals(['*/*'], $request->getHeaders()->get('Accept'));
+        $this->assertEquals(['*/*'], $request->headers->get('Accept'));
     }
 
     public function testWithBodyWithBodyInstanceSetsBodyToThatInstance(): void
@@ -61,7 +61,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody($expectedBody)
             ->build();
-        $this->assertSame($expectedBody, $request->getBody());
+        $this->assertSame($expectedBody, $request->body);
     }
 
     public function testWithBodyWithInvalidBodyTypeThrowsException(): void
@@ -117,8 +117,8 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody($rawBody)
             ->build();
-        $this->assertSame($expectedStream, $request->getBody()?->readAsStream());
-        $this->assertSame('application/json', $request->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame($expectedStream, $request->body?->readAsStream());
+        $this->assertSame('application/json', $request->headers->getFirst('Content-Type'));
     }
 
     public function testWithBodyWithNullBodySetsBodyToNull(): void
@@ -127,6 +127,6 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody(null)
             ->build();
-        $this->assertNull($request->getBody());
+        $this->assertNull($request->body);
     }
 }

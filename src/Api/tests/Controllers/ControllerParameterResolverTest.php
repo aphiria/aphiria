@@ -76,7 +76,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->expectException(RequestBodyDeserializationException::class);
         $this->expectExceptionMessage('Failed to deserialize request body when resolving parameter user');
         $request = $this->createRequestWithoutBody('http://foo.com');
-        $request->setBody(new StringBody('dummy body'));
+        $request->body = new StringBody('dummy body');
         $this->bodyDeserializer->expects($this->once())
             ->method('readRequestBodyAs')
             ->with(User::class, $request)
@@ -93,7 +93,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->expectException(FailedRequestContentNegotiationException::class);
         $this->expectExceptionMessage('Failed to negotiate request content with type ' . User::class);
         $request = $this->createRequestWithoutBody('http://foo.com');
-        $request->setBody(new StringBody('dummy body'));
+        $request->body = new StringBody('dummy body');
         $this->bodyDeserializer->expects($this->once())
             ->method('readRequestBodyAs')
             ->with(User::class, $request)
@@ -108,7 +108,7 @@ class ControllerParameterResolverTest extends TestCase
     public function testResolvingNullableObjectParameterWithBodyThatCannotDeserializeToTypePassesNull(): void
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
-        $request->setBody(new StringBody('dummy body'));
+        $request->body = new StringBody('dummy body');
         $this->bodyDeserializer->expects($this->once())
             ->method('readRequestBodyAs')
             ->with(User::class, $request)
@@ -124,7 +124,7 @@ class ControllerParameterResolverTest extends TestCase
     public function testResolvingNullableObjectParameterWithBodyThatFailsContentNegotiationReturnsNull(): void
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
-        $request->setBody(new StringBody('dummy body'));
+        $request->body = new StringBody('dummy body');
         $this->bodyDeserializer->expects($this->once())
             ->method('readRequestBodyAs')
             ->with(User::class, $request)
@@ -172,7 +172,7 @@ class ControllerParameterResolverTest extends TestCase
     public function testResolvingObjectParameterReadsFromRequestBodyFirst(): void
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
-        $request->setBody(new StringBody('dummy body'));
+        $request->body = new StringBody('dummy body');
         $expectedUser = new User(123, 'foo@bar.com');
         $this->bodyDeserializer->expects($this->once())
             ->method('readRequestBodyAs')

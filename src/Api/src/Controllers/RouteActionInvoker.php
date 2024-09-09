@@ -93,7 +93,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                 $resolvedParameters[] = $resolvedParameter;
 
                 if (\is_object($resolvedParameter)) {
-                    $request->getProperties()->add(self::PARSED_BODY_PROPERTY_NAME, $resolvedParameter);
+                    $request->properties->add(self::PARSED_BODY_PROPERTY_NAME, $resolvedParameter);
                 }
             }
         } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {

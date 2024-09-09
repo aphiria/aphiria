@@ -74,7 +74,7 @@ class StreamResponseWriterTest extends TestCase
         $response = new Response();
 
         foreach ($headerValues as $headerValue) {
-            $response->getHeaders()->add($headerName, $headerValue, true);
+            $response->headers->add($headerName, $headerValue, true);
             $expectedHeaders[] = "$headerName: $headerValue";
         }
 

@@ -155,16 +155,15 @@ class Router implements IRequestHandler
      */
     private function matchRoute(IRequest $request): RouteMatchingResult
     {
-        $uri = $request->getUri();
-        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->host ?? '', $uri->path ?? '');
+        $matchingResult = $this->routeMatcher->matchRoute($request->method, $request->uri->host ?? '', $request->uri->path ?? '');
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {
-                throw new HttpException(HttpStatusCode::NotFound, "No route found for {$request->getUri()}");
+                throw new HttpException(HttpStatusCode::NotFound, "No route found for {$request->uri}");
             }
 
             $response = new Response(HttpStatusCode::MethodNotAllowed);
-            $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
+            $response->headers->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');
         }

@@ -33,11 +33,11 @@ class StreamBodyTest extends TestCase
         $nullLengthStream = $this->createMock(MockableStream::class);
         $nullLengthStream->length = null;
         $nullLengthBody = new StreamBody($nullLengthStream);
-        $this->assertNull($nullLengthBody->getLength());
+        $this->assertNull($nullLengthBody->length);
         $definedLengthStream = $this->createMock(MockableStream::class);
         $definedLengthStream->length = 1;
         $definedLengthBody = new StreamBody($definedLengthStream);
-        $this->assertSame(1, $definedLengthBody->getLength());
+        $this->assertSame(1, $definedLengthBody->length);
     }
 
     public function testReadingAsStreamReturnsUnderlyingStream(): void

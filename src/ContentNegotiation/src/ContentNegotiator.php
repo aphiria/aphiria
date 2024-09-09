@@ -82,7 +82,7 @@ final class ContentNegotiator implements IContentNegotiator
      */
     public function negotiateRequestContent(string $type, IRequest $request): ContentNegotiationResult
     {
-        $requestHeaders = $request->getHeaders();
+        $requestHeaders = $request->headers;
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($requestHeaders);
         $language = null;
         $requestHeaders->tryGetFirst('Content-Language', $language);
@@ -123,7 +123,7 @@ final class ContentNegotiator implements IContentNegotiator
     {
         $language = $this->languageMatcher->getBestLanguageMatch($request);
 
-        if (!$request->getHeaders()->containsKey('Accept')) {
+        if (!$request->headers->containsKey('Accept')) {
             return $this->createDefaultResponseContentNegotiationResult($type, $language, $request);
         }
 

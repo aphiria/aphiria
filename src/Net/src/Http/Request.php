@@ -23,8 +23,20 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
-    /** @var string The request method */
-    protected readonly string $method;
+    /** @inheritdoc */
+    public ?IBody $body;
+    /** @inheritdoc */
+    public private(set) Headers $headers;
+    /** @inheritdoc */
+    public private(set) string $method;
+    /** @inheritdoc */
+    public private(set) IDictionary $propertie;
+    /** @inheritdoc */
+    public private(set) string $protocolVersion;
+    /** @inheritdoc */
+    public private(set) Uri $uri;
+    /** @var RequestTargetType $requestTargetType The type of request target URI this request uses */
+    protected RequestTargetType $requestTargetType;
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -52,14 +64,20 @@ class Request implements IRequest
      */
     public function __construct(
         string $method,
-        protected readonly Uri $uri,
-        protected readonly Headers $headers = new Headers(),
-        protected ?IBody $body = null,
-        protected readonly IDictionary $properties = new HashTable(),
-        protected readonly string $protocolVersion = '1.1',
-        protected readonly RequestTargetType $requestTargetType = RequestTargetType::OriginForm
+        Uri $uri,
+        Headers $headers = new Headers(),
+        ?IBody $body = null,
+        IDictionary $properties = new HashTable(),
+        string $protocolVersion = '1.1',
+        RequestTargetType $requestTargetType = RequestTargetType::OriginForm
     ) {
         $this->method = \strtoupper($method);
+        $this->uri = $uri;
+        $this->headers = $headers;
+        $this->body = $body;
+        $this->properties = $properties;
+        $this->protocolVersion = $protocolVersion;
+        $this->requestTargetType = $requestTargetType;
         $this->validateProperties();
         $this->addHostHeaderIfNecessary();
     }
@@ -83,62 +101,6 @@ class Request implements IRequest
         }
 
         return $serializedRequest;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getBody(): ?IBody
-    {
-        return $this->body;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHeaders(): Headers
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getProperties(): IDictionary
-    {
-        return $this->properties;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getProtocolVersion(): string
-    {
-        return $this->protocolVersion;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getUri(): Uri
-    {
-        return $this->uri;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setBody(IBody $body): void
-    {
-        $this->body = $body;
     }
 
     /**

@@ -32,7 +32,7 @@ final class NegotiatedBodyDeserializer implements IBodyDeserializer
      */
     public function readRequestBodyAs(string $type, IRequest $request): float|object|int|bool|array|string|null
     {
-        if (($body = $request->getBody()) === null) {
+        if (($body = $request->body) === null) {
             if (\str_ends_with($type, '[]')) {
                 return [];
             }
@@ -55,7 +55,7 @@ final class NegotiatedBodyDeserializer implements IBodyDeserializer
      */
     public function readResponseBodyAs(string $type, IRequest $request, IResponse $response): float|object|int|bool|array|string|null
     {
-        if (($body = $response->getBody()) === null) {
+        if (($body = $response->body) === null) {
             if (\str_ends_with($type, '[]')) {
                 return [];
             }

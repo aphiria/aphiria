@@ -29,13 +29,13 @@ class HttpExceptionTest extends TestCase
     public function testEnumStatusCodeIsSetInResponse(): void
     {
         $exception = new HttpException(HttpStatusCode::InternalServerError);
-        $this->assertSame(HttpStatusCode::InternalServerError, $exception->response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $exception->response->statusCode);
     }
 
     public function testIntStatusCodeIsSetInResponse(): void
     {
         $exception = new HttpException(500);
-        $this->assertSame(HttpStatusCode::InternalServerError, $exception->response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $exception->response->statusCode);
     }
 
     public function testMessageIsSameOneSetInConstructor(): void

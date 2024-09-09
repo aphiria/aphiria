@@ -38,7 +38,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
         IRequest $request,
         ?MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
     ): ?string {
-        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($request->getHeaders());
+        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($request->headers);
         $rankedAcceptCharsetHeaders = $this->rankAcceptCharsetHeaders($acceptCharsetHeaders);
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {

@@ -19,10 +19,31 @@ use InvalidArgumentException;
  */
 class Response implements IResponse
 {
-    /** @var string|null The response reason phrase if there is one, otherwise null */
-    protected ?string $reasonPhrase;
-    /** @var HttpStatusCode The response status code */
-    protected HttpStatusCode $statusCode;
+    /** @inheritdoc */
+    public ?IBody $body;
+    /** @inheritdoc */
+    public private(set) Headers $headers;
+    /** @inheritdoc */
+    public private(set) IDictionary $propertie;
+    /** @inheritdoc */
+    public private(set) string $protocolVersion;
+    /** @inheritdoc */
+    public ?string $reasonPhrase;
+    /** @inheritdoc */
+    public HttpStatusCode $statusCode {
+        set (HttpStatusCode|int $value) {
+            if (\is_int($value)) {
+                $originalStatusCode = $value;
+
+                if (($value = HttpStatusCode::tryFrom($originalStatusCode)) === null) {
+                    throw new InvalidArgumentException("Invalid HTTP status code $originalStatusCode");
+                }
+            }
+
+            $this->statusCode = $value;
+            $this->reasonPhrase = $reasonPhrase ?? HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
+        }
+    }
 
     /**
      * @param HttpStatusCode|int $statusCode The response status code
@@ -33,11 +54,14 @@ class Response implements IResponse
      */
     public function __construct(
         HttpStatusCode|int $statusCode = HttpStatusCode::Ok,
-        protected readonly Headers $headers = new Headers(),
-        protected ?IBody $body = null,
-        protected readonly string $protocolVersion = '1.1'
+        Headers $headers = new Headers(),
+        ?IBody $body = null,
+        string $protocolVersion = '1.1'
     ) {
-        $this->setStatusCode($statusCode);
+        $this->statusCode = $statusCode;
+        $this->headers = $headers;
+        $this->body = $body;
+        $this->protocolVersion = $protocolVersion;
         $this->reasonPhrase = HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
     }
 
@@ -65,70 +89,5 @@ class Response implements IResponse
         }
 
         return $response;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getBody(): ?IBody
-    {
-        return $this->body;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHeaders(): Headers
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getProtocolVersion(): string
-    {
-        return $this->protocolVersion;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getReasonPhrase(): ?string
-    {
-        return $this->reasonPhrase;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getStatusCode(): HttpStatusCode
-    {
-        return $this->statusCode;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setBody(IBody $body): void
-    {
-        $this->body = $body;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setStatusCode(HttpStatusCode|int $statusCode, ?string $reasonPhrase = null): void
-    {
-        if (\is_int($statusCode)) {
-            $originalStatusCode = $statusCode;
-
-            if (($statusCode = HttpStatusCode::tryFrom($originalStatusCode)) === null) {
-                throw new InvalidArgumentException("Invalid HTTP status code $originalStatusCode");
-            }
-        }
-
-        $this->statusCode = $statusCode;
-        $this->reasonPhrase = $reasonPhrase ?? HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
     }
 }

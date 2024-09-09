@@ -129,9 +129,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->accepted($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Accepted, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Accepted, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testBadRequestCreatesCorrectResponse(): void
@@ -140,9 +140,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->badRequest($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::BadRequest, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::BadRequest, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testConflictCreatesCorrectResponse(): void
@@ -151,9 +151,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->conflict($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Conflict, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Conflict, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testCreatedWithStringUriCreatesCorrectResponse(): void
@@ -162,10 +162,10 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->created('https://example.com', $expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Created, $response->getStatusCode());
-        $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Created, $response->statusCode);
+        $this->assertSame('https://example.com', $response->headers->getFirst('Location'));
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testCreatedWithUriCreatesCorrectResponse(): void
@@ -174,10 +174,10 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->created(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Created, $response->getStatusCode());
-        $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Created, $response->statusCode);
+        $this->assertSame('https://example.com', $response->headers->getFirst('Location'));
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testForbiddenCreatesCorrectResponse(): void
@@ -186,9 +186,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->forbidden($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Forbidden, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testFoundWithStringUriCreatesCorrectResponse(): void
@@ -197,10 +197,10 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->found('https://example.com', $expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Found, $response->getStatusCode());
-        $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Found, $response->statusCode);
+        $this->assertSame('https://example.com', $response->headers->getFirst('Location'));
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testFoundWithUriCreatesCorrectResponse(): void
@@ -209,10 +209,10 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->found(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Found, $response->getStatusCode());
-        $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Found, $response->statusCode);
+        $this->assertSame('https://example.com', $response->headers->getFirst('Location'));
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testGetUserGetsUserFromUserAccessor(): void
@@ -278,9 +278,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->internalServerError($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::InternalServerError, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testMovedPermanentlyWithStringUriCreatesCorrectResponse(): void
@@ -289,10 +289,10 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->movedPermanently('https://example.com', $expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::MovedPermanently, $response->getStatusCode());
-        $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::MovedPermanently, $response->statusCode);
+        $this->assertSame('https://example.com', $response->headers->getFirst('Location'));
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testMovedPermanentlyWithUriCreatesCorrectResponse(): void
@@ -301,10 +301,10 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->movedPermanently(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::MovedPermanently, $response->getStatusCode());
-        $this->assertSame('https://example.com', $response->getHeaders()->getFirst('Location'));
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::MovedPermanently, $response->statusCode);
+        $this->assertSame('https://example.com', $response->headers->getFirst('Location'));
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testNoContentCreatesCorrectResponse(): void
@@ -312,8 +312,8 @@ class ControllerTest extends TestCase
         $this->controller->setRequest($this->request);
         $expectedHeaders = new Headers();
         $response = $this->controller->noContent($expectedHeaders);
-        $this->assertSame(HttpStatusCode::NoContent, $response->getStatusCode());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::NoContent, $response->statusCode);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testNotFoundCreatesCorrectResponse(): void
@@ -322,9 +322,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->notFound($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::NotFound, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::NotFound, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testOkCreatesCorrectResponse(): void
@@ -333,9 +333,9 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->ok($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Ok, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Ok, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 
     public function testReadingRequestBodyReturnsDeserializedBody(): void
@@ -363,7 +363,7 @@ class ControllerTest extends TestCase
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCode::UnprocessableEntity, $ex->response->getStatusCode());
+            $this->assertSame(HttpStatusCode::UnprocessableEntity, $ex->response->statusCode);
             $this->assertSame('Failed to deserialize request body when resolving body as type foo', $ex->getMessage());
         }
     }
@@ -381,7 +381,7 @@ class ControllerTest extends TestCase
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCode::UnsupportedMediaType, $ex->response->getStatusCode());
+            $this->assertSame(HttpStatusCode::UnsupportedMediaType, $ex->response->statusCode);
             $this->assertSame('Failed to negotiate request content with type foo', $ex->getMessage());
         }
     }
@@ -392,8 +392,8 @@ class ControllerTest extends TestCase
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->unauthorized($expectedBody, $expectedHeaders);
-        $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
-        $this->assertSame($expectedBody, $response->getBody());
-        $this->assertSame($expectedHeaders, $response->getHeaders());
+        $this->assertSame(HttpStatusCode::Unauthorized, $response->statusCode);
+        $this->assertSame($expectedBody, $response->body);
+        $this->assertSame($expectedHeaders, $response->headers);
     }
 }

@@ -31,18 +31,18 @@ class ProblemDetailsResponseMutator
         $mutatedResponse = clone $response;
         $contentType = null;
 
-        if (!$mutatedResponse->getHeaders()->tryGetFirst('Content-Type', $contentType)) {
+        if (!$mutatedResponse->headers->tryGetFirst('Content-Type', $contentType)) {
             return $mutatedResponse;
         }
 
         switch ($contentType) {
             case 'application/json':
             case 'text/json':
-                $mutatedResponse->getHeaders()->add('Content-Type', 'application/problem+json');
+                $mutatedResponse->headers->add('Content-Type', 'application/problem+json');
                 break;
             case 'application/xml':
             case 'text/xml':
-                $mutatedResponse->getHeaders()->add('Content-Type', 'application/problem+xml');
+                $mutatedResponse->headers->add('Content-Type', 'application/problem+xml');
                 break;
         }
 

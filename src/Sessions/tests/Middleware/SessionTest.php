@@ -104,7 +104,7 @@ class SessionTest extends TestCase
         $actualResponse = $middleware->handle($this->request, $this->next);
         $this->assertSame(
             'session=foo; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
-            $actualResponse->getHeaders()->getFirst('Set-Cookie')
+            $actualResponse->headers->getFirst('Set-Cookie')
         );
     }
 
@@ -158,7 +158,7 @@ class SessionTest extends TestCase
 
     public function testSessionIdSetFromCookieNameIfPresent(): void
     {
-        $this->request->getHeaders()
+        $this->request->headers
             ->add('Cookie', 'session=foo');
         $this->session->expects($this->once())
             ->method('setId')

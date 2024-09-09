@@ -17,6 +17,13 @@ namespace Aphiria\Net\Http;
  */
 interface IHttpMessage
 {
+    /** @var IBody|null The body of the HTTP message if there is one, otherwise null */
+    public ?IBody $body;
+    /** @var Headers The headers of the HTTP message */
+    public Headers $headers { get; }
+    /** @var string The protocol version (eg '1.1' or '2.0') of the HTTP message */
+    public string $protocolVersion { get; }
+
     /**
      * Gets the message as a string
      *
@@ -24,32 +31,4 @@ interface IHttpMessage
      * @note This string can be used as a raw HTTP message
      */
     public function __toString(): string;
-
-    /**
-     * Gets the body of the HTTP message
-     *
-     * @return IBody|null The body if there is one, otherwise null
-     */
-    public function getBody(): ?IBody;
-
-    /**
-     * Gets the headers of the HTTP message
-     *
-     * @return Headers The headers
-     */
-    public function getHeaders(): Headers;
-
-    /**
-     * Gets the protocol version (eg '1.1' or '2.0') from the HTTP message
-     *
-     * @return string The protocol version
-     */
-    public function getProtocolVersion(): string;
-
-    /**
-     * Sets the body of the HTTP message
-     *
-     * @param IBody $body The body
-     */
-    public function setBody(IBody $body): void;
 }

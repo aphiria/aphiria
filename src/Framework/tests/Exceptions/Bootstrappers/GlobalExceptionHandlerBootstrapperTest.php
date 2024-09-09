@@ -189,7 +189,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->apiExceptionRenderer->setResponseFactory($responseFactory);
         $exception = new InvalidRequestBodyException(['foo']);
         $response = $this->apiExceptionRenderer->createResponse($exception);
-        $this->assertSame(HttpStatusCode::BadRequest, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::BadRequest, $response->statusCode);
     }
 
     public function testIsRunningInConsoleDefaultsToTrue(): void

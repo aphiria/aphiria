@@ -56,7 +56,7 @@ class MultipartBodyTest extends TestCase
             new MultipartBodyPart(new Headers(), $body2)
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertNull($body->getLength());
+        $this->assertNull($body->length);
     }
 
     public function testGettingLengthWithBodyPartsWithLengthsReturnsSumOfLengths(): void
@@ -90,7 +90,7 @@ class MultipartBodyTest extends TestCase
          * stream 2
          * \r\n--{boundary}--
          */
-        $this->assertSame(5 + 4 + 1 + 7 + 4 + 2 + 9, $body->getLength());
+        $this->assertSame(5 + 4 + 1 + 7 + 4 + 2 + 9, $body->length);
     }
 
     public function testGettingPartsReturnsParts(): void

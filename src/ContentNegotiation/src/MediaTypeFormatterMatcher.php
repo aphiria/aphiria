@@ -51,7 +51,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         string $type,
         IRequest $request
     ): ?MediaTypeFormatterMatch {
-        $contentTypeHeader = $this->headerParser->parseContentTypeHeader($request->getHeaders());
+        $contentTypeHeader = $this->headerParser->parseContentTypeHeader($request->headers);
 
         return $this->getBestMediaTypeFormatterMatch(
             $type,
@@ -69,7 +69,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            $this->headerParser->parseAcceptHeader($request->getHeaders()),
+            $this->headerParser->parseAcceptHeader($request->headers),
             self::FORMATTER_TYPE_OUTPUT
         );
     }
