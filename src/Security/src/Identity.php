@@ -17,6 +17,40 @@ namespace Aphiria\Security;
  */
 class Identity implements IIdentity
 {
+    /** @inheritdoc */
+    public ?string $authenticationSchemeName;
+    /** @inheritdoc */
+    public array $claims {
+        get {
+            $allClaims = [];
+
+            foreach ($this->claimTypesToClaims as $claims) {
+                $allClaims = [...$allClaims, ...$claims];
+            }
+
+            return $allClaims;
+        }
+    }
+    /** @inheritdoc */
+    public bool $isAuthenticated {
+        get => $this->authenticationSchemeName !== null;
+    }
+    /** @inheritdoc */
+    public ?string $name {
+        get {
+            $idClaims = $this->filterClaims(ClaimType::NameIdentifier);
+
+            return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
+        }
+    }
+    /** @inheritdoc */
+    public ?string $nameIdentifier {
+        get {
+            $idClaims = $this->filterClaims(ClaimType::NameIdentifier);
+
+            return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
+        }
+    }
     /** @var array<string, list<Claim<mixed>>> The mapping of claim types to claims */
     private readonly array $claimTypesToClaims;
 
@@ -50,48 +84,6 @@ class Identity implements IIdentity
     /**
      * @inheritdoc
      */
-    public function getAuthenticationSchemeName(): ?string
-    {
-        return $this->authenticationSchemeName;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClaims(): array
-    {
-        $allClaims = [];
-
-        foreach ($this->claimTypesToClaims as $claims) {
-            $allClaims = [...$allClaims, ...$claims];
-        }
-
-        return $allClaims;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName(): ?string
-    {
-        $nameClaims = $this->filterClaims(ClaimType::Name);
-
-        return \count($nameClaims) === 0 ? null : (string)$nameClaims[0]->value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getNameIdentifier(): ?string
-    {
-        $idClaims = $this->filterClaims(ClaimType::NameIdentifier);
-
-        return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function hasClaim(ClaimType|string $type, mixed $value): bool
     {
         foreach ($this->filterClaims($type) as $claim) {
@@ -101,21 +93,5 @@ class Identity implements IIdentity
         }
 
         return false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isAuthenticated(): bool
-    {
-        return $this->authenticationSchemeName !== null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setAuthenticationSchemeName(string $authenticationSchemeName): void
-    {
-        $this->authenticationSchemeName = $authenticationSchemeName;
     }
 }

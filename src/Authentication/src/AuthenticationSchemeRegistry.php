@@ -19,28 +19,24 @@ use OutOfBoundsException;
  */
 final class AuthenticationSchemeRegistry
 {
-    /** @var AuthenticationScheme<AuthenticationSchemeOptions>|null The default scheme if one is set, otherwise null */
-    private ?AuthenticationScheme $defaultScheme = null;
-    /** @var array<string, AuthenticationScheme<AuthenticationSchemeOptions>> The mapping of authentication scheme names to schemes */
-    private array $schemesByName = [];
-
     /**
-     * Gets the default authentication scheme
-     *
      * @template T of AuthenticationSchemeOptions
-     * @return AuthenticationScheme<T>|null The default authentication scheme if one is set, otherwise null
+     * @var AuthenticationScheme<T>|null The default authentication scheme if one is set, otherwise null
      * @note If only a single scheme is registered, it'll be returned as the default
      * @psalm-suppress InvalidReturnStatement Psalm does not handle collections of different generics
      * @psalm-suppress InvalidReturnType Ditto
      */
-    public function getDefaultScheme(): ?AuthenticationScheme
-    {
-        if ($this->defaultScheme !== null) {
-            return $this->defaultScheme;
-        }
+    public ?AuthenticationScheme $defaultScheme {
+        get {
+            if ($this->defaultScheme !== null) {
+                return $this->defaultScheme;
+            }
 
-        return \count($this->schemesByName) === 1 ? \array_values($this->schemesByName)[0] : null;
+            return \count($this->schemesByName) === 1 ? \array_values($this->schemesByName)[0] : null;
+        }
     }
+    /** @var array<string, AuthenticationScheme<AuthenticationSchemeOptions>> The mapping of authentication scheme names to schemes */
+    private array $schemesByName = [];
 
     /**
      * Gets an authentication scheme by name

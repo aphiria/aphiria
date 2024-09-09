@@ -21,6 +21,11 @@ use ArrayAccess;
  */
 interface ISession extends ArrayAccess
 {
+    /** @var array<string, mixed> The mapping of all session variables */
+    public array $all { get; }
+    /** @var int|string The session Id */
+    public int|string $id { get; }
+
     /**
      * Marks newly flashed data as old, and old data is deleted
      */
@@ -62,20 +67,6 @@ interface ISession extends ArrayAccess
      * @return mixed The value of the variable if it exists, otherwise the default value
      */
     public function get(string $key, mixed $defaultValue = null): mixed;
-
-    /**
-     * Gets the mapping of all session variable names to their values
-     *
-     * @return array<string, mixed> The mapping of all session variables
-     */
-    public function getAll(): array;
-
-    /**
-     * Gets the session Id
-     *
-     * @return int|string The session Id
-     */
-    public function getId(): int|string;
 
     /**
      * Reflashes all of the flash data

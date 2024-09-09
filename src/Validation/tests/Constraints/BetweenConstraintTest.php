@@ -28,7 +28,7 @@ class BetweenConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new BetweenConstraint(1, 2, true, true, 'foo');
-        $this->assertSame('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->errorMessageId);
     }
 
     public function testGettingErrorPlaceholders(): void

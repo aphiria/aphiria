@@ -82,7 +82,7 @@ class IdentityBuilderTest extends TestCase
         $identity = (new IdentityBuilder())
             ->withClaims($claims)
             ->build();
-        $this->assertSame($claims, $identity->getClaims());
+        $this->assertSame($claims, $identity->claims);
     }
 
     public function testAddingMultipleRolesAddsMultipleRoleClaims(): void
@@ -103,14 +103,14 @@ class IdentityBuilderTest extends TestCase
         $identity = (new IdentityBuilder())
             ->withClaims($claim)
             ->build();
-        $this->assertSame([$claim], $identity->getClaims());
+        $this->assertSame([$claim], $identity->claims);
     }
 
     public function testNotAddingAuthenticationSchemeNameDoesNotSetOneInIdentity(): void
     {
         $identity = (new IdentityBuilder())
             ->build();
-        $this->assertNull($identity->getAuthenticationSchemeName());
+        $this->assertNull($identity->authenticationSchemeName);
     }
 
     #[DataProvider('provideClaimsCalls')]
@@ -134,6 +134,6 @@ class IdentityBuilderTest extends TestCase
         $identity = (new IdentityBuilder())
             ->withAuthenticationSchemeName('foo')
             ->build();
-        $this->assertSame('foo', $identity->getAuthenticationSchemeName());
+        $this->assertSame('foo', $identity->authenticationSchemeName);
     }
 }

@@ -38,7 +38,7 @@ class IdentityTest extends TestCase
     public function testGettingAuthenticationSchemeNameReturnsOneSetInConstructor(?string $expectedAuthenticationSchemeName): void
     {
         $identity = new Identity([], $expectedAuthenticationSchemeName);
-        $this->assertSame($expectedAuthenticationSchemeName, $identity->getAuthenticationSchemeName());
+        $this->assertSame($expectedAuthenticationSchemeName, $identity->authenticationSchemeName);
     }
 
     public function testGettingClaimsReturnsAllClaims(): void
@@ -49,23 +49,23 @@ class IdentityTest extends TestCase
             new Claim('baz', 'quz', 'http://example.com')
         ];
         $identity = new Identity($claims);
-        $this->assertSame($claims, $identity->getClaims());
+        $this->assertSame($claims, $identity->claims);
     }
 
     public function testGettingNameIdentifierReturnsClaimValueIfSet(): void
     {
         $identityWithoutNameIdentifierClaim = new Identity();
-        $this->assertNull($identityWithoutNameIdentifierClaim->getName());
+        $this->assertNull($identityWithoutNameIdentifierClaim->name);
         $identityWithNameIdentifierClaim = new Identity([new Claim(ClaimType::NameIdentifier, '123', 'http://example.com')]);
-        $this->assertSame('123', $identityWithNameIdentifierClaim->getNameIdentifier());
+        $this->assertSame('123', $identityWithNameIdentifierClaim->nameIdentifier);
     }
 
     public function testGettingNameReturnsClaimValueIfSet(): void
     {
         $identityWithoutNameClaim = new Identity();
-        $this->assertNull($identityWithoutNameClaim->getName());
+        $this->assertNull($identityWithoutNameClaim->name);
         $identityWithNameClaim = new Identity([new Claim(ClaimType::Name, 'Dave', 'http://example.com')]);
-        $this->assertSame('Dave', $identityWithNameClaim->getName());
+        $this->assertSame('Dave', $identityWithNameClaim->name);
     }
 
     public function testHasClaimReturnsWhetherOrNotIdentityHasClaim(): void
@@ -86,16 +86,16 @@ class IdentityTest extends TestCase
     public function testIsAuthenticatedOnlyReturnsTrueIfAuthenticationSchemeNameIsSet(): void
     {
         $authenticatedIdentity = new Identity([], 'foo');
-        $this->assertTrue($authenticatedIdentity->isAuthenticated());
+        $this->assertTrue($authenticatedIdentity->isAuthenticated);
         $unauthenticatedIdentity = new Identity();
-        $this->assertFalse($unauthenticatedIdentity->isAuthenticated());
+        $this->assertFalse($unauthenticatedIdentity->isAuthenticated);
     }
 
     public function testSettingAuthenticationSchemeName(): void
     {
         $identity = new Identity();
-        $this->assertNull($identity->getAuthenticationSchemeName());
-        $identity->setAuthenticationSchemeName('foo');
-        $this->assertSame('foo', $identity->getAuthenticationSchemeName());
+        $this->assertNull($identity->authenticationSchemeName);
+        $identity->authenticationSchemeName = 'foo';
+        $this->assertSame('foo', $identity->authenticationSchemeName);
     }
 }

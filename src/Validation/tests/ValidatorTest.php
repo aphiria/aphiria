@@ -134,7 +134,7 @@ class ValidatorTest extends TestCase
         ));
         $this->errorMessageInterpolator->expects($this->once())
             ->method('interpolate')
-            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
+            ->with($constraints[0]->errorMessageId, $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         /** @var list<ConstraintViolation> $violations */
         $violations = [];
@@ -267,7 +267,7 @@ class ValidatorTest extends TestCase
         ));
         $this->errorMessageInterpolator->expects($this->once())
             ->method('interpolate')
-            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
+            ->with($constraints[0]->errorMessageId, $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         /** @var list<ConstraintViolation> $violations */
         $violations = [];
@@ -359,7 +359,7 @@ class ValidatorTest extends TestCase
         ));
         $this->errorMessageInterpolator->expects($this->once())
             ->method('interpolate')
-            ->with($constraints[0]->getErrorMessageId(), $constraints[0]->getErrorMessagePlaceholders(1))
+            ->with($constraints[0]->errorMessageId, $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
         /** @var list<ConstraintViolation> $violations */
         $violations = [];

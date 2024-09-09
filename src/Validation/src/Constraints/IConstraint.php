@@ -18,12 +18,10 @@ namespace Aphiria\Validation\Constraints;
 interface IConstraint
 {
     /**
-     * Gets the ID of the error message associated with this constraint
-     *
-     * @return string The error message ID
+     * @var string The error message ID
      * @note If not supporting localization, this could contains the error message itself
      */
-    public function getErrorMessageId(): string;
+    public string $errorMessageId { get; }
 
     /**
      * Gets the values that can be used to compile error messages

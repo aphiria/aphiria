@@ -19,10 +19,24 @@ use Closure;
  */
 class User implements IPrincipal
 {
+    /** @inheritdoc */
+    public array $claims {
+        get {
+            $claims = [];
+
+            foreach ($this->identities as $identity) {
+                $claims = [...$claims, ...$identity->claims];
+            }
+
+            return $claims;
+        }
+    }
+    /** @inheritdoc */
+    public private(set) array $identities;
+    /** @inheritdoc */
+    public private(set) ?IIdentity $primaryIdentity;
     /** @var Closure(list<IIdentity>): ?IIdentity The primary identity selector */
     private readonly Closure $primaryIdentitySelector;
-    /** @var list<IIdentity> The list of identities this principal has */
-    private array $identities;
     /** @var IIdentity|null The primary identity if this principal has one, otherwise null */
     private ?IIdentity $primaryIdentity = null;
 
@@ -86,36 +100,6 @@ class User implements IPrincipal
     /**
      * @inheritdoc
      */
-    public function getClaims(): array
-    {
-        $claims = [];
-
-        foreach ($this->identities as $identity) {
-            $claims = [...$claims, ...$identity->getClaims()];
-        }
-
-        return $claims;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIdentities(): array
-    {
-        return $this->identities;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPrimaryIdentity(): ?IIdentity
-    {
-        return $this->primaryIdentity;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function hasClaim(ClaimType|string $type, mixed $value): bool
     {
         foreach ($this->identities as $identity) {
@@ -132,8 +116,8 @@ class User implements IPrincipal
      */
     public function mergeIdentities(IPrincipal $user, bool $includeUnauthenticatedIdentities = false): IPrincipal
     {
-        foreach ($user->getIdentities() as $identity) {
-            if ($identity->isAuthenticated() || $includeUnauthenticatedIdentities) {
+        foreach ($user->identities as $identity) {
+            if ($identity->isAuthenticated || $includeUnauthenticatedIdentities) {
                 $this->addIdentity($identity);
             }
         }

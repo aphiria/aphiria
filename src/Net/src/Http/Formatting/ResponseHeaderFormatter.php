@@ -103,7 +103,7 @@ class ResponseHeaderFormatter extends HeaderParser
      */
     private function getSetCookieHeaderValue(Cookie $cookie): string
     {
-        $headerValue = "{$cookie->getName()}=" . \urlencode((string)$cookie->value);
+        $headerValue = "{$cookie->name}=" . \urlencode((string)$cookie->value);
 
         if (($maxAge = $cookie->maxAge) !== null) {
             $headerValue .= "; Max-Age=$maxAge";

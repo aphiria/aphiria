@@ -63,6 +63,10 @@ class AuthorizeTest extends TestCase
     public static function getUnauthenticatedUsers(): array
     {
         $userWithNoIdentity = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -74,21 +78,6 @@ class AuthorizeTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -102,6 +91,26 @@ class AuthorizeTest extends TestCase
             }
         };
         $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = new class () implements IIdentity {
+                public ?string $authenticationSchemeName = null;
+                public array $claims = [];
+                public bool $isAuthenticated = false;
+                public ?string $name = null;
+                public ?string $nameIdentifier = null;
+
+                public function filterClaims(ClaimType|string $type): array
+                {
+                    return [];
+                }
+
+                public function hasClaim(ClaimType|string $type, mixed $value): bool
+                {
+                    return false;
+                }
+            };
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -114,59 +123,6 @@ class AuthorizeTest extends TestCase
             {
                 return [];
             }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return new class () implements IIdentity {
-                    public function filterClaims(ClaimType|string $type): array
-                    {
-                        return [];
-                    }
-
-                    public function getAuthenticationSchemeName(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function getClaims(ClaimType|string|null $type = null): array
-                    {
-                        return [];
-                    }
-
-                    public function getName(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function getNameIdentifier(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function hasClaim(ClaimType|string $type, mixed $value): bool
-                    {
-                        return false;
-                    }
-
-                    public function isAuthenticated(): bool
-                    {
-                        return false;
-                    }
-
-                    public function setAuthenticationSchemeName(string $authenticationSchemeName): void
-                    {
-                    }
-                };
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool

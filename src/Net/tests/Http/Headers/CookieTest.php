@@ -28,13 +28,13 @@ class CookieTest extends TestCase
 
     public function testGettingName(): void
     {
-        $this->assertSame('name', $this->cookie->getName());
+        $this->assertSame('name', $this->cookie->name);
     }
 
     public function testInvalidNameThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cookie name "=" contains invalid characters');
-        $this->cookie->setName('=');
+        $this->cookie->name = '=';
     }
 }

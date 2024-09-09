@@ -107,7 +107,7 @@ class Authenticator implements IAuthenticator
         IResponse $response,
         array|string|null $schemeNames = null
     ): void {
-        if (!($user->getPrimaryIdentity()?->isAuthenticated() ?? false)) {
+        if (!($user->primaryIdentity?->isAuthenticated ?? false)) {
             throw new NotAuthenticatedException('User identity must be set and authenticated to log in');
         }
 
@@ -176,7 +176,7 @@ class Authenticator implements IAuthenticator
 
         foreach ($normalizedSchemeNames as $schemeName) {
             if ($schemeName === null) {
-                $scheme = $this->schemes->getDefaultScheme();
+                $scheme = $this->schemes->defaultScheme;
 
                 if ($scheme === null) {
                     throw new AuthenticationSchemeNotFoundException('No default authentication scheme found');

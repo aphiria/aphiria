@@ -17,6 +17,17 @@ namespace Aphiria\Security;
  */
 interface IIdentity
 {
+    /** @var string|null The authentication scheme used to authenticate this identity */
+    public ?string $authenticationSchemeName { get; set; }
+    /** @var list<Claim<mixed>> The list of claims for this identity */
+    public array $claims { get; }
+    /** @var bool Whether or not the identity is authenticated */
+    public bool $isAuthenticated { get; }
+    /** @var string|null The name if one was found, otherwise null */
+    public ?string $name { get; }
+    /** @var string|null The name identifier if one was found, otherwise null */
+    public ?string $nameIdentifier { get; }
+
     /**
      * Gets all claims with the input type
      *
@@ -26,34 +37,6 @@ interface IIdentity
     public function filterClaims(ClaimType|string $type): array;
 
     /**
-     * Gets the authentication scheme used to authenticate this identity
-     *
-     * @return string|null The authentication scheme, eg Bearer, Cookie, etc, or null if the identity has not been authenticated
-     */
-    public function getAuthenticationSchemeName(): ?string;
-
-    /**
-     * Gets all the claims associated with this identity
-     *
-     * @return list<Claim<mixed>> The list of claims for this identity
-     */
-    public function getClaims(): array;
-
-    /**
-     * A helper method around getting the name claim value
-     *
-     * @return string|null The name if one was found, otherwise null
-     */
-    public function getName(): ?string;
-
-    /**
-     * A helper method around getting the name identifier claim value
-     *
-     * @return string|null The name identifier if one was found, otherwise null
-     */
-    public function getNameIdentifier(): ?string;
-
-    /**
      * Gets whether or not the identity has a claim
      *
      * @param ClaimType|string $type The claim type to search for
@@ -61,13 +44,6 @@ interface IIdentity
      * @return bool True if the identity had the claim, otherwise false
      */
     public function hasClaim(ClaimType|string $type, mixed $value): bool;
-
-    /**
-     * Gets whether or not the identity has been authenticated
-     *
-     * @return bool True if the identity has been authenticated, otherwise false
-     */
-    public function isAuthenticated(): bool;
 
     /**
      * Sets the authentication scheme name for this identity

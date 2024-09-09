@@ -83,14 +83,11 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     private function compareAcceptMediaTypeHeaders(AcceptMediaTypeHeaderValue $a, AcceptMediaTypeHeaderValue $b): int
     {
-        $aQuality = $a->getQuality();
-        $bQuality = $b->getQuality();
-
-        if ($aQuality < $bQuality) {
+        if ($a->quality < $b->quality) {
             return 1;
         }
 
-        if ($aQuality > $bQuality) {
+        if ($a->quality > $b->quality) {
             return -1;
         }
 

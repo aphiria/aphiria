@@ -35,6 +35,15 @@ class RolesRequirementHandlerTest extends TestCase
     public static function getUsersWithMatchingRoles(): array
     {
         $userWithSingleMatchingRole = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
+            public function __construct()
+            {
+                $this->claims = [new Claim(ClaimType::Role, 'admin', 'example.com')];
+            }
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -46,21 +55,6 @@ class RolesRequirementHandlerTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [new Claim(ClaimType::Role, 'admin', 'example.com')];
-            }
-
-            public function getClaims(): array
-            {
-                return [new Claim(ClaimType::Role, 'admin', 'example.com')];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -74,6 +68,18 @@ class RolesRequirementHandlerTest extends TestCase
             }
         };
         $userWithManyRolesIncludingMatchingOne = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
+            public function __construct()
+            {
+                $this->claims = [
+                    new Claim(ClaimType::Role, 'admin', 'example.com'),
+                    new Claim(ClaimType::Role, 'dev', 'example.com')
+                ];
+            }
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -88,24 +94,6 @@ class RolesRequirementHandlerTest extends TestCase
                     new Claim(ClaimType::Role, 'admin', 'example.com'),
                     new Claim(ClaimType::Role, 'dev', 'example.com')
                 ];
-            }
-
-            public function getClaims(): array
-            {
-                return [
-                    new Claim(ClaimType::Role, 'admin', 'example.com'),
-                    new Claim(ClaimType::Role, 'dev', 'example.com')
-                ];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -128,6 +116,10 @@ class RolesRequirementHandlerTest extends TestCase
     public static function getUsersWithNoMatchingRoles(): array
     {
         $userWithNoRoles = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -139,21 +131,6 @@ class RolesRequirementHandlerTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -167,6 +144,15 @@ class RolesRequirementHandlerTest extends TestCase
             }
         };
         $userWithNoMatchingRoles = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
+            public function __construct()
+            {
+                $this->claims = [new Claim(ClaimType::Role, 'unused', 'example.com')];
+            }
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -178,21 +164,6 @@ class RolesRequirementHandlerTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [new Claim(ClaimType::Role, 'unused', 'example.com')];
-            }
-
-            public function getClaims(): array
-            {
-                return [new Claim(ClaimType::Role, 'unused', 'example.com')];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool

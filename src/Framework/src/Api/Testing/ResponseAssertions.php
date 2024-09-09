@@ -51,7 +51,7 @@ class ResponseAssertions
     public function assertCookieEquals(mixed $expectedValue, IResponse $response, string $cookieName): void
     {
         foreach ($this->responseHeaderParser->parseCookies($response->headers) as $cookie) {
-            if ($cookie->getName() === $cookieName && $cookie->value === $expectedValue) {
+            if ($cookie->name === $cookieName && $cookie->value === $expectedValue) {
                 return;
             }
         }
@@ -70,7 +70,7 @@ class ResponseAssertions
     {
         foreach ($this->responseHeaderParser->parseCookies($response->headers) as $cookie) {
             if (
-                $cookie->getName() === $cookieName
+                $cookie->name === $cookieName
                 && ($cookie->value === '' || $cookie->value === null)
                 && ($cookie->maxAge === 0 || $cookie->maxAge === null)
             ) {
@@ -91,7 +91,7 @@ class ResponseAssertions
     public function assertHasCookie(IResponse $response, string $cookieName): void
     {
         foreach ($this->responseHeaderParser->parseCookies($response->headers) as $cookie) {
-            if ($cookie->getName() === $cookieName) {
+            if ($cookie->name === $cookieName) {
                 return;
             }
         }

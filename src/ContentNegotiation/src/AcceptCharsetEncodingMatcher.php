@@ -76,14 +76,11 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
      */
     private function compareAcceptCharsetHeaders(AcceptCharsetHeaderValue $a, AcceptCharsetHeaderValue $b): int
     {
-        $aQuality = $a->getQuality();
-        $bQuality = $b->getQuality();
-
-        if ($aQuality < $bQuality) {
+        if ($a->quality < $b->quality) {
             return 1;
         }
 
-        if ($aQuality > $bQuality) {
+        if ($a->quality > $b->quality) {
             return -1;
         }
 

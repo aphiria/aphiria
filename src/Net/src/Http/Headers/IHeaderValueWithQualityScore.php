@@ -17,10 +17,6 @@ namespace Aphiria\Net\Http\Headers;
  */
 interface IHeaderValueWithQualityScore
 {
-    /**
-     * Gets the quality score
-     *
-     * @return float The quality score (0-1)
-     */
-    public function getQuality(): float;
+    /** @var float The quality score */
+    public float $quality { get; }
 }
