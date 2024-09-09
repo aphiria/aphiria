@@ -18,7 +18,7 @@ namespace Aphiria\Net\Http;
 interface IHttpMessage
 {
     /** @var IBody|null The body of the HTTP message if there is one, otherwise null */
-    public ?IBody $body;
+    public ?IBody $body { get; set; }
     /** @var Headers The headers of the HTTP message */
     public Headers $headers { get; }
     /** @var string The protocol version (eg '1.1' or '2.0') of the HTTP message */

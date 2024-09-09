@@ -30,7 +30,7 @@ class Request implements IRequest
     /** @inheritdoc */
     public private(set) string $method;
     /** @inheritdoc */
-    public private(set) IDictionary $propertie;
+    public private(set) IDictionary $properties;
     /** @inheritdoc */
     public private(set) string $protocolVersion;
     /** @inheritdoc */

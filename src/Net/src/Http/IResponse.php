@@ -20,7 +20,7 @@ use InvalidArgumentException;
 interface IResponse extends IHttpMessage
 {
     /** @var string|null The reason phrase of the response if one is set, otherwise null */
-    public ?string $reasonPhrase;
+    public ?string $reasonPhrase { get; set; }
     /** @var HttpStatusCode The HTTP status code of the response */
-    public HttpStatusCode $statusCode;
+    public HttpStatusCode $statusCode { get; set; }
 }
