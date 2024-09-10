@@ -63,11 +63,11 @@ class ProgressBarTest extends TestCase
 
     public function testIsCompleteOnlyReturnsTrueIfWeReachedMaxSteps(): void
     {
-        $this->assertFalse($this->progressBar->isComplete());
+        $this->assertFalse($this->progressBar->isComplete);
         $this->progressBar->advance();
-        $this->assertFalse($this->progressBar->isComplete());
+        $this->assertFalse($this->progressBar->isComplete);
         $this->progressBar->complete();
-        $this->assertTrue($this->progressBar->isComplete());
+        $this->assertTrue($this->progressBar->isComplete);
     }
 
     public function testSettingProgressToValueLessThanZeroBoundsItToZero(): void

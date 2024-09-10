@@ -58,7 +58,7 @@ class Identity implements IIdentity
      * @param list<Claim<mixed>> $claims The list of claims for this identity
      * @param string|null $authenticationSchemeName The authentication scheme name used to authenticate this identity, or null if it has not been authenticated
      */
-    public function __construct(array $claims = [], private ?string $authenticationSchemeName = null)
+    public function __construct(array $claims = [], ?string $authenticationSchemeName = null)
     {
         $claimTypesToClaims = [];
 
@@ -71,6 +71,7 @@ class Identity implements IIdentity
         }
 
         $this->claimTypesToClaims = $claimTypesToClaims;
+        $this->authenticationSchemeName = $authenticationSchemeName;
     }
 
     /**

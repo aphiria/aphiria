@@ -30,31 +30,31 @@ class OptionTest extends TestCase
     public function testCheckingIsValueArray(): void
     {
         $arrayOption = new Option('foo', OptionType::IsArray, 'f', 'Foo option');
-        $this->assertTrue($arrayOption->valueIsArray());
+        $this->assertTrue($arrayOption->valueIsArray);
     }
 
     public function testCheckingIsValueOptional(): void
     {
         $requiredOption = new Option('foo', OptionType::RequiredValue, 'f', 'Foo option', 'bar');
         $optionalArgument = new Option('foo', OptionType::OptionalValue, 'f', 'Foo option', 'bar');
-        $this->assertFalse($requiredOption->valueIsOptional());
-        $this->assertTrue($optionalArgument->valueIsOptional());
+        $this->assertFalse($requiredOption->valueIsOptional);
+        $this->assertTrue($optionalArgument->valueIsOptional);
     }
 
     public function testCheckingIsValuePermitted(): void
     {
         $requiredOption = new Option('foo', OptionType::RequiredValue, 'f', 'Foo option', 'bar');
         $notPermittedOption = new Option('foo', OptionType::NoValue, 'f', 'Foo option', 'bar');
-        $this->assertTrue($requiredOption->valueIsPermitted());
-        $this->assertFalse($notPermittedOption->valueIsPermitted());
+        $this->assertTrue($requiredOption->valueIsPermitted);
+        $this->assertFalse($notPermittedOption->valueIsPermitted);
     }
 
     public function testCheckingIsValueRequired(): void
     {
         $requiredOption = new Option('foo', OptionType::RequiredValue, 'f', 'Foo option', 'bar');
         $optionalArgument = new Option('foo', OptionType::OptionalValue, 'f', 'Foo option', 'bar');
-        $this->assertTrue($requiredOption->valueIsRequired());
-        $this->assertFalse($optionalArgument->valueIsRequired());
+        $this->assertTrue($requiredOption->valueIsRequired);
+        $this->assertFalse($optionalArgument->valueIsRequired);
     }
 
     public function testEmptyOptionNameThrowsException(): void

@@ -56,9 +56,9 @@ class CommandComponentTest extends TestCase
         };
         $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $commandHandler::class));
         $this->commandComponent->build();
-        $this->assertCount(1, $this->commands->getAllCommandBindings());
-        $this->assertSame($expectedCommand, $this->commands->getAllCommandBindings()[0]->command);
-        $this->assertSame($commandHandler::class, $this->commands->getAllCommandBindings()[0]->commandHandlerClassName);
+        $this->assertCount(1, $this->commands->commandBindings);
+        $this->assertSame($expectedCommand, $this->commands->commandBindings[0]->command);
+        $this->assertSame($commandHandler::class, $this->commands->commandBindings[0]->commandHandlerClassName);
     }
 
     public function testBuildWithAttributesAddsAttributeRegistrant(): void

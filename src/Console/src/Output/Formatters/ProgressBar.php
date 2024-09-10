@@ -20,6 +20,10 @@ use InvalidArgumentException;
  */
 final class ProgressBar
 {
+    /** @var bool Whether or not the progress bar is complete */
+    public bool $isComplete {
+        get => $this->maxSteps === $this->progress;
+    }
     /** @var int|null The current progress, or null if no progress has been made yet */
     private ?int $progress = null;
 
@@ -58,16 +62,6 @@ final class ProgressBar
     public function complete(): void
     {
         $this->setProgress($this->maxSteps);
-    }
-
-    /**
-     * Gets whether or not the progress bar is complete
-     *
-     * @return bool True if the progress bar is complete, otherwise false
-     */
-    public function isComplete(): bool
-    {
-        return $this->maxSteps === $this->progress;
     }
 
     /**

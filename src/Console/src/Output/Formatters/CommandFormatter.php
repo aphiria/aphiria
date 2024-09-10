@@ -45,11 +45,11 @@ class CommandFormatter
 
         // Categorize each argument
         foreach ($command->arguments as $argument) {
-            if ($argument->isArray()) {
+            if ($argument->isArray) {
                 $arrayArgument = $argument;
-            } elseif ($argument->isRequired()) {
+            } elseif ($argument->isRequired) {
                 $requiredArguments[] = $argument;
-            } elseif ($argument->isOptional()) {
+            } elseif ($argument->isOptional) {
                 $optionalArguments[] = $argument;
             }
         }
@@ -83,7 +83,7 @@ class CommandFormatter
         $arrayArgumentTextOne = $argument->name . '1';
         $arrayArgumentTextN = $argument->name . 'N';
 
-        if ($argument->isOptional()) {
+        if ($argument->isOptional) {
             $arrayArgumentTextOne = "[$arrayArgumentTextOne]";
             $arrayArgumentTextN = "[$arrayArgumentTextN]";
         }
@@ -101,7 +101,7 @@ class CommandFormatter
     {
         $text = "[--{$option->name}";
 
-        if ($option->valueIsOptional()) {
+        if ($option->valueIsOptional) {
             $text .= "={$option->defaultValue}";
         }
 

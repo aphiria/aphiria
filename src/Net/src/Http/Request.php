@@ -37,6 +37,33 @@ class Request implements IRequest
     public private(set) Uri $uri;
     /** @var RequestTargetType $requestTargetType The type of request target URI this request uses */
     protected RequestTargetType $requestTargetType;
+    /** @var string The request target */
+    protected string $requestTarget {
+        get {
+            switch ($this->requestTargetType) {
+                case RequestTargetType::OriginForm:
+                    $requestTarget = $this->uri->path;
+
+                    /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
+                    if ($requestTarget === null || $requestTarget === '') {
+                        $requestTarget = '/';
+                    }
+
+                    if (($queryString = $this->uri->queryString) !== null && $queryString !== '') {
+                        $requestTarget .= "?$queryString";
+                    }
+
+                    return $requestTarget;
+                case RequestTargetType::AuthorityForm:
+                    return $this->uri->getAuthority(false) ?? '';
+                case RequestTargetType::AsteriskForm:
+                    return '*';
+                default:
+                    // Includes the absolute form
+                    return (string)$this->uri;
+            }
+        }
+    }
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -87,7 +114,7 @@ class Request implements IRequest
      */
     public function __toString(): string
     {
-        $startLine = "$this->method {$this->getRequestTarget()} HTTP/$this->protocolVersion";
+        $startLine = "$this->method $this->requestTarget HTTP/$this->protocolVersion";
         $headers = '';
 
         if (\count($this->headers) > 0) {
@@ -117,37 +144,6 @@ class Request implements IRequest
 
         if ($requiresHostHeader && !$this->headers->containsKey('Host')) {
             $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
-        }
-    }
-
-    /**
-     * Gets the request target
-     *
-     * return @string The request target
-     */
-    private function getRequestTarget(): string
-    {
-        switch ($this->requestTargetType) {
-            case RequestTargetType::OriginForm:
-                $requestTarget = $this->uri->path;
-
-                /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
-                if ($requestTarget === null || $requestTarget === '') {
-                    $requestTarget = '/';
-                }
-
-                if (($queryString = $this->uri->queryString) !== null && $queryString !== '') {
-                    $requestTarget .= "?$queryString";
-                }
-
-                return $requestTarget;
-            case RequestTargetType::AuthorityForm:
-                return $this->uri->getAuthority(false) ?? '';
-            case RequestTargetType::AsteriskForm:
-                return '*';
-            default:
-                // Includes the absolute form
-                return (string)$this->uri;
         }
     }
 

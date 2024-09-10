@@ -34,11 +34,9 @@ class User implements IPrincipal
     /** @inheritdoc */
     public private(set) array $identities;
     /** @inheritdoc */
-    public private(set) ?IIdentity $primaryIdentity;
+    public private(set) ?IIdentity $primaryIdentity = null;
     /** @var Closure(list<IIdentity>): ?IIdentity The primary identity selector */
     private readonly Closure $primaryIdentitySelector;
-    /** @var IIdentity|null The primary identity if this principal has one, otherwise null */
-    private ?IIdentity $primaryIdentity = null;
 
     /**
      * @param list<IIdentity>|IIdentity $identities The identity or list of identities this principal has

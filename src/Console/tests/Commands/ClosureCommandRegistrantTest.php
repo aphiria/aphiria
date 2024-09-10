@@ -37,7 +37,7 @@ class ClosureCommandRegistrantTest extends TestCase
         $closureCommandRegistrant = new ClosureCommandRegistrant($closures);
         $commands = new CommandRegistry();
         $closureCommandRegistrant->registerCommands($commands);
-        $this->assertCount(1, $commands->getAllCommands());
+        $this->assertCount(1, $commands->commands);
         /** @var CommandBinding $actualBinding */
         $actualBinding = null;
         $this->assertTrue($commands->tryGetBinding('foo', $actualBinding));

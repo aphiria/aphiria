@@ -41,7 +41,7 @@ class Response implements IResponse
             }
 
             $this->statusCode = $value;
-            $this->reasonPhrase = $reasonPhrase ?? HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
+            $this->reasonPhrase = HttpStatusCode::getDefaultReasonPhrase($this->statusCode);
         }
     }
 

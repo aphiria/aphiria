@@ -21,6 +21,22 @@ final class Option
 {
     /** @var list<OptionType> The type of option this is */
     public readonly array $type;
+    /** @var bool Whether or not the value is an array */
+    public bool $valueIsArray {
+        get => ($this->typeFlag & OptionType::IsArray->value) === OptionType::IsArray->value;
+    }
+    /** @var bool Whether or not the value is optional */
+    public bool $valueIsOptional {
+        get => ($this->typeFlag & OptionType::OptionalValue->value) === OptionType::OptionalValue->value;
+    }
+    /** @var bool Whether or not a value is permitted */
+    public bool $valueIsPermitted {
+        get => ($this->typeFlag & OptionType::NoValue->value) !== OptionType::NoValue->value;
+    }
+    /** @var bool Whether or not a value is required */
+    public bool $valueIsRequired {
+        get => ($this->typeFlag & OptionType::RequiredValue->value) === OptionType::RequiredValue->value;
+    }
     /** @var int The bitwise-OR'd flag representing all the types */
     private int $typeFlag = 0;
 
@@ -66,45 +82,5 @@ final class Option
                 throw new InvalidArgumentException('Short names must be an alphabet character');
             }
         }
-    }
-
-    /**
-     * Gets whether or not the option value is an array
-     *
-     * @return bool True if the option value is an array, otherwise false
-     */
-    public function valueIsArray(): bool
-    {
-        return ($this->typeFlag & OptionType::IsArray->value) === OptionType::IsArray->value;
-    }
-
-    /**
-     * Gets whether or not the option value is optional
-     *
-     * @return bool True if the option value is optional, otherwise false
-     */
-    public function valueIsOptional(): bool
-    {
-        return ($this->typeFlag & OptionType::OptionalValue->value) === OptionType::OptionalValue->value;
-    }
-
-    /**
-     * Gets whether or not the option value is allowed
-     *
-     * @return bool True if the option value is allowed, otherwise false
-     */
-    public function valueIsPermitted(): bool
-    {
-        return ($this->typeFlag & OptionType::NoValue->value) !== OptionType::NoValue->value;
-    }
-
-    /**
-     * Gets whether or not the option value is required
-     *
-     * @return bool True if the option value is required, otherwise false
-     */
-    public function valueIsRequired(): bool
-    {
-        return ($this->typeFlag & OptionType::RequiredValue->value) === OptionType::RequiredValue->value;
     }
 }
