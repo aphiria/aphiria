@@ -93,23 +93,28 @@ class AuthorizeTest extends TestCase
         $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
             public array $claims = [];
             public array $identities = [];
-            public ?IIdentity $primaryIdentity = new class () implements IIdentity {
-                public ?string $authenticationSchemeName = null;
-                public array $claims = [];
-                public bool $isAuthenticated = false;
-                public ?string $name = null;
-                public ?string $nameIdentifier = null;
+            public ?IIdentity $primaryIdentity = null;
 
-                public function filterClaims(ClaimType|string $type): array
-                {
-                    return [];
-                }
+            public function __construct()
+            {
+                $this->primaryIdentity = new class () implements IIdentity {
+                    public ?string $authenticationSchemeName = null;
+                    public array $claims = [];
+                    public bool $isAuthenticated = false;
+                    public ?string $name = null;
+                    public ?string $nameIdentifier = null;
 
-                public function hasClaim(ClaimType|string $type, mixed $value): bool
-                {
-                    return false;
-                }
-            };
+                    public function filterClaims(ClaimType|string $type): array
+                    {
+                        return [];
+                    }
+
+                    public function hasClaim(ClaimType|string $type, mixed $value): bool
+                    {
+                        return false;
+                    }
+                };
+            }
 
             public function addIdentity(IIdentity $identity): void
             {
@@ -122,7 +127,6 @@ class AuthorizeTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool

@@ -26,6 +26,7 @@ use Aphiria\Authentication\Schemes\ILoginAuthenticationSchemeHandler;
 use Aphiria\Authentication\UnsupportedAuthenticationHandlerException;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\Identity;
 use Aphiria\Security\IIdentity;
@@ -97,6 +98,10 @@ class AuthenticatorTest extends TestCase
             {
                 $this->primaryIdentity = new class () implements IIdentity {
                     public ?string $authenticationSchemeName = null;
+                    public array $claims = [];
+                    public bool $isAuthenticated = false;
+                    public ?string $name = null;
+                    public ?string $nameIdentifier = null;
 
                     public function filterClaims(ClaimType|string $type): array
                     {
