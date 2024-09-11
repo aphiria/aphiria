@@ -250,22 +250,6 @@ trait IntegrationTest
     }
 
     /**
-     * Gets the current application's URI
-     *
-     * @return string|null The app URI if one was set, otherwise null
-     */
-    protected function getAppUri(): ?string
-    {
-        $appUrl = (string)\getenv('APP_URL');
-
-        if (empty($appUrl)) {
-            return null;
-        }
-
-        return $appUrl;
-    }
-
-    /**
      * Sends an OPTIONS request
      *
      * @param string|Uri $uri The URI to request

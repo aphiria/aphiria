@@ -41,6 +41,20 @@ class ControllerTest extends TestCase
     {
         // Allow us to more easily test the convenience methods
         $this->controller = new class () extends Controller {
+            public ?IPrincipal $principal {
+                get {
+                    if (!$this->userAccessor instanceof IUserAccessor) {
+                        throw new LogicException('User accessor is not set');
+                    }
+
+                    if (!$this->request instanceof IRequest) {
+                        throw new LogicException('Request is not set');
+                    }
+
+                    return $this->userAccessor->getUser($this->request);
+                }
+            }
+
             public function accepted(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::accepted($body, $headers);
@@ -69,11 +83,6 @@ class ControllerTest extends TestCase
             public function found(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
             {
                 return parent::found($uri, $body, $headers);
-            }
-
-            public function getUser(): ?IPrincipal
-            {
-                return parent::getUser();
             }
 
             public function internalServerError(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
@@ -233,7 +242,7 @@ class ControllerTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Request is not set');
         $this->controller->setUserAccessor($this->createMock(IUserAccessor::class));
-        $this->controller->getUser();
+        $this->controller->user;
     }
 
     public function testGetUserWithoutUserSetThrowsException(): void
@@ -241,7 +250,7 @@ class ControllerTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('User accessor is not set');
         $this->controller->setRequest($this->createMock(IRequest::class));
-        $this->controller->getUser();
+        $this->controller->user;
     }
 
     public function testHelperMethodsWithoutSetRequestThrowsException(): void

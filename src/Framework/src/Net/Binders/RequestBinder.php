@@ -24,6 +24,22 @@ use Aphiria\Net\Uri;
  */
 class RequestBinder extends Binder
 {
+    /** @var bool Whether or not the app is running in the console */
+    protected bool $isRunningInConsole {
+        get => \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
+    }
+    /** @var IRequest The current request */
+    protected IRequest $request {
+        get {
+            // The $_SERVER superglobal will not have enough info to construct a request when running from the console
+            if ($this->isRunningInConsole) {
+                return new Request('GET', new Uri('http://localhost'));
+            }
+
+            /** @var array<string, mixed> $_SERVER */
+            return (new RequestFactory())->createRequestFromSuperglobals($_SERVER);
+        }
+    }
     /** @var IRequest|null The overriding request if one is set (useful for integration tests) */
     private static ?IRequest $overridingRequest = null;
 
@@ -44,32 +60,6 @@ class RequestBinder extends Binder
     {
         // Integration tests might have overridden the request to use
         // We use a factory so that a new instance is passed in whenever needed (allows support for handling concurrent requests)
-        $container->bindFactory(IRequest::class, fn (): IRequest => self::$overridingRequest ?? $this->getRequest());
-    }
-
-    /**
-     * Gets the current request
-     *
-     * @return IRequest The request
-     */
-    protected function getRequest(): IRequest
-    {
-        // The $_SERVER superglobal will not have enough info to construct a request when running from the console
-        if ($this->isRunningInConsole()) {
-            return new Request('GET', new Uri('http://localhost'));
-        }
-
-        /** @var array<string, mixed> $_SERVER */
-        return (new RequestFactory())->createRequestFromSuperglobals($_SERVER);
-    }
-
-    /**
-     * Gets whether or not we're running in the console
-     *
-     * @return bool True if running in console, otherwise false
-     */
-    protected function isRunningInConsole(): bool
-    {
-        return \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
+        $container->bindFactory(IRequest::class, fn (): IRequest => self::$overridingRequest ?? $this->request);
     }
 }

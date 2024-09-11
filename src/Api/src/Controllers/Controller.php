@@ -44,6 +44,25 @@ class Controller
     protected ?IResponseFactory $responseFactory = null;
     /** @var ResponseFormatter|null The formatter to use to write data to the response */
     protected ?ResponseFormatter $responseFormatter = null;
+    /**
+     * Gets the current user if one was set, otherwise null
+     *
+     * @var IPrincipal|null
+     * @throws LogicException Thrown if the user accessor or request are not set
+     */
+    protected ?IPrincipal $principal {
+        get {
+            if (!$this->userAccessor instanceof IUserAccessor) {
+                throw new LogicException('User accessor is not set');
+            }
+
+            if (!$this->request instanceof IRequest) {
+                throw new LogicException('Request is not set');
+            }
+
+            return $this->userAccessor->getUser($this->request);
+        }
+    }
     /** @var IUserAccessor|null The user accessor */
     protected ?IUserAccessor $userAccessor = null;
 
@@ -248,25 +267,6 @@ class Controller
     protected function found(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
         return $this->redirect(HttpStatusCode::Found, $uri, $body, $headers);
-    }
-
-    /**
-     * Gets the current authenticated user
-     *
-     * @return IPrincipal|null The current user if one was set, otherwise null
-     * @throws LogicException Thrown if the request or user accessor are not set
-     */
-    protected function getUser(): ?IPrincipal
-    {
-        if (!$this->userAccessor instanceof IUserAccessor) {
-            throw new LogicException('User accessor is not set');
-        }
-
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
-        return $this->userAccessor->getUser($this->request);
     }
 
     /**

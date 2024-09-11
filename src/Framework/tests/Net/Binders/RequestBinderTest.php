@@ -70,10 +70,7 @@ class RequestBinderTest extends TestCase
                 return (string)$request->uri === 'http://localhost';
             }));
         $binder = new class () extends RequestBinder {
-            protected function isRunningInConsole(): bool
-            {
-                return true;
-            }
+            protected bool $isRunningInConsole = true;
         };
         $binder->bind($this->container);
     }
@@ -92,10 +89,7 @@ class RequestBinderTest extends TestCase
                 return (string)$request->uri === 'http://example.com';
             }));
         $binder = new class () extends RequestBinder {
-            protected function isRunningInConsole(): bool
-            {
-                return false;
-            }
+            protected bool $isRunningInConsole = false;
         };
         $binder->bind($this->container);
     }

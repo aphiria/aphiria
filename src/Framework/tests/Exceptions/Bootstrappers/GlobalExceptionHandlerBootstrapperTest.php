@@ -51,17 +51,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     {
         $this->container = $this->createMock(IContainer::class);
         $this->bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
-            private bool $isRunningInConsole = false;
-
-            public function setIsRunningInConsole(bool $isRunningInConsole): void
-            {
-                $this->isRunningInConsole = $isRunningInConsole;
-            }
-
-            protected function isRunningInConsole(): bool
-            {
-                return $this->isRunningInConsole;
-            }
+            public bool $isRunningInConsole = false;
         };
         GlobalConfiguration::resetConfigurationSources();
     }
@@ -90,7 +80,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions(ConsoleExceptionRenderer::class);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(true);
+        $this->bootstrapper->isRunningInConsole = true;
         $this->bootstrapper->bootstrap();
         // Dummy assertion
         $this->assertTrue(true);
@@ -135,7 +125,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
             ->willReturnMap([
                 [$customApiExceptionRendererType, $customApiExceptionRenderer]
             ]);
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         // Dummy assertion
         $this->assertTrue(true);
@@ -168,7 +158,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->container->method('resolve')
             ->with(self::class)
             ->willReturn($this);
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
     }
 
@@ -195,12 +185,11 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     public function testIsRunningInConsoleDefaultsToTrue(): void
     {
         $bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
-            public function isRunningInConsole(): bool
-            {
-                return parent::isRunningInConsole();
+            public bool $isRunningInConsole {
+                get => parent::$isRunningInConsole;
             }
         };
-        $this->assertTrue($bootstrapper->isRunningInConsole());
+        $this->assertTrue($bootstrapper->isRunningInConsole);
     }
 
     public function testLoggerSupportsStreamHandler(): void
