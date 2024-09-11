@@ -17,10 +17,10 @@ namespace Aphiria\Routing;
  */
 final class RouteCollection
 {
+    /** @var list<Route> The list of methods to their various routes */
+    public private(set) array $values = [];
     /** @var array<string, Route> The mapping of route names to routes */
     private array $namedRoutes = [];
-    /** @var list<Route> The list of methods to their various routes */
-    private array $routes = [];
 
     /**
      * @param list<Route> $routes The initial list of routes
@@ -37,7 +37,7 @@ final class RouteCollection
      */
     public function add(Route $route): void
     {
-        $this->routes[] = $route;
+        $this->values[] = $route;
 
         if ($route->name !== null) {
             $this->namedRoutes[$route->name] = &$route;
@@ -53,7 +53,7 @@ final class RouteCollection
     {
         // Purposely not calling add() so that we save on method calls when adding a lot of routes (micro-optimization)
         foreach ($routes as $route) {
-            $this->routes[] = $route;
+            $this->values[] = $route;
 
             if ($route->name !== null) {
                 $this->namedRoutes[$route->name] = &$route;
@@ -69,18 +69,8 @@ final class RouteCollection
      */
     public function copy(RouteCollection $routes): void
     {
-        $this->routes = $routes->routes;
+        $this->values = $routes->values;
         $this->namedRoutes = $routes->namedRoutes;
-    }
-
-    /**
-     * Gets all the routes
-     *
-     * @return list<Route> The list of routes
-     */
-    public function getAll(): array
-    {
-        return $this->routes;
     }
 
     /**

@@ -78,7 +78,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             }
         }
 
-        $routes->addMany($routeBuilders->build()->getAll());
+        $routes->addMany($routeBuilders->build()->values);
     }
 
     /**

@@ -48,7 +48,7 @@ final class TrieFactory
         // Need to generate the trie
         $trie = new RootTrieNode();
 
-        foreach ($this->routes->getAll() as $route) {
+        foreach ($this->routes->values as $route) {
             foreach ($this->trieCompiler->compile($route)->getAllChildren() as $childNode) {
                 $trie->addChild($childNode);
             }

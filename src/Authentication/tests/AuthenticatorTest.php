@@ -91,18 +91,23 @@ class AuthenticatorTest extends TestCase
             public bool $isAuthenticated = false;
             public ?string $name = null;
             public ?string $nameIdentifier = null;
-            public ?Identity $primaryIdentity = new class () implements IIdentity {
-                public ?string $authenticationSchemeName = null;
+            public ?IIdentity $primaryIdentity = null;
 
-                public function filterClaims(ClaimType|string $type): array
-                {
-                    return [];
-                }
+            public function __construct()
+            {
+                $this->primaryIdentity = new class () implements IIdentity {
+                    public ?string $authenticationSchemeName = null;
 
-                public function hasClaim(ClaimType|string $type, mixed $value): bool
-                {
-                    return false;
-                }
+                    public function filterClaims(ClaimType|string $type): array
+                    {
+                        return [];
+                    }
+
+                    public function hasClaim(ClaimType|string $type, mixed $value): bool
+                    {
+                        return false;
+                    }
+                };
             }
 
             public function addIdentity(IIdentity $identity): void

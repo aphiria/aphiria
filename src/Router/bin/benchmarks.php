@@ -99,7 +99,7 @@ for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
 }
 
 $routes = new AphiriaRouteCollection();
-$routes->addMany($routesBuilder->build()->getAll());
+$routes->addMany($routesBuilder->build()->values);
 $routeMatcher = new TrieRouteMatcher((new TrieFactory($routes))->createTrie());
 $startTime = \microtime(true);
 

@@ -21,8 +21,8 @@ use ArrayAccess;
  */
 interface ISession extends ArrayAccess
 {
-    /** @var array<string, mixed> The mapping of all session variables */
-    public array $all { get; }
+    /** @var array<string, mixed> The mapping of all session variable names to values */
+    public array $variables { get; }
     /** @var int|string The session Id */
     public int|string $id { get; }
 

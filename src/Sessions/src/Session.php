@@ -25,11 +25,11 @@ class Session implements ISession
     public const string NEW_FLASH_KEYS_KEY = '__APHIRIA_NEW_FLASH_KEYS';
     /** The key for stale flash keys */
     public const string STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
+    /** @inheritdoc */
+    public private(set) array $variables = [];
 
-    /** @var int|string The session Id */
-    private int|string $id = '';
-    /** @var array<string, mixed> The mapping of variable names to values */
-    private array $vars = [];
+    /** @inheritdoc */
+    public private(set) int|string $id = '';
 
     /**
      * @param int|string|null $id The Id of the session
@@ -64,7 +64,7 @@ class Session implements ISession
      */
     public function containsKey(string $key): bool
     {
-        return isset($this->vars[$key]);
+        return isset($this->variables[$key]);
     }
 
     /**
@@ -72,7 +72,7 @@ class Session implements ISession
      */
     public function delete(string $key): void
     {
-        unset($this->vars[$key]);
+        unset($this->variables[$key]);
     }
 
     /**
@@ -99,7 +99,7 @@ class Session implements ISession
      */
     public function flush(): void
     {
-        $this->vars = [];
+        $this->variables = [];
     }
 
     /**
@@ -107,15 +107,7 @@ class Session implements ISession
      */
     public function get(string $key, mixed $defaultValue = null): mixed
     {
-        return $this->vars[$key] ?? $defaultValue;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAll(): array
-    {
-        return $this->vars;
+        return $this->variables[$key] ?? $defaultValue;
     }
 
     /**
@@ -159,7 +151,7 @@ class Session implements ISession
      */
     public function offsetUnset(mixed $offset): void
     {
-        unset($this->vars[(string)$offset]);
+        unset($this->variables[(string)$offset]);
     }
 
     /**
@@ -186,7 +178,7 @@ class Session implements ISession
      */
     public function set(string $key, $value): void
     {
-        $this->vars[$key] = $value;
+        $this->variables[$key] = $value;
     }
 
     /**
@@ -206,7 +198,7 @@ class Session implements ISession
      */
     public function setMany(array $variables): void
     {
-        $this->vars = [...$this->vars, ...$variables];
+        $this->variables = [...$this->variables, ...$variables];
     }
 
     /**

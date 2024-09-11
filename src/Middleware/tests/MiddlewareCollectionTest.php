@@ -31,7 +31,7 @@ class MiddlewareCollectionTest extends TestCase
         $middleware2 = $this->createMock(IMiddleware::class);
         $this->middlewareCollection->add($middleware1);
         $this->middlewareCollection->add($middleware2);
-        $this->assertSame([$middleware1, $middleware2], $this->middlewareCollection->getAll());
+        $this->assertSame([$middleware1, $middleware2], $this->middlewareCollection->values);
     }
 
     public function testAddingPriorityMiddlewareCausesItToBeOrderedBeforePreviouslyAddedMiddleware(): void
@@ -40,7 +40,7 @@ class MiddlewareCollectionTest extends TestCase
         $prioritizedMiddleware = $this->createMock(IMiddleware::class);
         $this->middlewareCollection->add($unprioritizedMiddleware);
         $this->middlewareCollection->add($prioritizedMiddleware, 1);
-        $this->assertSame([$prioritizedMiddleware, $unprioritizedMiddleware], $this->middlewareCollection->getAll());
+        $this->assertSame([$prioritizedMiddleware, $unprioritizedMiddleware], $this->middlewareCollection->values);
     }
 
     public function testAddingSamePriorityMiddlewareCausesThemToBeReturnedInOrderOfAddition(): void
@@ -49,18 +49,18 @@ class MiddlewareCollectionTest extends TestCase
         $prioritizedMiddleware2 = $this->createMock(IMiddleware::class);
         $this->middlewareCollection->add($prioritizedMiddleware1, 1);
         $this->middlewareCollection->add($prioritizedMiddleware2, 1);
-        $this->assertSame([$prioritizedMiddleware1, $prioritizedMiddleware2], $this->middlewareCollection->getAll());
+        $this->assertSame([$prioritizedMiddleware1, $prioritizedMiddleware2], $this->middlewareCollection->values);
     }
 
     public function testAddingSingleMiddlewareShowsUpInGetAll(): void
     {
         $middleware = $this->createMock(IMiddleware::class);
         $this->middlewareCollection->add($middleware);
-        $this->assertSame([$middleware], $this->middlewareCollection->getAll());
+        $this->assertSame([$middleware], $this->middlewareCollection->values);
     }
 
     public function testGetAllReturnsEmptyArrayWithNoMiddleware(): void
     {
-        $this->assertEquals([], $this->middlewareCollection->getAll());
+        $this->assertEquals([], $this->middlewareCollection->values);
     }
 }

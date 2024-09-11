@@ -22,7 +22,7 @@ interface IPrincipal
     /** @var list<IIdentity> The list of identities */
     public array $identities { get; }
     /** @var IIdentity|null The primary identity of the principal if there is one, otherwise null */
-    public ?Identity $primaryIdentity { get; }
+    public ?IIdentity $primaryIdentity { get; }
 
     /**
      * Adds an identity

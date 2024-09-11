@@ -61,7 +61,7 @@ class MiddlewareComponentTest extends TestCase
             ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware::class, ['bar' => 'baz']));
         $this->middlewareComponent->build();
-        $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
+        $this->assertEquals([$expectedMiddleware], $middlewareCollection->values);
     }
 
     public function testBuildWithMiddlewareThatIsNotCorrectInterfaceThrowsException(): void
@@ -92,7 +92,7 @@ class MiddlewareComponentTest extends TestCase
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware1::class));
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware2::class));
         $this->middlewareComponent->build();
-        $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
+        $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->values);
     }
 
     public function testWithMultipleGlobalMiddlewareAddsThemToCollectionToBeResolved(): void
@@ -110,7 +110,7 @@ class MiddlewareComponentTest extends TestCase
             new MiddlewareBinding($expectedMiddleware1::class), new MiddlewareBinding($expectedMiddleware2::class)
         ]);
         $this->middlewareComponent->build();
-        $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->getAll());
+        $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->values);
     }
 
     public function testWithSingleGlobalMiddlewareAddsItToCollectionToBeResolved(): void
@@ -124,6 +124,6 @@ class MiddlewareComponentTest extends TestCase
             ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware::class));
         $this->middlewareComponent->build();
-        $this->assertEquals([$expectedMiddleware], $middlewareCollection->getAll());
+        $this->assertEquals([$expectedMiddleware], $middlewareCollection->values);
     }
 }

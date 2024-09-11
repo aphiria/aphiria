@@ -39,9 +39,8 @@ class CommandComponentTest extends TestCase
 
         $this->container->bindInstance(CommandRegistry::class, $this->commands = new CommandRegistry());
         $this->container->bindInstance(CommandRegistrantCollection::class, $this->commandRegistrants = new class () extends CommandRegistrantCollection {
-            public function getAll(): array
-            {
-                return $this->commandRegistrants;
+            public array $values {
+                get => $this->commandRegistrants;
             }
         });
     }
@@ -68,9 +67,9 @@ class CommandComponentTest extends TestCase
         $this->commandComponent->withAttributes();
         $this->commandComponent->build();
         // We should have two - one for attributes and another for manually-registered commands
-        $this->assertCount(2, $this->commandRegistrants->getAll());
+        $this->assertCount(2, $this->commandRegistrants->values);
         // Make sure that attributes are registered first
-        $this->assertEquals($attributeCommandRegistrant, $this->commandRegistrants->getAll()[0]);
+        $this->assertEquals($attributeCommandRegistrant, $this->commandRegistrants->values[0]);
     }
 
     public function testBuildWithAttributesWithoutAttributeRegistrantThrowsException(): void

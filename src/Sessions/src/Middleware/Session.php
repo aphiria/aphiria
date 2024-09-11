@@ -80,7 +80,7 @@ final class Session implements IMiddleware
         $response = $next->handle($request);
 
         $this->session->ageFlashData();
-        $this->sessionHandler->write((string)$this->session->id, \serialize($this->session->all));
+        $this->sessionHandler->write((string)$this->session->id, \serialize($this->session->variables));
         $this->writeSessionToResponse($response);
 
         return $response;

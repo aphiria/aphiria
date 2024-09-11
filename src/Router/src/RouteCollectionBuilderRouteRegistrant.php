@@ -45,6 +45,6 @@ final class RouteCollectionBuilderRouteRegistrant implements IRouteRegistrant
             $closure($routeBuilders);
         }
 
-        $routes->addMany($routeBuilders->build()->getAll());
+        $routes->addMany($routeBuilders->build()->values);
     }
 }
