@@ -129,12 +129,12 @@ class ControllerTest extends TestCase
 
                 return new Response($statusCode, $headers, $body);
             });
-        $this->controller->setResponseFactory($this->responseFactory);
+        $this->controller->responseFactory = $this->responseFactory;
     }
 
     public function testAcceptedCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->accepted($expectedBody, $expectedHeaders);
@@ -145,7 +145,7 @@ class ControllerTest extends TestCase
 
     public function testBadRequestCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->badRequest($expectedBody, $expectedHeaders);
@@ -156,7 +156,7 @@ class ControllerTest extends TestCase
 
     public function testConflictCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->conflict($expectedBody, $expectedHeaders);
@@ -167,7 +167,7 @@ class ControllerTest extends TestCase
 
     public function testCreatedWithStringUriCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->created('https://example.com', $expectedBody, $expectedHeaders);
@@ -179,7 +179,7 @@ class ControllerTest extends TestCase
 
     public function testCreatedWithUriCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->created(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
@@ -191,7 +191,7 @@ class ControllerTest extends TestCase
 
     public function testForbiddenCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->forbidden($expectedBody, $expectedHeaders);
@@ -202,7 +202,7 @@ class ControllerTest extends TestCase
 
     public function testFoundWithStringUriCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->found('https://example.com', $expectedBody, $expectedHeaders);
@@ -214,7 +214,7 @@ class ControllerTest extends TestCase
 
     public function testFoundWithUriCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->found(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
@@ -226,22 +226,22 @@ class ControllerTest extends TestCase
 
     public function testGetUserGetsUserFromUserAccessor(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $user = $this->createMock(IPrincipal::class);
         $userAccessor = $this->createMock(IUserAccessor::class);
         $userAccessor->expects($this->once())
             ->method('getUser')
             ->with($this->request)
             ->willReturn($user);
-        $this->controller->setUserAccessor($userAccessor);
-        $this->assertSame($user, $this->controller->getUser());
+        $this->controller->userAccessor = $userAccessor;
+        $this->assertSame($user, $this->controller->user);
     }
 
     public function testGetUserWithoutRequestSetThrowsException(): void
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Request is not set');
-        $this->controller->setUserAccessor($this->createMock(IUserAccessor::class));
+        $this->controller->userAccessor = $this->createMock(IUserAccessor::class);
         $this->controller->user;
     }
 
@@ -249,7 +249,7 @@ class ControllerTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('User accessor is not set');
-        $this->controller->setRequest($this->createMock(IRequest::class));
+        $this->controller->request = $this->createMock(IRequest::class);
         $this->controller->user;
     }
 
@@ -283,7 +283,7 @@ class ControllerTest extends TestCase
 
     public function testInternalServerErrorCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->internalServerError($expectedBody, $expectedHeaders);
@@ -294,7 +294,7 @@ class ControllerTest extends TestCase
 
     public function testMovedPermanentlyWithStringUriCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->movedPermanently('https://example.com', $expectedBody, $expectedHeaders);
@@ -306,7 +306,7 @@ class ControllerTest extends TestCase
 
     public function testMovedPermanentlyWithUriCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->movedPermanently(new Uri('https://example.com'), $expectedBody, $expectedHeaders);
@@ -318,7 +318,7 @@ class ControllerTest extends TestCase
 
     public function testNoContentCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedHeaders = new Headers();
         $response = $this->controller->noContent($expectedHeaders);
         $this->assertSame(HttpStatusCode::NoContent, $response->statusCode);
@@ -327,7 +327,7 @@ class ControllerTest extends TestCase
 
     public function testNotFoundCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->notFound($expectedBody, $expectedHeaders);
@@ -338,7 +338,7 @@ class ControllerTest extends TestCase
 
     public function testOkCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->ok($expectedBody, $expectedHeaders);
@@ -354,8 +354,8 @@ class ControllerTest extends TestCase
             ->method('readRequestBodyAs')
             ->with('foo', $this->request)
             ->willReturn('bar');
-        $this->controller->setBodyDeserializer($bodyDeserializer);
-        $this->controller->setRequest($this->request);
+        $this->controller->bodyDeserializer = $bodyDeserializer;
+        $this->controller->request = $this->request;
         $this->assertSame('bar', $this->controller->readRequestBodyAs('foo'));
     }
 
@@ -367,8 +367,8 @@ class ControllerTest extends TestCase
                 ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
                 ->willThrowException(new SerializationException());
-            $this->controller->setBodyDeserializer($bodyDeserializer);
-            $this->controller->setRequest($this->request);
+            $this->controller->bodyDeserializer = $bodyDeserializer;
+            $this->controller->request = $this->request;
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
@@ -385,8 +385,8 @@ class ControllerTest extends TestCase
                 ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
                 ->willThrowException(new FailedContentNegotiationException());
-            $this->controller->setBodyDeserializer($bodyDeserializer);
-            $this->controller->setRequest($this->request);
+            $this->controller->bodyDeserializer = $bodyDeserializer;
+            $this->controller->request = $this->request;
             $this->controller->readRequestBodyAs('foo');
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
@@ -397,7 +397,7 @@ class ControllerTest extends TestCase
 
     public function testUnauthorizedCreatesCorrectResponse(): void
     {
-        $this->controller->setRequest($this->request);
+        $this->controller->request = $this->request;
         $expectedBody = $this->createMock(IBody::class);
         $expectedHeaders = new Headers();
         $response = $this->controller->unauthorized($expectedBody, $expectedHeaders);

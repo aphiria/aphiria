@@ -16,10 +16,14 @@ use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Authentication\IUserAccessor;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
+use Aphiria\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Net\Http\IResponseFactory;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -68,18 +72,6 @@ class ControllerRequestHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
-        $controller->expects($this->once())
-            ->method('setRequest')
-            ->with($request);
-        $controller->expects($this->once())
-            ->method('setRequestParser');
-        $controller->expects($this->once())
-            ->method('setBodyDeserializer')
-            ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
-        $controller->expects($this->once())
-            ->method('setResponseFactory');
-        $controller->expects($this->once())
-            ->method('setUserAccessor');
         /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
@@ -96,5 +88,11 @@ class ControllerRequestHandlerTest extends TestCase
             $this->userAccessor
         );
         $requestHandler->handle($request);
+        $this->assertSame($request, $controller->request);
+        $this->assertInstanceOf(RequestParser::class, $controller->requestParser);
+        $this->assertInstanceOf(IBodyDeserializer::class, $controller->bodyDeserializer);
+        $this->assertInstanceOf(IResponseFactory::class, $controller->responseFactory);
+        $this->assertInstanceOf(ResponseFormatter::class, $controller->responseFormatter);
+        $this->assertInstanceOf(IUserAccessor::class, $controller->userAccessor);
     }
 }
