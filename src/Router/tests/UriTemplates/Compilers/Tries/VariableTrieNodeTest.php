@@ -176,7 +176,7 @@ class VariableTrieNodeTest extends TestCase
         $expectedHostTrie = $this->createMock(TrieNode::class);
         $node = new VariableTrieNode($expectedParts, $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame($expectedParts, $node->parts);
-        $this->assertSame($expectedChildren, $node->getAllChildren());
+        $this->assertSame($expectedChildren, $node->children);
         $this->assertSame($expectedRoutes, $node->routes);
         $this->assertSame($expectedHostTrie, $node->hostTrie);
     }

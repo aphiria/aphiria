@@ -50,7 +50,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
             ->willReturn([$object::class]);
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getMethodConstraints('method');
+        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getConstraintsForMethod('method');
         $this->assertNotNull($methodConstraints);
         $this->assertCount(1, $methodConstraints);
         $this->assertInstanceOf(RequiredConstraint::class, $methodConstraints[0]);
@@ -71,7 +71,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
             ->willReturn([$object::class]);
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getMethodConstraints('method');
+        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getConstraintsForMethod('method');
         $this->assertNotNull($methodConstraints);
         $this->assertCount(0, $methodConstraints);
     }
@@ -91,7 +91,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
             ->willReturn([$object::class]);
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getMethodConstraints('method');
+        $methodConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getConstraintsForMethod('method');
         $this->assertNotNull($methodConstraints);
         $this->assertCount(2, $methodConstraints);
         $this->assertInstanceOf(RequiredConstraint::class, $methodConstraints[0]);
@@ -110,7 +110,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
             ->willReturn([$object::class]);
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $propertyConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getPropertyConstraints('prop');
+        $propertyConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getConstraintsForProperty('prop');
         $this->assertNotNull($propertyConstraints);
         $this->assertCount(2, $propertyConstraints);
         $this->assertInstanceOf(RequiredConstraint::class, $propertyConstraints[0]);
@@ -129,7 +129,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
             ->willReturn([$object::class]);
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $propertyConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getPropertyConstraints('prop');
+        $propertyConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getConstraintsForProperty('prop');
         $this->assertNotNull($propertyConstraints);
         $this->assertCount(1, $propertyConstraints);
         $this->assertInstanceOf(RequiredConstraint::class, $propertyConstraints[0]);
@@ -147,7 +147,7 @@ class AttributeConstraintsRegistrantTest extends TestCase
             ->willReturn([$object::class]);
         $objectConstraints = new ObjectConstraintsRegistry();
         $this->registrant->registerConstraints($objectConstraints);
-        $classConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getPropertyConstraints('prop');
+        $classConstraints = $objectConstraints->getConstraintsForClass($object::class)?->getConstraintsForProperty('prop');
         $this->assertNotNull($classConstraints);
         $this->assertCount(0, $classConstraints);
     }

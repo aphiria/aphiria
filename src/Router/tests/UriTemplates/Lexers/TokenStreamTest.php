@@ -65,16 +65,16 @@ class TokenStreamTest extends TestCase
         $token1 = new Token(TokenType::Text, 'foo');
         $token2 = new Token(TokenType::Text, 'bar');
         $stream = new TokenStream([$token1, $token2]);
-        $this->assertSame($token1, $stream->getCurrent());
+        $this->assertSame($token1, $stream->current);
         $stream->next();
-        $this->assertSame($token2, $stream->getCurrent());
+        $this->assertSame($token2, $stream->current);
     }
 
     public function testGettingCurrentTokenWhenAtEndReturnsNull(): void
     {
         $stream = new TokenStream([new Token(TokenType::Text, 'foo')]);
         $stream->next();
-        $this->assertNull($stream->getCurrent());
+        $this->assertNull($stream->current);
     }
 
     public function testGettingNextAlwaysReturnsNextToken(): void

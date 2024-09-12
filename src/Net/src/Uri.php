@@ -17,24 +17,29 @@ use InvalidArgumentException;
 /**
  * Defines a URI
  */
-readonly class Uri
+class Uri
 {
     /** @var string|null The URI fragment (excludes '#') if set, otherwise null */
-    public ?string $fragment;
+    public readonly ?string $fragment;
     /** @var string|null The URI host if set, otherwise null */
-    public ?string $host;
+    public readonly ?string $host;
     /** @var string|null The URI password if set, otherwise null */
-    public ?string $password;
+    public readonly ?string $password;
     /** @var string|null The URI path if set, otherwise null */
-    public ?string $path;
+    public readonly ?string $path;
     /** @var int|null The URI port if set, otherwise null */
-    public ?int $port;
+    public readonly ?int $port;
     /** @var string|null The URI query string (excludes '?') if set, otherwise null */
-    public ?string $queryString;
+    public readonly ?string $queryString;
     /** @var string|null The URI scheme if set, otherwise null */
-    public ?string $scheme;
+    public readonly ?string $scheme;
     /** @var string|null The URI user if set, otherwise null */
-    public ?string $user;
+    public readonly ?string $user;
+    /** @var bool Whether or not a standard port is using for the URI scheme */
+    private bool $isUsingStandardPort {
+        get => $this->port === null ||
+            (($this->scheme === 'http' && $this->port === 80) || ($this->scheme === 'https' && $this->port === 443));
+    }
 
     /**
      * @param string $uri The raw URI
@@ -115,7 +120,7 @@ readonly class Uri
             $authority .= $this->host;
         }
 
-        if (!$this->isUsingStandardPort()) {
+        if (!$this->isUsingStandardPort) {
             $authority .= ":{$this->port}";
         }
 
@@ -207,17 +212,6 @@ readonly class Uri
 
         /** @link https://tools.ietf.org/html/rfc3986#section-3.1 */
         return \strtolower($scheme);
-    }
-
-    /**
-     * Gets whether or not a standard port is being used for the scheme
-     *
-     * @return bool True if using a standard port, otherwise false
-     */
-    private function isUsingStandardPort(): bool
-    {
-        return $this->port === null ||
-            (($this->scheme === 'http' && $this->port === 80) || ($this->scheme === 'https' && $this->port === 443));
     }
 
     /**

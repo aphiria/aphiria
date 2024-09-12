@@ -43,7 +43,7 @@ final class TrieRouteMatcher implements IRouteMatcher
                 // If any constraints fail, collect the allowed methods and go on to the next candidate
                 if (!$constraint->passes($candidate, $httpMethod, $host, $path, $headers)) {
                     if ($constraint instanceof HttpMethodRouteConstraint) {
-                        $allowedMethods = [...$allowedMethods, ...$constraint->getAllowedMethods()];
+                        $allowedMethods = [...$allowedMethods, ...$constraint->allowedMethods];
                     }
 
                     continue 2;

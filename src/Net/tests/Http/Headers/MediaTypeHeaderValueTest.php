@@ -55,7 +55,7 @@ class MediaTypeHeaderValueTest extends TestCase
         /** @var ImmutableHashTable<string, string|null> $parameters */
         $parameters = new ImmutableHashTable([]);
         $value = new MediaTypeHeaderValue('foo/bar', $parameters);
-        $this->assertSame('bar', $value->getSubTypeWithoutSuffix());
+        $this->assertSame('bar', $value->mediaTypeWithoutSuffix);
     }
 
     public function testGettingTypeReturnsCorrectType(): void
@@ -88,7 +88,7 @@ class MediaTypeHeaderValueTest extends TestCase
         $value = new MediaTypeHeaderValue('application/foo+json', $parameters);
         $this->assertSame('application', $value->type);
         $this->assertSame('foo+json', $value->subType);
-        $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertSame('foo', $value->mediaTypeWithoutSuffix);
         $this->assertSame('json', $value->suffix);
     }
 }

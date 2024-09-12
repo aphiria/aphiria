@@ -21,9 +21,9 @@ class AstNodeTest extends TestCase
     public function testCheckingForChildrenReturnsCorrectValue(): void
     {
         $node = new AstNode(AstNodeType::Text, 'foo');
-        $this->assertFalse($node->hasChildren());
+        $this->assertFalse($node->hasChildren);
         $node->addChild(new AstNode(AstNodeType::Text, 'bar'));
-        $this->assertTrue($node->hasChildren());
+        $this->assertTrue($node->hasChildren);
     }
 
     public function testGettingChildReturnsCorrectNodes(): void
@@ -51,8 +51,8 @@ class AstNodeTest extends TestCase
         $node = new AstNode(AstNodeType::Text, 'foo');
         $child = new AstNode(AstNodeType::Text, 'bar');
         $node->addChild($child);
-        $this->assertTrue($node->isRoot());
-        $this->assertFalse($child->isRoot());
+        $this->assertTrue($node->isRoot);
+        $this->assertFalse($child->isRoot);
     }
 
     public function testParentNodeIsSetOnChildNodes(): void

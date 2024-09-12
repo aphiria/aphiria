@@ -33,7 +33,7 @@ final class UriTemplateParser implements IUriTemplateParser
         $hostExists = false;
         $lookaheadBuffer = [];
 
-        while (($token = $tokens->getCurrent()) !== null) {
+        while (($token = $tokens->current) !== null) {
             if ($token->type === TokenType::Punctuation && $token->value === '/') {
                 if ($hostExists) {
                     $hostNode = new AstNode(AstNodeType::Host, null);
@@ -173,7 +173,7 @@ final class UriTemplateParser implements IUriTemplateParser
         $parsingPath = $ast->type === AstNodeType::Path;
         $currNode = $ast;
 
-        while (($token = $tokens->getCurrent()) !== null) {
+        while (($token = $tokens->current) !== null) {
             switch ($token->type) {
                 case TokenType::Text:
                     $this->parseText($token, $tokens, $currNode);
@@ -217,7 +217,7 @@ final class UriTemplateParser implements IUriTemplateParser
             // Parse all variable constraints
             do {
                 /** @psalm-suppress PossiblyNullArgument Above, we've verified that the current token is punctuation */
-                $this->parseVariableConstraint($tokens->getCurrent(), $tokens, $variableNode);
+                $this->parseVariableConstraint($tokens->current, $tokens, $variableNode);
             } while ($tokens->nextIfType(TokenType::Punctuation, ','));
 
             $tokens->expect(TokenType::Punctuation, ')', 'Expected closing parenthesis after constraints, got %s');
@@ -249,7 +249,7 @@ final class UriTemplateParser implements IUriTemplateParser
         // Check for a parameter list for this constraint
         if ($tokens->nextIfType(TokenType::Punctuation, '(')) {
             $parameters = [];
-            $currentToken = $tokens->getCurrent();
+            $currentToken = $tokens->current;
 
             while ($currentToken !== null && !$tokens->test(TokenType::Punctuation, ')')) {
                 if (!$tokens->test(TokenType::Punctuation, ',')) {

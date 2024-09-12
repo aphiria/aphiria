@@ -19,6 +19,14 @@ final class AstNode
 {
     /** @var list<AstNode> The child nodes */
     public array $children = [];
+    /** @var bool Whether or not the node has children */
+    public bool $hasChildren {
+        get => \count($this->children) > 0;
+    }
+    /** @var bool Whether or not the node is the root node */
+    public bool $isRoot {
+        get => $this->parent === null;
+    }
     /** @var AstNode|null The parent node */
     public ?AstNode $parent = null;
 
@@ -42,25 +50,5 @@ final class AstNode
         $this->children[] = $node;
 
         return $this;
-    }
-
-    /**
-     * Gets whether or not the node has children
-     *
-     * @return bool True if the node has children, otherwise false
-     */
-    public function hasChildren(): bool
-    {
-        return \count($this->children) > 0;
-    }
-
-    /**
-     * Gets whether or not this node is the root
-     *
-     * @return bool True if this is a root node, otherwise false
-     */
-    public function isRoot(): bool
-    {
-        return $this->parent === null;
     }
 }

@@ -17,10 +17,38 @@ namespace Aphiria\Validation;
  */
 final class ValidationContext
 {
+    /** @var list<ConstraintViolation> The list of constraint violations that occurred in this context and all child contexts */
+    public array $constraintViolations {
+        get {
+            $allConstraintViolations = $this->constraintViolationsInThisContext;
+
+            foreach ($this->childContexts as $childContext) {
+                $allConstraintViolations = [...$allConstraintViolations, ...$childContext->constraintViolations];
+            }
+
+            return $allConstraintViolations;
+        }
+    }
+    /** @var list<string> The list of error messages from all constraint violations */
+    public array $errorMessages {
+        get {
+            $errorMessages = [];
+
+            foreach ($this->constraintViolations as $violation) {
+                $errorMessages[] = $violation->errorMessage;
+            }
+
+            return $errorMessages;
+        }
+    }
+    /** @var mixed The top-most value in the context chain that was being validated */
+    public mixed $rootValue {
+        get => $this->parentContext === null ? $this->value : $this->parentContext->value;
+    }
     /** @var list<ValidationContext> The list of child contexts, if there are any */
     private array $childContexts = [];
     /** @var list<ConstraintViolation> The list of constraint violations that occurred in this context */
-    private array $constraintViolations = [];
+    private array $constraintViolationsInThisContext = [];
 
     /**
      * @param mixed $value The value being validated
@@ -46,7 +74,7 @@ final class ValidationContext
      */
     public function addConstraintViolation(ConstraintViolation $constraintViolation): void
     {
-        $this->constraintViolations[] = $constraintViolation;
+        $this->constraintViolationsInThisContext[] = $constraintViolation;
     }
 
     /**
@@ -56,53 +84,7 @@ final class ValidationContext
      */
     public function addManyConstraintViolations(array $constraintViolations): void
     {
-        $this->constraintViolations = [...$this->constraintViolations, ...$constraintViolations];
-    }
-
-    /**
-     * Gets the list of constraint violations
-     *
-     * @return list<ConstraintViolation> The list of constraint violations
-     */
-    public function getConstraintViolations(): array
-    {
-        $allConstraintViolations = $this->constraintViolations;
-
-        foreach ($this->childContexts as $childContext) {
-            $allConstraintViolations = [...$allConstraintViolations, ...$childContext->getConstraintViolations()];
-        }
-
-        return $allConstraintViolations;
-    }
-
-    /**
-     * Gets the error messages for all constraint violations
-     *
-     * @return list<string> The list of error messages
-     */
-    public function getErrorMessages(): array
-    {
-        $errors = [];
-
-        foreach ($this->getConstraintViolations() as $violation) {
-            $errors[] = $violation->errorMessage;
-        }
-
-        return $errors;
-    }
-
-    /**
-     * Gets the top-most value in the context chain that was being validated
-     *
-     * @return mixed The root value
-     */
-    public function getRootValue(): mixed
-    {
-        if ($this->parentContext === null) {
-            return $this->value;
-        }
-
-        return $this->parentContext->getRootValue();
+        $this->constraintViolationsInThisContext = [...$this->constraintViolationsInThisContext, ...$constraintViolations];
     }
 
     /**

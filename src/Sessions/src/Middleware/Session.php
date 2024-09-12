@@ -74,7 +74,7 @@ final class Session implements IMiddleware
 
         $this->sessionHandler->open('', $this->sessionCookieName);
         /** @var array<string, mixed>|false $sessionVars */
-        $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->getId()));
+        $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->id));
         $this->session->setMany($sessionVars === false ? [] : $sessionVars);
 
         $response = $next->handle($request);
@@ -97,7 +97,7 @@ final class Session implements IMiddleware
             $response,
             new Cookie(
                 $this->sessionCookieName,
-                $this->session->getId(),
+                $this->session->id,
                 $this->sessionTtl,
                 $this->sessionCookiePath,
                 $this->sessionCookieDomain,

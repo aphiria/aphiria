@@ -113,14 +113,6 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function getId(): int|string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function offsetExists(mixed $offset): bool
     {
         return $this->containsKey((string)$offset);

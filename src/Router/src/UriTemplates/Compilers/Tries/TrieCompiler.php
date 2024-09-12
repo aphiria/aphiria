@@ -221,7 +221,7 @@ final class TrieCompiler implements ITrieCompiler
             }
 
             /** @var list<mixed> $constraintParams */
-            $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
+            $constraintParams = $childAstNode->hasChildren ? $childAstNode->children[0]->value : [];
             $constraints[] = $this->constraintFactory->createConstraint(
                 (string)$childAstNode->value,
                 (array)$constraintParams

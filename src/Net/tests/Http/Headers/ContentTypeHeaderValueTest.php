@@ -73,7 +73,7 @@ class ContentTypeHeaderValueTest extends TestCase
         $value = new ContentTypeHeaderValue('application/foo+json', $parameters);
         $this->assertSame('application', $value->type);
         $this->assertSame('foo+json', $value->subType);
-        $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertSame('foo', $value->mediaTypeWithoutSuffix);
         $this->assertSame('json', $value->suffix);
     }
 }

@@ -30,8 +30,8 @@ class ValidationContextTest extends TestCase
         );
         $context = new ValidationContext('foo');
         $context->addConstraintViolation($expectedConstraintViolation);
-        $this->assertCount(1, $context->getConstraintViolations());
-        $this->assertSame($expectedConstraintViolation, $context->getConstraintViolations()[0]);
+        $this->assertCount(1, $context->constraintViolations);
+        $this->assertSame($expectedConstraintViolation, $context->constraintViolations[0]);
     }
     public function testAddingManyConstraintViolations(): void
     {
@@ -49,9 +49,9 @@ class ValidationContextTest extends TestCase
         );
         $context = new ValidationContext('foo');
         $context->addManyConstraintViolations([$expectedConstraintViolation1, $expectedConstraintViolation2]);
-        $this->assertCount(2, $context->getConstraintViolations());
-        $this->assertSame($expectedConstraintViolation1, $context->getConstraintViolations()[0]);
-        $this->assertSame($expectedConstraintViolation2, $context->getConstraintViolations()[1]);
+        $this->assertCount(2, $context->constraintViolations);
+        $this->assertSame($expectedConstraintViolation1, $context->constraintViolations[0]);
+        $this->assertSame($expectedConstraintViolation2, $context->constraintViolations[1]);
     }
 
     public function testAddingMoreConstraintViolationsAppendsThemToExistingViolations(): void
@@ -78,10 +78,10 @@ class ValidationContextTest extends TestCase
         $context->addConstraintViolation($expectedConstraintViolation1);
         $context->addConstraintViolation($expectedConstraintViolation2);
         $context->addManyConstraintViolations([$expectedConstraintViolation3]);
-        $this->assertCount(3, $context->getConstraintViolations());
-        $this->assertSame($expectedConstraintViolation1, $context->getConstraintViolations()[0]);
-        $this->assertSame($expectedConstraintViolation2, $context->getConstraintViolations()[1]);
-        $this->assertSame($expectedConstraintViolation3, $context->getConstraintViolations()[2]);
+        $this->assertCount(3, $context->constraintViolations);
+        $this->assertSame($expectedConstraintViolation1, $context->constraintViolations[0]);
+        $this->assertSame($expectedConstraintViolation2, $context->constraintViolations[1]);
+        $this->assertSame($expectedConstraintViolation3, $context->constraintViolations[2]);
     }
 
     public function testCircularDependencyDetectedIfObjectAppearsInChildContext(): void
@@ -147,10 +147,10 @@ class ValidationContextTest extends TestCase
         );
         $childContext1->addConstraintViolation($childConstraintViolation1);
         $childContext2->addConstraintViolation($childConstraintViolation2);
-        $this->assertCount(3, $parentContext->getConstraintViolations());
-        $this->assertSame($parentConstraintViolation, $parentContext->getConstraintViolations()[0]);
-        $this->assertSame($childConstraintViolation1, $parentContext->getConstraintViolations()[1]);
-        $this->assertSame($childConstraintViolation2, $parentContext->getConstraintViolations()[2]);
+        $this->assertCount(3, $parentContext->constraintViolations);
+        $this->assertSame($parentConstraintViolation, $parentContext->constraintViolations[0]);
+        $this->assertSame($childConstraintViolation1, $parentContext->constraintViolations[1]);
+        $this->assertSame($childConstraintViolation2, $parentContext->constraintViolations[2]);
     }
 
     public function testGettingErrorMessagesGetsMessagesFromConstraintViolations(): void
@@ -159,7 +159,7 @@ class ValidationContextTest extends TestCase
         $constraintViolation2 = new ConstraintViolation('error2', $this->createMock(IConstraint::class), 'bar', $this);
         $context = new ValidationContext($this);
         $context->addManyConstraintViolations([$constraintViolation1, $constraintViolation2]);
-        $this->assertEquals(['error1', 'error2'], $context->getErrorMessages());
+        $this->assertEquals(['error1', 'error2'], $context->errorMessages);
     }
 
     public function testGettingErrorMessagesIncludesMessagesFromChildViolations(): void
@@ -169,7 +169,7 @@ class ValidationContextTest extends TestCase
         $parentContext = new ValidationContext($this);
         $childContext = new ValidationContext($this, 'prop', null, $parentContext);
         $childContext->addManyConstraintViolations([$constraintViolation1, $constraintViolation2]);
-        $this->assertEquals(['error1', 'error2'], $parentContext->getErrorMessages());
+        $this->assertEquals(['error1', 'error2'], $parentContext->errorMessages);
     }
 
     public function testGettingMethodNameReturnsOneSetInConstructor(): void
@@ -189,14 +189,14 @@ class ValidationContextTest extends TestCase
         $parentContext = new ValidationContext($this);
         $childContext = new ValidationContext(new class () {
         }, null, null, $parentContext);
-        $this->assertSame($this, $childContext->getRootValue());
-        $this->assertSame($this, $parentContext->getRootValue());
+        $this->assertSame($this, $childContext->rootValue);
+        $this->assertSame($this, $parentContext->rootValue);
     }
 
     public function testGettingRootValueReturnsValueIfNoParentContextExists(): void
     {
         $context = new ValidationContext($this);
-        $this->assertSame($this, $context->getRootValue());
+        $this->assertSame($this, $context->rootValue);
     }
 
     public function testGettingValueReturnsOneSetInConstructor(): void

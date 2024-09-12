@@ -136,7 +136,7 @@ class RouteListCommandHandler implements ICommandHandler
 
         foreach ($route->constraints as $constraint) {
             if ($constraint instanceof HttpMethodRouteConstraint) {
-                $httpMethods = $constraint->getAllowedMethods();
+                $httpMethods = $constraint->allowedMethods;
                 break;
             }
         }

@@ -20,6 +20,22 @@ use InvalidArgumentException;
  */
 abstract class TrieNode
 {
+    /** @var list<TrieNode> The list of child nodes */
+    public array $children {
+        get {
+            $children = [];
+
+            foreach ($this->literalChildrenByValue as $childNode) {
+                $children[] = $childNode;
+            }
+
+            foreach ($this->variableChildren as $childNode) {
+                $children[] = $childNode;
+            }
+
+            return $children;
+        }
+    }
     /** @var array<string, LiteralTrieNode> The mapping of literal child node values to child nodes */
     public array $literalChildrenByValue = [];
     /** @var list<Route> The list of routes for this node, if there are any */
@@ -67,26 +83,6 @@ abstract class TrieNode
     }
 
     /**
-     * Gets all the child nodes
-     *
-     * @return list<TrieNode> The child nodes
-     */
-    public function getAllChildren(): array
-    {
-        $children = [];
-
-        foreach ($this->literalChildrenByValue as $childNode) {
-            $children[] = $childNode;
-        }
-
-        foreach ($this->variableChildren as $childNode) {
-            $children[] = $childNode;
-        }
-
-        return $children;
-    }
-
-    /**
      * Adds a literal child node
      *
      * @param LiteralTrieNode $childNode The child node to add
@@ -101,7 +97,7 @@ abstract class TrieNode
             $matchingChildNode = $this->literalChildrenByValue[$valueAsString];
             $matchingChildNode->routes = [...$matchingChildNode->routes, ...$childNode->routes];
 
-            foreach ($childNode->getAllChildren() as $grandChildNode) {
+            foreach ($childNode->children as $grandChildNode) {
                 $matchingChildNode->addChild($grandChildNode);
             }
         } else {
@@ -132,7 +128,7 @@ abstract class TrieNode
         if ($matchingChildNode === null) {
             $this->variableChildren[] = $childNode;
         } else {
-            foreach ($childNode->getAllChildren() as $grandChildNode) {
+            foreach ($childNode->children as $grandChildNode) {
                 $matchingChildNode->addChild($grandChildNode);
             }
         }
