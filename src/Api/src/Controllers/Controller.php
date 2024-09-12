@@ -50,7 +50,7 @@ class Controller
      * @var IPrincipal|null
      * @throws LogicException Thrown if the user accessor or request are not set
      */
-    protected ?IPrincipal $principal {
+    protected ?IPrincipal $user {
         get {
             if (!$this->userAccessor instanceof IUserAccessor) {
                 throw new LogicException('User accessor is not set');

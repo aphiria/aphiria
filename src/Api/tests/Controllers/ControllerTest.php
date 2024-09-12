@@ -41,7 +41,7 @@ class ControllerTest extends TestCase
     {
         // Allow us to more easily test the convenience methods
         $this->controller = new class () extends Controller {
-            public ?IPrincipal $principal {
+            public ?IPrincipal $user {
                 get {
                     if (!$this->userAccessor instanceof IUserAccessor) {
                         throw new LogicException('User accessor is not set');
