@@ -22,10 +22,23 @@ final class ProgressBar
 {
     /** @var bool Whether or not the progress bar is complete */
     public bool $isComplete {
-        get => $this->maxSteps === $this->progress;
+        get => $this->maxSteps === $this->_progress;
+    }
+    /** @var int The current progress */
+    public int $progress {
+        set {
+            // Bound the progress between 0 and the max steps
+            $prevProgress = $this->_progress;
+            $this->_progress = \max(0, \min($this->maxSteps, $value));
+
+            // Don't call the observers if no progress was actually made
+            if ($prevProgress !== $this->_progress) {
+                $this->observer->onProgressChanged($prevProgress, $this->_progress, $this->maxSteps, $this->options);
+            }
+        }
     }
     /** @var int|null The current progress, or null if no progress has been made yet */
-    private ?int $progress = null;
+    private ?int $_progress = null;
 
     /**
      * @param int $maxSteps The max number of steps
@@ -51,7 +64,7 @@ final class ProgressBar
      */
     public function advance(int $step = 1): void
     {
-        $this->setProgress(($this->progress ?? 0) + $step);
+        $this->progress = ($this->_progress ?? 0) + $step;
     }
 
     /**
@@ -61,24 +74,6 @@ final class ProgressBar
      */
     public function complete(): void
     {
-        $this->setProgress($this->maxSteps);
-    }
-
-    /**
-     * Sets the current progress
-     *
-     * @param int $progress The current progress
-     * @throws Exception Thrown if there was an error formatting the output
-     */
-    public function setProgress(int $progress): void
-    {
-        // Bound the progress between 0 and the max steps
-        $prevProgress = $this->progress;
-        $this->progress = \max(0, \min($this->maxSteps, $progress));
-
-        // Don't call the observers if no progress was actually made
-        if ($prevProgress !== $this->progress) {
-            $this->observer->onProgressChanged($prevProgress, $this->progress, $this->maxSteps, $this->options);
-        }
+        $this->progress = $this->maxSteps;
     }
 }

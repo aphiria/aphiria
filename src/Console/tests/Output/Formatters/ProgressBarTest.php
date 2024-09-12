@@ -81,7 +81,7 @@ class ProgressBarTest extends TestCase
         $progressBar = new ProgressBar(100, $formatter, $options);
         // Note: We're advancing at least once so that the update is sent to the formatter
         $progressBar->advance();
-        $progressBar->setProgress(-1);
+        $progressBar->progress = -1;
         // Dummy assertion
         $this->assertTrue(true);
     }
@@ -91,14 +91,14 @@ class ProgressBarTest extends TestCase
         $this->formatter->expects($this->once())
             ->method('onProgressChanged')
             ->with(0, 100, 100);
-        $this->progressBar->setProgress(500);
+        $this->progressBar->progress = 500;
     }
 
     public function testSettingProgressToZeroStillNotifiesObserversOfProgress(): void
     {
         $this->formatter->method('onProgressChanged')
             ->with(0, 0, 100);
-        $this->progressBar->setProgress(0);
+        $this->progressBar->progress = 0;
         // Dummy assertion
         $this->assertTrue(true);
     }
