@@ -34,11 +34,15 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
     /** @inheritdoc */
     public IRequest $request {
-        set => $this->_request = $value;
+        set {
+            $this->_request = $value;
+        }
     }
     /** @inheritdoc */
     public IResponseFactory $responseFactory {
-        set => $this->_responseFactory = $value;
+        set {
+            $this->_responseFactory = $value;
+        }
     }
     /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];

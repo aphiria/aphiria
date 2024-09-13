@@ -17,8 +17,19 @@ namespace Aphiria\Validation\ErrorMessages;
  */
 final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterpolator
 {
-    /** @var string|null The default locale */
-    private ?string $defaultLocale = null;
+    /** @inheritdoc */
+    public string $defaultLocale {
+        set {
+            $this->_defaultLocale = $value;
+        }
+    }
+    /**
+     * The default locale if one is set, otherwise null
+     *
+     * @var string|null
+     * @note This is a dummy variable that exists solely to make the public default locale write-only
+     */
+    private ?string $_defaultLocale = null;
 
     /**
      * @param IErrorMessageTemplateRegistry $errorMessageTemplates The error message template registry to use
@@ -46,13 +57,5 @@ final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterp
         $interpolatedErrorMessage = \preg_replace('/{.+}/', '', $interpolatedErrorMessage);
 
         return $interpolatedErrorMessage;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setDefaultLocale(string $locale): void
-    {
-        $this->defaultLocale = $locale;
     }
 }

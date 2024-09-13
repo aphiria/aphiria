@@ -19,7 +19,9 @@ abstract class ParameterizedMiddleware implements IMiddleware
 {
     /** @var array<string, mixed> The mapping of parameter middleware names to values */
     public array $parameters {
-        set => $this->_parameters = $value;
+        set {
+            $this->_parameters = $value;
+        }
     }
     /** @var array<string, mixed> The virtualized mapping of middleware parameters names to values */
     private array $_parameters = [];

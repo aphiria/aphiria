@@ -42,7 +42,9 @@ class Controller
      */
     public IBodyDeserializer $bodyDeserializer {
         get => $this->_bodyDeserializer === null ? throw new LogicException('Body deserializer is not set') : $this->_bodyDeserializer;
-        set => $this->_bodyDeserializer = $value;
+        set {
+            $this->_bodyDeserializer = $value;
+        }
     }
     /**
      * The current request
@@ -52,7 +54,9 @@ class Controller
      */
     public IRequest $request {
         get => $this->_request === null ? throw new LogicException('Request is not set') : $this->_request;
-        set => $this->_request = $value;
+        set {
+            $this->_request = $value;
+        }
     }
     /**
      * The request parser
@@ -72,7 +76,9 @@ class Controller
      */
     public IResponseFactory $responseFactory {
         get => $this->_responseFactory === null ? throw new LogicException('Response factory is not set') : $this->_responseFactory;
-        set => $this->_responseFactory = $value;
+        set {
+            $this->_responseFactory = $value;
+        }
     }
     /**
      * The response formatter
@@ -82,7 +88,9 @@ class Controller
      */
     public ResponseFormatter $responseFormatter {
         get => $this->_responseFormatter === null ? throw new LogicException('Response formatter is not set') : $this->_responseFormatter;
-        set => $this->_responseFormatter = $value;
+        set {
+            $this->_responseFormatter = $value;
+        }
     }
     /**
      * The user accessor
@@ -92,7 +100,9 @@ class Controller
      */
     public IUserAccessor $userAccessor {
         get => $this->_userAccessor === null ? throw new LogicException('User accessor is not set') : $this->_userAccessor;
-        set => $this->_userAccessor = $value;
+        set {
+            $this->_userAccessor = $value;
+        }
     }
     /**
      * Gets the current user if one was set, otherwise null

@@ -17,6 +17,9 @@ namespace Aphiria\Validation\ErrorMessages;
  */
 interface IErrorMessageInterpolator
 {
+    /** @var string The default locale to use */
+    public string $defaultLocale { set; }
+
     /**
      * Interpolates an error message ID along with placeholders into human-readable error messages
      *
@@ -31,11 +34,4 @@ interface IErrorMessageInterpolator
         array $errorMessagePlaceholders = [],
         ?string $locale = null
     ): string;
-
-    /**
-     * Sets the default locale
-     *
-     * @param string $locale The default locale to use
-     */
-    public function setDefaultLocale(string $locale): void;
 }

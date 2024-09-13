@@ -19,8 +19,14 @@ use MessageFormatter;
  */
 final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolator
 {
+    /** @inheritdoc */
+    public string $defaultLocale {
+        set {
+            $this->_defaultLocale = $value;
+        }
+    }
     /** @var string The default locale, if none is specified */
-    private string $defaultLocale;
+    private string $_defaultLocale;
 
     /**
      * @param IErrorMessageTemplateRegistry $errorMessageTemplates The error message template registry to use
@@ -30,7 +36,7 @@ final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolat
         private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry(),
         string $defaultLocale = 'en'
     ) {
-        $this->setDefaultLocale($defaultLocale);
+        $this->defaultLocale = $defaultLocale;
     }
 
     /**
@@ -42,7 +48,7 @@ final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolat
         ?string $locale = null
     ): string {
         $interpolatedErrorMessage = MessageFormatter::formatMessage(
-            $locale ?? $this->defaultLocale,
+            $locale ?? $this->_defaultLocale,
             $this->errorMessageTemplates->getErrorMessageTemplate($errorMessageId, $locale),
             $errorMessagePlaceholders
         );
@@ -52,13 +58,5 @@ final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolat
         }
 
         return $interpolatedErrorMessage;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setDefaultLocale(string $locale): void
-    {
-        $this->defaultLocale = $locale;
     }
 }

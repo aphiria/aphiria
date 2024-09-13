@@ -53,7 +53,7 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
     public function testSetDefaultLocaleDoesNotDoAnything(): void
     {
         $interpolator = new StringReplaceErrorMessageInterpolator();
-        $interpolator->setDefaultLocale('foo');
+        $interpolator->defaultLocale = 'foo';
         $this->assertSame('foo dave', $interpolator->interpolate('foo {bar}', ['bar' => 'dave']));
     }
 }
