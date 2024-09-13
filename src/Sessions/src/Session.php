@@ -38,6 +38,14 @@ class Session implements ISession
             }
         }
     }
+    /** @var list<string> The list of new flash keys */
+    protected array $newFlashKeys {
+        get => $this->getVariable(self::NEW_FLASH_KEYS_KEY, []);
+    }
+    /** @var list<string> The list of stale flash keys */
+    protected array $staleFlashKeys {
+        get => $this->getVariable(self::STALE_FLASH_KEYS_KEY, []);
+    }
 
     /**
      * @param int|string|null $id The Id of the session
@@ -63,11 +71,11 @@ class Session implements ISession
      */
     public function ageFlashData(): void
     {
-        foreach ($this->getStaleFlashKeys() as $oldKey) {
+        foreach ($this->staleFlashKeys as $oldKey) {
             $this->delete($oldKey);
         }
 
-        $this->setVariable(self::STALE_FLASH_KEYS_KEY, $this->getNewFlashKeys());
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, $this->newFlashKeys);
         $this->setVariable(self::NEW_FLASH_KEYS_KEY, []);
     }
 
@@ -93,10 +101,10 @@ class Session implements ISession
     public function flash(string $name, $value): void
     {
         $this->setVariable($name, $value);
-        $newFlashKeys = $this->getNewFlashKeys();
+        $newFlashKeys = $this->newFlashKeys;
         $newFlashKeys[] = $name;
         $this->setVariable(self::NEW_FLASH_KEYS_KEY, $newFlashKeys);
-        $staleFlashKeys = $this->getStaleFlashKeys();
+        $staleFlashKeys = $this->staleFlashKeys;
 
         // Remove the data from the list of stale keys, if it was there
         if (($staleKey = \array_search($name, $staleFlashKeys, true)) !== false) {
@@ -163,8 +171,8 @@ class Session implements ISession
      */
     public function reflash(): void
     {
-        $newFlashKeys = $this->getNewFlashKeys();
-        $staleFlashKeys = $this->getStaleFlashKeys();
+        $newFlashKeys = $this->newFlashKeys;
+        $staleFlashKeys = $this->staleFlashKeys;
         $this->setVariable(self::NEW_FLASH_KEYS_KEY, [...$newFlashKeys, ...$staleFlashKeys]);
         $this->setVariable(self::STALE_FLASH_KEYS_KEY, []);
     }
@@ -183,29 +191,5 @@ class Session implements ISession
     public function setVariable(string $name, $value): void
     {
         $this->variables[$name] = $value;
-    }
-
-    /**
-     * Gets the new flash keys array
-     *
-     * @return list<string> The list of new flashed keys
-     * @psalm-suppress MixedReturnStatement This will always return an array of strings
-     * @psalm-suppress MixedInferredReturnType Ditto
-     */
-    protected function getNewFlashKeys(): array
-    {
-        return $this->getVariable(self::NEW_FLASH_KEYS_KEY, []);
-    }
-
-    /**
-     * Gets the stale flash keys array
-     *
-     * @return list<string> The list of stale flashed keys
-     * @psalm-suppress MixedReturnStatement This will always return an array of strings
-     * @psalm-suppress MixedInferredReturnType Ditto
-     */
-    protected function getStaleFlashKeys(): array
-    {
-        return $this->getVariable(self::STALE_FLASH_KEYS_KEY, []);
     }
 }
