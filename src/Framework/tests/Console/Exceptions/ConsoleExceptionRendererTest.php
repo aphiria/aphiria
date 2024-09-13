@@ -118,7 +118,7 @@ class ConsoleExceptionRendererTest extends TestCase
         $newOutput->expects($this->once())
             ->method('writeln')
             ->with('foo');
-        $this->exceptionRenderer->setOutput($newOutput);
+        $this->exceptionRenderer->output = $newOutput;
         $this->exceptionRenderer->registerOutputWriter(
             Exception::class,
             function (Exception $ex, IOutput $output) {

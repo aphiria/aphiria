@@ -193,7 +193,7 @@ class SessionTest extends TestCase
             ->method('ageFlashData');
         $this->session->method('getId')
             ->willReturn('foo');
-        $this->session->method('setMany')
+        $this->session->method('addManyVariables')
             ->with(['bar' => 'baz']);
         $this->session->method('getAll')
             ->willReturn(['bar' => 'baz']);

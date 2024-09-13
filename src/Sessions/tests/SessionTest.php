@@ -27,7 +27,7 @@ class SessionTest extends TestCase
         $session->flash('foo', 'baz');
         $session->ageFlashData();
         $this->assertTrue($session->containsKey('foo'));
-        $this->assertSame('baz', $session->get('foo'));
+        $this->assertSame('baz', $session->getVariable('foo'));
         $this->assertEquals(
             [
                 'foo' => 'baz',
@@ -38,7 +38,7 @@ class SessionTest extends TestCase
         );
         $session->ageFlashData();
         $this->assertFalse($session->containsKey('foo'));
-        $this->assertNull($session->get('foo'));
+        $this->assertNull($session->getVariable('foo'));
         $this->assertEquals(
             [
                 Session::NEW_FLASH_KEYS_KEY => [],
@@ -60,7 +60,7 @@ class SessionTest extends TestCase
             $session->variables
         );
         $session->ageFlashData();
-        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->getVariable('foo'));
         $this->assertTrue($session->containsKey('foo'));
         $this->assertEquals(
             [
@@ -72,9 +72,9 @@ class SessionTest extends TestCase
         );
         $session->flash('baz', 'blah');
         $session->ageFlashData();
-        $this->assertNull($session->get('foo'));
+        $this->assertNull($session->getVariable('foo'));
         $this->assertFalse($session->containsKey('foo'));
-        $this->assertSame('blah', $session->get('baz'));
+        $this->assertSame('blah', $session->getVariable('baz'));
         $this->assertEquals(
             [
                 'baz' => 'blah',
@@ -85,7 +85,7 @@ class SessionTest extends TestCase
         );
         $this->assertTrue($session->containsKey('baz'));
         $session->ageFlashData();
-        $this->assertNull($session->get('baz'));
+        $this->assertNull($session->getVariable('baz'));
         $this->assertFalse($session->containsKey('baz'));
         $this->assertEquals(
             [
@@ -109,7 +109,7 @@ class SessionTest extends TestCase
     public function testDeletingKeyRemovesItFromSession(): void
     {
         $session = new Session();
-        $session->set('foo', 'bar');
+        $session->setVariable('foo', 'bar');
         $session->delete('foo');
         $this->assertFalse($session->containsKey('foo'));
         $this->assertEquals([], $session->variables);
@@ -120,7 +120,7 @@ class SessionTest extends TestCase
         $session = new Session();
         $session->flash('foo', 'bar');
         $this->assertTrue($session->containsKey('foo'));
-        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->getVariable('foo'));
         $this->assertEquals(
             [
                 'foo' => 'bar',
@@ -143,8 +143,8 @@ class SessionTest extends TestCase
     public function testGettingAllReturnsAllSetKeys(): void
     {
         $session = new Session();
-        $session->set('foo', 'bar');
-        $session->set('baz', 'blah');
+        $session->setVariable('foo', 'bar');
+        $session->setVariable('baz', 'blah');
         $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $session->variables);
     }
 
@@ -155,7 +155,7 @@ class SessionTest extends TestCase
         $idGenerator->method('idIsValid')->willReturn(true);
         $session = new Session($constructorId, $idGenerator);
         $setterId = \str_repeat('2', IIdGenerator::MIN_LENGTH);
-        $session->setId($setterId);
+        $session->id = $setterId;
         $this->assertSame($setterId, $session->id);
     }
 
@@ -163,7 +163,9 @@ class SessionTest extends TestCase
     {
         $id = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
-        $idGenerator->method('idIsValid')->willReturn(true);
+        $idGenerator->method('idIsValid')
+            ->with($id)
+            ->willReturn(true);
         $session = new Session($id, $idGenerator);
         $this->assertSame($id, $session->id);
     }
@@ -172,13 +174,13 @@ class SessionTest extends TestCase
     {
         $session = new Session();
         $this->assertNull($session['non-existent']);
-        $this->assertNull($session->get('non-existent'));
+        $this->assertNull($session->getVariable('non-existent'));
     }
 
     public function testGettingNonExistentKeyWithDefaultValueReturnsThatValue(): void
     {
         $session = new Session();
-        $this->assertSame('bar', $session->get('foo', 'bar'));
+        $this->assertSame('bar', $session->getVariable('foo', 'bar'));
     }
 
     public function testReflashingKeepsTheDataInSessionUntilItIsAgedAgain(): void
@@ -188,7 +190,7 @@ class SessionTest extends TestCase
         $session->ageFlashData();
         $session->reflash();
         $this->assertTrue($session->containsKey('foo'));
-        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->getVariable('foo'));
         $this->assertEquals(
             [
                 'foo' => 'bar',
@@ -199,7 +201,7 @@ class SessionTest extends TestCase
         );
         $session->ageFlashData();
         $this->assertTrue($session->containsKey('foo'));
-        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->getVariable('foo'));
         $this->assertEquals(
             [
                 'foo' => 'bar',
@@ -210,7 +212,7 @@ class SessionTest extends TestCase
         );
         $session->ageFlashData();
         $this->assertFalse($session->containsKey('foo'));
-        $this->assertNull($session->get('foo'));
+        $this->assertNull($session->getVariable('foo'));
         $this->assertEquals(
             [
                 Session::NEW_FLASH_KEYS_KEY => [],
@@ -255,25 +257,25 @@ class SessionTest extends TestCase
         $idGenerator->method('generate')->willReturn($generatedId);
         $session = new Session(1, $idGenerator);
         $this->assertNotEquals(1, $session->id);
-        $session->setId(2);
+        $session->id = 2;
         $this->assertNotEquals(2, $session->id);
     }
 
     public function testSettingKeyWritesItToSession(): void
     {
         $session = new Session();
-        $session->set('foo', 'bar');
-        $this->assertSame('bar', $session->get('foo'));
+        $session->setVariable('foo', 'bar');
+        $this->assertSame('bar', $session->getVariable('foo'));
         $this->assertEquals(['foo' => 'bar'], $session->variables);
     }
 
     public function testSettingManyWritesAllValuesToSession(): void
     {
         $session = new Session();
-        $session->set('foo', 'bar');
-        $session->setMany(['baz' => 'blah']);
+        $session->setVariable('foo', 'bar');
+        $session->addManyVariables(['baz' => 'blah']);
         $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $session->variables);
-        $session->setMany(['foo' => 'somethingnew']);
+        $session->addManyVariables(['foo' => 'somethingnew']);
         $this->assertEquals(['foo' => 'somethingnew', 'baz' => 'blah'], $session->variables);
     }
 
@@ -289,7 +291,7 @@ class SessionTest extends TestCase
         $session = new Session();
         $session['foo'] = 'bar';
         $this->assertSame('bar', $session['foo']);
-        $this->assertSame('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->getVariable('foo'));
         $this->assertEquals(['foo' => 'bar'], $session->variables);
     }
 

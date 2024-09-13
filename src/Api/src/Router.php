@@ -137,7 +137,7 @@ class Router implements IRequestHandler
             }
 
             if ($middleware instanceof ParameterizedMiddleware) {
-                $middleware->setParameters($middlewareBinding->parameters);
+                $middleware->parameters = $middlewareBinding->parameters;
             }
 
             $middlewareList[] = $middleware;

@@ -17,18 +17,12 @@ namespace Aphiria\Middleware;
  */
 abstract class ParameterizedMiddleware implements IMiddleware
 {
-    /** @var array<string, mixed> The middleware parameters */
-    private array $parameters = [];
-
-    /**
-     * Sets the parameters
-     *
-     * @param array<string, mixed> $parameters The parameters to set
-     */
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
+    /** @var array<string, mixed> The mapping of parameter middleware names to values */
+    public array $parameters {
+        set => $this->_parameters = $value;
     }
+    /** @var array<string, mixed> The virtualized mapping of middleware parameters names to values */
+    private array $_parameters = [];
 
     /**
      * Gets the value of a parameter
@@ -39,10 +33,10 @@ abstract class ParameterizedMiddleware implements IMiddleware
      */
     protected function getParameter(string $name, mixed $default = null): mixed
     {
-        if (!\array_key_exists($name, $this->parameters)) {
+        if (!\array_key_exists($name, $this->_parameters)) {
             return $default;
         }
 
-        return $this->parameters[$name];
+        return $this->_parameters[$name];
     }
 }

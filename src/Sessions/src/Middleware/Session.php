@@ -67,7 +67,7 @@ final class Session implements IMiddleware
         $requestCookies = $this->requestParser->parseCookies($request);
 
         if ($requestCookies->containsKey($this->sessionCookieName)) {
-            $this->session->setId((string)$requestCookies->get($this->sessionCookieName));
+            $this->session->id = (string)$requestCookies->get($this->sessionCookieName);
         } else {
             $this->session->regenerateId();
         }
@@ -75,7 +75,7 @@ final class Session implements IMiddleware
         $this->sessionHandler->open('', $this->sessionCookieName);
         /** @var array<string, mixed>|false $sessionVars */
         $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->id));
-        $this->session->setMany($sessionVars === false ? [] : $sessionVars);
+        $this->session->addManyVariables($sessionVars === false ? [] : $sessionVars);
 
         $response = $next->handle($request);
 

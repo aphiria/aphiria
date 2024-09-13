@@ -27,9 +27,17 @@ class Session implements ISession
     public const string STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
     /** @inheritdoc */
     public private(set) array $variables = [];
-
     /** @inheritdoc */
-    public private(set) int|string $id = '';
+    public int|string $id  {
+        get => $this->id;
+        set (mixed $value) {
+            if ($this->idGenerator->idIsValid($value)) {
+                $this->id = $value;
+            } else {
+                $this->regenerateId();
+            }
+        }
+    }
 
     /**
      * @param int|string|null $id The Id of the session
@@ -39,11 +47,15 @@ class Session implements ISession
         int|string|null $id = null,
         private readonly IIdGenerator $idGenerator = new UuidV4IdGenerator()
     ) {
-        if ($id === null) {
-            $this->regenerateId();
-        } else {
-            $this->setId($id);
-        }
+        $this->id = $id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addManyVariables(array $variables): void
+    {
+        $this->variables = [...$this->variables, ...$variables];
     }
 
     /**
@@ -55,43 +67,43 @@ class Session implements ISession
             $this->delete($oldKey);
         }
 
-        $this->set(self::STALE_FLASH_KEYS_KEY, $this->getNewFlashKeys());
-        $this->set(self::NEW_FLASH_KEYS_KEY, []);
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, $this->getNewFlashKeys());
+        $this->setVariable(self::NEW_FLASH_KEYS_KEY, []);
     }
 
     /**
      * @inheritdoc
      */
-    public function containsKey(string $key): bool
+    public function containsKey(string $name): bool
     {
-        return isset($this->variables[$key]);
+        return isset($this->variables[$name]);
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(string $key): void
+    public function delete(string $name): void
     {
-        unset($this->variables[$key]);
+        unset($this->variables[$name]);
     }
 
     /**
      * @inheritdoc
      */
-    public function flash(string $key, $value): void
+    public function flash(string $name, $value): void
     {
-        $this->set($key, $value);
+        $this->setVariable($name, $value);
         $newFlashKeys = $this->getNewFlashKeys();
-        $newFlashKeys[] = $key;
-        $this->set(self::NEW_FLASH_KEYS_KEY, $newFlashKeys);
+        $newFlashKeys[] = $name;
+        $this->setVariable(self::NEW_FLASH_KEYS_KEY, $newFlashKeys);
         $staleFlashKeys = $this->getStaleFlashKeys();
 
         // Remove the data from the list of stale keys, if it was there
-        if (($staleKey = \array_search($key, $staleFlashKeys, true)) !== false) {
+        if (($staleKey = \array_search($name, $staleFlashKeys, true)) !== false) {
             unset($staleFlashKeys[$staleKey]);
         }
 
-        $this->set(self::STALE_FLASH_KEYS_KEY, $staleFlashKeys);
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, $staleFlashKeys);
     }
 
     /**
@@ -105,9 +117,9 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function get(string $key, mixed $defaultValue = null): mixed
+    public function getVariable(string $name, mixed $defaultValue = null): mixed
     {
-        return $this->variables[$key] ?? $defaultValue;
+        return $this->variables[$name] ?? $defaultValue;
     }
 
     /**
@@ -123,7 +135,7 @@ class Session implements ISession
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get((string)$offset);
+        return $this->getVariable((string)$offset);
     }
 
     /**
@@ -135,7 +147,7 @@ class Session implements ISession
             throw new InvalidArgumentException('Key cannot be empty');
         }
 
-        $this->set((string)$offset, $value);
+        $this->setVariable((string)$offset, $value);
     }
 
     /**
@@ -153,8 +165,8 @@ class Session implements ISession
     {
         $newFlashKeys = $this->getNewFlashKeys();
         $staleFlashKeys = $this->getStaleFlashKeys();
-        $this->set(self::NEW_FLASH_KEYS_KEY, [...$newFlashKeys, ...$staleFlashKeys]);
-        $this->set(self::STALE_FLASH_KEYS_KEY, []);
+        $this->setVariable(self::NEW_FLASH_KEYS_KEY, [...$newFlashKeys, ...$staleFlashKeys]);
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, []);
     }
 
     /**
@@ -162,35 +174,15 @@ class Session implements ISession
      */
     public function regenerateId(): void
     {
-        $this->setId($this->idGenerator->generate());
+        $this->id = $this->idGenerator->generate();
     }
 
     /**
      * @inheritdoc
      */
-    public function set(string $key, $value): void
+    public function setVariable(string $name, $value): void
     {
-        $this->variables[$key] = $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setId(int|string $id): void
-    {
-        if ($this->idGenerator->idIsValid($id)) {
-            $this->id = $id;
-        } else {
-            $this->regenerateId();
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setMany(array $variables): void
-    {
-        $this->variables = [...$this->variables, ...$variables];
+        $this->variables[$name] = $value;
     }
 
     /**
@@ -202,7 +194,7 @@ class Session implements ISession
      */
     protected function getNewFlashKeys(): array
     {
-        return $this->get(self::NEW_FLASH_KEYS_KEY, []);
+        return $this->getVariable(self::NEW_FLASH_KEYS_KEY, []);
     }
 
     /**
@@ -214,6 +206,6 @@ class Session implements ISession
      */
     protected function getStaleFlashKeys(): array
     {
-        return $this->get(self::STALE_FLASH_KEYS_KEY, []);
+        return $this->getVariable(self::STALE_FLASH_KEYS_KEY, []);
     }
 }

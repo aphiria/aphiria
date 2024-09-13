@@ -60,7 +60,7 @@ class AuthenticateTest extends TestCase
     #[DataProvider('getSchemeNames')]
     public function testHandlingFailingAuthenticationResultChallengesTheResponse(array $schemeNames): void
     {
-        $this->middleware->setParameters(['schemeNames' => $schemeNames]);
+        $this->middleware->parameters = ['schemeNames' => $schemeNames];
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
@@ -88,7 +88,7 @@ class AuthenticateTest extends TestCase
     #[DataProvider('getSchemeNames')]
     public function testHandlingPassingAuthenticationResultCallsNextRequestHandler(array $schemeNames): void
     {
-        $this->middleware->setParameters(['schemeNames' => $schemeNames]);
+        $this->middleware->parameters = ['schemeNames' => $schemeNames];
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);

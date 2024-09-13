@@ -32,19 +32,30 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
+    /** @inheritdoc */
+    public IRequest $request {
+        set => $this->_request = $value;
+    }
+    /** @inheritdoc */
+    public IResponseFactory $responseFactory {
+        set => $this->_responseFactory = $value;
+    }
     /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IRequest|null The current request, if one is set, otherwise null */
-    protected ?IRequest $request = null;
+    protected ?IRequest $_request = null;
+    /** @var IResponseFactory|null The optional response factory */
+    protected ?IResponseFactory $_responseFactory = null;
 
     /**
      * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter $responseWriter What is used to write the response
      */
     public function __construct(
-        protected ?IResponseFactory $responseFactory = null,
+        ?IResponseFactory $responseFactory = null,
         protected readonly IResponseWriter $responseWriter = new StreamResponseWriter()
     ) {
+        $this->_responseFactory = $responseFactory;
     }
 
     /**
@@ -55,7 +66,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         try {
             $problemDetails = $this->createProblemDetails($ex);
 
-            if ($this->request === null || $this->responseFactory === null) {
+            if ($this->_request === null || $this->_responseFactory === null) {
                 // We have to manually create a response
                 $response = new Response($problemDetails->status);
                 $response->headers->add('Content-Type', 'application/problem+json');
@@ -68,8 +79,8 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
                 return $response;
             }
 
-            $response = $this->responseFactory->createResponse(
-                $this->request,
+            $response = $this->_responseFactory->createResponse(
+                $this->_request,
                 $problemDetails->status,
                 null,
                 $problemDetails
@@ -151,22 +162,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
     public function render(Exception $ex): void
     {
         $this->responseWriter->writeResponse($this->createResponse($ex));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setRequest(IRequest $request): void
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void
-    {
-        $this->responseFactory = $responseFactory;
     }
 
     /**

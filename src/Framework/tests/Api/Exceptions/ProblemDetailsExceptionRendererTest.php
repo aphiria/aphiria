@@ -264,7 +264,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         );
 
         if ($setRequest) {
-            $renderer->setRequest($this->request);
+            $renderer->request = $this->request;
         }
 
         return $renderer;

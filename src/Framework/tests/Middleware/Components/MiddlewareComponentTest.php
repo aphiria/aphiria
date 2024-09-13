@@ -52,7 +52,7 @@ class MiddlewareComponentTest extends TestCase
                 return $this->expectedResponse;
             }
         };
-        $expectedMiddleware->setParameters(['bar' => 'baz']);
+        $expectedMiddleware->parameters = ['bar' => 'baz'];
         $middlewareCollection = new MiddlewareCollection();
         $this->dependencyResolver->method('resolve')
             ->willReturnMap([

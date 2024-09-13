@@ -89,8 +89,8 @@ class ExceptionHandlerComponentTest extends TestCase
             ->method('createResponse')
             ->with($request, 400, null, new ProblemDetails('type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']))
             ->willReturn(new Response(400));
-        $apiExceptionRenderer->setResponseFactory($responseFactory);
-        $apiExceptionRenderer->setRequest($request);
+        $apiExceptionRenderer->responseFactory = $responseFactory;
+        $apiExceptionRenderer->request = $request;
         $this->container->bindInstance(IApiExceptionRenderer::class, $apiExceptionRenderer);
         $this->exceptionHandlerComponent->withProblemDetails(
             Exception::class,

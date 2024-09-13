@@ -95,19 +95,6 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
                 return new Response(200);
             }
 
-            public function setRequest(IRequest $request): void
-            {
-                // Don't do anything
-            }
-
-            /**
-             * @inheritdoc
-             */
-            public function setResponseFactory(IResponseFactory $responseFactory): void
-            {
-                // Don't do anything
-            }
-
             /**
              * @inheritdoc
              */
@@ -138,8 +125,8 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
-        $this->apiExceptionRenderer->setRequest($this->createMock(IRequest::class));
-        $this->apiExceptionRenderer->setResponseFactory($this->createMock(IResponseFactory::class));
+        $this->apiExceptionRenderer->request = $this->createMock(IRequest::class);
+        $this->apiExceptionRenderer->responseFactory = $this->createMock(IResponseFactory::class);
         $exception = new HttpException($this->createMock(IResponse::class));
         $this->apiExceptionRenderer->render($exception);
         // Dummy assertion
@@ -170,13 +157,13 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->bootstrapper->setIsRunningInConsole(false);
         $this->bootstrapper->bootstrap();
         $request = $this->createMock(IRequest::class);
-        $this->apiExceptionRenderer->setRequest($request);
+        $this->apiExceptionRenderer->request = $request;
         $responseFactory = $this->createMock(IResponseFactory::class);
         $responseFactory->expects($this->once())
             ->method('createResponse')
             ->with($request, HttpStatusCode::BadRequest->value, null, $this->isInstanceOf(ProblemDetails::class))
             ->willReturn(new Response(HttpStatusCode::BadRequest));
-        $this->apiExceptionRenderer->setResponseFactory($responseFactory);
+        $this->apiExceptionRenderer->responseFactory = $responseFactory;
         $exception = new InvalidRequestBodyException(['foo']);
         $response = $this->apiExceptionRenderer->createResponse($exception);
         $this->assertSame(HttpStatusCode::BadRequest, $response->statusCode);

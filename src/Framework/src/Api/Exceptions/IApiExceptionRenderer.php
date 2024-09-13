@@ -23,6 +23,11 @@ use Exception;
  */
 interface IApiExceptionRenderer extends IExceptionRenderer
 {
+    /** @var IRequest The current request */
+    public IRequest $request { set; }
+    /** @var IResponseFactory The response factory to render exceptions with */
+    public IResponseFactory $responseFactory { set; }
+
     /**
      * Creates a response from an exception
      *
@@ -30,18 +35,4 @@ interface IApiExceptionRenderer extends IExceptionRenderer
      * @return IResponse The response
      */
     public function createResponse(Exception $ex): IResponse;
-
-    /**
-     * Sets the current request in case it wasn't initially available
-     *
-     * @param IRequest $request The current request
-     */
-    public function setRequest(IRequest $request): void;
-
-    /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory to set
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void;
 }
