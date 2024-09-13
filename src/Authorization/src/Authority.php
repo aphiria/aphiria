@@ -64,12 +64,12 @@ class Authority implements IAuthority
 
             $requirementHandler->handle($user, $requirement, $authorizationContext);
 
-            if (!$this->continueOnFailure && $authorizationContext->anyRequirementsFailed()) {
+            if (!$this->continueOnFailure && $authorizationContext->anyRequirementsFailed) {
                 break;
             }
         }
 
-        if ($authorizationContext->allRequirementsPassed()) {
+        if ($authorizationContext->allRequirementsPassed) {
             return AuthorizationResult::pass($policy->name);
         }
 

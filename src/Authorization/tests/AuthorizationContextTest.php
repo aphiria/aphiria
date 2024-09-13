@@ -27,14 +27,14 @@ class AuthorizationContextTest extends TestCase
             }
         ];
         $context = $this->createMockContext($requirements);
-        $this->assertFalse($context->allRequirementsPassed());
+        $this->assertFalse($context->allRequirementsPassed);
         $context->requirementPassed($requirements[0]);
-        $this->assertFalse($context->allRequirementsPassed());
+        $this->assertFalse($context->allRequirementsPassed);
         $context->requirementPassed($requirements[1]);
-        $this->assertTrue($context->allRequirementsPassed());
+        $this->assertTrue($context->allRequirementsPassed);
         // Make sure that explicitly marking the context as failed returns false
         $context->fail();
-        $this->assertFalse($context->allRequirementsPassed());
+        $this->assertFalse($context->allRequirementsPassed);
     }
 
     public function testAnyRequirementsFailedReturnsFalseIfAllRequirementsHavePassedSoFarButThereAreStillPendingRequirements(): void
@@ -46,9 +46,9 @@ class AuthorizationContextTest extends TestCase
             }
         ];
         $context = $this->createMockContext($requirements);
-        $this->assertFalse($context->anyRequirementsFailed());
+        $this->assertFalse($context->anyRequirementsFailed);
         $context->requirementPassed($requirements[0]);
-        $this->assertFalse($context->anyRequirementsFailed());
+        $this->assertFalse($context->anyRequirementsFailed);
         $context->requirementPassed($requirements[1]);
     }
 
@@ -62,9 +62,9 @@ class AuthorizationContextTest extends TestCase
         ];
         $context = $this->createMockContext($requirements);
         $context->fail();
-        $this->assertTrue($context->anyRequirementsFailed());
+        $this->assertTrue($context->anyRequirementsFailed);
         $context->requirementPassed($requirements[0]);
-        $this->assertTrue($context->anyRequirementsFailed());
+        $this->assertTrue($context->anyRequirementsFailed);
         $context->requirementPassed($requirements[1]);
     }
 

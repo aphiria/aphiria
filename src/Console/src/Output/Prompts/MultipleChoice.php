@@ -23,6 +23,10 @@ class MultipleChoice extends Question
     public bool $allowsMultipleChoices = false;
     /** @var string The string to display before the input */
     public string $answerLineString = '  > ';
+    /** @var bool Whether or not the choices are associative */
+    public bool $choicesAreAssociative {
+        get => !\array_is_list($this->choices);
+    }
 
     /*
      * @param string $question The question text
@@ -32,16 +36,6 @@ class MultipleChoice extends Question
     public function __construct(string $text, public array $choices, mixed $defaultAnswer = null)
     {
         parent::__construct($text, $defaultAnswer);
-    }
-
-    /**
-     * Gets whether or not the choices are an associative array
-     *
-     * @return bool True if the array is associative, otherwise false
-     */
-    public function choicesAreAssociative(): bool
-    {
-        return !\array_is_list($this->choices);
     }
 
     /**
@@ -64,7 +58,7 @@ class MultipleChoice extends Question
             $answers = \explode(',', $answer);
         }
 
-        if ($this->choicesAreAssociative()) {
+        if ($this->choicesAreAssociative) {
             $selectedChoices = $this->getSelectedAssociativeChoices($answers);
         } else {
             $selectedChoices = $this->getSelectedIndexChoices($answers);

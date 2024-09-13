@@ -44,7 +44,7 @@ class Prompt
 
         if ($question instanceof MultipleChoice) {
             $output->writeln('');
-            $choicesAreAssociative = $question->choicesAreAssociative();
+            $choicesAreAssociative = $question->choicesAreAssociative;
             $choiceTexts = [];
 
             /** @psalm-suppress MixedAssignment The choices could legitimately be a mixed type */

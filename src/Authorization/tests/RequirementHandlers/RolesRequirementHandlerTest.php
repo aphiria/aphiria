@@ -202,7 +202,7 @@ class RolesRequirementHandlerTest extends TestCase
         $roleRequirement = new RolesRequirement('admin');
         $context = new AuthorizationContext($user, [$roleRequirement], null);
         $this->requirementHandler->handle($user, $roleRequirement, $context);
-        $this->assertTrue($context->allRequirementsPassed());
+        $this->assertTrue($context->allRequirementsPassed);
         $this->assertCount(0, $context->pendingRequirements);
     }
 
@@ -215,7 +215,7 @@ class RolesRequirementHandlerTest extends TestCase
         $roleRequirement = new RolesRequirement('admin');
         $context = new AuthorizationContext($user, [$roleRequirement], null);
         $this->requirementHandler->handle($user, $roleRequirement, $context);
-        $this->assertFalse($context->allRequirementsPassed());
+        $this->assertFalse($context->allRequirementsPassed);
         $this->assertSame([$roleRequirement], $context->pendingRequirements->toArray());
     }
 }

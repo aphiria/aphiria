@@ -35,8 +35,8 @@ class MultipleChoiceTest extends TestCase
 
     public function testCheckingIfChoicesAreAssociative(): void
     {
-        $this->assertFalse($this->indexedChoiceQuestion->choicesAreAssociative());
-        $this->assertTrue($this->keyedChoiceQuestion->choicesAreAssociative());
+        $this->assertFalse($this->indexedChoiceQuestion->choicesAreAssociative);
+        $this->assertTrue($this->keyedChoiceQuestion->choicesAreAssociative);
     }
 
     public function testEmptyAnswerForAssociativeChoices(): void

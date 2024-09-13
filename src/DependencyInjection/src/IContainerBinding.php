@@ -19,10 +19,6 @@ namespace Aphiria\DependencyInjection;
  */
 interface IContainerBinding
 {
-    /**
-     * Gets whether or not this binding should be resolved as a singleton
-     *
-     * @return bool True if the binding should be resolved as a singleton, otherwise false
-     */
-    public function resolveAsSingleton(): bool;
+    /** @var bool Whether or not this binding should be resolved as a singleton */
+    public bool $resolveAsSingleton { get; }
 }

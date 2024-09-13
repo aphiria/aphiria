@@ -24,7 +24,7 @@ final class CommandRegistry
         get => \array_values($this->commandNamesToBindings);
     }
     /** @var list<Command> The list of commands */
-    publlic array $commands {
+    public array $commands {
         get {
             $commands = [];
 

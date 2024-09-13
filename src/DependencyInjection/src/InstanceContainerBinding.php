@@ -20,20 +20,13 @@ namespace Aphiria\DependencyInjection;
  */
 readonly class InstanceContainerBinding implements IContainerBinding
 {
+    public bool $resolveAsSingleton;
+
     /**
      * @param T $instance The instance
      */
     public function __construct(public object $instance)
     {
-    }
-
-    /**
-     * Gets whether or not to resolve as a singleton
-     *
-     * @return bool Whether or not to resolve as a singleton
-     */
-    public function resolveAsSingleton(): bool
-    {
-        return true;
+        $this->resolveAsSingleton = true;
     }
 }

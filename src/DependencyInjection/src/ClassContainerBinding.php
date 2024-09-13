@@ -28,17 +28,7 @@ readonly class ClassContainerBinding implements IContainerBinding
     public function __construct(
         public string $concreteClass,
         public array $constructorPrimitives,
-        private bool $resolveAsSingleton
+        public private(set) bool $resolveAsSingleton
     ) {
-    }
-
-    /**
-     * Gets whether or not to resolve as a singleton
-     *
-     * @return bool Whether or not to resolve as a singleton
-     */
-    public function resolveAsSingleton(): bool
-    {
-        return $this->resolveAsSingleton;
     }
 }

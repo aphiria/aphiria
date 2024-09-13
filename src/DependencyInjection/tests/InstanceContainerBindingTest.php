@@ -21,7 +21,7 @@ class InstanceContainerBindingTest extends TestCase
     public function testAlwaysResolvedAsSingleton(): void
     {
         $binding = new InstanceContainerBinding(new stdClass());
-        $this->assertTrue($binding->resolveAsSingleton());
+        $this->assertTrue($binding->resolveAsSingleton);
     }
 
     public function testCorrectInstanceIsReturned(): void

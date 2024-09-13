@@ -227,7 +227,7 @@ class Container implements IContainer
                 throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . $binding::class . '"');
         }
 
-        if ($binding->resolveAsSingleton()) {
+        if ($binding->resolveAsSingleton) {
             $this->unbind($interface);
             $this->addBinding($interface, new InstanceContainerBinding($instance));
         }

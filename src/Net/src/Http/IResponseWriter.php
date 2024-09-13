@@ -19,12 +19,8 @@ use RuntimeException;
  */
 interface IResponseWriter
 {
-    /**
-     * Gets whether or not the headers have already been sent
-     *
-     * @return bool True if the headers have already been sent, otherwise false
-     */
-    public function headersAreSent(): bool;
+    /** @var bool Whether or not the headers have already been sent */
+    public bool $headersAreSent { get; }
 
     /**
      * Writes the response to the output stream
