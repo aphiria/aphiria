@@ -19,7 +19,7 @@ use RuntimeException;
 
 class StreamTest extends TestCase
 {
-    /** A temporary file to use for non read/write stream tests */
+    /** @const A temporary file to use for non read/write stream tests */
     private const string TEMP_FILE = __DIR__ . '/temp.txt';
 
     protected function tearDown(): void

@@ -21,9 +21,9 @@ use InvalidArgumentException;
  */
 class Session implements ISession
 {
-    /** The key for new flash keys */
+    /** @const The key for new flash keys */
     public const string NEW_FLASH_KEYS_KEY = '__APHIRIA_NEW_FLASH_KEYS';
-    /** The key for stale flash keys */
+    /** @const The key for stale flash keys */
     public const string STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
     /** @inheritdoc */
     public private(set) array $variables = [];
