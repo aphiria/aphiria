@@ -46,14 +46,14 @@ interface ISession extends ArrayAccess
      * @param string $name The name of the variable to search for
      * @return bool True if the session has a variable, otherwise false
      */
-    public function containsKey(string $name): bool;
+    public function containsVariable(string $name): bool;
 
     /**
      * Deletes a variable
      *
      * @param string $name The name of the variable to delete
      */
-    public function delete(string $name): void;
+    public function deleteVariable(string $name): void;
 
     /**
      * Flashes data for exactly one request

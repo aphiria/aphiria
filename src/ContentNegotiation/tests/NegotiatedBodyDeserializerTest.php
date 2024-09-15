@@ -15,11 +15,11 @@ namespace Aphiria\ContentNegotiation\Tests;
 use Aphiria\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\ContentNegotiation\FailedContentNegotiationException;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
-use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
-use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
+use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
@@ -43,10 +43,10 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $body = $this->createMock(IBody::class);
         $body->method('readAsStream')
-            ->willReturn($this->createMock(MockableStream::class));
-        $request->method('getBody')
+            ->willReturn($this->createMock(IStream::class));
+        $request->method('$body::get')
             ->willReturn($body);
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->willThrowException(new SerializationException());
         $contentNegotiationResult = new ContentNegotiationResult($mediaTypeFormatter, null, null, null);
@@ -63,10 +63,10 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $response = $this->createMock(IResponse::class);
         $body = $this->createMock(IBody::class);
         $body->method('readAsStream')
-            ->willReturn($this->createMock(MockableStream::class));
-        $response->method('getBody')
+            ->willReturn($this->createMock(IStream::class));
+        $response->method('$body::get')
             ->willReturn($body);
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->willThrowException(new SerializationException());
         $contentNegotiationResult = new ContentNegotiationResult($mediaTypeFormatter, null, null, null);
@@ -119,11 +119,11 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $expectedUser = new User(123, 'foo@bar.com');
         $requestBody = $this->createMock(IBody::class);
         $requestBody->method('readAsStream')
-            ->willReturn($this->createMock(MockableStream::class));
+            ->willReturn($this->createMock(IStream::class));
         $request = $this->createMock(IRequest::class);
-        $request->method('getBody')
+        $request->method('$body::get')
             ->willReturn($requestBody);
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->with($requestBody->readAsStream(), User::class)
             ->willReturn($expectedUser);
@@ -141,11 +141,11 @@ class NegotiatedBodyDeserializerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $responseBody = $this->createMock(IBody::class);
         $responseBody->method('readAsStream')
-            ->willReturn($this->createMock(MockableStream::class));
+            ->willReturn($this->createMock(IStream::class));
         $response = $this->createMock(IResponse::class);
-        $response->method('getBody')
+        $response->method('$body::get')
             ->willReturn($responseBody);
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->method('readFromStream')
             ->with($responseBody->readAsStream(), User::class)
             ->willReturn($expectedUser);

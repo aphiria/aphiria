@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Tests\Console\Exceptions;
 
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Exception;
 use InvalidArgumentException;
@@ -29,7 +28,7 @@ class ConsoleExceptionRendererTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = Mockery::mock(MockableOutput::class);
+        $this->output = Mockery::mock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -39,6 +38,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 return null;
             }
         };
+        // TODO: Need to know how Mockery will mock property getters
         $this->output->driver = $driver;
         $this->exceptionRenderer = new ConsoleExceptionRenderer($this->output, false);
     }
@@ -104,7 +104,7 @@ class ConsoleExceptionRendererTest extends TestCase
 
     public function testSettingOutputUsesNewOutputToWriteExceptionMessages(): void
     {
-        $newOutput = $this->createMock(MockableOutput::class);
+        $newOutput = $this->createMock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -114,7 +114,8 @@ class ConsoleExceptionRendererTest extends TestCase
                 return null;
             }
         };
-        $newOutput->driver = $driver;
+        $newOutput->method('$driver::get')
+            ->willReturn($driver);
         $newOutput->expects($this->once())
             ->method('writeln')
             ->with('foo');

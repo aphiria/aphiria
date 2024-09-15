@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests\MediaTypeFormatters;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatters\PlainTextMediaTypeFormatter;
-use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
 use InvalidArgumentException;
@@ -65,7 +64,7 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('%s can only read strings', PlainTextMediaTypeFormatter::class));
-        $this->formatter->readFromStream($this->createMock(MockableStream::class), 'string[]');
+        $this->formatter->readFromStream($this->createMock(IStream::class), 'string[]');
     }
 
     public function testReadingFromStreamReturnsSerializedStream(): void
@@ -79,14 +78,14 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('%s can only read strings', PlainTextMediaTypeFormatter::class));
-        $this->formatter->readFromStream($this->createMock(MockableStream::class), self::class);
+        $this->formatter->readFromStream($this->createMock(IStream::class), self::class);
     }
 
     public function testReadingTypeThatCannotBeReadThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('%s can only read strings', PlainTextMediaTypeFormatter::class));
-        $stream = $this->createMock(MockableStream::class);
+        $stream = $this->createMock(IStream::class);
         $this->formatter->readFromStream($stream, User::class);
     }
 
@@ -94,7 +93,7 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('%s can only write strings', PlainTextMediaTypeFormatter::class));
-        $this->formatter->writeToStream($this, $this->createMock(MockableStream::class), 'utf-8');
+        $this->formatter->writeToStream($this, $this->createMock(IStream::class), 'utf-8');
     }
 
     public function testWritingToStreamSerializesInput(): void
@@ -107,19 +106,19 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(\sprintf('%s can only write strings', PlainTextMediaTypeFormatter::class));
-        $this->formatter->writeToStream(new User(123, 'foo@bar.com'), $this->createMock(MockableStream::class), null);
+        $this->formatter->writeToStream(new User(123, 'foo@bar.com'), $this->createMock(IStream::class), null);
     }
 
     public function testWritingUsingUnsupportedEncodingThrowsException(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(PlainTextMediaTypeFormatter::class);
-        $this->formatter->writeToStream('foo', $this->createMock(MockableStream::class), 'bar');
+        $this->formatter->writeToStream('foo', $this->createMock(IStream::class), 'bar');
     }
 
     public function testWritingWithNullEncodingUsesDefaultEncoding(): void
     {
-        $stream = $this->createMock(MockableStream::class);
+        $stream = $this->createMock(IStream::class);
         $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-8');
         $stream->expects($this->once())
             ->method('write')
@@ -135,7 +134,7 @@ class PlainTextMediaTypeFormatterTest extends TestCase
      */
     private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
-        $stream = $this->createMock(MockableStream::class);
+        $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('write')
             ->with($body);
@@ -151,7 +150,7 @@ class PlainTextMediaTypeFormatterTest extends TestCase
      */
     private function createStreamWithStringBody(string $body): IStream&MockObject
     {
-        $stream = $this->createMock(MockableStream::class);
+        $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
             ->willReturn($body);

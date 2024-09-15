@@ -72,7 +72,7 @@ class Session implements ISession
     public function ageFlashData(): void
     {
         foreach ($this->staleFlashKeys as $oldKey) {
-            $this->delete($oldKey);
+            $this->deleteVariable($oldKey);
         }
 
         $this->setVariable(self::STALE_FLASH_KEYS_KEY, $this->newFlashKeys);
@@ -82,7 +82,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function containsKey(string $name): bool
+    public function containsVariable(string $name): bool
     {
         return isset($this->variables[$name]);
     }
@@ -90,7 +90,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function delete(string $name): void
+    public function deleteVariable(string $name): void
     {
         unset($this->variables[$name]);
     }
@@ -135,7 +135,7 @@ class Session implements ISession
      */
     public function offsetExists(mixed $offset): bool
     {
-        return $this->containsKey((string)$offset);
+        return $this->containsVariable((string)$offset);
     }
 
     /**

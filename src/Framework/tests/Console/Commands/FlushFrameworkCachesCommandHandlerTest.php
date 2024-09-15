@@ -16,7 +16,6 @@ use Aphiria\Console\Commands\Caching\ICommandRegistryCache;
 use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
-use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use Aphiria\DependencyInjection\Binders\Metadata\Caching\IBinderMetadataCollectionCache;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommandHandler;
 use Aphiria\Routing\Caching\IRouteCache;
@@ -31,7 +30,7 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = $this->createMock(MockableOutput::class);
+        $this->output = $this->createMock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -41,7 +40,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->driver = $driver;
+        $this->output->method('$driver::get')
+            ->willReturn($driver);
     }
 
     public function testBinderMetadataCacheIsFlushedIfSet(): void

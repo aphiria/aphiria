@@ -14,10 +14,9 @@ namespace Aphiria\ContentNegotiation\Tests;
 
 use Aphiria\ContentNegotiation\ContentNegotiationResult;
 use Aphiria\ContentNegotiation\IContentNegotiator;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
-use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
-use Aphiria\ContentNegotiation\Tests\Mocks\MockableStream;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\Stream;
@@ -49,7 +48,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     {
         $request = $this->createRequest('http://foo.com');
         $rawBody = [new User(123, 'foo@bar.com'), new User(456, 'bar@baz.com')];
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
             ->with($rawBody, $this->isInstanceOf(IStream::class), 'utf-8');
@@ -70,7 +69,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseFromEmptyArrayWillSetStillNegotiateContent(): void
     {
         $request = $this->createRequest('http://foo.com');
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $mediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
             ->with([], $this->isInstanceOf(IStream::class), null);
@@ -90,8 +89,9 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseFromStreamWillSetContentLengthHeader(): void
     {
-        $rawBody = $this->createMock(MockableStream::class);
-        $rawBody->length = 123;
+        $rawBody = $this->createMock(IStream::class);
+        $rawBody->method('$length::get')
+            ->willReturn(123);
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertSame(123, $response->headers->getFirst('Content-Length'));
@@ -99,8 +99,9 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseFromStreamWithUnknownLengthWillNotSetContentLengthHeader(): void
     {
-        $rawBody = $this->createMock(MockableStream::class);
-        $rawBody->length = null;
+        $rawBody = $this->createMock(IStream::class);
+        $rawBody->method('$length::get')
+            ->willReturn(null);
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertFalse($response->headers->containsKey('Content-Length'));
@@ -130,7 +131,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->setUpContentNegotiationMock(
             User::class,
             $request,
-            new ContentNegotiationResult($this->createMock(MockableMediaTypeFormatter::class), null, 'utf-8', 'en-US')
+            new ContentNegotiationResult($this->createMock(IMediaTypeFormatter::class), null, 'utf-8', 'en-US')
         );
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertSame('en-US', $response->headers->getFirst('Content-Language'));
@@ -149,7 +150,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             User::class,
             $request,
             new ContentNegotiationResult(
-                $this->createMock(MockableMediaTypeFormatter::class),
+                $this->createMock(IMediaTypeFormatter::class),
                 'foo/bar',
                 null,
                 null
@@ -227,7 +228,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseWithObjectBodyWritesToResponseBodyUsingMediaTypeFormatterAndMatchedEncoding(): void
     {
         $rawBody = new User(123, 'foo@bar.com');
-        $responseMediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $responseMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
             ->with($rawBody, $this->isInstanceOf(Stream::class), 'utf-8');
@@ -244,7 +245,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseWithObjectRethrowsSerializationExceptionAsHttpException(): void
     {
         $rawBody = new User(123, 'foo@bar.com');
-        $responseMediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $responseMediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
         $responseMediaTypeFormatter->expects($this->once())
             ->method('writeToStream')
             ->with($rawBody, $this->isInstanceOf(Stream::class), null)
@@ -274,7 +275,7 @@ class NegotiatedResponseFactoryTest extends TestCase
 
     public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void
     {
-        $rawBody = $this->createMock(MockableStream::class);
+        $rawBody = $this->createMock(IStream::class);
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, null, $rawBody);
         $this->assertInstanceOf(StreamBody::class, $response->body);
     }

@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\IO\Tests\Streams;
 
+use Aphiria\IO\Streams\IStream;
 use Aphiria\IO\Streams\MultiStream;
 use Aphiria\IO\Streams\Stream;
-use Aphiria\IO\Tests\Streams\Mocks\MockableStream;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -32,8 +32,9 @@ class MultiStreamTest extends TestCase
     public function testAddingUnreadableStreamThrowsAnException(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $unreadableStream = $this->createMock(MockableStream::class);
-        $unreadableStream->isReadable = false;
+        $unreadableStream = $this->createMock(IStream::class);
+        $unreadableStream->method('$isReadable::get')
+            ->willReturn(false);
         $this->multiStream->addStream($unreadableStream);
     }
 
@@ -372,12 +373,13 @@ class MultiStreamTest extends TestCase
     /**
      * Creates a readable stream
      *
-     * @return MockableStream&MockObject The readable stream
+     * @return IStream&MockObject The readable stream
      */
-    private function createReadableStream(): MockableStream&MockObject
+    private function createReadableStream(): IStream&MockObject
     {
-        $stream = $this->createMock(MockableStream::class);
-        $stream->isReadable = true;
+        $stream = $this->createMock(IStream::class);
+        $stream->method('$isReadable::get')
+            ->willReturn(true);
 
         return $stream;
     }

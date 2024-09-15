@@ -18,7 +18,6 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\Output\Prompts\MultipleChoice;
 use Aphiria\Console\Output\Prompts\Prompt;
 use Aphiria\Console\Output\Prompts\Question;
-use Aphiria\Console\Tests\Output\Mocks\MockableOutput;
 use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
@@ -32,7 +31,7 @@ class PromptTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->output = Mockery::mock(MockableOutput::class);
+        $this->output = Mockery::mock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -42,6 +41,7 @@ class PromptTest extends TestCase
                 return null;
             }
         };
+        // TODO: Need to know how mockery will handle mocked property getters
         $this->output->driver = $driver;
         $this->paddingFormatter = new PaddingFormatter();
         $this->prompt = new Prompt($this->paddingFormatter);

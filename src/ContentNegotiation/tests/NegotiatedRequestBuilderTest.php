@@ -14,8 +14,8 @@ namespace Aphiria\ContentNegotiation\Tests;
 
 use Aphiria\ContentNegotiation\IMediaTypeFormatterMatcher;
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatch;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\NegotiatedRequestBuilder;
-use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
 use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\Headers\ContentTypeHeaderValue;
 use Aphiria\Net\Http\IBody;
@@ -90,8 +90,9 @@ class NegotiatedRequestBuilderTest extends TestCase
     #[DataProvider('getRawBodies')]
     public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, mixed $rawBody): void
     {
-        $mediaTypeFormatter = $this->createMock(MockableMediaTypeFormatter::class);
-        $mediaTypeFormatter->defaultEncoding = 'UTF-8';
+        $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
+        $mediaTypeFormatter->method('$defaultEncoding::get')
+            ->willReturn('UTF-8');
         $expectedStream = null;
         $mediaTypeFormatter->method('writeToStream')
             ->with(

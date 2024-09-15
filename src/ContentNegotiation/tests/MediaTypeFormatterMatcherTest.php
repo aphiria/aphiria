@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests;
 
 use Aphiria\ContentNegotiation\MediaTypeFormatterMatcher;
-use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use Aphiria\ContentNegotiation\Tests\Mocks\User;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IRequest;
@@ -259,7 +259,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
 
     public function testBestFormatterWithInvalidMediaTypeThrowsException(): void
     {
-        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
         $matcher = new MediaTypeFormatterMatcher([$formatter]);
 
         try {
@@ -338,12 +338,13 @@ class MediaTypeFormatterMatcherTest extends TestCase
      * Creates a mock media type formatter with a list of supported media types
      *
      * @param list<string> $supportedMediaTypes The list of supported media types
-     * @return MockableMediaTypeFormatter&MockObject The mocked formatter
+     * @return IMediaTypeFormatter&MockObject The mocked formatter
      */
-    private function createFormatterMock(array $supportedMediaTypes): MockableMediaTypeFormatter&MockObject
+    private function createFormatterMock(array $supportedMediaTypes): IMediaTypeFormatter&MockObject
     {
-        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
-        $formatter->supportedMediaTypes = $supportedMediaTypes;
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
+        $formatter->method('$supportedMediaTypes::get')
+            ->willReturn($supportedMediaTypes);
 
         return $formatter;
     }

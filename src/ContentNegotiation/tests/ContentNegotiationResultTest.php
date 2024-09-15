@@ -13,35 +13,35 @@ declare(strict_types=1);
 namespace Aphiria\ContentNegotiation\Tests;
 
 use Aphiria\ContentNegotiation\ContentNegotiationResult;
-use Aphiria\ContentNegotiation\Tests\MediaTypeFormatters\Mocks\MockableMediaTypeFormatter;
+use Aphiria\ContentNegotiation\MediaTypeFormatters\IMediaTypeFormatter;
 use PHPUnit\Framework\TestCase;
 
 class ContentNegotiationResultTest extends TestCase
 {
     public function testGettingEncodingReturnsSameOneInConstructor(): void
     {
-        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', null);
         $this->assertSame('utf-8', $results->encoding);
     }
 
     public function testGettingFormatterReturnsSameOneInConstructor(): void
     {
-        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
         $this->assertSame($formatter, $results->formatter);
     }
 
     public function testGettingLanguageReturnsSameOneInConstructor(): void
     {
-        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', 'utf-8', 'en-US');
         $this->assertSame('en-US', $results->language);
     }
 
     public function testGettingMediaTypeReturnsSameOneInConstructor(): void
     {
-        $formatter = $this->createMock(MockableMediaTypeFormatter::class);
+        $formatter = $this->createMock(IMediaTypeFormatter::class);
         $results = new ContentNegotiationResult($formatter, 'foo/bar', null, null);
         $this->assertSame('foo/bar', $results->mediaType);
     }
