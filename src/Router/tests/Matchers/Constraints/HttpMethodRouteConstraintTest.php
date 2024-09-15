@@ -23,12 +23,12 @@ class HttpMethodRouteConstraintTest extends TestCase
 {
     public function testCreatingWithLowercaseStringNormalizesItToUppercase(): void
     {
-        $this->assertEquals(['POST'], (new HttpMethodRouteConstraint('post'))->allowedMethods);
+        $this->assertEquals(['POST'], new HttpMethodRouteConstraint('post')->allowedMethods);
     }
 
     public function testCreatingWithStringParamConvertsToArrayOfAllowedMethods(): void
     {
-        $this->assertEquals(['POST'], (new HttpMethodRouteConstraint('POST'))->allowedMethods);
+        $this->assertEquals(['POST'], new HttpMethodRouteConstraint('POST')->allowedMethods);
     }
 
     public function testGettingAllowedMethodsForGetMethodIncludesHeadMethod(): void

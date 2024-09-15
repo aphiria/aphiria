@@ -104,7 +104,7 @@ class Psr7FactoryTest extends TestCase
                 'baz' => new UploadedFile(Psr7Stream::create('baz'), 3, \UPLOAD_ERR_OK)
             ]);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
+        $aphiriaMultipartBody = new RequestParser()->readAsMultipart($aphiriaRequest);
         $aphiriaMultipartBodyParts = $aphiriaMultipartBody?->parts;
         $this->assertNotNull($aphiriaMultipartBodyParts);
         $this->assertCount(3, $aphiriaMultipartBodyParts);

@@ -66,7 +66,7 @@ class ImmutableHashSetTest extends TestCase
     {
         $object1 = new FakeObject();
         $object2 = new FakeObject();
-        $this->assertSame(0, (new ImmutableHashSet([]))->count());
+        $this->assertSame(0, new ImmutableHashSet([])->count());
         $setWithOneValue = new ImmutableHashSet([$object1]);
         $this->assertSame(1, $setWithOneValue->count());
         $setWithOneUniqueValue = new ImmutableHashSet([$object1, $object1]);

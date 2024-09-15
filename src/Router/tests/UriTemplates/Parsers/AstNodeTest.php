@@ -37,13 +37,13 @@ class AstNodeTest extends TestCase
     public function testGettingTypeReturnsCorrectValue(): void
     {
         $expectedType = AstNodeType::Variable;
-        $this->assertSame($expectedType, (new AstNode($expectedType, 'foo'))->type);
+        $this->assertSame($expectedType, new AstNode($expectedType, 'foo')->type);
     }
 
     public function testGettingValueReturnsCorrectValue(): void
     {
         $expectedValue = 'bar';
-        $this->assertSame($expectedValue, (new AstNode(AstNodeType::Text, $expectedValue))->value);
+        $this->assertSame($expectedValue, new AstNode(AstNodeType::Text, $expectedValue)->value);
     }
 
     public function testNodeIsRootOnlyIfItHasNoParent(): void

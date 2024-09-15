@@ -34,7 +34,7 @@ class ResponseWriterBinderTest extends TestCase
             ->with(IResponseWriter::class, $this->callback(function (IResponseWriter $responseWriter): bool {
                 return $responseWriter instanceof StreamResponseWriter;
             }));
-        (new ResponseWriterBinder())->bind($this->container);
+        new ResponseWriterBinder()->bind($this->container);
         // Dummy assertion
         $this->assertTrue(true);
     }

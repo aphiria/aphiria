@@ -43,7 +43,7 @@ class RequestBinderTest extends TestCase
             ->method('bindFactory')
             ->with(IRequest::class, $this->callback(fn (Closure $factory): bool => $factory() === $request));
         RequestBinder::setOverridingRequest($request);
-        (new RequestBinder())->bind($this->container);
+        new RequestBinder()->bind($this->container);
     }
 
     public function testRequestDefaultsToLocalhostUriWhenRunningFromCli(): void
@@ -56,7 +56,7 @@ class RequestBinderTest extends TestCase
 
                 return (string)$request->uri === 'http://localhost';
             }));
-        (new RequestBinder())->bind($this->container);
+        new RequestBinder()->bind($this->container);
     }
 
     public function testRequestHasLocalhostUriWhenRunningFromCli(): void

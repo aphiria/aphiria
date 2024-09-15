@@ -90,7 +90,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
                 $problemDetails
             );
 
-            return (new ProblemDetailsResponseMutator())->mutateResponse($response);
+            return new ProblemDetailsResponseMutator()->mutateResponse($response);
         } catch (Exception $ex) {
             return $this->createDefaultResponse($ex);
         }

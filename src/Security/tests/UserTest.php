@@ -202,7 +202,7 @@ class UserTest extends TestCase
          */
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
-        $this->assertNull($user->getPrimaryIdentity());
+        $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');
         $user->addIdentity($identity1);
         $this->assertSame($identity1, $user->primaryIdentity);

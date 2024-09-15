@@ -37,7 +37,7 @@ class RequestBinder extends Binder
             }
 
             /** @var array<string, mixed> $_SERVER */
-            return (new RequestFactory())->createRequestFromSuperglobals($_SERVER);
+            return new RequestFactory()->createRequestFromSuperglobals($_SERVER);
         }
     }
     /** @var IRequest|null The overriding request if one is set (useful for integration tests) */

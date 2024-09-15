@@ -36,7 +36,7 @@ class ApiGateway implements IRequestHandler
      */
     public function handle(IRequest $request): IResponse
     {
-        $middlewarePipeline = (new MiddlewarePipelineFactory())->createPipeline($this->middleware->values, $this->router);
+        $middlewarePipeline = new MiddlewarePipelineFactory()->createPipeline($this->middleware->values, $this->router);
 
         return $middlewarePipeline->handle($request);
     }

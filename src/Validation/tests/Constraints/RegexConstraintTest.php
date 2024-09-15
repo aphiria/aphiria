@@ -33,7 +33,7 @@ class RegexConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new RegexConstraint('regex'))->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], new RegexConstraint('regex')->getErrorMessagePlaceholders('val'));
     }
 
     public function testMatchingValuesPass(): void

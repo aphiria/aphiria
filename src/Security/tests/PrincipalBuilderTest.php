@@ -76,7 +76,7 @@ class PrincipalBuilderTest extends TestCase
 
     public function testAddingDefaultClaimsIssuerPassesItToIdentities(): void
     {
-        $user = (new PrincipalBuilder('example.com'))
+        $user = new PrincipalBuilder('example.com')
             ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Dave'))
             ->build();
         $this->assertSame('example.com', $user->filterClaims(ClaimType::Name)[0]->issuer);
@@ -84,7 +84,7 @@ class PrincipalBuilderTest extends TestCase
 
     public function testAddingIdentityBuilderAddsBuiltIdentityToPrincipal(): void
     {
-        $user = (new PrincipalBuilder())
+        $user = new PrincipalBuilder()
             ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Dave', 'example.com'))
             ->build();
         $this->assertCount(1, $user->identities);
@@ -94,7 +94,7 @@ class PrincipalBuilderTest extends TestCase
 
     public function testAddingIdentityBuilderThatCallsBuildAddsBuiltIdentityToPrincipal(): void
     {
-        $user = (new PrincipalBuilder())
+        $user = new PrincipalBuilder()
             ->withIdentity(
                 fn (IdentityBuilder $identity) => $identity->withName('Dave', 'example.com')
                 ->build()
@@ -107,7 +107,7 @@ class PrincipalBuilderTest extends TestCase
     public function testAddingIdentityObjectAddsItToPrincipal(): void
     {
         $identity = new Identity([], 'example.com');
-        $user = (new PrincipalBuilder())
+        $user = new PrincipalBuilder()
             ->withIdentity($identity)
             ->build();
         $this->assertSame([$identity], $user->identities);
@@ -115,7 +115,7 @@ class PrincipalBuilderTest extends TestCase
 
     public function testAddingMixOfIdentitiesAndIdentityBuildersAddsThemToPrincipal(): void
     {
-        $user = (new PrincipalBuilder())
+        $user = new PrincipalBuilder()
             ->withIdentity(new Identity([new Claim(ClaimType::Name, 'Dave', 'example.com')]))
             ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Lindsey', 'example.com'))
             ->build();
@@ -128,11 +128,11 @@ class PrincipalBuilderTest extends TestCase
 
     public function testAddingMultipleIdentityBuildersAddsThemToPrincipal(): void
     {
-        $user = (new PrincipalBuilder())
+        $user = new PrincipalBuilder()
             ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Dave', 'example.com'))
             ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Lindsey', 'example.com'))
             ->build();
-        $this->assertCount(2, $user->getIdentities());
+        $this->assertCount(2, $user->identities);
         $this->assertSame('Dave', $user->identities[0]->filterClaims(ClaimType::Name)[0]->value);
         $this->assertSame('example.com', $user->identities[0]->filterClaims(ClaimType::Name)[0]->issuer);
         $this->assertSame('Lindsey', $user->identities[1]->filterClaims(ClaimType::Name)[0]->value);
@@ -145,7 +145,7 @@ class PrincipalBuilderTest extends TestCase
             new Identity([], 'example.com1'),
             new Identity([], 'example.com2')
         ];
-        $user = (new PrincipalBuilder())
+        $user = new PrincipalBuilder()
             ->withIdentity($identities[0])
             ->withIdentity($identities[1])
             ->build();
@@ -159,7 +159,7 @@ class PrincipalBuilderTest extends TestCase
             new Identity([], 'example2.com')
         ];
         // By default, the primary identity is the first one added, so for testing we'll select the last one added
-        $user = (new PrincipalBuilder('foo'))
+        $user = new PrincipalBuilder('foo')
             ->withIdentity($identities[0])
             ->withIdentity($identities[1])
             ->withPrimaryIdentitySelector(fn (array $identities) => $identities[1])
@@ -180,7 +180,7 @@ class PrincipalBuilderTest extends TestCase
 
     public function testWithAuthenticationSchemeNameAddsItToPrimaryIdentity(): void
     {
-        $user = (new PrincipalBuilder('example.com'))->withAuthenticationSchemeName('foo')
+        $user = new PrincipalBuilder('example.com')->withAuthenticationSchemeName('foo')
             ->build();
         $this->assertSame('foo', $user->primaryIdentity?->authenticationSchemeName);
     }
@@ -191,7 +191,7 @@ class PrincipalBuilderTest extends TestCase
             new Claim(ClaimType::Name, 'Dave', 'example.com'),
             new Claim(ClaimType::Email, 'foo@bar.com', 'example.com')
         ];
-        $user = (new PrincipalBuilder('example.com'))->withClaims($expectedClaims)
+        $user = new PrincipalBuilder('example.com')->withClaims($expectedClaims)
             ->build();
         $this->assertSame($expectedClaims, $user->primaryIdentity?->claims);
     }
@@ -201,7 +201,7 @@ class PrincipalBuilderTest extends TestCase
         $expectedClaims = [
             new Claim(ClaimType::Name, 'Dave', 'example.com')
         ];
-        $user = (new PrincipalBuilder('example.com'))->withClaims($expectedClaims[0])
+        $user = new PrincipalBuilder('example.com')->withClaims($expectedClaims[0])
             ->build();
         $this->assertSame($expectedClaims, $user->primaryIdentity?->claims);
     }

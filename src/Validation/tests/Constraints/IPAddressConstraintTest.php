@@ -32,7 +32,7 @@ class IPAddressConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new IPAddressConstraint())->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], new IPAddressConstraint()->getErrorMessagePlaceholders('val'));
     }
 
     public function testPassingValue(): void

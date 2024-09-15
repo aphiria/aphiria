@@ -80,7 +80,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->method('getBestRequestMediaTypeFormatterMatch')
             ->with('string', $this->isInstanceOf(IRequest::class))
             ->willReturn(null);
-        (new NegotiatedRequestBuilder($mediaTypeFormatterMatcher))->withBody('foo');
+        new NegotiatedRequestBuilder($mediaTypeFormatterMatcher)->withBody('foo');
     }
 
     /**
@@ -114,7 +114,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->method('getBestRequestMediaTypeFormatterMatch')
             ->with($expectedType, $this->isInstanceOf(IRequest::class))
             ->willReturn($expectedMediaTypeFormatterMatch);
-        $request = (new NegotiatedRequestBuilder($mediaTypeFormatterMatcher))->withMethod('GET')
+        $request = new NegotiatedRequestBuilder($mediaTypeFormatterMatcher)->withMethod('GET')
             ->withUri('http://localhost')
             ->withBody($rawBody)
             ->build();

@@ -35,7 +35,7 @@ abstract class Output implements IOutput
         protected readonly IOutputCompiler $outputCompiler = new OutputCompiler(),
         ?IDriver $driver = null
     ) {
-        $this->driver = $driver ?? (new DriverSelector())->select();
+        $this->driver = $driver ?? new DriverSelector()->select();
     }
 
     /**

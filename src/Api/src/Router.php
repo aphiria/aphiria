@@ -85,7 +85,7 @@ class Router implements IRequestHandler
             $this->routeActionInvoker,
             $this->userAccessor
         );
-        $middlewarePipeline = (new MiddlewarePipelineFactory())->createPipeline(
+        $middlewarePipeline = new MiddlewarePipelineFactory()->createPipeline(
             $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),
             $controllerRequestHandler
         );

@@ -31,7 +31,7 @@ class EqualsConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new EqualsConstraint('foo'))->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], new EqualsConstraint('foo')->getErrorMessagePlaceholders('val'));
     }
 
     public function testUnequalValuesFail(): void
