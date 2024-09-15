@@ -4,8 +4,9 @@
 
 ### Changed
 
-- Required PHP 8.3 ([#303](https://github.com/aphiria/aphiria/pull/303), [#305](https://github.com/aphiria/aphiria/pull/305))
+- Required PHP 8.4 ([#303](https://github.com/aphiria/aphiria/pull/303), [#305](https://github.com/aphiria/aphiria/pull/305), [#313](https://github.com/aphiria/aphiria/pull/313))
 - Updated to Symfony 7.0 ([#306](https://github.com/aphiria/aphiria/pull/306))
+- Refactored a multitude of `getXxx()` and `setXxx()` methods to use property hooks ([#313](https://github.com/aphiria/aphiria/pull/313))
 
 ### Added
 

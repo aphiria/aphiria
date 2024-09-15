@@ -149,7 +149,7 @@ final class Stream implements IStream
             $this->rewind();
 
             return $this->readToEnd();
-        } catch (RuntimeException $ex) {
+        } catch (RuntimeException) {
             return '';
         }
     }
