@@ -29,7 +29,7 @@ class ProblemDetailsResponseMutatorTest extends TestCase
         $this->mutator = new ProblemDetailsResponseMutator();
         $this->headers = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('getHeaders')
+        $this->response->method('$headers::get')
             ->willReturn($this->headers);
     }
 

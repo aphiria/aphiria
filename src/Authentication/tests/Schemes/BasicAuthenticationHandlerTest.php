@@ -105,7 +105,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
+        $request->method('$headers::get')
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
@@ -118,7 +118,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
+        $request->method('$headers::get')
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $result = $this->schemeHandler->authenticate($request, $scheme);
@@ -136,7 +136,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
+        $request->method('$headers::get')
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
         $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class), 'foo');
@@ -157,7 +157,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->method('getHeaders')
+        $response->method('$headers::get')
             ->willReturn($headers);
         $this->schemeHandler->challenge($this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame($expectedWwwAuthenticateHeaderValue, $headers->getFirst('Www-Authenticate'));
@@ -167,7 +167,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $response = $this->createMock(IResponse::class);
         $response->expects($this->once())
-            ->method('setStatusCode')
+            ->method('$statusCode::set')
             ->with(HttpStatusCode::Forbidden);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);

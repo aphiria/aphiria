@@ -36,14 +36,14 @@ class ResponseFormatterTest extends TestCase
         $this->formatter = new ResponseFormatter();
         $this->headers = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('getHeaders')
+        $this->response->method('$headers::get')
             ->willReturn($this->headers);
     }
 
     public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
     {
         $this->response->expects($this->once())
-            ->method('setBody')
+            ->method('$body::set')
             ->with($this->callback(function (mixed $body) {
                 return $body instanceof StringBody && $body->readAsString() === \json_encode(['foo' => 'bar']);
             }));
@@ -68,7 +68,7 @@ class ResponseFormatterTest extends TestCase
     public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(HttpStatusCode|int $expectedStatusCode): void
     {
         $this->response->expects($this->once())
-            ->method('setStatusCode')
+            ->method('$statusCode::set')
             ->with($expectedStatusCode);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', $expectedStatusCode);
     }
@@ -76,7 +76,7 @@ class ResponseFormatterTest extends TestCase
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
-            ->method('setStatusCode')
+            ->method('$statusCode::set')
             ->with(301);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
@@ -85,7 +85,7 @@ class ResponseFormatterTest extends TestCase
     public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
-            ->method('setStatusCode')
+            ->method('$statusCode::set')
             ->with(301);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));

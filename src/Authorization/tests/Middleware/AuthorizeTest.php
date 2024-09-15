@@ -308,10 +308,10 @@ class AuthorizeTest extends TestCase
     private function createMockAuthenticatedUser(): IPrincipal
     {
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('isAuthenticated')
+        $identity->method('$isAuthenticated::get')
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getPrimaryIdentity')
+        $user->method('$primaryIdentity::get')
             ->willReturn($identity);
 
         return $user;

@@ -31,7 +31,7 @@ class ContentNegotiatorTest extends TestCase
     {
         $this->headers = new Headers();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method('getHeaders')
+        $this->request->method('$headers::get')
             ->willReturn($this->headers);
     }
 

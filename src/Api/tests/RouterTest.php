@@ -142,7 +142,7 @@ class RouterTest extends TestCase
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedHeaders = new Headers();
         $expectedResponse = $this->createMock(IResponse::class);
-        $expectedResponse->method('getHeaders')
+        $expectedResponse->method('$headers::get')
             ->willReturn($expectedHeaders);
         // We want different middleware class names to be able to test multiple middleware, hence the anon classes
         $middleware1 = new class () extends MiddlewareThatIncrementsHeader {
@@ -266,9 +266,9 @@ class RouterTest extends TestCase
     private function createRequestMock(string $method, string $uri): IRequest&MockObject
     {
         $request = $this->createMock(IRequest::class);
-        $request->method('getMethod')
+        $request->method('$method::get')
             ->willReturn($method);
-        $request->method('getUri')
+        $request->method('$uri::get')
             ->willReturn(new Uri($uri));
 
         return $request;

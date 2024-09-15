@@ -40,15 +40,15 @@ class StreamResponseWriterTest extends TestCase
 
         // Set up the response
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('getHeaders')
+        $this->response->method('$headers::get')
             ->willReturn(new Headers([new KeyValuePair('Foo', 'bar')]));
-        $this->response->method('getBody')
+        $this->response->method('$body::get')
             ->willReturn($this->body);
-        $this->response->method('getProtocolVersion')
+        $this->response->method('$protocolVersion::get')
             ->willReturn('1.1');
-        $this->response->method('getStatusCode')
+        $this->response->method('$statusCode::get')
             ->willReturn(HttpStatusCode::Ok);
-        $this->response->method('getReasonPhrase')
+        $this->response->method('$reasonPhrase::get')
             ->willReturn('OK');
     }
 
