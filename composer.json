@@ -79,6 +79,12 @@
             "Aphiria\\Validation\\Tests\\": "src/Validation/tests"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sebastianbergmann/phpunit"
+        }
+    ],
     "require": {
         "ext-ctype": "*",
         "ext-fileinfo": "*",
@@ -99,9 +105,9 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.6",
         "mockery/mockery": "^1.6",
-        "nikic/php-parser": "dev-master",
+        "nikic/php-parser": "^5.2",
         "nyholm/psr7": "^1.5",
-        "phpunit/phpunit": "^11.3",
+        "phpunit/phpunit": "dev-issue-5945/property-hooks#6963b30c32aed4b210253d41588acabb6b0f66cb as 11.4",
         "psalm/plugin-mockery": "^1.1",
         "vimeo/psalm": "dev-master"
     },

@@ -68,10 +68,20 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestSetsControllerProperties(): void
     {
-        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
+        $controller->expects($this->once())
+            ->method('$request::set')
+            ->with($request);
+        $controller->expects($this->once())
+            ->method('$requestParser::set');
+        $controller->expects($this->once())
+            ->method('$bodyDeserializer::set')
+            ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
+        $controller->expects($this->once())
+            ->method('$responseFactory::set');
+        $controller->expects($this->once())
+            ->method('$userAccessor::set');
         /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
@@ -88,7 +98,6 @@ class ControllerRequestHandlerTest extends TestCase
             $this->userAccessor
         );
         $requestHandler->handle($request);
-        $this->assertSame($request, $controller->request);
         $this->assertInstanceOf(RequestParser::class, $controller->requestParser);
         $this->assertInstanceOf(IBodyDeserializer::class, $controller->bodyDeserializer);
         $this->assertInstanceOf(IResponseFactory::class, $controller->responseFactory);
