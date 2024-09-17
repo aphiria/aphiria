@@ -78,7 +78,7 @@ class ProgressBarFormatterTest extends TestCase
     {
         $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         // Use a redraw frequency of 0 so that it redraws every time
-        $output = Mockery::mock(MockableOutput::class);
+        $output = Mockery::mock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
