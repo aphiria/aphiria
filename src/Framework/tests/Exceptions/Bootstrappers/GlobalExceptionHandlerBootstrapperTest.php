@@ -51,7 +51,10 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     {
         $this->container = $this->createMock(IContainer::class);
         $this->bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
-            public bool $isRunningInConsole = false;
+            public bool $isRunningInConsole = false {
+                get => $this->isRunningInConsole;
+                set => $value;
+            }
         };
         GlobalConfiguration::resetConfigurationSources();
     }
