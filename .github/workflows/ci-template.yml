@@ -43,10 +43,10 @@ jobs:
           extensions: curl, dom, libxml, mbstring, pcntl, xdebug, zip
           tools: composer:v2
           coverage: xdebug
+        env:
+          GITHUB_TOKEN: ${{ secrets.TEMP_GITHUB_PAT }}
       - name: Install Dependencies
-        run: |
-          composer config --global --auth github-oauth.github.com ${{ secrets.TEMP_GITHUB_PAT }}
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
       - name: Run Tests
         run: composer phpunit
       - name: Run Linter
