@@ -38,7 +38,7 @@ class Identity implements IIdentity
     /** @inheritdoc */
     public ?string $name {
         get {
-            $idClaims = $this->filterClaims(ClaimType::NameIdentifier);
+            $idClaims = $this->filterClaims(ClaimType::Name);
 
             return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
         }

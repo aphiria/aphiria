@@ -53,6 +53,17 @@ final class ObjectConstraints
     }
 
     /**
+     * Adds a constraint to a property
+     *
+     * @param string $propertyName The name of the property to add constraints to
+     * @param list<IConstraint>|IConstraint $constraint The constraint or list of constraints to add
+     */
+    public function addPropertyConstraint(string $propertyName, IConstraint|array $constraint): void
+    {
+        $this->propertyConstraints[$propertyName] = \is_array($constraint) ? $constraint : [$constraint];
+    }
+
+    /**
      * Gets all constraints for a particular method
      *
      * @param string $methodName The name of the method whose constraints we want

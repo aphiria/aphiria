@@ -42,7 +42,8 @@ class MultiStreamTest extends TestCase
     public function testClosingStreamMakesItSeekableAgainAndResetsThePosition(): void
     {
         $unseekableStream = $this->createReadableStream();
-        $unseekableStream->isSeekable = false;
+        $unseekableStream->method(PropertyHook::get('isSeekable'))
+            ->willReturn(false);
         $this->multiStream->addStream($unseekableStream);
         $this->multiStream->close();
         $this->assertTrue($this->multiStream->isSeekable);
@@ -145,8 +146,10 @@ class MultiStreamTest extends TestCase
     {
         $streamWithLength = $this->createReadableStream();
         $streamWithoutLength = $this->createReadableStream();
-        $streamWithLength->length = 10;
-        $streamWithoutLength->length = null;
+        $streamWithLength->method(PropertyHook::get('length'))
+            ->willReturn(10);
+        $streamWithoutLength->method(PropertyHook::get('length'))
+            ->willReturn(null);
         $this->multiStream->addStream($streamWithLength);
         $this->multiStream->addStream($streamWithoutLength);
         $this->assertNull($this->multiStream->length);
@@ -156,8 +159,10 @@ class MultiStreamTest extends TestCase
     {
         $stream1 = $this->createReadableStream();
         $stream2 = $this->createReadableStream();
-        $stream1->length = 10;
-        $stream2->length = 20;
+        $stream1->method(PropertyHook::get('length'))
+            ->willReturn(10);
+        $stream2->method(PropertyHook::get('length'))
+            ->willReturn(20);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
         $this->assertSame(30, $this->multiStream->length);
@@ -252,7 +257,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createReadableStream();
-        $stream->length = null;
+        $stream->method(PropertyHook::get('length'))
+            ->willReturn(null);
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(-1, SEEK_END);
     }
@@ -261,7 +267,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createReadableStream();
-        $stream->length = null;
+        $stream->method(PropertyHook::get('length'))
+            ->willReturn(null);
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);
     }
@@ -270,7 +277,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $unseekableStream = $this->createReadableStream();
-        $unseekableStream->isSeekable = false;
+        $unseekableStream->method(PropertyHook::get('isSeekable'))
+            ->willReturn(false);
         $this->multiStream->addStream($unseekableStream);
         $this->multiStream->seek(0);
     }
@@ -358,7 +366,8 @@ class MultiStreamTest extends TestCase
     public function testToStringWithUnseekableStreamReturnsEmptyString(): void
     {
         $unseekableStream = $this->createReadableStream();
-        $unseekableStream->isSeekable = false;
+        $unseekableStream->method(PropertyHook::get('isSeekable'))
+            ->willReturn(false);
         $unseekableStream->expects($this->never())
             ->method('readToEnd');
         $multiStream = new MultiStream([$unseekableStream]);

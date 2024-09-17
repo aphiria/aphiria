@@ -73,10 +73,10 @@ class Psr7Factory implements IPsr7Factory
         $aphiriaRequest = new Request(
             $psr7Request->getMethod(),
             $this->createAphiriaUri($psr7Request->getUri()),
-            protocolVersion: $psr7Request->protocolVersion
+            protocolVersion: $psr7Request->getProtocolVersion()
         );
 
-        foreach ($psr7Request->headers as $name => $values) {
+        foreach ($psr7Request->getHeaders() as $name => $values) {
             $aphiriaRequest->headers->add($name, $values);
         }
 
@@ -108,7 +108,7 @@ class Psr7Factory implements IPsr7Factory
             $this->aphiriaRequestParser->parseParameters($aphiriaRequest, 'Content-Type')->tryGet('boundary', $boundary);
             $aphiriaRequest->body = new MultipartBody($bodyParts, $boundary);
         } else {
-            $aphiriaRequest->body = new StreamBody($this->createAphiriaStream($psr7Request->body));
+            $aphiriaRequest->body = new StreamBody($this->createAphiriaStream($psr7Request->getBody()));
         }
 
         if (($psr7ParsedBody = $psr7Request->getParsedBody()) !== null) {
@@ -131,11 +131,11 @@ class Psr7Factory implements IPsr7Factory
         $aphiriaResponse = new Response(
             $psr7Response->getStatusCode(),
             new Headers(),
-            new StreamBody($this->createAphiriaStream($psr7Response->body)),
-            $psr7Response->protocolVersion
+            new StreamBody($this->createAphiriaStream($psr7Response->getBody())),
+            $psr7Response->getProtocolVersion()
         );
 
-        foreach ($psr7Response->headers as $name => $values) {
+        foreach ($psr7Response->getHeaders() as $name => $values) {
             $aphiriaResponse->headers->add($name, $values);
         }
 
@@ -221,7 +221,7 @@ class Psr7Factory implements IPsr7Factory
     {
         $psr7Response = $this->psr7ResponseFactory->createResponse(
             $aphiriaResponse->statusCode->value,
-            $aphiriaResponse->uri ?? ''
+            $aphiriaResponse->reasonPhrase ?? ''
         )
             ->withProtocolVersion($aphiriaResponse->protocolVersion);
 

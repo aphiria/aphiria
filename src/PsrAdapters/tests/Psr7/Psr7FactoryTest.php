@@ -257,7 +257,7 @@ class Psr7FactoryTest extends TestCase
         $aphiriaBody = new StringBody('foo');
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'), body: $aphiriaBody);
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
-        $this->assertSame('foo', (string)$psr7Request->body);
+        $this->assertSame('foo', (string)$psr7Request->getBody());
     }
 
     public function testCreatePsr7RequestSetsSameCookies(): void
@@ -277,8 +277,8 @@ class Psr7FactoryTest extends TestCase
         $aphiriaHeaders->add('Baz', 'blah');
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'), $aphiriaHeaders);
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
-        $this->assertEquals(['bar'], $psr7Request->headers['Foo']);
-        $this->assertEquals(['blah'], $psr7Request->headers['Baz']);
+        $this->assertEquals(['bar'], $psr7Request->getHeaders()['Foo']);
+        $this->assertEquals(['blah'], $psr7Request->getHeaders()['Baz']);
     }
 
     public function testCreatePsr7RequestSetsSameHttpMethod(): void
@@ -316,7 +316,7 @@ class Psr7FactoryTest extends TestCase
         $aphiriaBody = new StringBody('foo');
         $aphiriaResponse = new Response(200, body: $aphiriaBody);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertSame('foo', (string)$psr7Response->body);
+        $this->assertSame('foo', (string)$psr7Response->getBody());
     }
 
     public function testCreatePsr7ResponseSetsSameHeaders(): void
@@ -327,14 +327,14 @@ class Psr7FactoryTest extends TestCase
         ]);
         $aphiriaResponse = new Response(200, $headers);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertEquals(['Foo' => ['bar'], 'Baz' => ['blah']], $psr7Response->headers);
+        $this->assertEquals(['Foo' => ['bar'], 'Baz' => ['blah']], $psr7Response->getHeaders());
     }
 
     public function testCreatePsr7ResponseSetsSameProtocolVersion(): void
     {
         $aphiriaResponse = new Response(200);
         $psr7Response = $this->psr7Factory->createPsr7Response($aphiriaResponse);
-        $this->assertSame('1.1', $psr7Response->protocolVersion);
+        $this->assertSame('1.1', $psr7Response->getProtocolVersion());
     }
 
     public function testCreatePsr7ResponseSetsSameReasonPhrase(): void

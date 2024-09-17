@@ -69,7 +69,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         // Dummy assertion
         $this->assertTrue(true);
@@ -90,6 +90,9 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     {
         $this->setsExceptionAndErrorHandler = true;
         $customApiExceptionRenderer = new class () implements IApiExceptionRenderer {
+            public IRequest $request;
+            public IResponseFactory $responseFactory;
+
             public function createResponse(Exception $ex): IResponse
             {
                 return new Response(200);
@@ -123,7 +126,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         $this->apiExceptionRenderer->request = $this->createMock(IRequest::class);
         $this->apiExceptionRenderer->responseFactory = $this->createMock(IResponseFactory::class);
@@ -154,7 +157,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         $request = $this->createMock(IRequest::class);
         $this->apiExceptionRenderer->request = $request;
@@ -173,7 +176,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     {
         $bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
             public bool $isRunningInConsole {
-                get => parent::$isRunningInConsole;
+                get => parent::$isRunningInConsole::get();
             }
         };
         $this->assertTrue($bootstrapper->isRunningInConsole);

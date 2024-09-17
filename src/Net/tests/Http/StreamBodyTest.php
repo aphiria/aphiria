@@ -37,7 +37,7 @@ class StreamBodyTest extends TestCase
         $nullLengthBody = new StreamBody($nullLengthStream);
         $this->assertNull($nullLengthBody->length);
         $definedLengthStream = $this->createMock(IStream::class);
-        $definedLengthStream->method('$length::1')
+        $definedLengthStream->method(PropertyHook::get('length'))
             ->willReturn(1);
         $definedLengthBody = new StreamBody($definedLengthStream);
         $this->assertSame(1, $definedLengthBody->length);
@@ -73,7 +73,8 @@ class StreamBodyTest extends TestCase
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
-        $underlyingStream->isSeekable = false;
+        $underlyingStream->method(PropertyHook::get('isSeekable'))
+            ->willReturn(false);
         $underlyingStream->expects($this->never())
             ->method('rewind');
         $body = new StreamBody($underlyingStream);
@@ -90,7 +91,8 @@ class StreamBodyTest extends TestCase
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
-        $underlyingStream->isSeekable = true;
+        $underlyingStream->method(PropertyHook::get('isSeekable'))
+            ->willReturn(true);
         $underlyingStream->expects($this->once())
             ->method('rewind');
         $body = new StreamBody($underlyingStream);

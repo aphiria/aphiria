@@ -21,7 +21,7 @@ use Aphiria\IO\Streams\Stream;
 class StreamResponseWriter implements IResponseWriter
 {
     /** @inheritdoc */
-    public bool $headersSent {
+    public bool $headersAreSent {
         get => \headers_sent();
     }
     /** @var array<string, true> The hash table of headers that should not concatenate multiple values */
@@ -60,7 +60,7 @@ class StreamResponseWriter implements IResponseWriter
 
         $startLine = "HTTP/{$response->protocolVersion} {$response->statusCode->value}";
 
-        if (($reasonPhrase = $response->uri) !== null) {
+        if (($reasonPhrase = $response->reasonPhrase) !== null) {
             $startLine .= " $reasonPhrase";
         }
 

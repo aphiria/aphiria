@@ -81,15 +81,13 @@ class StreamResponseWriterTest extends TestCase
 
         $responseWriter = new class ($this->outputStream) extends StreamResponseWriter {
             public array $headers = [];
+            public bool $headersAreSent {
+                get => false;
+            }
 
             public function header(string $value, bool $replace = true, ?int $statusCode = null): void
             {
                 $this->headers[] = $value;
-            }
-
-            public function headersAreSent(): bool
-            {
-                return false;
             }
         };
         $responseWriter->writeResponse($response);
@@ -99,10 +97,7 @@ class StreamResponseWriterTest extends TestCase
     public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
     {
         $writer = new class ($this->outputStream) extends StreamResponseWriter {
-            public function headersAreSent(): bool
-            {
-                return true;
-            }
+            public bool $headersAreSent = true;
         };
         $writer->writeResponse($this->response);
         // Dummy assertion

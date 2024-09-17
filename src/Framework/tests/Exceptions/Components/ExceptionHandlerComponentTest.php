@@ -26,6 +26,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Exception;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -61,7 +62,7 @@ class ExceptionHandlerComponentTest extends TestCase
                 return null;
             }
         };
-        $output->method('$driver::class')
+        $output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $output->expects($this->once())
             ->method('writeln')

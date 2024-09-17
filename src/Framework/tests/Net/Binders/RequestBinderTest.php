@@ -77,6 +77,7 @@ class RequestBinderTest extends TestCase
 
     public function testRequestHasLocalhostUriWhenRunningFromHttp(): void
     {
+        // Note: This host must be different than the one set in RequestBinder when running from console for the test to pass
         $_SERVER['HTTP_HOST'] = 'example.com';
         // argv was causing issues in the test
         unset($_SERVER['argv']);

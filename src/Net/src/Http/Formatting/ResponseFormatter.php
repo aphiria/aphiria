@@ -81,7 +81,7 @@ class ResponseFormatter
             $uriString = (string)$uri;
         }
 
-        $response->statusCode = $statusCode;
+        $response->statusCode = $statusCode instanceof HttpStatusCode ? $statusCode : HttpStatusCode::tryFrom($statusCode);
         $response->headers->add('Location', $uriString);
     }
 

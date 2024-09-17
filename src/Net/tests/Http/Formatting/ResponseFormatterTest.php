@@ -64,21 +64,23 @@ class ResponseFormatterTest extends TestCase
     /**
      * @param HttpStatusCode|int $expectedStatusCode
      */
-    #[TestWith([HttpStatusCode::Found])]
-    #[TestWith([302])]
-    public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(HttpStatusCode|int $expectedStatusCode): void
-    {
+    #[TestWith([HttpStatusCode::Found, HttpStatusCode::Found])]
+    #[TestWith([HttpStatusCode::Found, 302])]
+    public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(
+        HttpStatusCode $expectedStatusCode,
+        HttpStatusCode|int $rawStatusCode
+    ): void {
         $this->response->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with($expectedStatusCode);
-        $this->formatter->redirectToUri($this->response, 'http://foo.com', $expectedStatusCode);
+        $this->formatter->redirectToUri($this->response, 'http://foo.com', $rawStatusCode);
     }
 
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
-            ->with(301);
+            ->with(HttpStatusCode::MovedPermanently);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }
@@ -87,7 +89,7 @@ class ResponseFormatterTest extends TestCase
     {
         $this->response->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
-            ->with(301);
+            ->with(HttpStatusCode::MovedPermanently);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }
