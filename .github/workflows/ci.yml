@@ -17,3 +17,4 @@ jobs:
       run-psalm: false
     secrets:
       ci-ssh-key: ${{ secrets.CI_SSH_KEY }}
+      temp-github-pat: ${{ secrets.TEMP_GITHUB_PAT }}
