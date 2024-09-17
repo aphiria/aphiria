@@ -26,6 +26,7 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\IResponseFactory;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
@@ -71,17 +72,17 @@ class ControllerRequestHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $controller = $this->createMock(ControllerWithEndpoints::class);
         $controller->expects($this->once())
-            ->method('$request::set')
+            ->method(PropertyHook::set('request'))
             ->with($request);
         $controller->expects($this->once())
-            ->method('$requestParser::set');
+            ->method(PropertyHook::set('requestParser'));
         $controller->expects($this->once())
-            ->method('$bodyDeserializer::set')
+            ->method(PropertyHook::set('bodyDeserializer'))
             ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
         $controller->expects($this->once())
-            ->method('$responseFactory::set');
+            ->method(PropertyHook::set('responseFactory'));
         $controller->expects($this->once())
-            ->method('$userAccessor::set');
+            ->method(PropertyHook::set('userAccessor'));
         /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())

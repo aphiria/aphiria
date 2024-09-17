@@ -21,6 +21,7 @@ use Aphiria\Net\Http\Request;
 use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class MediaTypeFormatterMatcherTest extends TestCase
@@ -343,7 +344,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
     private function createFormatterMock(array $supportedMediaTypes): IMediaTypeFormatter&MockObject
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->method('$supportedMediaTypes::get')
+        $formatter->method(PropertyHook:get('supportedMediaTypes'))
             ->willReturn($supportedMediaTypes);
 
         return $formatter;

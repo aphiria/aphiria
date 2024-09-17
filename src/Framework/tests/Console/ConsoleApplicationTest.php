@@ -20,6 +20,7 @@ use Aphiria\Console\StatusCode;
 use Aphiria\Framework\Console\ConsoleApplication;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -44,7 +45,7 @@ class ConsoleApplicationTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('$driver::get')
+        $this->output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
         $this->app = new ConsoleApplication($this->consoleGateway, $this->input, $this->output);
     }

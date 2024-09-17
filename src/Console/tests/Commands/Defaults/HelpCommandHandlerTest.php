@@ -25,6 +25,7 @@ use Aphiria\Console\Input\OptionType;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class HelpCommandHandlerTest extends TestCase
@@ -47,7 +48,7 @@ class HelpCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('$driver::get')
+        $this->output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
     }
 

@@ -16,6 +16,7 @@ use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Framework\Console\Commands\ServeCommandHandler;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ServeCommandHandlerTest extends TestCase
@@ -32,7 +33,7 @@ class ServeCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $output->method('$driver::get')
+        $output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
         $output->expects($this->once())
             ->method('writeln')

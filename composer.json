@@ -107,7 +107,7 @@
         "mockery/mockery": "^1.6",
         "nikic/php-parser": "^5.2",
         "nyholm/psr7": "^1.5",
-        "phpunit/phpunit": "dev-issue-5945/property-hooks#6963b30c32aed4b210253d41588acabb6b0f66cb as 11.4",
+        "phpunit/phpunit": "dev-issue-5945/property-hooks#e3ce86cd281b656541857cffab9d187ffab608f0 as 11.4",
         "psalm/plugin-mockery": "^1.1",
         "vimeo/psalm": "dev-master"
     },

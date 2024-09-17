@@ -16,6 +16,7 @@ use Aphiria\Api\Errors\ProblemDetailsResponseMutator;
 use Aphiria\Net\Http\Headers;
 use Aphiria\Net\Http\IResponse;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ProblemDetailsResponseMutatorTest extends TestCase
@@ -29,7 +30,7 @@ class ProblemDetailsResponseMutatorTest extends TestCase
         $this->mutator = new ProblemDetailsResponseMutator();
         $this->headers = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('$headers::get')
+        $this->response->method(PropertyHook:get('headers'))
             ->willReturn($this->headers);
     }
 

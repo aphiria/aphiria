@@ -17,6 +17,7 @@ use Aphiria\IO\Streams\MultiStream;
 use Aphiria\IO\Streams\Stream;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -33,7 +34,7 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $unreadableStream = $this->createMock(IStream::class);
-        $unreadableStream->method('$isReadable::get')
+        $unreadableStream->method(PropertyHook:get('isReadable'))
             ->willReturn(false);
         $this->multiStream->addStream($unreadableStream);
     }
@@ -378,7 +379,7 @@ class MultiStreamTest extends TestCase
     private function createReadableStream(): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->method('$isReadable::get')
+        $stream->method(PropertyHook:get('isReadable'))
             ->willReturn(true);
 
         return $stream;

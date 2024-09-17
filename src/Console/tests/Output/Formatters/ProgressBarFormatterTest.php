@@ -20,6 +20,7 @@ use Exception;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ProgressBarFormatterTest extends TestCase
@@ -38,7 +39,7 @@ class ProgressBarFormatterTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('$driver::get')
+        $this->output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
     }
 

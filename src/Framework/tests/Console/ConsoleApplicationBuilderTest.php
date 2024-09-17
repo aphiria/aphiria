@@ -26,6 +26,7 @@ use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\UniversalContext;
 use Aphiria\Framework\Console\ConsoleApplication;
 use Aphiria\Framework\Console\ConsoleApplicationBuilder;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -53,7 +54,7 @@ class ConsoleApplicationBuilderTest extends TestCase
                 return null;
             }
         };
-        $output->method('$driver::get')
+        $output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
         $this->container->bindInstance(IOutput::class, $output);
     }

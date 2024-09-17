@@ -22,6 +22,7 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class NegotiatedRequestBuilderTest extends TestCase
@@ -91,7 +92,7 @@ class NegotiatedRequestBuilderTest extends TestCase
     public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, mixed $rawBody): void
     {
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->method('$defaultEncoding::get')
+        $mediaTypeFormatter->method(PropertyHook:get('defaultEncoding'))
             ->willReturn('UTF-8');
         $expectedStream = null;
         $mediaTypeFormatter->method('writeToStream')

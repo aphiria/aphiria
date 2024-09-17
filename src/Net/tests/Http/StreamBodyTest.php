@@ -14,6 +14,7 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\StreamBody;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class StreamBodyTest extends TestCase
@@ -31,7 +32,7 @@ class StreamBodyTest extends TestCase
     public function testGettingLengthReturnsUnderlyingStreamLength(): void
     {
         $nullLengthStream = $this->createMock(IStream::class);
-        $nullLengthStream->method('$length::get')
+        $nullLengthStream->method(PropertyHook:get('length'))
             ->willReturn(null);
         $nullLengthBody = new StreamBody($nullLengthStream);
         $this->assertNull($nullLengthBody->length);

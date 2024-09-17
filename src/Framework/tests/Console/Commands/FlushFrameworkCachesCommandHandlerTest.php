@@ -22,6 +22,7 @@ use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
 use Aphiria\Validation\Constraints\Caching\IObjectConstraintsRegistryCache;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class FlushFrameworkCachesCommandHandlerTest extends TestCase
@@ -40,7 +41,7 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('$driver::get')
+        $this->output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
     }
 

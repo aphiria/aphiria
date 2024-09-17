@@ -36,6 +36,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class AuthorizeTest extends TestCase
@@ -308,10 +309,10 @@ class AuthorizeTest extends TestCase
     private function createMockAuthenticatedUser(): IPrincipal
     {
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('$isAuthenticated::get')
+        $identity->method(PropertyHook:get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('$primaryIdentity::get')
+        $user->method(PropertyHook:get('primaryIdentity'))
             ->willReturn($identity);
 
         return $user;

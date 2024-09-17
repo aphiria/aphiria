@@ -26,17 +26,23 @@ use Aphiria\Authentication\Schemes\ILoginAuthenticationSchemeHandler;
 use Aphiria\Authentication\UnsupportedAuthenticationHandlerException;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
-use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
-use Aphiria\Security\Identity;
 use Aphiria\Security\IIdentity;
 use Aphiria\Security\IPrincipal;
 use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
+interface Foo
+{
+    public ?Bar $bar { get; }
+}
+
+interface Bar {}
 
 class AuthenticatorTest extends TestCase
 {
@@ -345,10 +351,10 @@ class AuthenticatorTest extends TestCase
         [$scheme1, $scheme1Handler] = $this->createLoginSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createLoginSchemeAndSetUpResolver('bar');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('$isAuthenticated::get')
+        $identity->method(PropertyHook:get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('$primaryIdentity::get')
+        $user->method(PropertyHook:get('primaryIdentity'))
             ->willReturn($identity);
         $scheme1Handler->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme1);
@@ -365,10 +371,10 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createLoginSchemeAndSetUpResolver('foo');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('$isAuthenticated::get')
+        $identity->method(PropertyHook:get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('$primaryIdentity::get')
+        $user->method(PropertyHook:get('primaryIdentity'))
             ->willReturn($identity);
         $schemeHandler->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme);
@@ -382,10 +388,10 @@ class AuthenticatorTest extends TestCase
         $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('$isAuthenticated::get')
+        $identity->method(PropertyHook:get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('$primaryIdentity::get')
+        $user->method(PropertyHook:get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }
@@ -398,10 +404,10 @@ class AuthenticatorTest extends TestCase
         [, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $this->expectExceptionMessage($schemeHandler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('$isAuthenticated::get')
+        $identity->method(PropertyHook:get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('$primaryIdentity::get')
+        $user->method(PropertyHook:get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $request, $response, 'foo');
     }

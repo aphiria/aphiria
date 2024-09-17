@@ -29,6 +29,7 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -58,7 +59,7 @@ class RouteListCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method('$driver::get')
+        $this->output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
     }
 

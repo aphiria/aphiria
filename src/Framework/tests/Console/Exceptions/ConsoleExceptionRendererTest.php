@@ -19,6 +19,7 @@ use Exception;
 use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ConsoleExceptionRendererTest extends TestCase
@@ -114,7 +115,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 return null;
             }
         };
-        $newOutput->method('$driver::get')
+        $newOutput->method(PropertyHook:get('driver'))
             ->willReturn($driver);
         $newOutput->expects($this->once())
             ->method('writeln')

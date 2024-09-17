@@ -23,6 +23,7 @@ use Aphiria\Net\Http\StreamResponseWriter;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class StreamResponseWriterTest extends TestCase
@@ -40,15 +41,15 @@ class StreamResponseWriterTest extends TestCase
 
         // Set up the response
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('$headers::get')
+        $this->response->method(PropertyHook:get('headers'))
             ->willReturn(new Headers([new KeyValuePair('Foo', 'bar')]));
-        $this->response->method('$body::get')
+        $this->response->method(PropertyHook:get('body'))
             ->willReturn($this->body);
-        $this->response->method('$protocolVersion::get')
+        $this->response->method(PropertyHook:get('protocolVersion'))
             ->willReturn('1.1');
-        $this->response->method('$statusCode::get')
+        $this->response->method(PropertyHook:get('statusCode'))
             ->willReturn(HttpStatusCode::Ok);
-        $this->response->method('$reasonPhrase::get')
+        $this->response->method(PropertyHook:get('reasonPhrase'))
             ->willReturn('OK');
     }
 

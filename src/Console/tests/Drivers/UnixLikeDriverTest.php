@@ -16,6 +16,7 @@ use Aphiria\Console\Drivers\HiddenInputNotSupportedException;
 use Aphiria\Console\Drivers\UnixLikeDriver;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class UnixLikeDriverTest extends TestCase
@@ -125,7 +126,7 @@ class UnixLikeDriverTest extends TestCase
             }
         };
         $output = $this->createMock(IOutput::class);
-        $output->method('$driver::get')
+        $output->method(PropertyHook:get('driver'))
             ->willReturn($driver);
         $driver->readHiddenInput($output);
     }
