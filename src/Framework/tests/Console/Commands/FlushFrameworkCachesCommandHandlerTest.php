@@ -41,7 +41,7 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook:get('driver'))
+        $this->output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
     }
 

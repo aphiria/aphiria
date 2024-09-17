@@ -128,7 +128,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
-        return $header->getQuality() > 0;
+        return $header->quality > 0;
     }
 
     /**

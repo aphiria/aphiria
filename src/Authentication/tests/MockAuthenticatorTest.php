@@ -46,6 +46,7 @@ class MockAuthenticatorTest extends TestCase
 
     public function testAuthenticatingWhileActingAsPrincipalAuthenticatesSuccessfullyAndDoesNotCallUnderlyingSchemeHandler(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         $request = Mockery::mock(IRequest::class);
         $user = new User([new Identity()]);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
@@ -60,6 +61,7 @@ class MockAuthenticatorTest extends TestCase
 
     public function testAuthenticatingWhileActingAsPrincipalAuthenticatesSuccessfullyOnlyForTheScopedAuthenticationCall(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         $request = Mockery::mock(IRequest::class);
         $user = new User([new Identity()]);
         [$fooScheme, $fooSchemeHandler] = $this->createSchemeAndSetUpResolver('foo');
@@ -85,6 +87,7 @@ class MockAuthenticatorTest extends TestCase
 
     public function testAuthenticatingWhileNotActingAsPrincipalAuthenticatesSuccessfullyForValidRequest(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         $request = Mockery::mock(IRequest::class);
         $user = new User([new Identity()]);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
@@ -100,6 +103,7 @@ class MockAuthenticatorTest extends TestCase
 
     public function testAuthenticatingWhileNotActingAsPrincipalAuthenticatesUnsuccessfullyForInvalidRequest(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         $request = Mockery::mock(IRequest::class);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $schemeHandler->shouldReceive('authenticate')

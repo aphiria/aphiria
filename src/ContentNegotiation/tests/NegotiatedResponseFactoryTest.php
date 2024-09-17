@@ -91,7 +91,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseFromStreamWillSetContentLengthHeader(): void
     {
         $rawBody = $this->createMock(IStream::class);
-        $rawBody->method(PropertyHook:get('length'))
+        $rawBody->method(PropertyHook::get('length'))
             ->willReturn(123);
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
@@ -101,7 +101,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     public function testCreatingResponseFromStreamWithUnknownLengthWillNotSetContentLengthHeader(): void
     {
         $rawBody = $this->createMock(IStream::class);
-        $rawBody->method(PropertyHook:get('length'))
+        $rawBody->method(PropertyHook::get('length'))
             ->willReturn(null);
         $request = $this->createRequest('http://foo.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);

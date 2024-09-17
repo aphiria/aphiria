@@ -126,7 +126,7 @@ class UnixLikeDriverTest extends TestCase
             }
         };
         $output = $this->createMock(IOutput::class);
-        $output->method(PropertyHook:get('driver'))
+        $output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $driver->readHiddenInput($output);
     }

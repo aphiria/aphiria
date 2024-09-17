@@ -54,7 +54,7 @@ class ConsoleApplicationBuilderTest extends TestCase
                 return null;
             }
         };
-        $output->method(PropertyHook:get('driver'))
+        $output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $this->container->bindInstance(IOutput::class, $output);
     }

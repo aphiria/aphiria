@@ -115,7 +115,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 return null;
             }
         };
-        $newOutput->method(PropertyHook:get('driver'))
+        $newOutput->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $newOutput->expects($this->once())
             ->method('writeln')

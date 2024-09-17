@@ -351,10 +351,10 @@ class AuthenticatorTest extends TestCase
         [$scheme1, $scheme1Handler] = $this->createLoginSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createLoginSchemeAndSetUpResolver('bar');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook:get('isAuthenticated'))
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook:get('primaryIdentity'))
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $scheme1Handler->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme1);
@@ -371,10 +371,10 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createLoginSchemeAndSetUpResolver('foo');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook:get('isAuthenticated'))
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook:get('primaryIdentity'))
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $schemeHandler->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme);
@@ -388,10 +388,10 @@ class AuthenticatorTest extends TestCase
         $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook:get('isAuthenticated'))
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook:get('primaryIdentity'))
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }
@@ -404,10 +404,10 @@ class AuthenticatorTest extends TestCase
         [, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $this->expectExceptionMessage($schemeHandler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook:get('isAuthenticated'))
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook:get('primaryIdentity'))
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $request, $response, 'foo');
     }

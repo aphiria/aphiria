@@ -110,7 +110,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
      */
     private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
-        return $header->getQuality() > 0;
+        return $header->quality > 0;
     }
 
     /**

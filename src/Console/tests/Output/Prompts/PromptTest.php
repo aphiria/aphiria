@@ -31,6 +31,7 @@ class PromptTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         $this->output = Mockery::mock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;

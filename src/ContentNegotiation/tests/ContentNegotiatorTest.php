@@ -32,7 +32,7 @@ class ContentNegotiatorTest extends TestCase
     {
         $this->headers = new Headers();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method(PropertyHook:get('headers'))
+        $this->request->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
     }
 
@@ -50,13 +50,15 @@ class ContentNegotiatorTest extends TestCase
             ->method('canWriteType')
             ->with('foo')
             ->willReturn(true);
-        $formatter1->supportedMediaTypes = ['foo/bar'];
+        $formatter1->method(PropertyHook::get('supportedMediaTypes'))
+            ->willReturn(['foo/bar']);
         $formatter2 = $this->createMock(IMediaTypeFormatter::class);
         $formatter2->expects($this->once())
             ->method('canWriteType')
             ->with('foo')
             ->willReturn(true);
-        $formatter2->supportedMediaTypes = ['foo/bar'];
+        $formatter2->method(PropertyHook::get('supportedMediaTypes'))
+            ->willReturn(['foo/bar']);
         $contentNegotiator = new ContentNegotiator([$formatter1, $formatter2]);
         $this->assertEquals(['foo/bar'], $contentNegotiator->getAcceptableResponseMediaTypes('foo'));
     }
@@ -68,7 +70,8 @@ class ContentNegotiatorTest extends TestCase
             ->method('canWriteType')
             ->with('foo')
             ->willReturn(true);
-        $formatter1->supportedMediaTypes = ['foo/bar'];
+        $formatter1->method(PropertyHook::get('supportedMediaTypes'))
+            ->willReturn(['foo/bar']);
         $formatter2 = $this->createMock(IMediaTypeFormatter::class);
         $formatter2->expects($this->once())
             ->method('canWriteType')
@@ -79,7 +82,8 @@ class ContentNegotiatorTest extends TestCase
             ->method('canWriteType')
             ->with('foo')
             ->willReturn(true);
-        $formatter3->supportedMediaTypes = ['baz/blah'];
+        $formatter3->method(PropertyHook::get('supportedMediaTypes'))
+            ->willReturn(['baz/blah']);
         $contentNegotiator = new ContentNegotiator([$formatter1, $formatter2, $formatter3]);
         $this->assertEquals(['foo/bar', 'baz/blah'], $contentNegotiator->getAcceptableResponseMediaTypes('foo'));
     }
@@ -136,7 +140,7 @@ class ContentNegotiatorTest extends TestCase
     public function testRequestResultEncodingIsSetFromContentTypeHeaderIfSet(): void
     {
         $formatter = $this->createFormatterMock(['text/html']);
-        $formatter->method(PropertyHook:get('supportedEncodings'))
+        $formatter->method(PropertyHook::get('supportedEncodings'))
             ->willReturn(['utf-16']);
         $formatter->expects($this->once())
             ->method('canReadType')
@@ -155,7 +159,7 @@ class ContentNegotiatorTest extends TestCase
     public function testRequestResultLanguageIsSetFromContentLanguageHeaderIfSet(): void
     {
         $formatter = $this->createFormatterMock(['text/html']);
-        $formatter->method(PropertyHook:get('supportedEncodings'))
+        $formatter->method(PropertyHook::get('supportedEncodings'))
             ->willReturn(['utf-8']);
         $formatter->expects($this->once())
             ->method('canReadType')
@@ -174,13 +178,13 @@ class ContentNegotiatorTest extends TestCase
     public function testResponseEncodingIsSetFromAcceptCharsetHeaderIfSetAndAcceptHeaderIsNotSet(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->method(PropertyHook:get('supportedEncodings'))
+        $formatter->method(PropertyHook::get('supportedEncodings'))
             ->willReturn(['utf-16']);
         $formatter->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
             ->willReturn(true);
-        $formatter->method(PropertyHook:get('defaultMediaType'))
+        $formatter->method(PropertyHook::get('defaultMediaType'))
             ->willReturn('application/json');
         $this->headers->add('Accept-Charset', 'utf-16');
         $this->headers->add('Accept-Language', 'en-US');
@@ -194,7 +198,7 @@ class ContentNegotiatorTest extends TestCase
     public function testResponseEncodingIsSetFromAcceptCharsetHeaderWhenPresent(): void
     {
         $formatter = $this->createFormatterMock(['application/json']);
-        $formatter->method(PropertyHook:get('supportedEncodings'))
+        $formatter->method(PropertyHook::get('supportedEncodings'))
             ->willReturn(['utf-8']);
         $formatter->expects($this->once())
             ->method('canWriteType')
@@ -211,7 +215,8 @@ class ContentNegotiatorTest extends TestCase
     public function testResponseFormatterIsFirstFormatterRegisteredWithNoAcceptSpecified(): void
     {
         $formatter1 = $this->createMock(IMediaTypeFormatter::class);
-        $formatter1->defaultMediaType = 'application/json';
+        $formatter1->method(PropertyHook::get('defaultMediaType'))
+            ->willReturn('application/json');
         $formatter1->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -233,7 +238,8 @@ class ContentNegotiatorTest extends TestCase
             ->with(User::class)
             ->willReturn(false);
         $formatter2 = $this->createMock(IMediaTypeFormatter::class);
-        $formatter2->defaultMediaType = 'application/json';
+        $formatter2->method(PropertyHook::get('defaultMediaType'))
+            ->willReturn('application/json');
         $formatter2->expects($this->once())
             ->method('canWriteType')
             ->with(User::class)
@@ -264,7 +270,7 @@ class ContentNegotiatorTest extends TestCase
     public function testResponseLanguageIsNullWhenNoMatchingSupportedLanguage(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->method(PropertyHook:get('supportedEncodings'))
+        $formatter->method(PropertyHook::get('supportedEncodings'))
             ->willReturn(['utf-8']);
         $formatter->expects($this->once())
             ->method('canWriteType')
@@ -284,9 +290,9 @@ class ContentNegotiatorTest extends TestCase
     public function testResponseLanguageIsSetFromLanguageMatcherResults(): void
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->method(PropertyHook:get('supportedEncodings'))
+        $formatter->method(PropertyHook::get('supportedEncodings'))
             ->willReturn(['utf-8']);
-        $formatter->method(PropertyHook:get('defaultMediaType'))
+        $formatter->method(PropertyHook::get('defaultMediaType'))
             ->willReturn('application/json');
         $formatter->expects($this->once())
             ->method('canWriteType')
@@ -316,7 +322,7 @@ class ContentNegotiatorTest extends TestCase
     private function createFormatterMock(array $supportedMediaTypes): IMediaTypeFormatter&MockObject
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->method(PropertyHook:get('supportedMediaTypes'))
+        $formatter->method(PropertyHook::get('supportedMediaTypes'))
             ->willReturn($supportedMediaTypes);
 
         return $formatter;

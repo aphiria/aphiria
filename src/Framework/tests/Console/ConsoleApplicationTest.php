@@ -45,7 +45,7 @@ class ConsoleApplicationTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook:get('driver'))
+        $this->output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $this->app = new ConsoleApplication($this->consoleGateway, $this->input, $this->output);
     }

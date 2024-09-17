@@ -34,7 +34,7 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $unreadableStream = $this->createMock(IStream::class);
-        $unreadableStream->method(PropertyHook:get('isReadable'))
+        $unreadableStream->method(PropertyHook::get('isReadable'))
             ->willReturn(false);
         $this->multiStream->addStream($unreadableStream);
     }
@@ -379,7 +379,7 @@ class MultiStreamTest extends TestCase
     private function createReadableStream(): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->method(PropertyHook:get('isReadable'))
+        $stream->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
 
         return $stream;

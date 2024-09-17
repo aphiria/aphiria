@@ -32,7 +32,7 @@ class RequestPropertyUserAccessorTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $properties = new HashTable();
-        $request->method(PropertyHook:get('properties'))
+        $request->method(PropertyHook::get('properties'))
             ->willReturn($properties);
         $this->assertNull($this->userAccessor->getUser($request));
     }
@@ -41,7 +41,7 @@ class RequestPropertyUserAccessorTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $properties = new HashTable();
-        $request->method(PropertyHook:get('properties'))
+        $request->method(PropertyHook::get('properties'))
             ->willReturn($properties);
         $expectedUser = $this->createMock(IPrincipal::class);
         $this->userAccessor->setUser($expectedUser, $request);

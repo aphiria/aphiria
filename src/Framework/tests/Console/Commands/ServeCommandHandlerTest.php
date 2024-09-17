@@ -33,7 +33,7 @@ class ServeCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $output->method(PropertyHook:get('driver'))
+        $output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $output->expects($this->once())
             ->method('writeln')

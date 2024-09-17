@@ -37,7 +37,7 @@ class ResponseFormatterTest extends TestCase
         $this->formatter = new ResponseFormatter();
         $this->headers = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method(PropertyHook:get('headers'))
+        $this->response->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
     }
 

@@ -55,6 +55,7 @@ class ConsoleGatewayTest extends TestCase
 
     public function testHandlingCommandWithNoHandlerThrowsException(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         $output = Mockery::mock(IOutput::class);
         $output->shouldReceive('writeln')
             ->with('<fatal>' . CommandNotFoundException::class . '</fatal>: <info>No command found with name "foo"</info>');

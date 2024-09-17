@@ -21,7 +21,7 @@ final class Cookie
 {
     /** @var string The name of the cookie */
     public string $name {
-        get;
+        get => $this->name;
         set {
             if (\preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $value) === 1) {
                 throw new InvalidArgumentException("Cookie name \"$value\" contains invalid characters");

@@ -39,7 +39,7 @@ class ProgressBarFormatterTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook:get('driver'))
+        $this->output->method(PropertyHook::get('driver'))
             ->willReturn($driver);
     }
 
@@ -76,6 +76,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
+        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         // Use a redraw frequency of 0 so that it redraws every time
         $output = Mockery::mock(MockableOutput::class);
         $driver = new class () implements IDriver {

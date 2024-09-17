@@ -344,7 +344,7 @@ class MediaTypeFormatterMatcherTest extends TestCase
     private function createFormatterMock(array $supportedMediaTypes): IMediaTypeFormatter&MockObject
     {
         $formatter = $this->createMock(IMediaTypeFormatter::class);
-        $formatter->method(PropertyHook:get('supportedMediaTypes'))
+        $formatter->method(PropertyHook::get('supportedMediaTypes'))
             ->willReturn($supportedMediaTypes);
 
         return $formatter;

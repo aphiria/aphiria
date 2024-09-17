@@ -26,6 +26,7 @@ use Aphiria\Security\Claim;
 use Aphiria\Security\ClaimType;
 use Aphiria\Security\IPrincipal;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class AuthorityTest extends TestCase
@@ -110,7 +111,7 @@ class AuthorityTest extends TestCase
         );
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, new RolesRequirementHandler());
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getClaims')
+        $user->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'dev', 'example.com')]);
         $result = $this->authority->authorize($user, $policy);

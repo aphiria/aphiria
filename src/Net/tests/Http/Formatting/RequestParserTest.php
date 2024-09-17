@@ -44,11 +44,11 @@ class RequestParserTest extends TestCase
         $this->body = $this->createMock(IBody::class);
         $this->properties = new HashTable();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method(PropertyHook:get('headers'))
+        $this->request->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
-        $this->request->method(PropertyHook:get('body'))
+        $this->request->method(PropertyHook::get('body'))
             ->willReturn($this->body);
-        $this->request->method(PropertyHook:get('properties'))
+        $this->request->method(PropertyHook::get('properties'))
             ->willReturn($this->properties);
     }
 
@@ -205,7 +205,7 @@ class RequestParserTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $request->expects($this->once())
-            ->method(PropertyHook:get('uri'))
+            ->method(PropertyHook::get('uri'))
             ->willReturn(new Uri('http://host.com?foo=bar'));
         $this->assertSame('bar', $this->parser->parseQueryString($request)->get('foo'));
     }
