@@ -84,11 +84,11 @@ class Uri
         }
 
         if ($this->queryString !== null) {
-            $stringUri .= "?{$this->queryString}";
+            $stringUri .= "?$this->queryString";
         }
 
         if ($this->fragment !== null) {
-            $stringUri .= "#{$this->fragment}";
+            $stringUri .= "#$this->fragment";
         }
 
         return $stringUri;

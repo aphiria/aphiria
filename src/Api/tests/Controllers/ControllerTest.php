@@ -242,6 +242,7 @@ class ControllerTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Request is not set');
         $this->controller->userAccessor = $this->createMock(IUserAccessor::class);
+        // Trying to trigger an exception when accessing the user
         $this->controller->user;
     }
 
@@ -250,6 +251,7 @@ class ControllerTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('User accessor is not set');
         $this->controller->request = $this->createMock(IRequest::class);
+        // Trying to trigger an exception when accessing the user
         $this->controller->user;
     }
 
@@ -273,6 +275,8 @@ class ControllerTest extends TestCase
 
         foreach ($helperCallbacks as $helperCallback) {
             try {
+                // Ensure the body deserializer is set so that we're only testing whether the request is set or not
+                $this->controller->bodyDeserializer = $this->createMock(IBodyDeserializer::class);
                 $helperCallback();
                 $this->fail('Failed to throw exception');
             } catch (LogicException $ex) {

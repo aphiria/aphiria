@@ -407,6 +407,6 @@ trait IntegrationTest
             throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
         }
 
-        return new Uri(\rtrim($appUri, '/') . '/' . \ltrim($appUri, '/'));
+        return new Uri(\rtrim($appUri, '/') . '/' . \ltrim($uri, '/'));
     }
 }
