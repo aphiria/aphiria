@@ -45,7 +45,7 @@ jobs:
           coverage: xdebug
       - name: Install Dependencies
         run: |
-          composer config --global github-oauth.github.com ${{ secrets.TEMP_GITHUB_PAT }}
+          composer config --global --auth github-oauth.github.com ${{ secrets.TEMP_GITHUB_PAT }}
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
       - name: Run Tests
         run: composer phpunit
