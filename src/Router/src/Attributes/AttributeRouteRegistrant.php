@@ -194,10 +194,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeBuilder->withManyParameters($routeAttributeInstance->parameters);
                 }
             }
-
-            if ($routeBuilder === null) {
-                continue;
-            }
         }
     }
 }

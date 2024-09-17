@@ -97,7 +97,9 @@ class StreamResponseWriterTest extends TestCase
     public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
     {
         $writer = new class ($this->outputStream) extends StreamResponseWriter {
-            public bool $headersAreSent = true;
+            public bool $headersAreSent {
+                get => true;
+            }
         };
         $writer->writeResponse($this->response);
         // Dummy assertion
