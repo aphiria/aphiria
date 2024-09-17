@@ -70,7 +70,9 @@ class RequestBinderTest extends TestCase
                 return (string)$request->uri === 'http://localhost';
             }));
         $binder = new class () extends RequestBinder {
-            protected bool $isRunningInConsole = true;
+            protected bool $isRunningInConsole {
+                get => true;
+            }
         };
         $binder->bind($this->container);
     }
