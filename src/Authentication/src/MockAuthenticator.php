@@ -61,7 +61,7 @@ class MockAuthenticator extends Authenticator implements IMockAuthenticator
             // Since we aren't actually calling the scheme handler, be sure to set the scheme name for any identities without one
             foreach ($this->actor->identities as $identity) {
                 if ($identity->authenticationSchemeName === null) {
-                    $identity->authenticationSchemeNAme = $scheme->name;
+                    $identity->authenticationSchemeName = $scheme->name;
                 }
             }
 
