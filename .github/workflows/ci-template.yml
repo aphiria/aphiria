@@ -21,9 +21,6 @@ on:
       ci-ssh-key:
         description: The SSH key for splitting subtrees
         required: false
-      temp-github-pat:
-        description: The temporary GitHub PAT to use while no published version of PHPUnit supports property hooks
-        required: true
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -46,8 +43,6 @@ jobs:
           extensions: curl, dom, libxml, mbstring, pcntl, xdebug, zip
           tools: composer:v2
           coverage: xdebug
-      - name: TEMP Setup GitHub Auth
-        run: composer config --global --auth github-oauth.github.com ${{ secrets.temp-github-pat }}
       - name: Install Dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
       - name: Run Tests
