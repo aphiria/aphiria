@@ -76,9 +76,7 @@ class ProgressBarFormatterTest extends TestCase
 
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
-        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
         // Use a redraw frequency of 0 so that it redraws every time
-        $output = Mockery::mock(IOutput::class);
         $driver = new class () implements IDriver {
             public int $cliWidth = 3;
             public int $cliHeight = 2;
@@ -88,19 +86,23 @@ class ProgressBarFormatterTest extends TestCase
                 return null;
             }
         };
-        $output->driver = $driver;
-        $output->shouldReceive('write')
-            ->withAnyArgs();
-        $output->shouldReceive('write')
-            ->with(
-                fn (mixed $value): bool => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true)
-            );
+        $output = $this->createMock(IOutput::class);
+        $output->method(PropertyHook::get('driver'))
+            ->willReturn($driver);
+        $calledWriteSuccessfullyAtLeastOnce = false;
+        $output->expects($this->atLeastOnce())
+            ->method('write')
+            ->with($this->callback(function (array|string $messages) use (&$calledWriteSuccessfullyAtLeastOnce): bool {
+                $calledWriteSuccessfullyAtLeastOnce = $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $messages, true);
+
+                return true;
+            }));
         $formatter = new ProgressBarFormatter($output);
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12, redrawFrequency: 0);
         $formatter->onProgressChanged(0, 1, 10, $options);
         $formatter->onProgressChanged(1, 2, 10, $options);
         // Dummy assertion
-        $this->assertTrue(true);
+        $this->assertTrue($calledWriteSuccessfullyAtLeastOnce);
     }
 
     public function testOnProgressThatReachesMaxStepsDrawsCompleteProgressBar(): void

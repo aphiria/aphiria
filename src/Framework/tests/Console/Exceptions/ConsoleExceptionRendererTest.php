@@ -17,37 +17,19 @@ use Aphiria\Console\Output\IOutput;
 use Aphiria\Framework\Console\Exceptions\ConsoleExceptionRenderer;
 use Exception;
 use InvalidArgumentException;
-use Mockery;
-use Mockery\MockInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ConsoleExceptionRendererTest extends TestCase
 {
     private ConsoleExceptionRenderer $exceptionRenderer;
-    private IOutput&MockInterface $output;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {
-        $this->markTestSkipped('Waiting until https://github.com/mockery/mockery/issues/1438 is implemented');
-        $this->output = Mockery::mock(IOutput::class);
-        $driver = new class () implements IDriver {
-            public int $cliWidth = 3;
-            public int $cliHeight = 2;
-
-            public function readHiddenInput(IOutput $output): ?string
-            {
-                return null;
-            }
-        };
-        // TODO: Need to know how Mockery will mock property getters
-        $this->output->driver = $driver;
+        $this->output = $this->createMock(IOutput::class);
         $this->exceptionRenderer = new ConsoleExceptionRenderer($this->output, false);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
     }
 
     public function testRenderingExceptionWithManyRegisteredOutputWritersWritesMessagesAndReturnsStatusCodes(): void
@@ -65,10 +47,11 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         ]);
-        $this->output->shouldReceive('writeln')
-            ->with('foo');
-        $this->output->shouldReceive('writeln')
-            ->with('bar');
+        $this->output->method('writeln')
+            ->willReturnCallback(function (string|array $messages): bool {
+                return $messages === 'foo'
+                    || $messages === 'bar';
+            });
         $this->exceptionRenderer->render(new Exception());
         $this->exceptionRenderer->render(new InvalidArgumentException());
         // Dummy assertion
@@ -78,8 +61,8 @@ class ConsoleExceptionRendererTest extends TestCase
     public function testRenderingExceptionWithNoRegisteredOutputWriterUsesDefaultResultMessage(): void
     {
         $exception = new Exception();
-        $this->output->shouldReceive('writeln')
-            ->once()
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with(["<fatal>{$exception->getMessage()}" . \PHP_EOL . "{$exception->getTraceAsString()}</fatal>"]);
         $this->exceptionRenderer->render($exception);
         // Dummy assertion
@@ -96,8 +79,8 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         );
-        $this->output->shouldReceive('writeln')
-            ->once()
+        $this->output->expects($this->once())
+            ->method('writeln')
             ->with('foo');
         $this->exceptionRenderer->render(new Exception());
         // Dummy assertion
