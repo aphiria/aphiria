@@ -74,7 +74,7 @@ Full documentation is available at <a href="https://www.aphiria.com" target="_bl
 
 ## Requirements
 
-* PHP >= 8.3
+* PHP >= 8.4
 
 ## Contributing
 

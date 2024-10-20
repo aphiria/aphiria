@@ -31,7 +31,7 @@ class RouteCollectionBuilderTest extends TestCase
 
     public function testBuildingWithNoRoutesReturnsEmptyArray(): void
     {
-        $this->assertEmpty($this->builder->build()->getAll());
+        $this->assertEmpty($this->builder->build()->values);
     }
 
     public function testGroupConstraintsAreMergedWithRouteParameters(): void
@@ -49,7 +49,7 @@ class RouteCollectionBuilderTest extends TestCase
                 ->mapsToMethod($controller::class, 'bar')
                 ->withManyConstraints($routeConstraints);
         });
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertContains($groupConstraints[0], $routes[0]->constraints);
         $this->assertContains($routeConstraints[0], $routes[0]->constraints);
@@ -69,7 +69,7 @@ class RouteCollectionBuilderTest extends TestCase
                     ->mapsToMethod($controller::class, 'bar');
             });
         });
-        $routes = $registry->build()->getAll();
+        $routes = $registry->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('bar.foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
@@ -86,7 +86,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', '', 'foo')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $registry->build()->getAll();
+        $routes = $registry->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
@@ -103,7 +103,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', '', 'foo.')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $registry->build()->getAll();
+        $routes = $registry->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('foo.example.com', $routes[0]->uriTemplate->hostTemplate);
     }
@@ -120,7 +120,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', '', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('bar.baz', $routes[0]->uriTemplate->hostTemplate);
     }
@@ -137,7 +137,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
@@ -162,7 +162,7 @@ class RouteCollectionBuilderTest extends TestCase
                 ->mapsToMethod($controller::class, 'bar')
                 ->withManyMiddleware([$routeMiddlewareBinding]);
         });
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertEquals([$groupMiddlewareBinding, $routeMiddlewareBinding], $routes[0]->middlewareBindings);
     }
@@ -186,7 +186,7 @@ class RouteCollectionBuilderTest extends TestCase
         };
         $this->builder->route('POST', 'rp2')
             ->mapsToMethod($controller::class, 'bar');
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(2, $routes);
         $this->assertSame('/gp/rp1', $routes[0]->uriTemplate->pathTemplate);
         $this->assertSame('/rp2', $routes[1]->uriTemplate->pathTemplate);
@@ -205,7 +205,7 @@ class RouteCollectionBuilderTest extends TestCase
                 ->mapsToMethod($controller::class, 'bar')
                 ->withParameter('H2', 'val2');
         });
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertEquals(['H1' => 'val1', 'H2' => 'val2'], $routes[0]->parameters);
     }
@@ -222,7 +222,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', '')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $registry->build()->getAll();
+        $routes = $registry->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
@@ -239,7 +239,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', '/bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $registry->build()->getAll();
+        $routes = $registry->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
@@ -256,7 +256,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $registry->build()->getAll();
+        $routes = $registry->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('/foo/bar', $routes[0]->uriTemplate->pathTemplate);
     }
@@ -272,7 +272,7 @@ class RouteCollectionBuilderTest extends TestCase
             $registry->route('GET', '', null, false)
                 ->mapsToMethod($controller::class, 'bar');
         });
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertTrue($routes[0]->uriTemplate->isHttpsOnly);
     }
@@ -327,7 +327,7 @@ class RouteCollectionBuilderTest extends TestCase
                 );
             }
         );
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('/op/ip/rp', $routes[0]->uriTemplate->pathTemplate);
         $this->assertContains($outerConstraints[0], $routes[0]->constraints);
@@ -349,7 +349,7 @@ class RouteCollectionBuilderTest extends TestCase
         };
         $this->builder->route('GET', 'foo')
             ->mapsToMethod($controller::class, 'bar');
-        $routes = $this->builder->build()->getAll();
+        $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertSame('/foo', $routes[0]->uriTemplate->pathTemplate);
     }
@@ -383,7 +383,7 @@ class RouteCollectionBuilderTest extends TestCase
         $httpMethodRouteConstraint = $route->constraints[0];
         $this->assertInstanceOf(HttpMethodRouteConstraint::class, $httpMethodRouteConstraint);
         // HEAD is automatically inserted for GET routes
-        $this->assertEquals(['GET', 'DELETE', 'HEAD'], $httpMethodRouteConstraint->getAllowedMethods());
+        $this->assertEquals(['GET', 'DELETE', 'HEAD'], $httpMethodRouteConstraint->allowedMethods);
     }
 
     public function testRouteBuilderIsCreatedWithParametersToMatchParameter(): void
@@ -419,7 +419,7 @@ class RouteCollectionBuilderTest extends TestCase
              * Specifically checking contains as opposed to equals because some constraints, eg GET, might contain
              * additional methods, eg HEAD
              */
-            $this->assertContains($httpMethod, $methodConstraint->getAllowedMethods());
+            $this->assertContains($httpMethod, $methodConstraint->allowedMethods);
         }
     }
 }

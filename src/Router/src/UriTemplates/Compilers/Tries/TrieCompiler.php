@@ -39,13 +39,13 @@ final class TrieCompiler implements ITrieCompiler
      * @param IUriTemplateLexer $uriTemplateLexer The URI template lexer
      */
     public function __construct(
-        RouteVariableConstraintFactory $constraintFactory = null,
+        ?RouteVariableConstraintFactory $constraintFactory = null,
         private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
         private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
     ) {
         if ($constraintFactory === null) {
             $this->constraintFactory = new RouteVariableConstraintFactory();
-            (new RouteVariableConstraintFactoryRegistrant())->registerConstraintFactories($this->constraintFactory);
+            new RouteVariableConstraintFactoryRegistrant()->registerConstraintFactories($this->constraintFactory);
         } else {
             $this->constraintFactory = $constraintFactory;
         }
@@ -221,7 +221,7 @@ final class TrieCompiler implements ITrieCompiler
             }
 
             /** @var list<mixed> $constraintParams */
-            $constraintParams = $childAstNode->hasChildren() ? $childAstNode->children[0]->value : [];
+            $constraintParams = $childAstNode->hasChildren ? $childAstNode->children[0]->value : [];
             $constraints[] = $this->constraintFactory->createConstraint(
                 (string)$childAstNode->value,
                 (array)$constraintParams

@@ -26,12 +26,12 @@ class EqualsConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new EqualsConstraint('foo', 'bar');
-        $this->assertSame('bar', $constraint->getErrorMessageId());
+        $this->assertSame('bar', $constraint->errorMessageId);
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new EqualsConstraint('foo'))->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], new EqualsConstraint('foo')->getErrorMessagePlaceholders('val'));
     }
 
     public function testUnequalValuesFail(): void

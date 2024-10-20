@@ -19,6 +19,50 @@ use Aphiria\Console\StatusCode;
  */
 abstract class Driver implements IDriver
 {
+    /** @inheritdoc */
+    public int $cliHeight {
+        get {
+            if ($this->height !== null) {
+                return $this->height;
+            }
+
+            if (($height = \getenv('LINES')) !== false) {
+                return $this->height = (int)$height;
+            }
+
+            if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
+                // @codeCoverageIgnoreStart
+                $this->width = (int)$cliDimensions[0];
+                $this->height = (int)$cliDimensions[1];
+
+                return $this->height;
+                // @codeCoverageIgnoreEnd
+            }
+
+            return $this->height = self::DEFAULT_HEIGHT;
+        }
+    }
+    /** @inheritdoc */
+    public int $cliWidth {
+        get {
+            if ($this->width !== null) {
+                return $this->width;
+            }
+
+            if (($width = \getenv('COLUMNS')) !== false) {
+                return $this->width = (int)$width;
+            }
+
+            if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
+                $this->width = (int)$cliDimensions[0];
+                $this->height = (int)$cliDimensions[1];
+
+                return $this->width;
+            }
+
+            return $this->width = self::DEFAULT_WIDTH;
+        }
+    }
     /** @var int The default height */
     protected const int DEFAULT_HEIGHT = 60;
     /** @var int The default width */
@@ -29,54 +73,6 @@ abstract class Driver implements IDriver
     protected ?bool $supportsStty = null;
     /** @var int|null The determined width of the CLI */
     protected ?int $width = null;
-
-    /**
-     * @inheritdoc
-     */
-    public function getCliHeight(): int
-    {
-        if ($this->height !== null) {
-            return $this->height;
-        }
-
-        if (($height = \getenv('LINES')) !== false) {
-            return $this->height = (int)$height;
-        }
-
-        if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
-            // @codeCoverageIgnoreStart
-            $this->width = (int)$cliDimensions[0];
-            $this->height = (int)$cliDimensions[1];
-
-            return $this->height;
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $this->height = self::DEFAULT_HEIGHT;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getCliWidth(): int
-    {
-        if ($this->width !== null) {
-            return $this->width;
-        }
-
-        if (($width = \getenv('COLUMNS')) !== false) {
-            return $this->width = (int)$width;
-        }
-
-        if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
-            $this->width = (int)$cliDimensions[0];
-            $this->height = (int)$cliDimensions[1];
-
-            return $this->width;
-        }
-
-        return $this->width = self::DEFAULT_WIDTH;
-    }
 
     /**
      * Gets the CLI dimensions as a tuple using OS-specific methods

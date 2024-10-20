@@ -19,6 +19,11 @@ use Aphiria\IO\Streams\IStream;
  */
 class StreamBody implements IBody
 {
+    /** @inheritdoc */
+    public ?int $length {
+        get => $this->stream->length;
+    }
+
     /**
      * @param IStream $stream The body content
      */
@@ -32,14 +37,6 @@ class StreamBody implements IBody
     public function __toString(): string
     {
         return $this->readAsString();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLength(): ?int
-    {
-        return $this->stream->getLength();
     }
 
     /**
@@ -63,7 +60,7 @@ class StreamBody implements IBody
      */
     public function writeToStream(IStream $stream): void
     {
-        if ($this->stream->isSeekable()) {
+        if ($this->stream->isSeekable) {
             $this->stream->rewind();
         }
 

@@ -607,10 +607,7 @@ class ContainerTest extends TestCase
             {
                 /** @psalm-suppress MissingTemplateParam Psalm does not support template params on anonymous classes */
                 $unsupportedBinding = new class () implements IContainerBinding {
-                    public function resolveAsSingleton(): bool
-                    {
-                        return true;
-                    }
+                    public bool $resolveAsSingleton = true;
                 };
                 $this->addBinding(IFoo::class, $unsupportedBinding);
             }

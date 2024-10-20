@@ -17,19 +17,15 @@ namespace Aphiria\Validation\Constraints;
  */
 abstract class Constraint implements IConstraint
 {
+    /** @@inheritdoc */
+    public protected(set) string $errorMessageId;
+
     /**
      * @param string $errorMessageId The ID of the error message associated with this constraint
      */
-    protected function __construct(protected readonly string $errorMessageId)
+    protected function __construct(string $errorMessageId)
     {
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getErrorMessageId(): string
-    {
-        return $this->errorMessageId;
+        $this->errorMessageId = $errorMessageId;
     }
 
     /**

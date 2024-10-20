@@ -31,11 +31,11 @@ class MiddlewareThatIncrementsHeader implements IMiddleware
         $currValues = [];
 
         // Keep appending an incrementing value to a header
-        if ($response->getHeaders()->tryGet('Foo', $currValues)) {
+        if ($response->headers->tryGet('Foo', $currValues)) {
             /** @var array<int, int> $currValues */
-            $response->getHeaders()->add('Foo', $currValues[\count($currValues) - 1] + 1, true);
+            $response->headers->add('Foo', $currValues[\count($currValues) - 1] + 1, true);
         } else {
-            $response->getHeaders()->add('Foo', 1);
+            $response->headers->add('Foo', 1);
         }
 
         return $response;

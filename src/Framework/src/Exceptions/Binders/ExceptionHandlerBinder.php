@@ -36,14 +36,14 @@ class ExceptionHandlerBinder extends Binder
             $request = null;
 
             if ($container->tryResolve(IRequest::class, $request)) {
-                $apiExceptionRenderer->setRequest($request);
+                $apiExceptionRenderer->request = $request;
             }
 
             /** @var IResponseFactory|null $responseFactory */
             $responseFactory = null;
 
             if ($container->tryResolve(IResponseFactory::class, $responseFactory)) {
-                $apiExceptionRenderer->setResponseFactory($responseFactory);
+                $apiExceptionRenderer->responseFactory = $responseFactory;
             }
         }
     }

@@ -52,7 +52,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
                 $this->memoizedMatchedLanguagesByRequest[$memoizationKey] = $language;
 
                 if ($this->errorMessageInterpolator !== null && $language !== null) {
-                    $this->errorMessageInterpolator->setDefaultLocale($language);
+                    $this->errorMessageInterpolator->defaultLocale = $language;
                 }
             }
         }

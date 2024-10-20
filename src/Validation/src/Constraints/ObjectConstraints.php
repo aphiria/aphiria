@@ -18,9 +18,9 @@ namespace Aphiria\Validation\Constraints;
 final class ObjectConstraints
 {
     /** @var array<string, list<IConstraint>> The mapping of method names to constraints */
-    private array $methodConstraints = [];
+    public private(set) array $methodConstraints = [];
     /** @var array<string, list<IConstraint>> The mapping of property names to constraints */
-    private array $propertyConstraints = [];
+    public private(set) array $propertyConstraints = [];
 
     /**
      * @param class-string $className The name of the class whose constraints are represented here
@@ -64,32 +64,12 @@ final class ObjectConstraints
     }
 
     /**
-     * Gets all the method constraints
-     *
-     * @return array<string, list<IConstraint>> The mapping of method names to constraints
-     */
-    public function getAllMethodConstraints(): array
-    {
-        return $this->methodConstraints;
-    }
-
-    /**
-     * Gets all the property constraints
-     *
-     * @return array<string, list<IConstraint>> The mapping of property names to constraints
-     */
-    public function getAllPropertyConstraints(): array
-    {
-        return $this->propertyConstraints;
-    }
-
-    /**
      * Gets all constraints for a particular method
      *
      * @param string $methodName The name of the method whose constraints we want
      * @return list<IConstraint> The list of constraints
      */
-    public function getMethodConstraints(string $methodName): array
+    public function getConstraintsForMethod(string $methodName): array
     {
         return $this->methodConstraints[$methodName] ?? [];
     }
@@ -100,7 +80,7 @@ final class ObjectConstraints
      * @param string $propertyName The name of the property whose constraints we want
      * @return list<IConstraint> The list of constraints
      */
-    public function getPropertyConstraints(string $propertyName): array
+    public function getConstraintsForProperty(string $propertyName): array
     {
         return $this->propertyConstraints[$propertyName] ?? [];
     }

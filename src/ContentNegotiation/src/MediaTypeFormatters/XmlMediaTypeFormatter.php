@@ -22,15 +22,19 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 final class XmlMediaTypeFormatter extends SerializerMediaTypeFormatter
 {
-    /** @var list<string> The list of supported character encodings */
-    private static array $supportedEncodings = ['utf-8', 'utf-16', 'iso-8859'];
-    /** @var list<string> The list of supported media types */
-    private static array $supportedMediaTypes = ['text/xml', 'application/problem+xml'];
+    /** @inheritdoc */
+    public array $supportedEncodings {
+        get => ['utf-8', 'utf-16', 'iso-8859'];
+    }
+    /** @inheritdoc */
+    public array $supportedMediaTypes {
+        get => ['text/xml', 'application/problem+xml'];
+    }
 
     /**
      * @param SerializerInterface|null $serializer The JSON serializer to use
      */
-    public function __construct(SerializerInterface $serializer = null)
+    public function __construct(?SerializerInterface $serializer = null)
     {
         parent::__construct($serializer ?? new Serializer([new ObjectNormalizer()], [new XmlEncoder()]), 'xml');
     }
@@ -51,21 +55,5 @@ final class XmlMediaTypeFormatter extends SerializerMediaTypeFormatter
     {
         // We default to true and let a SerializationException bubble up in case it cannot write this type
         return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSupportedEncodings(): array
-    {
-        return self::$supportedEncodings;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSupportedMediaTypes(): array
-    {
-        return self::$supportedMediaTypes;
     }
 }

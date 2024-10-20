@@ -22,10 +22,19 @@ use Aphiria\Security\IPrincipal;
  */
 final class AuthorizationContext
 {
-    /** @var HashSet<object> The list of requirements that haven't passed yet */
-    public iterable $pendingRequirements;
+    /**
+     * Whether or not all requirements have passed
+     * @see AuthorizationContext::anyRequirementsFailed() Unlike that method, this requires all requirements to explicitly succeed
+     *
+     * @var bool
+     */
+    public bool $allRequirementsPassed {
+        get => \count($this->pendingRequirements) === 0 && !$this->anyRequirementsFailed;
+    }
     /** @var bool Whether or not any requirements were explicitly marked as having failed */
-    private bool $anyRequirementsFailed = false;
+    public private(set) bool $anyRequirementsFailed = false;
+    /** @var HashSet<object> The list of requirements that haven't passed yet */
+    public private(set) iterable $pendingRequirements;
 
     /**
      * @param IPrincipal $user The current user being authorized
@@ -38,28 +47,6 @@ final class AuthorizationContext
         public readonly ?object $resource
     ) {
         $this->pendingRequirements = new HashSet($this->requirements);
-    }
-
-    /**
-     * Gets whether or not all requirements have passed
-     * @see AuthorizationContext::anyRequirementsFailed() Unlike that method, this requires all requirements to explicitly succeed
-     *
-     * @return bool True if authorization was successful, otherwise false
-     */
-    public function allRequirementsPassed(): bool
-    {
-        return \count($this->pendingRequirements) === 0 && !$this->anyRequirementsFailed();
-    }
-
-    /**
-     * Gets whether or not any requirements failed
-     *
-     *
-     * @return bool True if any requirements have failed, otherwise false
-     */
-    public function anyRequirementsFailed(): bool
-    {
-        return $this->anyRequirementsFailed;
     }
 
     /**

@@ -40,7 +40,7 @@ class ResponseParser
      */
     public function isJson(IResponse $response): bool
     {
-        return $this->headerParser->isJson($response->getHeaders());
+        return $this->headerParser->isJson($response->headers);
     }
 
     /**
@@ -52,7 +52,7 @@ class ResponseParser
      */
     public function isMultipart(IResponse $response): bool
     {
-        return $this->headerParser->isMultipart($response->getHeaders());
+        return $this->headerParser->isMultipart($response->headers);
     }
 
     /**
@@ -64,7 +64,7 @@ class ResponseParser
      */
     public function parseContentTypeHeader(IResponse $response): ?ContentTypeHeaderValue
     {
-        return $this->headerParser->parseContentTypeHeader($response->getHeaders());
+        return $this->headerParser->parseContentTypeHeader($response->headers);
     }
 
     /**
@@ -75,7 +75,7 @@ class ResponseParser
      */
     public function parseCookies(IResponse $response): IImmutableDictionary
     {
-        return $this->headerParser->parseCookies($response->getHeaders());
+        return $this->headerParser->parseCookies($response->headers);
     }
 
     /**
@@ -88,6 +88,6 @@ class ResponseParser
      */
     public function parseParameters(IResponse $response, string $headerName, int $index = 0): IImmutableDictionary
     {
-        return $this->headerParser->parseParameters($response->getHeaders(), $headerName, $index);
+        return $this->headerParser->parseParameters($response->headers, $headerName, $index);
     }
 }

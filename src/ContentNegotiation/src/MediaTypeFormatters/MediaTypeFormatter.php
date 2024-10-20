@@ -17,20 +17,18 @@ namespace Aphiria\ContentNegotiation\MediaTypeFormatters;
  */
 abstract class MediaTypeFormatter implements IMediaTypeFormatter
 {
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultEncoding(): string
-    {
-        return $this->getSupportedEncodings()[0];
+    /** @inheritdoc */
+    public string $defaultEncoding {
+        get {
+            return $this->supportedEncodings[0];
+        }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDefaultMediaType(): string
-    {
-        return $this->getSupportedMediaTypes()[0];
+    /** @inheritdoc */
+    public string $defaultMediaType {
+        get {
+            return $this->supportedMediaTypes[0];
+        }
     }
 
     /**
@@ -41,7 +39,7 @@ abstract class MediaTypeFormatter implements IMediaTypeFormatter
      */
     protected function encodingIsSupported(string $encoding): bool
     {
-        $lowercaseSupportedEncodings = \array_map('strtolower', $this->getSupportedEncodings());
+        $lowercaseSupportedEncodings = \array_map('strtolower', $this->supportedEncodings);
         $lowercaseEncoding = \strtolower($encoding);
 
         return \in_array($lowercaseEncoding, $lowercaseSupportedEncodings, true);

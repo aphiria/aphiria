@@ -17,6 +17,10 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
  */
 final class TokenStream
 {
+    /** @var Token|null The current token, or null if the cursor does not point to a token */
+    public ?Token $current {
+        get => \count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
+    }
     /** @var int The length of the stream */
     public readonly int $length;
     /** @var int The current cursor */
@@ -40,13 +44,13 @@ final class TokenStream
      *      Any '%s' in the message is first populated with the expected type, and then with the expected value
      * @throws UnexpectedTokenException Thrown if the current token didn't match the expected type and value
      */
-    public function expect(TokenType $type, mixed $value = null, string $message = null): void
+    public function expect(TokenType $type, mixed $value = null, ?string $message = null): void
     {
         if ($this->test($type, $value)) {
             return;
         }
 
-        $currentToken = $this->getCurrent();
+        $currentToken = $this->current;
 
         if ($message === null) {
             // Let's create a default message
@@ -77,16 +81,6 @@ final class TokenStream
     }
 
     /**
-     * Gets the current token
-     *
-     * @return Token|null The current token
-     */
-    public function getCurrent(): ?Token
-    {
-        return \count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
-    }
-
-    /**
      * Gets the next token, if there is one
      *
      * @return Token|null The next token, if there is one, otherwise false
@@ -105,7 +99,7 @@ final class TokenStream
      */
     public function nextIfType(TokenType $type, mixed $value = null): bool
     {
-        $currentToken = $this->getCurrent();
+        $currentToken = $this->current;
         $typeMatches = $currentToken?->type === $type;
 
         if ($typeMatches && ($value === null || $currentToken?->value === $value)) {
@@ -141,7 +135,7 @@ final class TokenStream
      */
     public function test(TokenType $type, mixed $value = null): bool
     {
-        $currentToken = $this->getCurrent();
+        $currentToken = $this->current;
         $typeMatches = $currentToken !== null && $currentToken->type === $type;
 
         return $typeMatches && ($value === null || $currentToken->value === $value);

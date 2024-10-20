@@ -48,7 +48,7 @@ class LiteralTrieNodeTest extends TestCase
         $expectedHostTrie = $this->createMock(TrieNode::class);
         $node = new LiteralTrieNode('foo', $expectedChildren, $expectedRoutes, $expectedHostTrie);
         $this->assertSame('foo', $node->value);
-        $this->assertSame($expectedChildren, $node->getAllChildren());
+        $this->assertSame($expectedChildren, $node->children);
         $this->assertSame($expectedRoutes, $node->routes);
         $this->assertSame($expectedHostTrie, $node->hostTrie);
     }

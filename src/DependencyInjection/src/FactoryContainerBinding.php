@@ -26,17 +26,7 @@ readonly class FactoryContainerBinding implements IContainerBinding
      * @param Closure(): T $factory The factory
      * @param bool $resolveAsSingleton Whether or not the factory should be resolved as a singleton
      */
-    public function __construct(public Closure $factory, private bool $resolveAsSingleton)
+    public function __construct(public Closure $factory, public private(set) bool $resolveAsSingleton)
     {
-    }
-
-    /**
-     * Gets whether or not to resolve as a singleton
-     *
-     * @return bool Whether or not to resolve as a singleton
-     */
-    public function resolveAsSingleton(): bool
-    {
-        return $this->resolveAsSingleton;
     }
 }

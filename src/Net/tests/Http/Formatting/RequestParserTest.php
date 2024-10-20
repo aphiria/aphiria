@@ -26,6 +26,7 @@ use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class RequestParserTest extends TestCase
@@ -43,11 +44,11 @@ class RequestParserTest extends TestCase
         $this->body = $this->createMock(IBody::class);
         $this->properties = new HashTable();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method('getHeaders')
+        $this->request->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
-        $this->request->method('getBody')
+        $this->request->method(PropertyHook::get('body'))
             ->willReturn($this->body);
-        $this->request->method('getProperties')
+        $this->request->method(PropertyHook::get('properties'))
             ->willReturn($this->properties);
     }
 
@@ -204,7 +205,7 @@ class RequestParserTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $request->expects($this->once())
-            ->method('getUri')
+            ->method(PropertyHook::get('uri'))
             ->willReturn(new Uri('http://host.com?foo=bar'));
         $this->assertSame('bar', $this->parser->parseQueryString($request)->get('foo'));
     }

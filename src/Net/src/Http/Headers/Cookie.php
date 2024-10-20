@@ -19,6 +19,18 @@ use InvalidArgumentException;
  */
 final class Cookie
 {
+    /** @var string The name of the cookie */
+    public string $name {
+        get => $this->name;
+        set {
+            if (\preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $value) === 1) {
+                throw new InvalidArgumentException("Cookie name \"$value\" contains invalid characters");
+            }
+
+            $this->name = $value;
+        }
+    }
+
     /**
      * @param string $name The name of the cookie
      * @param mixed $value The value of the cookie
@@ -31,7 +43,7 @@ final class Cookie
      * @throws InvalidArgumentException Thrown if the name or expiration is in the incorrect format
      */
     public function __construct(
-        private string $name,
+        string $name,
         public mixed $value,
         public ?int $maxAge = null,
         public ?string $path = null,
@@ -40,31 +52,6 @@ final class Cookie
         public bool $isHttpOnly = true,
         public ?SameSiteMode $sameSite = SameSiteMode::Lax
     ) {
-        $this->setName($name);
-    }
-
-    /**
-     * Gets the name of the cookie
-     *
-     * @return string The name of the cookie
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * Sets the name of the cookie
-     *
-     * @param string $name The name of the cookie
-     * @throws InvalidArgumentException Thrown if the name contains invalid characters
-     */
-    public function setName(string $name): void
-    {
-        if (\preg_match('/[\x00-\x20\x22\x28-\x29\x2c\x2f\x3a-\x40\x5b-\x5d\x7b\x7d\x7f]/', $name) === 1) {
-            throw new InvalidArgumentException("Cookie name \"$name\" contains invalid characters");
-        }
-
         $this->name = $name;
     }
 }

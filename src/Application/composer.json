@@ -38,13 +38,13 @@
         }
     },
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "symfony/dotenv": "^7.0",
         "symfony/yaml": "^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^11.5-dev"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

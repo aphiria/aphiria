@@ -54,7 +54,7 @@ class RequestParser
      */
     public function getActualMimeType(IRequest|MultipartBodyPart $request): ?string
     {
-        return $this->bodyParser->getMimeType($request instanceof IRequest ? $request->getBody() : $request->body);
+        return $this->bodyParser->getMimeType($request instanceof IRequest ? $request->body : $request->body);
     }
 
     /**
@@ -66,7 +66,7 @@ class RequestParser
     public function getClientIPAddress(IRequest $request): ?string
     {
         $clientIPAddress = null;
-        $request->getProperties()->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
+        $request->properties->tryGet(self::CLIENT_IP_ADDRESS_PROPERTY, $clientIPAddress);
 
         /** @var string|null $clientIPAddress */
         return $clientIPAddress;
@@ -99,7 +99,7 @@ class RequestParser
      */
     public function isJson(IRequest $request): bool
     {
-        return $this->headerParser->isJson($request->getHeaders());
+        return $this->headerParser->isJson($request->headers);
     }
 
     /**
@@ -111,7 +111,7 @@ class RequestParser
      */
     public function isMultipart(IRequest $request): bool
     {
-        return $this->headerParser->isMultipart($request->getHeaders());
+        return $this->headerParser->isMultipart($request->headers);
     }
 
     /**
@@ -123,7 +123,7 @@ class RequestParser
      */
     public function parseAcceptCharsetHeader(IRequest $request): array
     {
-        return $this->headerParser->parseAcceptCharsetHeader($request->getHeaders());
+        return $this->headerParser->parseAcceptCharsetHeader($request->headers);
     }
 
     /**
@@ -135,7 +135,7 @@ class RequestParser
      */
     public function parseAcceptHeader(IRequest $request): array
     {
-        return $this->headerParser->parseAcceptHeader($request->getHeaders());
+        return $this->headerParser->parseAcceptHeader($request->headers);
     }
 
     /**
@@ -147,7 +147,7 @@ class RequestParser
      */
     public function parseAcceptLanguageHeader(IRequest $request): array
     {
-        return $this->headerParser->parseAcceptLanguageHeader($request->getHeaders());
+        return $this->headerParser->parseAcceptLanguageHeader($request->headers);
     }
 
     /**
@@ -159,7 +159,7 @@ class RequestParser
      */
     public function parseContentTypeHeader(IRequest $request): ?ContentTypeHeaderValue
     {
-        return $this->headerParser->parseContentTypeHeader($request->getHeaders());
+        return $this->headerParser->parseContentTypeHeader($request->headers);
     }
 
     /**
@@ -170,7 +170,7 @@ class RequestParser
      */
     public function parseCookies(IRequest $request): IImmutableDictionary
     {
-        return $this->headerParser->parseCookies($request->getHeaders());
+        return $this->headerParser->parseCookies($request->headers);
     }
 
     /**
@@ -186,7 +186,7 @@ class RequestParser
         string $headerName,
         int $index = 0
     ): IImmutableDictionary {
-        return $this->headerParser->parseParameters($request->getHeaders(), $headerName, $index);
+        return $this->headerParser->parseParameters($request->headers, $headerName, $index);
     }
 
     /**
@@ -197,7 +197,7 @@ class RequestParser
      */
     public function parseQueryString(IRequest $request): IImmutableDictionary
     {
-        return $this->uriParser->parseQueryString($request->getUri());
+        return $this->uriParser->parseQueryString($request->uri);
     }
 
     /**
@@ -208,7 +208,7 @@ class RequestParser
      */
     public function readAsFormInput(IRequest $request): IDictionary
     {
-        return $this->bodyParser->readAsFormInput($request->getBody());
+        return $this->bodyParser->readAsFormInput($request->body);
     }
 
     /**
@@ -220,7 +220,7 @@ class RequestParser
      */
     public function readAsJson(IRequest $request): array
     {
-        return $this->bodyParser->readAsJson($request->getBody());
+        return $this->bodyParser->readAsJson($request->body);
     }
 
     /**
@@ -236,8 +236,8 @@ class RequestParser
         $boundary = '';
 
         if ($request instanceof IRequest) {
-            $headers = $request->getHeaders();
-            $body = $request->getBody();
+            $headers = $request->headers;
+            $body = $request->body;
         } else {
             $headers = $request->headers;
             $body = $request->body;

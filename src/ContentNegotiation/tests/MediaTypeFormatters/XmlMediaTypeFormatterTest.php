@@ -42,25 +42,25 @@ class XmlMediaTypeFormatterTest extends TestCase
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8', 'utf-16', 'iso-8859'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8', 'utf-16', 'iso-8859'], $this->formatter->supportedEncodings);
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
         $this->assertEquals(
             ['text/xml', 'application/problem+xml'],
-            $this->formatter->getSupportedMediaTypes()
+            $this->formatter->supportedMediaTypes
         );
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
     {
-        $this->assertSame('utf-8', $this->formatter->getDefaultEncoding());
+        $this->assertSame('utf-8', $this->formatter->defaultEncoding);
     }
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertSame('text/xml', $this->formatter->getDefaultMediaType());
+        $this->assertSame('text/xml', $this->formatter->defaultMediaType);
     }
 
     public function testReadingFromStreamDeserializesStreamContents(): void

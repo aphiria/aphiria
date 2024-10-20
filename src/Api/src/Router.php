@@ -56,7 +56,7 @@ class Router implements IRequestHandler
         private readonly IRouteMatcher $routeMatcher,
         private readonly IServiceResolver $serviceResolver,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
-        IRouteActionInvoker $routeActionInvoker = null,
+        ?IRouteActionInvoker $routeActionInvoker = null,
         private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
@@ -85,7 +85,7 @@ class Router implements IRequestHandler
             $this->routeActionInvoker,
             $this->userAccessor
         );
-        $middlewarePipeline = (new MiddlewarePipelineFactory())->createPipeline(
+        $middlewarePipeline = new MiddlewarePipelineFactory()->createPipeline(
             $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),
             $controllerRequestHandler
         );
@@ -137,7 +137,7 @@ class Router implements IRequestHandler
             }
 
             if ($middleware instanceof ParameterizedMiddleware) {
-                $middleware->setParameters($middlewareBinding->parameters);
+                $middleware->parameters = $middlewareBinding->parameters;
             }
 
             $middlewareList[] = $middleware;
@@ -155,16 +155,15 @@ class Router implements IRequestHandler
      */
     private function matchRoute(IRequest $request): RouteMatchingResult
     {
-        $uri = $request->getUri();
-        $matchingResult = $this->routeMatcher->matchRoute($request->getMethod(), $uri->host ?? '', $uri->path ?? '');
+        $matchingResult = $this->routeMatcher->matchRoute($request->method, $request->uri->host ?? '', $request->uri->path ?? '');
 
         if (!$matchingResult->matchFound) {
             if ($matchingResult->methodIsAllowed === null) {
-                throw new HttpException(HttpStatusCode::NotFound, "No route found for {$request->getUri()}");
+                throw new HttpException(HttpStatusCode::NotFound, "No route found for {$request->uri}");
             }
 
             $response = new Response(HttpStatusCode::MethodNotAllowed);
-            $response->getHeaders()->add('Allow', $matchingResult->allowedMethods);
+            $response->headers->add('Allow', $matchingResult->allowedMethods);
 
             throw new HttpException($response, 'Method not allowed');
         }

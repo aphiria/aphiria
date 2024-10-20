@@ -475,10 +475,10 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return $request->getMethod() === 'DELETE'
-                    && (string)$request->getUri() === 'http://localhost'
-                    && $request->getHeaders()->get('Foo') === ['bar']
-                    && (string)$request->getBody() === '{"foo":"bar"}';
+                return $request->method === 'DELETE'
+                    && (string)$request->uri === 'http://localhost'
+                    && $request->headers->get('Foo') === ['bar']
+                    && (string)$request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->delete(
@@ -495,9 +495,9 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return $request->getMethod() === 'GET'
-                    && (string)$request->getUri() === 'http://localhost'
-                    && $request->getHeaders()->get('Foo') === ['bar'];
+                return $request->method === 'GET'
+                    && (string)$request->uri === 'http://localhost'
+                    && $request->headers->get('Foo') === ['bar'];
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->get(
@@ -547,10 +547,10 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return $request->getMethod() === 'OPTIONS'
-                    && (string)$request->getUri() === 'http://localhost'
-                    && $request->getHeaders()->get('Foo') === ['bar']
-                    && (string)$request->getBody() === '{"foo":"bar"}';
+                return $request->method === 'OPTIONS'
+                    && (string)$request->uri === 'http://localhost'
+                    && $request->headers->get('Foo') === ['bar']
+                    && (string)$request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->options(
@@ -567,10 +567,10 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return $request->getMethod() === 'PATCH'
-                    && (string)$request->getUri() === 'http://localhost'
-                    && $request->getHeaders()->get('Foo') === ['bar']
-                    && (string)$request->getBody() === '{"foo":"bar"}';
+                return $request->method === 'PATCH'
+                    && (string)$request->uri === 'http://localhost'
+                    && $request->headers->get('Foo') === ['bar']
+                    && (string)$request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->patch(
@@ -587,10 +587,10 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return $request->getMethod() === 'POST'
-                    && (string)$request->getUri() === 'http://localhost'
-                    && $request->getHeaders()->get('Foo') === ['bar']
-                    && (string)$request->getBody() === '{"foo":"bar"}';
+                return $request->method === 'POST'
+                    && (string)$request->uri === 'http://localhost'
+                    && $request->headers->get('Foo') === ['bar']
+                    && (string)$request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->post(
@@ -607,10 +607,10 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return $request->getMethod() === 'PUT'
-                    && (string)$request->getUri() === 'http://localhost'
-                    && $request->getHeaders()->get('Foo') === ['bar']
-                    && (string)$request->getBody() === '{"foo":"bar"}';
+                return $request->method === 'PUT'
+                    && (string)$request->uri === 'http://localhost'
+                    && $request->headers->get('Foo') === ['bar']
+                    && (string)$request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->put(
@@ -630,7 +630,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) use ($expectedUri) {
-                return (string)$request->getUri() === $expectedUri;
+                return (string)$request->uri === $expectedUri;
             }));
         $this->integrationTests->get($expectedUri);
     }
@@ -649,7 +649,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->apiGateway->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return (string)$request->getUri() === 'http://localhost/path';
+                return (string)$request->uri === 'http://localhost/path';
             }));
         $this->integrationTests->get($path);
     }

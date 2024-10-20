@@ -17,6 +17,13 @@ namespace Aphiria\Security;
  */
 interface IPrincipal
 {
+    /** @var list<Claim<mixed>> The list of claims for this principal */
+    public array $claims { get; }
+    /** @var list<IIdentity> The list of identities */
+    public array $identities { get; }
+    /** @var IIdentity|null The primary identity of the principal if there is one, otherwise null */
+    public ?IIdentity $primaryIdentity { get; }
+
     /**
      * Adds an identity
      *
@@ -38,27 +45,6 @@ interface IPrincipal
      * @return list<Claim<mixed>> The list of claims for this principal with the input type
      */
     public function filterClaims(ClaimType|string $type): array;
-
-    /**
-     * Gets all the claims associated with this principal
-     *
-     * @return list<Claim<mixed>> The list of claims for this principal
-     */
-    public function getClaims(): array;
-
-    /**
-     * Gets the list of identities a principal has
-     *
-     * @return list<IIdentity> The list of identities
-     */
-    public function getIdentities(): array;
-
-    /**
-     * Gets the primary identity
-     *
-     * @return IIdentity|null The primary identity of the principal if there is one, otherwise null
-     */
-    public function getPrimaryIdentity(): ?IIdentity;
 
     /**
      * Gets whether or not the principal has a claim

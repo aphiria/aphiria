@@ -22,6 +22,7 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\IRequest;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class NegotiatedRequestBuilderTest extends TestCase
@@ -51,7 +52,7 @@ class NegotiatedRequestBuilderTest extends TestCase
         $request = $this->requestBuilder->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
-        $this->assertEquals(['*/*'], $request->getHeaders()->get('Accept'));
+        $this->assertEquals(['*/*'], $request->headers->get('Accept'));
     }
 
     public function testWithBodyWithBodyInstanceSetsBodyToThatInstance(): void
@@ -61,7 +62,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody($expectedBody)
             ->build();
-        $this->assertSame($expectedBody, $request->getBody());
+        $this->assertSame($expectedBody, $request->body);
     }
 
     public function testWithBodyWithInvalidBodyTypeThrowsException(): void
@@ -80,7 +81,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->method('getBestRequestMediaTypeFormatterMatch')
             ->with('string', $this->isInstanceOf(IRequest::class))
             ->willReturn(null);
-        (new NegotiatedRequestBuilder($mediaTypeFormatterMatcher))->withBody('foo');
+        new NegotiatedRequestBuilder($mediaTypeFormatterMatcher)->withBody('foo');
     }
 
     /**
@@ -91,7 +92,7 @@ class NegotiatedRequestBuilderTest extends TestCase
     public function testWithBodyWithNonHttpBodyUsesContentNegotiationToSetBody(string $expectedType, mixed $rawBody): void
     {
         $mediaTypeFormatter = $this->createMock(IMediaTypeFormatter::class);
-        $mediaTypeFormatter->method('getDefaultEncoding')
+        $mediaTypeFormatter->method(PropertyHook::get('defaultEncoding'))
             ->willReturn('UTF-8');
         $expectedStream = null;
         $mediaTypeFormatter->method('writeToStream')
@@ -114,12 +115,12 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->method('getBestRequestMediaTypeFormatterMatch')
             ->with($expectedType, $this->isInstanceOf(IRequest::class))
             ->willReturn($expectedMediaTypeFormatterMatch);
-        $request = (new NegotiatedRequestBuilder($mediaTypeFormatterMatcher))->withMethod('GET')
+        $request = new NegotiatedRequestBuilder($mediaTypeFormatterMatcher)->withMethod('GET')
             ->withUri('http://localhost')
             ->withBody($rawBody)
             ->build();
-        $this->assertSame($expectedStream, $request->getBody()?->readAsStream());
-        $this->assertSame('application/json', $request->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame($expectedStream, $request->body?->readAsStream());
+        $this->assertSame('application/json', $request->headers->getFirst('Content-Type'));
     }
 
     public function testWithBodyWithNullBodySetsBodyToNull(): void
@@ -128,6 +129,6 @@ class NegotiatedRequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withBody(null)
             ->build();
-        $this->assertNull($request->getBody());
+        $this->assertNull($request->body);
     }
 }

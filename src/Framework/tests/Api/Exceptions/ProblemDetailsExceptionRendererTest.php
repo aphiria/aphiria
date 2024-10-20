@@ -66,9 +66,9 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer = $this->createExceptionRenderer(false, false);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{status: int} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame(HttpStatusCode::InternalServerError->value, $problemDetailsJson['status']);
-        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::InternalServerError, $response->statusCode);
     }
 
     public function testHavingRequestSetButAnExceptionGetsThrownCausesGenericResponse(): void
@@ -83,9 +83,9 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $this->responseWriter->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IResponse $response) {
-                return $response->getStatusCode() === HttpStatusCode::InternalServerError
-                    && $response->getBody() === null
-                    && $response->getHeaders()->count() === 0;
+                return $response->statusCode === HttpStatusCode::InternalServerError
+                    && $response->body === null
+                    && $response->headers->count() === 0;
             }));
         $exceptionRenderer->render(new Exception());
     }
@@ -132,7 +132,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, 100);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{type: string|null} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertNull($problemDetailsJson['type']);
     }
 
@@ -142,7 +142,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, null, null, null, 404);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{type: string} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame('https://tools.ietf.org/html/rfc7231#section-6.5.4', $problemDetailsJson['type']);
     }
 
@@ -152,7 +152,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{instance: string|null} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertNull($problemDetailsJson['instance']);
     }
 
@@ -162,8 +162,8 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class, 'foo');
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{status: int} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame(HttpStatusCode::InternalServerError, $response->getStatusCode());
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
+        $this->assertSame(HttpStatusCode::InternalServerError, $response->statusCode);
         $this->assertSame(HttpStatusCode::InternalServerError->value, $problemDetailsJson['status']);
     }
 
@@ -173,7 +173,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException('foo'));
         /** @var array{title: string} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame('foo', $problemDetailsJson['title']);
     }
 
@@ -183,7 +183,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{type: string} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame('https://tools.ietf.org/html/rfc7231#section-6.6.1', $problemDetailsJson['type']);
     }
 
@@ -193,7 +193,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         $exceptionRenderer->mapExceptionToProblemDetails(InvalidArgumentException::class);
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{detail: string|null} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertNull($problemDetailsJson['detail']);
     }
 
@@ -233,7 +233,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
 
         $response = $exceptionRenderer->createResponse(new InvalidArgumentException());
         /** @var array{type: string, title: string, detail: string, status: int, instance: string, extensions: array} $problemDetailsJson */
-        $problemDetailsJson = \json_decode((string)$response->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $problemDetailsJson = \json_decode((string)$response->body, true, 512, JSON_THROW_ON_ERROR);
         $this->assertSame($expectedValue, $problemDetailsJson[$propertyName]);
     }
 
@@ -241,10 +241,10 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     {
         $exceptionRenderer = $this->createExceptionRenderer(false, false);
         $actualResponse = $exceptionRenderer->createResponse(new Exception('foo'));
-        $this->assertSame(HttpStatusCode::InternalServerError, $actualResponse->getStatusCode());
-        $this->assertSame('application/problem+json', $actualResponse->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame(HttpStatusCode::InternalServerError, $actualResponse->statusCode);
+        $this->assertSame('application/problem+json', $actualResponse->headers->getFirst('Content-Type'));
         // In this test, we're not using the custom problem details Symfony normalizer, which means "extensions" will appear as a property in the JSON
-        $this->assertSame('{"status":500,"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"foo","detail":null,"instance":null,"extensions":null}', (string)$actualResponse->getBody());
+        $this->assertSame('{"status":500,"type":"https:\/\/tools.ietf.org\/html\/rfc7231#section-6.6.1","title":"foo","detail":null,"instance":null,"extensions":null}', (string)$actualResponse->body);
     }
 
     /**
@@ -264,7 +264,7 @@ class ProblemDetailsExceptionRendererTest extends TestCase
         );
 
         if ($setRequest) {
-            $renderer->setRequest($this->request);
+            $renderer->request = $this->request;
         }
 
         return $renderer;

@@ -23,6 +23,7 @@ use Aphiria\Net\Uri;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ResponseFormatterTest extends TestCase
@@ -36,19 +37,19 @@ class ResponseFormatterTest extends TestCase
         $this->formatter = new ResponseFormatter();
         $this->headers = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('getHeaders')
+        $this->response->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
     }
 
     public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
     {
         $this->response->expects($this->once())
-            ->method('setBody')
+            ->method(PropertyHook::set('body'))
             ->with($this->callback(function (mixed $body) {
                 return $body instanceof StringBody && $body->readAsString() === \json_encode(['foo' => 'bar']);
             }));
         $this->formatter->writeJson($this->response, ['foo' => 'bar']);
-        $this->assertSame('application/json', $this->response->getHeaders()->getFirst('Content-Type'));
+        $this->assertSame('application/json', $this->response->headers->getFirst('Content-Type'));
     }
 
     public function testDeletingCookieSetsCookiesToExpire(): void
@@ -63,21 +64,23 @@ class ResponseFormatterTest extends TestCase
     /**
      * @param HttpStatusCode|int $expectedStatusCode
      */
-    #[TestWith([HttpStatusCode::Found])]
-    #[TestWith([302])]
-    public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(HttpStatusCode|int $expectedStatusCode): void
-    {
+    #[TestWith([HttpStatusCode::Found, HttpStatusCode::Found])]
+    #[TestWith([HttpStatusCode::Found, 302])]
+    public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(
+        HttpStatusCode $expectedStatusCode,
+        HttpStatusCode|int $rawStatusCode
+    ): void {
         $this->response->expects($this->once())
-            ->method('setStatusCode')
+            ->method(PropertyHook::set('statusCode'))
             ->with($expectedStatusCode);
-        $this->formatter->redirectToUri($this->response, 'http://foo.com', $expectedStatusCode);
+        $this->formatter->redirectToUri($this->response, 'http://foo.com', $rawStatusCode);
     }
 
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
-            ->method('setStatusCode')
-            ->with(301);
+            ->method(PropertyHook::set('statusCode'))
+            ->with(HttpStatusCode::MovedPermanently);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }
@@ -85,8 +88,8 @@ class ResponseFormatterTest extends TestCase
     public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
     {
         $this->response->expects($this->once())
-            ->method('setStatusCode')
-            ->with(301);
+            ->method(PropertyHook::set('statusCode'))
+            ->with(HttpStatusCode::MovedPermanently);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);
         $this->assertSame('http://foo.com', $this->headers->getFirst('Location'));
     }

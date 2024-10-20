@@ -35,9 +35,8 @@ class ValidationComponentTest extends TestCase
         $this->container = new Container();
         $this->container->bindInstance(ObjectConstraintsRegistry::class, $this->objectConstraints = new ObjectConstraintsRegistry());
         $this->objectConstraintsRegistrants = new class () extends ObjectConstraintsRegistrantCollection {
-            public function getAll(): array
-            {
-                return $this->registrants;
+            public array $values {
+                get => $this->registrants;
             }
         };
         $this->container->bindInstance(ObjectConstraintsRegistrantCollection::class, $this->objectConstraintsRegistrants);
@@ -54,7 +53,7 @@ class ValidationComponentTest extends TestCase
         $this->validationComponent->build();
         $classConstraints = $this->objectConstraints->getConstraintsForClass($class::class);
         $this->assertNotNull($classConstraints);
-        $this->assertInstanceOf(RequiredConstraint::class, $classConstraints->getMethodConstraints('bar')[0]);
+        $this->assertInstanceOf(RequiredConstraint::class, $classConstraints->getConstraintsForMethod('bar')[0]);
     }
 
     public function testBuildWithAttributesAddsAttributeRegistrant(): void
@@ -65,9 +64,9 @@ class ValidationComponentTest extends TestCase
         $this->validationComponent->withAttributes();
         $this->validationComponent->build();
         // The first should be the attribute registrant, and the second the manually-registered constraint registrant
-        $this->assertCount(2, $this->objectConstraintsRegistrants->getAll());
+        $this->assertCount(2, $this->objectConstraintsRegistrants->values);
         // Make sure the attribute registrant is first
-        $this->assertEquals($attributeObjectConstraintsRegistrant, $this->objectConstraintsRegistrants->getAll()[0]);
+        $this->assertEquals($attributeObjectConstraintsRegistrant, $this->objectConstraintsRegistrants->values[0]);
     }
 
     public function testBuildWithAttributesWithoutAttributeRegistrantThrowsException(): void

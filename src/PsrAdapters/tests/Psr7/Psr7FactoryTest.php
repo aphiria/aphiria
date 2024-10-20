@@ -56,7 +56,7 @@ class Psr7FactoryTest extends TestCase
         $psr7Request = (new Psr7Request('GET', 'https://example.com', [], $psr7Body))
             ->withParsedBody($this);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertSame($this, $aphiriaRequest->getProperties()->get('__APHIRIA_PARSED_BODY'));
+        $this->assertSame($this, $aphiriaRequest->properties->get('__APHIRIA_PARSED_BODY'));
     }
 
     public function testCreateAphiriaRequestSetsSameBody(): void
@@ -64,15 +64,15 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Request = new Psr7Request('GET', 'https://example.com', [], $psr7Body);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertSame('foo', $aphiriaRequest->getBody()?->readAsString());
+        $this->assertSame('foo', $aphiriaRequest->body?->readAsString());
     }
 
     public function testCreateAphiriaRequestSetsSameHeaders(): void
     {
         $psr7Request = new Psr7Request('GET', 'https://example.com', ['Foo' => 'bar', 'Baz' => 'blah']);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertEquals(['bar'], $aphiriaRequest->getHeaders()->get('Foo'));
-        $this->assertEquals(['blah'], $aphiriaRequest->getHeaders()->get('Baz'));
+        $this->assertEquals(['bar'], $aphiriaRequest->headers->get('Foo'));
+        $this->assertEquals(['blah'], $aphiriaRequest->headers->get('Baz'));
     }
 
     public function testCreateAphiriaRequestSetsSameProperties(): void
@@ -81,15 +81,15 @@ class Psr7FactoryTest extends TestCase
             ->withAttribute('foo', 'bar')
             ->withAttribute('baz', 'blah');
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertSame('bar', $aphiriaRequest->getProperties()->get('foo'));
-        $this->assertSame('blah', $aphiriaRequest->getProperties()->get('baz'));
+        $this->assertSame('bar', $aphiriaRequest->properties->get('foo'));
+        $this->assertSame('blah', $aphiriaRequest->properties->get('baz'));
     }
 
     public function testCreateAphiriaRequestSetsSameUri(): void
     {
         $psr7Request = new Psr7Request('GET', 'https://dave:abc123@example.com?foo=bar#baz=blah');
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $this->assertSame('https://dave:abc123@example.com?foo=bar#baz=blah', (string)$aphiriaRequest->getUri());
+        $this->assertSame('https://dave:abc123@example.com?foo=bar#baz=blah', (string)$aphiriaRequest->uri);
     }
 
     public function testCreateAphiriaRequestWithFileUploadsCreatesMultipartRequest(): void
@@ -104,7 +104,7 @@ class Psr7FactoryTest extends TestCase
                 'baz' => new UploadedFile(Psr7Stream::create('baz'), 3, \UPLOAD_ERR_OK)
             ]);
         $aphiriaRequest = $this->psr7Factory->createAphiriaRequest($psr7Request);
-        $aphiriaMultipartBody = (new RequestParser())->readAsMultipart($aphiriaRequest);
+        $aphiriaMultipartBody = new RequestParser()->readAsMultipart($aphiriaRequest);
         $aphiriaMultipartBodyParts = $aphiriaMultipartBody?->parts;
         $this->assertNotNull($aphiriaMultipartBodyParts);
         $this->assertCount(3, $aphiriaMultipartBodyParts);
@@ -133,36 +133,36 @@ class Psr7FactoryTest extends TestCase
         $psr7Body = Psr7Stream::create('foo');
         $psr7Response = new Psr7Response(200, [], $psr7Body);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame('foo', $aphiriaResponse->getBody()?->readAsString());
+        $this->assertSame('foo', $aphiriaResponse->body?->readAsString());
     }
 
     public function testCreateAphiriaResponseSetsSameHeaders(): void
     {
         $psr7Response = new Psr7Response(200, ['Foo' => ['bar'], 'Baz' => ['blah']]);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertEquals(['bar'], $aphiriaResponse->getHeaders()->get('Foo'));
-        $this->assertEquals(['blah'], $aphiriaResponse->getHeaders()->get('Baz'));
+        $this->assertEquals(['bar'], $aphiriaResponse->headers->get('Foo'));
+        $this->assertEquals(['blah'], $aphiriaResponse->headers->get('Baz'));
     }
 
     public function testCreateAphiriaResponseSetsSameProtocolVersion(): void
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame('1.1', $aphiriaResponse->getProtocolVersion());
+        $this->assertSame('1.1', $aphiriaResponse->protocolVersion);
     }
 
     public function testCreateAphiriaResponseSetsSameReasonPhrase(): void
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame('OK', $aphiriaResponse->getReasonPhrase());
+        $this->assertSame('OK', $aphiriaResponse->reasonPhrase);
     }
 
     public function testCreateAphiriaResponseSetsSameStatusCode(): void
     {
         $psr7Response = new Psr7Response(200);
         $aphiriaResponse = $this->psr7Factory->createAphiriaResponse($psr7Response);
-        $this->assertSame(HttpStatusCode::Ok, $aphiriaResponse->getStatusCode());
+        $this->assertSame(HttpStatusCode::Ok, $aphiriaResponse->statusCode);
     }
 
     public function testCreateAphiriaStreamCreatesStreamWithSameContents(): void
@@ -247,7 +247,7 @@ class Psr7FactoryTest extends TestCase
     public function testCreatePsr7RequestSetsParsedBodyIfOneIsPresent(): void
     {
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'));
-        $aphiriaRequest->getProperties()->add('__APHIRIA_PARSED_BODY', $this);
+        $aphiriaRequest->properties->add('__APHIRIA_PARSED_BODY', $this);
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
         $this->assertSame($this, $psr7Request->getParsedBody());
     }
@@ -291,8 +291,8 @@ class Psr7FactoryTest extends TestCase
     public function testCreatePsr7RequestSetsSameProperties(): void
     {
         $aphiriaRequest = new Request('GET', new Uri('https://example.com'));
-        $aphiriaRequest->getProperties()->add('foo', 'bar');
-        $aphiriaRequest->getProperties()->add('baz', 'blah');
+        $aphiriaRequest->properties->add('foo', 'bar');
+        $aphiriaRequest->properties->add('baz', 'blah');
         $psr7Request = $this->psr7Factory->createPsr7Request($aphiriaRequest);
         $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $psr7Request->getAttributes());
     }

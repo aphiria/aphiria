@@ -32,19 +32,34 @@ use Exception;
  */
 class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
 {
+    /** @inheritdoc */
+    public IRequest $request {
+        set {
+            $this->_request = $value;
+        }
+    }
+    /** @inheritdoc */
+    public IResponseFactory $responseFactory {
+        set {
+            $this->_responseFactory = $value;
+        }
+    }
     /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
     protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IRequest|null The current request, if one is set, otherwise null */
-    protected ?IRequest $request = null;
+    protected ?IRequest $_request = null;
+    /** @var IResponseFactory|null The optional response factory */
+    protected ?IResponseFactory $_responseFactory = null;
 
     /**
      * @param IResponseFactory|null $responseFactory The optional response factory
      * @param IResponseWriter $responseWriter What is used to write the response
      */
     public function __construct(
-        protected ?IResponseFactory $responseFactory = null,
+        ?IResponseFactory $responseFactory = null,
         protected readonly IResponseWriter $responseWriter = new StreamResponseWriter()
     ) {
+        $this->_responseFactory = $responseFactory;
     }
 
     /**
@@ -55,27 +70,27 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         try {
             $problemDetails = $this->createProblemDetails($ex);
 
-            if ($this->request === null || $this->responseFactory === null) {
+            if ($this->_request === null || $this->_responseFactory === null) {
                 // We have to manually create a response
                 $response = new Response($problemDetails->status);
-                $response->getHeaders()->add('Content-Type', 'application/problem+json');
+                $response->headers->add('Content-Type', 'application/problem+json');
                 $bodyStream = new Stream(\fopen('php://temp', 'r+b'));
                 // Intentionally using the parameterless constructor so that the default object encoder gets registered
                 $mediaTypeFormatter = new JsonMediaTypeFormatter();
                 $mediaTypeFormatter->writeToStream($problemDetails, $bodyStream, null);
-                $response->setBody(new StreamBody($bodyStream));
+                $response->body = new StreamBody($bodyStream);
 
                 return $response;
             }
 
-            $response = $this->responseFactory->createResponse(
-                $this->request,
+            $response = $this->_responseFactory->createResponse(
+                $this->_request,
                 $problemDetails->status,
                 null,
                 $problemDetails
             );
 
-            return (new ProblemDetailsResponseMutator())->mutateResponse($response);
+            return new ProblemDetailsResponseMutator()->mutateResponse($response);
         } catch (Exception $ex) {
             return $this->createDefaultResponse($ex);
         }
@@ -95,12 +110,12 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     public function mapExceptionToProblemDetails(
         string $exceptionType,
-        string|Closure $type = null,
-        string|Closure $title = null,
-        string|Closure $detail = null,
+        string|Closure|null $type = null,
+        string|Closure|null $title = null,
+        string|Closure|null $detail = null,
         HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
-        string|Closure $instance = null,
-        array|Closure $extensions = null
+        string|Closure|null $instance = null,
+        array|Closure|null $extensions = null
     ): void {
         /** @psalm-suppress InvalidArgument PHPDoc doesn't allow us to (easily) specify param types in closures when setting a variable to that closure */
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {
@@ -151,22 +166,6 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
     public function render(Exception $ex): void
     {
         $this->responseWriter->writeResponse($this->createResponse($ex));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setRequest(IRequest $request): void
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void
-    {
-        $this->responseFactory = $responseFactory;
     }
 
     /**

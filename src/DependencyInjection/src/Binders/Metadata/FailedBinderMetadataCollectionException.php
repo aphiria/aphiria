@@ -29,7 +29,7 @@ final class FailedBinderMetadataCollectionException extends Exception
         public readonly BinderMetadata $incompleteBinderMetadata,
         public readonly string $failedInterface,
         int $code = 0,
-        Throwable $previous = null
+        ?Throwable $previous = null
     ) {
         parent::__construct(
             'Failed to collect metadata for ' . $this->incompleteBinderMetadata->binder::class,

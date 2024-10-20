@@ -37,7 +37,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      */
     public function getBestLanguageMatch(IRequest $request): ?string
     {
-        $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($request->getHeaders());
+        $acceptLanguageHeaders = $this->headerParser->parseAcceptLanguageHeader($request->headers);
 
         if (\count($acceptLanguageHeaders) === 0) {
             return null;
@@ -74,14 +74,11 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      */
     private function compareAcceptLanguageHeaders(AcceptLanguageHeaderValue $a, AcceptLanguageHeaderValue $b): int
     {
-        $aQuality = $a->getQuality();
-        $bQuality = $b->getQuality();
-
-        if ($aQuality < $bQuality) {
+        if ($a->quality < $b->quality) {
             return 1;
         }
 
-        if ($aQuality > $bQuality) {
+        if ($a->quality > $b->quality) {
             return -1;
         }
 
@@ -111,7 +108,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      */
     private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
-        return $header->getQuality() > 0;
+        return $header->quality > 0;
     }
 
     /**

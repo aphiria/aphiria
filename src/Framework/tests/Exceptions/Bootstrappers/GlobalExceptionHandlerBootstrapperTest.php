@@ -45,31 +45,34 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
     private GlobalExceptionHandlerBootstrapper $bootstrapper;
     private IContainer&MockObject $container;
     private Logger $logger;
+    private bool $setsExceptionAndErrorHandler = false;
 
     protected function setUp(): void
     {
         $this->container = $this->createMock(IContainer::class);
         $this->bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
-            private bool $isRunningInConsole = false;
-
-            public function setIsRunningInConsole(bool $isRunningInConsole): void
-            {
-                $this->isRunningInConsole = $isRunningInConsole;
-            }
-
-            protected function isRunningInConsole(): bool
-            {
-                return $this->isRunningInConsole;
+            public bool $isRunningInConsole = false {
+                get => $this->isRunningInConsole;
+                set => $value;
             }
         };
         GlobalConfiguration::resetConfigurationSources();
     }
 
+    protected function tearDown(): void
+    {
+        if ($this->setsExceptionAndErrorHandler) {
+            \restore_exception_handler();
+            \restore_error_handler();
+        }
+    }
+
     public function testApiExceptionRendererIsCreatedAndBoundInHttpContext(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         // Dummy assertion
         $this->assertTrue(true);
@@ -77,9 +80,10 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testConsoleExceptionRendererIsCreatedAndBoundInConsoleContext(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions(ConsoleExceptionRenderer::class);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(true);
+        $this->bootstrapper->isRunningInConsole = true;
         $this->bootstrapper->bootstrap();
         // Dummy assertion
         $this->assertTrue(true);
@@ -87,23 +91,14 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testCustomApiExceptionRendererIsCreatedAndBoundInHttpContext(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $customApiExceptionRenderer = new class () implements IApiExceptionRenderer {
+            public IRequest $request;
+            public IResponseFactory $responseFactory;
+
             public function createResponse(Exception $ex): IResponse
             {
                 return new Response(200);
-            }
-
-            public function setRequest(IRequest $request): void
-            {
-                // Don't do anything
-            }
-
-            /**
-             * @inheritdoc
-             */
-            public function setResponseFactory(IResponseFactory $responseFactory): void
-            {
-                // Don't do anything
             }
 
             /**
@@ -123,7 +118,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
             ->willReturnMap([
                 [$customApiExceptionRendererType, $customApiExceptionRenderer]
             ]);
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         // Dummy assertion
         $this->assertTrue(true);
@@ -131,12 +126,13 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testHttpExceptionResponseFactoryIsRegistered(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
-        $this->apiExceptionRenderer->setRequest($this->createMock(IRequest::class));
-        $this->apiExceptionRenderer->setResponseFactory($this->createMock(IResponseFactory::class));
+        $this->apiExceptionRenderer->request = $this->createMock(IRequest::class);
+        $this->apiExceptionRenderer->responseFactory = $this->createMock(IResponseFactory::class);
         $exception = new HttpException($this->createMock(IResponse::class));
         $this->apiExceptionRenderer->render($exception);
         // Dummy assertion
@@ -155,42 +151,43 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->container->method('resolve')
             ->with(self::class)
             ->willReturn($this);
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
     }
 
     public function testInvalidRequestBodyExceptionProblemDetailsMappingIsRegisteredAndUsesProblemDetailsIfConfigured(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
-        $this->bootstrapper->setIsRunningInConsole(false);
+        $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
         $request = $this->createMock(IRequest::class);
-        $this->apiExceptionRenderer->setRequest($request);
+        $this->apiExceptionRenderer->request = $request;
         $responseFactory = $this->createMock(IResponseFactory::class);
         $responseFactory->expects($this->once())
             ->method('createResponse')
             ->with($request, HttpStatusCode::BadRequest->value, null, $this->isInstanceOf(ProblemDetails::class))
             ->willReturn(new Response(HttpStatusCode::BadRequest));
-        $this->apiExceptionRenderer->setResponseFactory($responseFactory);
+        $this->apiExceptionRenderer->responseFactory = $responseFactory;
         $exception = new InvalidRequestBodyException(['foo']);
         $response = $this->apiExceptionRenderer->createResponse($exception);
-        $this->assertSame(HttpStatusCode::BadRequest, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::BadRequest, $response->statusCode);
     }
 
     public function testIsRunningInConsoleDefaultsToTrue(): void
     {
         $bootstrapper = new class ($this->container) extends GlobalExceptionHandlerBootstrapper {
-            public function isRunningInConsole(): bool
-            {
-                return parent::isRunningInConsole();
+            public bool $isRunningInConsole {
+                get => parent::$isRunningInConsole::get();
             }
         };
-        $this->assertTrue($bootstrapper->isRunningInConsole());
+        $this->assertTrue($bootstrapper->isRunningInConsole);
     }
 
     public function testLoggerSupportsStreamHandler(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         $config = self::getBaseConfig();
         $config['aphiria']['logging']['handlers'][] = [
@@ -206,6 +203,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testLoggerSupportsSysLogHandler(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         $config = self::getBaseConfig();
         $config['aphiria']['logging']['handlers'][] = [
@@ -234,6 +232,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
 
     public function testLogLevelFactoryIsCreatedAndBound(): void
     {
+        $this->setsExceptionAndErrorHandler = true;
         $this->addBootstrapAssertions();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->bootstrapper->bootstrap();

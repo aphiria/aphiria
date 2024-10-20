@@ -21,8 +21,8 @@ class ClassContainerBindingTest extends TestCase
     {
         $singletonBinding = new ClassContainerBinding(self::class, [], true);
         $prototypeBinding = new ClassContainerBinding(self::class, [], false);
-        $this->assertTrue($singletonBinding->resolveAsSingleton());
-        $this->assertFalse($prototypeBinding->resolveAsSingleton());
+        $this->assertTrue($singletonBinding->resolveAsSingleton);
+        $this->assertFalse($prototypeBinding->resolveAsSingleton);
     }
 
     public function testGettingConcreteClass(): void

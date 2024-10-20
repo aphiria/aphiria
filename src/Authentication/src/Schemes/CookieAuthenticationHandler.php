@@ -64,7 +64,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
     public function challenge(IRequest $request, IResponse $response, AuthenticationScheme $scheme): void
     {
         if ($scheme->options->loginPagePath === null) {
-            $response->setStatusCode(HttpStatusCode::Unauthorized);
+            $response->statusCode = HttpStatusCode::Unauthorized;
         } else {
             $this->responseFormatter->redirectToUri($response, $scheme->options->loginPagePath);
         }
@@ -77,7 +77,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
     public function forbid(IRequest $request, IResponse $response, AuthenticationScheme $scheme): void
     {
         if ($scheme->options->forbiddenPagePath === null) {
-            $response->setStatusCode(HttpStatusCode::Forbidden);
+            $response->statusCode = HttpStatusCode::Forbidden;
         } else {
             $this->responseFormatter->redirectToUri($response, $scheme->options->forbiddenPagePath);
         }

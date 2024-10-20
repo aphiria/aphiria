@@ -40,13 +40,13 @@ class ArgumentTest extends TestCase
         $requiredArgument = new Argument('foo', ArgumentType::Required, 'Foo argument', 'bar');
         $optionalArgument = new Argument('foo', ArgumentType::Optional, 'Foo argument', 'bar');
         $arrayArgument = new Argument('foo', ArgumentType::IsArray, 'Foo argument');
-        $this->assertTrue($arrayArgument->isArray());
-        $this->assertFalse($requiredArgument->isArray());
-        $this->assertFalse($optionalArgument->isArray());
+        $this->assertTrue($arrayArgument->isArray);
+        $this->assertFalse($requiredArgument->isArray);
+        $this->assertFalse($optionalArgument->isArray);
         $arrayArgument = new Argument('foo', [ArgumentType::IsArray, ArgumentType::Optional], 'Foo argument');
-        $this->assertTrue($arrayArgument->isArray());
+        $this->assertTrue($arrayArgument->isArray);
         $arrayArgument = new Argument('foo', [ArgumentType::IsArray, ArgumentType::Required], 'Foo argument');
-        $this->assertTrue($arrayArgument->isArray());
+        $this->assertTrue($arrayArgument->isArray);
     }
 
     public function testCheckingIsOptional(): void
@@ -54,9 +54,9 @@ class ArgumentTest extends TestCase
         $requiredArgument = new Argument('foo', ArgumentType::Required, 'Foo argument', 'bar');
         $optionalArgument = new Argument('foo', ArgumentType::Optional, 'Foo argument', 'bar');
         $optionalArrayArgument = new Argument('foo', [ArgumentType::Optional, ArgumentType::IsArray], 'Foo argument');
-        $this->assertFalse($requiredArgument->isOptional());
-        $this->assertTrue($optionalArgument->isOptional());
-        $this->assertTrue($optionalArrayArgument->isOptional());
+        $this->assertFalse($requiredArgument->isOptional);
+        $this->assertTrue($optionalArgument->isOptional);
+        $this->assertTrue($optionalArrayArgument->isOptional);
     }
 
     public function testCheckingIsRequired(): void
@@ -64,9 +64,9 @@ class ArgumentTest extends TestCase
         $requiredArgument = new Argument('foo', ArgumentType::Required, 'Foo argument', 'bar');
         $requiredArrayArgument = new Argument('foo', [ArgumentType::Required, ArgumentType::IsArray], 'Foo argument');
         $optionalArgument = new Argument('foo', ArgumentType::Optional, 'Foo argument', 'bar');
-        $this->assertTrue($requiredArgument->isRequired());
-        $this->assertTrue($requiredArrayArgument->isRequired());
-        $this->assertFalse($optionalArgument->isRequired());
+        $this->assertTrue($requiredArgument->isRequired);
+        $this->assertTrue($requiredArrayArgument->isRequired);
+        $this->assertFalse($optionalArgument->isRequired);
     }
 
     public function testEmptyArgumentNameThrowsException(): void

@@ -59,20 +59,65 @@ final class Stream implements IStream
         'x+b',
         'x+t'
     ];
+    /** @inheritdoc */
+    public bool $isEof {
+        get {
+            if (!\is_resource($this->handle)) {
+                throw new RuntimeException('Unable to tell if at EOF on closed stream');
+            }
+
+            return \feof($this->handle);
+        }
+    }
+    /** @inheritdoc */
+    public private(set) bool $isReadable;
+    /** @inheritdoc */
+    public private(set) bool $isSeekable;
+    /** @inheritdoc */
+    public private(set) bool $isWritable;
+    /** @inheritdoc */
+    public private(set) ?int $length {
+        get {
+            // Handle a closed stream
+            if ($this->handle === null) {
+                throw new RuntimeException('Unable to get size of closed stream');
+            }
+
+            if ($this->length !== null) {
+                return $this->length;
+            }
+
+            /** @var array{size: int} $fileStats */
+            $fileStats = \fstat($this->handle);
+
+            return isset($fileStats['size']) ? ($this->length = $fileStats['size']) : null;
+        }
+    }
+    /** @inheritdoc */
+    public int $position {
+        get {
+            if (!\is_resource($this->handle)) {
+                throw new RuntimeException('Unable to get position of closed stream');
+            }
+
+            if (($position = \ftell($this->handle)) === false) {
+                // Cannot test failing to get the position of a stream
+                // @codeCoverageIgnoreStart
+                throw new RuntimeException('Failed to get position of stream');
+                // @codeCoverageIgnoreEnd
+            }
+
+            return $position;
+        }
+    }
     /** @var resource|null The underlying stream handle */
     private $handle;
-    /** @var bool Whether or not the stream is readable */
-    private bool $isReadable;
-    /** @var bool Whether or not the stream is seekable */
-    private bool $isSeekable;
-    /** @var bool Whether or not the stream is writable */
-    private bool $isWritable;
 
     /**
      * @param resource $handle The underlying stream handle
      * @param int|null $length The length of the stream, if known
      */
-    public function __construct($handle, private ?int $length = null)
+    public function __construct($handle, ?int $length = null)
     {
         /** @psalm-suppress DocblockTypeContradiction We purposely guard ourselves against non-resources */
         if (!\is_resource($handle)) {
@@ -80,6 +125,7 @@ final class Stream implements IStream
         }
 
         $this->handle = $handle;
+        $this->length = $length;
         $streamMetadata = \stream_get_meta_data($this->handle);
         $this->isReadable = \in_array($streamMetadata['mode'], self::$readStreamModes, true);
         $this->isSeekable = $streamMetadata['seekable'];
@@ -103,7 +149,7 @@ final class Stream implements IStream
             $this->rewind();
 
             return $this->readToEnd();
-        } catch (RuntimeException $ex) {
+        } catch (RuntimeException) {
             return '';
         }
     }
@@ -132,84 +178,9 @@ final class Stream implements IStream
      */
     public function copyToStream(IStream $stream, int $bufferSize = 8192): void
     {
-        while (!$this->isEof()) {
+        while (!$this->isEof) {
             $stream->write($this->read($bufferSize));
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getLength(): ?int
-    {
-        // Handle a closed stream
-        if ($this->handle === null) {
-            throw new RuntimeException('Unable to get size of closed stream');
-        }
-
-        if ($this->length !== null) {
-            return $this->length;
-        }
-
-        /** @var array{size: int} $fileStats */
-        $fileStats = \fstat($this->handle);
-
-        return isset($fileStats['size']) ? ($this->length = $fileStats['size']) : null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPosition(): int
-    {
-        if (!\is_resource($this->handle)) {
-            throw new RuntimeException('Unable to get position of closed stream');
-        }
-
-        if (($position = \ftell($this->handle)) === false) {
-            // Cannot test failing to get the position of a stream
-            // @codeCoverageIgnoreStart
-            throw new RuntimeException('Failed to get position of stream');
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $position;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isEof(): bool
-    {
-        if (!\is_resource($this->handle)) {
-            throw new RuntimeException('Unable to tell if at EOF on closed stream');
-        }
-
-        return \feof($this->handle);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isReadable(): bool
-    {
-        return $this->isReadable;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isSeekable(): bool
-    {
-        return $this->isSeekable;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isWritable(): bool
-    {
-        return $this->isWritable;
     }
 
     /**
@@ -296,7 +267,7 @@ final class Stream implements IStream
             // @codeCoverageIgnoreEnd
         }
 
-        // Reset the length, which if knowable will be recalculated next time getLength() is called
+        // Reset the length, which if knowable will be recalculated next time length is called
         $this->length = null;
     }
 }

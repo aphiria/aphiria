@@ -27,7 +27,7 @@ final class InvalidRequestBodyException extends InvalidArgumentException
      * @inheritdoc
      * @param list<string> $errors The list of error messages that describe why the body is invalid
      */
-    public function __construct(array $errors, string $message = '', int $code = 0, Throwable $previous = null)
+    public function __construct(array $errors, string $message = '', int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

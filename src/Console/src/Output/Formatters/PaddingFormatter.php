@@ -34,7 +34,7 @@ class PaddingFormatter
      * @param PaddingFormatterOptions|null $options The options to use, or null if using the default ones
      * @return string A list of formatted rows
      */
-    public function format(array $rows, Closure $callback, PaddingFormatterOptions $options = null): string
+    public function format(array $rows, Closure $callback, ?PaddingFormatterOptions $options = null): string
     {
         $options ??= $this->defaultOptions;
         // Normalize all rows to be an array

@@ -19,26 +19,8 @@ use InvalidArgumentException;
  */
 interface IResponse extends IHttpMessage
 {
-    /**
-     * Gets the reason phrase of the response
-     *
-     * @return string|null The reason phrase if one is set, otherwise null
-     */
-    public function getReasonPhrase(): ?string;
-
-    /**
-     * Gets the HTTP status code of the response
-     *
-     * @return HttpStatusCode The HTTP status code of the response
-     */
-    public function getStatusCode(): HttpStatusCode;
-
-    /**
-     * Sets the HTTP status code of the response
-     *
-     * @param HttpStatusCode|int $statusCode The HTTP status code of the response
-     * @param string|null $reasonPhrase The reason phrase if there is one, otherwise null
-     * @throws InvalidArgumentException Thrown if the status code was invalid
-     */
-    public function setStatusCode(HttpStatusCode|int $statusCode, ?string $reasonPhrase = null): void;
+    /** @var string|null The reason phrase of the response if one is set, otherwise null */
+    public ?string $reasonPhrase { get; set; }
+    /** @var HttpStatusCode The HTTP status code of the response */
+    public HttpStatusCode $statusCode { get; set; }
 }

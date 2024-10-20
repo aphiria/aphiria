@@ -109,14 +109,14 @@ class HashTableTest extends TestCase
         $key2 = new FakeObject();
         $this->hashTable->add($key1, 'foo');
         $this->hashTable->add($key2, 'bar');
-        $this->assertEquals([$key1, $key2], $this->hashTable->getKeys());
+        $this->assertEquals([$key1, $key2], $this->hashTable->keys);
     }
 
     public function testGettingValuesReturnsListOfValues(): void
     {
         $this->hashTable->add('foo', 'bar');
         $this->hashTable->add('baz', 'blah');
-        $this->assertEquals(['bar', 'blah'], $this->hashTable->getValues());
+        $this->assertEquals(['bar', 'blah'], $this->hashTable->values);
     }
 
     public function testIteratingOverValues(): void

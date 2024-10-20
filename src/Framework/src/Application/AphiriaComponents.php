@@ -381,7 +381,7 @@ trait AphiriaComponents
     protected function withGlobalMiddleware(
         IApplicationBuilder $appBuilder,
         MiddlewareBinding|array $middlewareBindings,
-        int $priority = null
+        ?int $priority = null
     ): static {
         if (!$appBuilder->hasComponent(MiddlewareComponent::class)) {
             if (!isset(Container::$globalInstance)) {
@@ -495,12 +495,12 @@ trait AphiriaComponents
     protected function withProblemDetails(
         IApplicationBuilder $appBuilder,
         string $exceptionType,
-        string|Closure $type = null,
-        string|Closure $title = null,
-        string|Closure $detail = null,
-        HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
-        string|Closure $instance = null,
-        array|Closure $extensions = null
+        string|Closure|null $type = null,
+        string|Closure|null $title = null,
+        string|Closure|null $detail = null,
+        HttpStatusCode|int|Closure|null $status = HttpStatusCode::InternalServerError,
+        string|Closure|null $instance = null,
+        array|Closure|null $extensions = null
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {

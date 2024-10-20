@@ -41,7 +41,7 @@
     "require": {
         "aphiria/dependency-injection": "1.x-dev",
         "aphiria/net": "1.x-dev",
-        "php": "^8.3",
+        "php": "^8.4",
         "psr/container": "^2.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^2.0"
@@ -49,7 +49,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
         "nyholm/psr7": "^1.2",
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^11.5-dev"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

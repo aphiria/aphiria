@@ -36,9 +36,8 @@ class RouterComponentTest extends TestCase
         $this->routerComponent = new RouterComponent($this->container);
         $this->container->bindInstance(RouteCollection::class, $this->routes = new RouteCollection());
         $this->routeRegistrants = new class () extends RouteRegistrantCollection {
-            public function getAll(): array
-            {
-                return $this->routeRegistrants;
+            public array $values {
+                get => $this->routeRegistrants;
             }
         };
         $this->container->bindInstance(RouteRegistrantCollection::class, $this->routeRegistrants);
@@ -53,8 +52,8 @@ class RouterComponentTest extends TestCase
         };
         $this->routerComponent->withRoutes(fn (RouteCollectionBuilder $routeBuilders): RouteBuilder => $routeBuilders->get('/foo')->mapsToMethod($controller::class, 'bar'));
         $this->routerComponent->build();
-        $this->assertCount(1, $this->routes->getAll());
-        $this->assertSame('/foo', $this->routes->getAll()[0]->uriTemplate->pathTemplate);
+        $this->assertCount(1, $this->routes->values);
+        $this->assertSame('/foo', $this->routes->values[0]->uriTemplate->pathTemplate);
     }
 
     public function testBuildWithAttributesAddsAttributeRegistrant(): void
@@ -64,9 +63,9 @@ class RouterComponentTest extends TestCase
         $this->routerComponent->withAttributes();
         $this->routerComponent->build();
         // The first should be the attribute registrant, and the second the manually-registered route registrant
-        $this->assertCount(2, $this->routeRegistrants->getAll());
+        $this->assertCount(2, $this->routeRegistrants->values);
         // Make sure that the attribute registrant is registered first
-        $this->assertEquals($attributeRouteRegistrant, $this->routeRegistrants->getAll()[0]);
+        $this->assertEquals($attributeRouteRegistrant, $this->routeRegistrants->values[0]);
     }
 
     public function testBuildWithAttributesWithoutAttributeRegistrantThrowsException(): void

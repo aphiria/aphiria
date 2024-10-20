@@ -17,11 +17,8 @@ namespace Aphiria\Console\Output\Parsers;
  */
 final class TagAstNode extends AstNode
 {
-    /**
-     * @inheritdoc
-     */
-    public function isTag(): bool
-    {
-        return true;
+    /** @inheritdoc */
+    public bool $isTag {
+        get => true;
     }
 }

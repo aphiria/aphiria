@@ -19,6 +19,7 @@ use Aphiria\Net\Http\IResponse;
 use Aphiria\Sessions\ISession;
 use Aphiria\Sessions\Middleware\Session;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use SessionHandlerInterface;
 
@@ -43,11 +44,11 @@ class SessionTest extends TestCase
         $this->sessionHandler = $this->createMock(SessionHandlerInterface::class);
         $this->requestHeaders = new Headers();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method('getHeaders')
+        $this->request->method(PropertyHook::get('headers'))
             ->willReturn($this->requestHeaders);
         $this->responseHeaders = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('getHeaders')
+        $this->response->method(PropertyHook::get('headers'))
             ->willReturn($this->responseHeaders);
         $this->next = $this->createMock(IRequestHandler::class);
         $this->next->expects($this->once())
@@ -58,7 +59,7 @@ class SessionTest extends TestCase
 
     public function testGcIsRunIfWeMeetChance(): void
     {
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
         $this->sessionHandler->expects($this->once())
             ->method('read')
@@ -82,7 +83,7 @@ class SessionTest extends TestCase
 
     public function testSessionDataIsWrittenToResponseCookie(): void
     {
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
         $this->sessionHandler->expects($this->once())
             ->method('read')
@@ -104,13 +105,13 @@ class SessionTest extends TestCase
         $actualResponse = $middleware->handle($this->request, $this->next);
         $this->assertSame(
             'session=foo; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
-            $actualResponse->getHeaders()->getFirst('Set-Cookie')
+            $actualResponse->headers->getFirst('Set-Cookie')
         );
     }
 
     public function testSessionFlashDataIsAged(): void
     {
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
         $this->sessionHandler->expects($this->once())
             ->method('read')
@@ -134,7 +135,7 @@ class SessionTest extends TestCase
 
     public function testSessionIdIsRegeneratedIfSessionCookieNotPresent(): void
     {
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
         $this->session->expects($this->once())
             ->method('regenerateId');
@@ -158,15 +159,15 @@ class SessionTest extends TestCase
 
     public function testSessionIdSetFromCookieNameIfPresent(): void
     {
-        $this->request->getHeaders()
+        $this->request->headers
             ->add('Cookie', 'session=foo');
         $this->session->expects($this->once())
-            ->method('setId')
+            ->method(PropertyHook::set('id'))
             ->with('foo');
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
         $this->session->expects($this->once())
-            ->method('setId');
+            ->method(PropertyHook::set('id'));
         $this->sessionHandler->expects($this->once())
             ->method('read')
             ->with('foo')
@@ -191,11 +192,11 @@ class SessionTest extends TestCase
             ->method('regenerateId');
         $this->session->expects($this->once())
             ->method('ageFlashData');
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->session->method('setMany')
+        $this->session->method('addManyVariables')
             ->with(['bar' => 'baz']);
-        $this->session->method('getAll')
+        $this->session->method(PropertyHook::get('variables'))
             ->willReturn(['bar' => 'baz']);
         $this->sessionHandler->method('read')
             ->with('foo')
@@ -216,9 +217,9 @@ class SessionTest extends TestCase
 
     public function testSessionIsWritten(): void
     {
-        $this->session->method('getId')
+        $this->session->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->session->method('getAll')
+        $this->session->method(PropertyHook::get('variables'))
             ->willReturn(['bar' => 'baz']);
         $this->sessionHandler->expects($this->once())
             ->method('read')

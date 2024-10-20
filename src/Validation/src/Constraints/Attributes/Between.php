@@ -33,7 +33,7 @@ final class Between extends ConstraintAttribute
         public readonly int|float $max,
         public readonly bool $minIsInclusive = true,
         public readonly bool $maxIsInclusive = true,
-        string $errorMessageId = null
+        ?string $errorMessageId = null
     ) {
         parent::__construct($errorMessageId);
     }

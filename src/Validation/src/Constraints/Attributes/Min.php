@@ -29,7 +29,7 @@ final class Min extends ConstraintAttribute
     public function __construct(
         public readonly int|float $min,
         public readonly bool $isInclusive = true,
-        string $errorMessageId = null
+        ?string $errorMessageId = null
     ) {
         parent::__construct($errorMessageId);
     }

@@ -108,13 +108,13 @@ final class InputCompiler implements IInputCompiler
 
         foreach ($command->arguments as $argument) {
             if (\count($argumentValues) === 0) {
-                if (!$argument->isOptional()) {
+                if (!$argument->isOptional) {
                     throw new RuntimeException("Argument \"{$argument->name}\" does not have default value");
                 }
 
                 /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $arguments[$argument->name] = $argument->defaultValue;
-            } elseif ($argument->isArray()) {
+            } elseif ($argument->isArray) {
                 // Add the rest of the values in the input to this argument
                 $restOfArgumentValues = [];
 
@@ -158,27 +158,27 @@ final class InputCompiler implements IInputCompiler
                  */
                 $value = $longNameIsSet ? $rawOptions[$option->name] : $rawOptions[$option->shortName];
 
-                if ($value !== null && !$option->valueIsPermitted()) {
+                if ($value !== null && !$option->valueIsPermitted) {
                     throw new RuntimeException("Option \"{$option->name}\" does not permit a value");
                 }
 
-                if ($value === null && $option->valueIsRequired()) {
+                if ($value === null && $option->valueIsRequired) {
                     throw new RuntimeException("Option \"{$option->name}\" requires a value");
                 }
 
-                if ($value === null && $option->valueIsOptional()) {
+                if ($value === null && $option->valueIsOptional) {
                     /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                     $value = $option->defaultValue;
                 }
 
                 // Make sure the value is always treated as an array
-                if ($option->valueIsArray()) {
+                if ($option->valueIsArray) {
                     $value = (array)$value;
                 }
 
                 /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $options[$option->name] = $value;
-            } elseif ($option->valueIsPermitted()) {
+            } elseif ($option->valueIsPermitted) {
                 // Set the value for the option to its default value, if values are permitted
                 /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
                 $options[$option->name] = $option->defaultValue;
@@ -199,7 +199,7 @@ final class InputCompiler implements IInputCompiler
     {
         if (\count($argumentValues) > \count($commandArguments)) {
             // Only when the last argument is an array do we allow more input arguments than command arguments
-            if (\count($commandArguments) === 0 || !\end($commandArguments)->isArray()) {
+            if (\count($commandArguments) === 0 || !\end($commandArguments)->isArray) {
                 return true;
             }
         }

@@ -122,7 +122,7 @@ class Container implements IContainer
     public function callClosure(Closure $closure, array $primitives = []): mixed
     {
         try {
-            $unresolvedParameters = (new ReflectionFunction($closure))->getParameters();
+            $unresolvedParameters = new ReflectionFunction($closure)->getParameters();
             $resolvedParameters = $this->resolveParameters(null, $unresolvedParameters, $primitives);
 
             return $closure(...$resolvedParameters);
@@ -147,7 +147,7 @@ class Container implements IContainer
         }
 
         try {
-            $unresolvedParameters = (new ReflectionMethod($instance, $methodName))->getParameters();
+            $unresolvedParameters = new ReflectionMethod($instance, $methodName)->getParameters();
             $resolvedParameters = $this->resolveParameters($className, $unresolvedParameters, $primitives);
 
             return ([$instance, $methodName])(...$resolvedParameters);
@@ -227,7 +227,7 @@ class Container implements IContainer
                 throw new ResolutionException($interface, $this->currentContext, 'Invalid binding type "' . $binding::class . '"');
         }
 
-        if ($binding->resolveAsSingleton()) {
+        if ($binding->resolveAsSingleton) {
             $this->unbind($interface);
             $this->addBinding($interface, new InstanceContainerBinding($instance));
         }
@@ -318,7 +318,7 @@ class Container implements IContainer
      * @param class-string|null $target The target whose bindings we're checking
      * @return bool True if the targeted binding exists, otherwise false
      */
-    protected function hasTargetedBinding(string $interface, string $target = null): bool
+    protected function hasTargetedBinding(string $interface, ?string $target = null): bool
     {
         return isset($this->bindings[$target][$interface]);
     }

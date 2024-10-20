@@ -55,7 +55,7 @@ class AttributeCommandRegistrantTest extends TestCase
             ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([$commandHandler::class]);
         $this->registrant->registerCommands($this->commands);
-        $this->assertEmpty($this->commands->getAllCommands());
+        $this->assertEmpty($this->commands->commands);
     }
 
     public function testNonCommandAttributesAreIgnored(): void
@@ -65,7 +65,7 @@ class AttributeCommandRegistrantTest extends TestCase
             ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([CommandHandlerWithNonCommandAttribute::class]);
         $this->registrant->registerCommands($this->commands);
-        $this->assertCount(1, $this->commands->getAllCommands());
+        $this->assertCount(1, $this->commands->commands);
     }
 
     public function testRegisteringCommandWithAllPropertiesSetCreatesCommandWithAllPropertiesSet(): void
@@ -75,10 +75,10 @@ class AttributeCommandRegistrantTest extends TestCase
             ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([CommandHandlerWithAllPropertiesSet::class]);
         $this->registrant->registerCommands($this->commands);
-        $this->assertCount(1, $this->commands->getAllCommands());
+        $this->assertCount(1, $this->commands->commands);
 
         // Command assertions
-        $command = $this->commands->getAllCommands()[0];
+        $command = $this->commands->commands[0];
         $this->assertSame('foo', $command->name);
         $this->assertSame('command description', $command->description);
         $this->assertSame('command help text', $command->helpText);

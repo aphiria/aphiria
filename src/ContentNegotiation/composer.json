@@ -44,13 +44,13 @@
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "php": "^8.3",
+        "php": "^8.4",
         "symfony/property-access": "^7.0",
         "symfony/serializer": "^7.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^11.5-dev"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

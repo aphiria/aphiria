@@ -28,12 +28,12 @@ class EqualsTest extends TestCase
     public function testCreatingConstraintHasDefaultErrorMessageId(): void
     {
         $attribute = new Equals(123);
-        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->errorMessageId);
     }
 
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $attribute = new Equals(123, 'foo');
-        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->errorMessageId);
     }
 }

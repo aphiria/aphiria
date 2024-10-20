@@ -12,12 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Exceptions\Binders;
 
+use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Exceptions\Binders\ExceptionHandlerBinder;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
+use Aphiria\Net\Http\Request;
+use Aphiria\Net\Uri;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -41,14 +44,19 @@ class ExceptionHandlerBinderTest extends TestCase
                 if ($type === IApiExceptionRenderer::class) {
                     // Capture the object parameter so we can make assertions on it later
                     $object = $this->apiExceptionRenderer = new class () extends ProblemDetailsExceptionRenderer {
-                        public function getRequest(): ?IRequest
-                        {
-                            return $this->request;
+                        // Note: We are essentially adding a getter to the parent class' property
+                        public IRequest $request {
+                            get => $this->_request;
+                            set {
+                                parent::$request::set($value);
+                            }
                         }
-
-                        public function getResponseFactory(): ?IResponseFactory
-                        {
-                            return $this->responseFactory;
+                        // Note: We are essentially adding a getter to the parent class' property
+                        public IResponseFactory $responseFactory {
+                            get => $this->_responseFactory;
+                            set {
+                                parent::$responseFactory::set($value);
+                            }
                         }
                     };
 
@@ -76,12 +84,12 @@ class ExceptionHandlerBinderTest extends TestCase
     public function testRequestIsSetOnApiExceptionRenderer(): void
     {
         $this->binder->bind($this->container);
-        $this->assertSame($this->request, $this->apiExceptionRenderer?->getRequest());
+        $this->assertSame($this->request, $this->apiExceptionRenderer?->request);
     }
 
     public function testResponseFactoryIsSetOnApiExceptionRenderer(): void
     {
         $this->binder->bind($this->container);
-        $this->assertSame($this->responseFactory, $this->apiExceptionRenderer?->getResponseFactory());
+        $this->assertSame($this->responseFactory, $this->apiExceptionRenderer?->responseFactory);
     }
 }

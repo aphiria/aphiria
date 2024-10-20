@@ -33,8 +33,16 @@ use InvalidArgumentException;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+
+interface Foo
+{
+    public ?Bar $bar { get; }
+}
+
+interface Bar {}
 
 class AuthenticatorTest extends TestCase
 {
@@ -57,6 +65,10 @@ class AuthenticatorTest extends TestCase
     public static function getUsersForLogin(): array
     {
         $userWithNoIdentity = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -68,21 +80,6 @@ class AuthenticatorTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -96,6 +93,34 @@ class AuthenticatorTest extends TestCase
             }
         };
         $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public bool $isAuthenticated = false;
+            public ?string $name = null;
+            public ?string $nameIdentifier = null;
+            public ?IIdentity $primaryIdentity = null;
+
+            public function __construct()
+            {
+                $this->primaryIdentity = new class () implements IIdentity {
+                    public ?string $authenticationSchemeName = null;
+                    public array $claims = [];
+                    public bool $isAuthenticated = false;
+                    public ?string $name = null;
+                    public ?string $nameIdentifier = null;
+
+                    public function filterClaims(ClaimType|string $type): array
+                    {
+                        return [];
+                    }
+
+                    public function hasClaim(ClaimType|string $type, mixed $value): bool
+                    {
+                        return false;
+                    }
+                };
+            }
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -107,60 +132,6 @@ class AuthenticatorTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return new class () implements IIdentity {
-                    public function filterClaims(ClaimType|string $type): array
-                    {
-                        return [];
-                    }
-
-                    public function getAuthenticationSchemeName(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function getClaims(ClaimType|string $type = null): array
-                    {
-                        return [];
-                    }
-
-                    public function getName(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function getNameIdentifier(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function hasClaim(ClaimType|string $type, mixed $value): bool
-                    {
-                        return false;
-                    }
-
-                    public function isAuthenticated(): bool
-                    {
-                        return false;
-                    }
-
-                    public function setAuthenticationSchemeName(string $authenticationSchemeName): void
-                    {
-                    }
-                };
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -380,10 +351,10 @@ class AuthenticatorTest extends TestCase
         [$scheme1, $scheme1Handler] = $this->createLoginSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createLoginSchemeAndSetUpResolver('bar');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('isAuthenticated')
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getPrimaryIdentity')
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $scheme1Handler->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme1);
@@ -400,10 +371,10 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createLoginSchemeAndSetUpResolver('foo');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('isAuthenticated')
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getPrimaryIdentity')
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $schemeHandler->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme);
@@ -417,10 +388,10 @@ class AuthenticatorTest extends TestCase
         $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('isAuthenticated')
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getPrimaryIdentity')
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }
@@ -433,10 +404,10 @@ class AuthenticatorTest extends TestCase
         [, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $this->expectExceptionMessage($schemeHandler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('isAuthenticated')
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getPrimaryIdentity')
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $request, $response, 'foo');
     }

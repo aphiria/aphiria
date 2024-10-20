@@ -16,12 +16,17 @@ use Aphiria\Api\Controllers\ControllerRequestHandler;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Tests\Controllers\Mocks\ControllerWithEndpoints;
 use Aphiria\Authentication\IUserAccessor;
+use Aphiria\ContentNegotiation\IBodyDeserializer;
 use Aphiria\ContentNegotiation\IContentNegotiator;
 use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
+use Aphiria\Net\Http\Formatting\RequestParser;
+use Aphiria\Net\Http\Formatting\ResponseFormatter;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
+use Aphiria\Net\Http\IResponseFactory;
 use Closure;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ControllerRequestHandlerTest extends TestCase
@@ -64,22 +69,20 @@ class ControllerRequestHandlerTest extends TestCase
 
     public function testHandlingRequestSetsControllerProperties(): void
     {
-        /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        /** @var ControllerWithEndpoints&MockObject $controller */
         $controller = $this->createMock(ControllerWithEndpoints::class);
         $controller->expects($this->once())
-            ->method('setRequest')
+            ->method(PropertyHook::set('request'))
             ->with($request);
         $controller->expects($this->once())
-            ->method('setRequestParser');
+            ->method(PropertyHook::set('requestParser'));
         $controller->expects($this->once())
-            ->method('setBodyDeserializer')
+            ->method(PropertyHook::set('bodyDeserializer'))
             ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
         $controller->expects($this->once())
-            ->method('setResponseFactory');
+            ->method(PropertyHook::set('responseFactory'));
         $controller->expects($this->once())
-            ->method('setUserAccessor');
+            ->method(PropertyHook::set('userAccessor'));
         /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
         $this->routeActionInvoker->expects($this->once())
@@ -96,5 +99,10 @@ class ControllerRequestHandlerTest extends TestCase
             $this->userAccessor
         );
         $requestHandler->handle($request);
+        $this->assertInstanceOf(RequestParser::class, $controller->requestParser);
+        $this->assertInstanceOf(IBodyDeserializer::class, $controller->bodyDeserializer);
+        $this->assertInstanceOf(IResponseFactory::class, $controller->responseFactory);
+        $this->assertInstanceOf(ResponseFormatter::class, $controller->responseFormatter);
+        $this->assertInstanceOf(IUserAccessor::class, $controller->userAccessor);
     }
 }

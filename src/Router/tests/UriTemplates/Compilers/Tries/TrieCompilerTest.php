@@ -57,7 +57,7 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingEmptyPathPrependsWithSlash(): void
     {
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
         $this->ast->addChild($pathAst);
         $expectedRoute = $this->createRoute('');
@@ -78,16 +78,16 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingHostAddsTrieNodeToLastPathNodeAndOptionalNodes(): void
     {
-        $hostAst = (new AstNode(AstNodeType::Host, null))
+        $hostAst = new AstNode(AstNodeType::Host, null)
             ->addChild(new AstNode(AstNodeType::Text, 'example'))
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'))
             ->addChild(new AstNode(AstNodeType::Text, 'com'));
         $this->ast->addChild($hostAst);
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Text, 'foo'))
             ->addChild(
-                (new AstNode(AstNodeType::OptionalRoutePart, '['))
+                new AstNode(AstNodeType::OptionalRoutePart, '[')
                     ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
                     ->addChild(new AstNode(AstNodeType::Text, 'bar'))
             );
@@ -124,9 +124,9 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingHostWithOptionalPartAddsRouteToItAndLastNonOptionalHostPart(): void
     {
-        $hostAst = (new AstNode(AstNodeType::Host, null))
+        $hostAst = new AstNode(AstNodeType::Host, null)
             ->addChild(
-                (new AstNode(AstNodeType::OptionalRoutePart, '['))
+                new AstNode(AstNodeType::OptionalRoutePart, '[')
                     ->addChild(new AstNode(AstNodeType::Text, 'api'))
                     ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'))
             )
@@ -134,7 +134,7 @@ class TrieCompilerTest extends TestCase
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'))
             ->addChild(new AstNode(AstNodeType::Text, 'com'));
         $this->ast->addChild($hostAst);
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Text, 'foo'));
         $this->ast->addChild($pathAst);
@@ -178,7 +178,7 @@ class TrieCompilerTest extends TestCase
         $variableNode = new AstNode(AstNodeType::Variable, 'foo');
         // Add an invalid child to the variable node
         $variableNode->addChild(new AstNode(AstNodeType::Path, null));
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild($variableNode);
         $this->ast->addChild($pathAst);
@@ -198,7 +198,7 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingPathVariableCreatesVariableNodeWithRouteVariable(): void
     {
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Variable, 'foo'));
         $this->ast->addChild($pathAst);
@@ -219,9 +219,9 @@ class TrieCompilerTest extends TestCase
     public function testCompilingPathVariableWithConstraintsCreatesVariableNodeWithConstraints(): void
     {
         // Set up AST
-        $variableNode = (new AstNode(AstNodeType::Variable, 'foo'))
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo')
             ->addChild(new AstNode(AstNodeType::VariableConstraint, 'r1'));
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild($variableNode);
         $this->ast->addChild($pathAst);
@@ -249,14 +249,14 @@ class TrieCompilerTest extends TestCase
     public function testCompilingPathVariableWithMultipleConstraintsAndParamsCreatesVariableNodeWithConstraints(): void
     {
         // Set up AST
-        $constraint1Node = (new AstNode(AstNodeType::VariableConstraint, 'r1'))
+        $constraint1Node = new AstNode(AstNodeType::VariableConstraint, 'r1')
             ->addChild(new AstNode(AstNodeType::VariableConstraintParameters, ['p1', 'p2']));
-        $constraint2Node = (new AstNode(AstNodeType::VariableConstraint, 'r2'))
+        $constraint2Node = new AstNode(AstNodeType::VariableConstraint, 'r2')
             ->addChild(new AstNode(AstNodeType::VariableConstraintParameters, ['p3', 'p4']));
-        $variableNode = (new AstNode(AstNodeType::Variable, 'foo'))
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo')
             ->addChild($constraint1Node)
             ->addChild($constraint2Node);
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild($variableNode);
         $this->ast->addChild($pathAst);
@@ -287,9 +287,9 @@ class TrieCompilerTest extends TestCase
     public function testCompilingPathVariableWithNonConstraintChildThrowsException(): void
     {
         $this->expectException(InvalidUriTemplateException::class);
-        $constraintNode = (new AstNode(AstNodeType::VariableConstraint, 'foo'))
+        $constraintNode = new AstNode(AstNodeType::VariableConstraint, 'foo')
             ->addChild(new AstNode(AstNodeType::Text, 'bar'));
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild($constraintNode);
         $this->ast->addChild($pathAst);
@@ -303,10 +303,10 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingRequiredAndOptionalPathSegmentsCreatesNodesWithSameRoute(): void
     {
-        $optionalNode = (new AstNode(AstNodeType::OptionalRoutePart))
+        $optionalNode = new AstNode(AstNodeType::OptionalRoutePart)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Text, 'bar'));
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Text, 'foo'))
             ->addChild($optionalNode);
@@ -333,7 +333,7 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingTextOnlyPathAstAddsRouteToNode(): void
     {
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Text, 'foo'));
         $this->ast->addChild($pathAst);
@@ -353,7 +353,7 @@ class TrieCompilerTest extends TestCase
 
     public function testCompilingVariableOnlyPathAstAddsRouteToNode(): void
     {
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild(new AstNode(AstNodeType::Variable, 'foo'));
         $this->ast->addChild($pathAst);
@@ -374,9 +374,9 @@ class TrieCompilerTest extends TestCase
     public function testConstructingCompilerWithoutConstraintsStillRegistersDefaultOnes(): void
     {
         // Set up AST
-        $variableNode = (new AstNode(AstNodeType::Variable, 'foo'))
+        $variableNode = new AstNode(AstNodeType::Variable, 'foo')
             ->addChild(new AstNode(AstNodeType::VariableConstraint, 'int'));
-        $pathAst = (new AstNode(AstNodeType::Path, null))
+        $pathAst = new AstNode(AstNodeType::Path, null)
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
             ->addChild($variableNode);
         $this->ast->addChild($pathAst);
@@ -426,7 +426,7 @@ class TrieCompilerTest extends TestCase
      * @param string|null $hostTemplate The host template for the route
      * @return Route The route
      */
-    private function createRoute(string $pathTemplate, string $hostTemplate = null): Route
+    private function createRoute(string $pathTemplate, ?string $hostTemplate = null): Route
     {
         $controller = new class () {
             public function bar(): void

@@ -33,7 +33,7 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
         $registrant = new RouteCollectionBuilderRouteRegistrant($callback);
         $routes = new RouteCollection();
         $registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
     }
 
@@ -51,7 +51,7 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
         $registrant = new RouteCollectionBuilderRouteRegistrant([$callback]);
         $routes = new RouteCollection();
         $registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
     }
 }

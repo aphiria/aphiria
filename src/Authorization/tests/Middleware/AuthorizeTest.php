@@ -36,6 +36,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class AuthorizeTest extends TestCase
@@ -63,6 +64,10 @@ class AuthorizeTest extends TestCase
     public static function getUnauthenticatedUsers(): array
     {
         $userWithNoIdentity = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -74,21 +79,6 @@ class AuthorizeTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return null;
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -102,6 +92,31 @@ class AuthorizeTest extends TestCase
             }
         };
         $userWithUnauthenticatedIdentity = new class () implements IPrincipal {
+            public array $claims = [];
+            public array $identities = [];
+            public ?IIdentity $primaryIdentity = null;
+
+            public function __construct()
+            {
+                $this->primaryIdentity = new class () implements IIdentity {
+                    public ?string $authenticationSchemeName = null;
+                    public array $claims = [];
+                    public bool $isAuthenticated = false;
+                    public ?string $name = null;
+                    public ?string $nameIdentifier = null;
+
+                    public function filterClaims(ClaimType|string $type): array
+                    {
+                        return [];
+                    }
+
+                    public function hasClaim(ClaimType|string $type, mixed $value): bool
+                    {
+                        return false;
+                    }
+                };
+            }
+
             public function addIdentity(IIdentity $identity): void
             {
             }
@@ -113,60 +128,6 @@ class AuthorizeTest extends TestCase
             public function filterClaims(ClaimType|string $type): array
             {
                 return [];
-            }
-
-            public function getClaims(): array
-            {
-                return [];
-            }
-
-            public function getIdentities(): array
-            {
-                return [];
-            }
-
-            public function getPrimaryIdentity(): ?IIdentity
-            {
-                return new class () implements IIdentity {
-                    public function filterClaims(ClaimType|string $type): array
-                    {
-                        return [];
-                    }
-
-                    public function getAuthenticationSchemeName(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function getClaims(ClaimType|string $type = null): array
-                    {
-                        return [];
-                    }
-
-                    public function getName(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function getNameIdentifier(): ?string
-                    {
-                        return null;
-                    }
-
-                    public function hasClaim(ClaimType|string $type, mixed $value): bool
-                    {
-                        return false;
-                    }
-
-                    public function isAuthenticated(): bool
-                    {
-                        return false;
-                    }
-
-                    public function setAuthenticationSchemeName(string $authenticationSchemeName): void
-                    {
-                    }
-                };
             }
 
             public function hasClaim(ClaimType|string $type, mixed $value): bool
@@ -198,7 +159,7 @@ class AuthorizeTest extends TestCase
             ->method('authorize')
             ->with($user, $policy)
             ->willReturn(AuthorizationResult::pass($policy->name));
-        $this->middleware->setParameters(['policy' => $policy]);
+        $this->middleware->parameters = ['policy' => $policy];
         $next = $this->createMock(IRequestHandler::class);
         $response = $this->createMock(IResponse::class);
         $next->expects($this->once())
@@ -221,7 +182,7 @@ class AuthorizeTest extends TestCase
             ->method('authorize')
             ->with($user, $policy)
             ->willReturn(AuthorizationResult::pass($policy->name));
-        $this->middleware->setParameters(['policyName' => $policy->name]);
+        $this->middleware->parameters = ['policyName' => $policy->name];
         $next = $this->createMock(IRequestHandler::class);
         $response = $this->createMock(IResponse::class);
         $next->expects($this->once())
@@ -244,10 +205,10 @@ class AuthorizeTest extends TestCase
         $policy = new AuthorizationPolicy('policy', [$this], 'scheme');
         $this->authenticator->expects($this->once())
             ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Unauthorized), ['scheme']);
-        $this->middleware->setParameters(['policy' => $policy]);
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->statusCode === HttpStatusCode::Unauthorized), ['scheme']);
+        $this->middleware->parameters = ['policy' => $policy];
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
-        $this->assertSame(HttpStatusCode::Unauthorized, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Unauthorized, $response->statusCode);
     }
 
     public function testHandlingUnauthenticatedUserSetsUserAfterAuthenticatingAgainstMultipleSchemeNames(): void
@@ -267,7 +228,7 @@ class AuthorizeTest extends TestCase
         $this->userAccessor->shouldReceive('setUser')
             ->with($user, $request);
         $policy = new AuthorizationPolicy('policy', [$this], ['authScheme1', 'authScheme2']);
-        $middleware->setParameters(['policy' => $policy]);
+        $middleware->parameters = ['policy' => $policy];
         $this->authority->expects($this->once())
             ->method('authorize')
             ->with($user, $policy)
@@ -296,10 +257,10 @@ class AuthorizeTest extends TestCase
             ->willReturn(AuthorizationResult::fail($policy->name, [$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), ['scheme']);
-        $this->middleware->setParameters(['policyName' => $policy->name]);
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->statusCode === HttpStatusCode::Forbidden), ['scheme']);
+        $this->middleware->parameters = ['policyName' => $policy->name];
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
-        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Forbidden, $response->statusCode);
     }
 
     public function testHandlingUnauthorizedResultForPolicyReturnsForbiddenResponse(): void
@@ -316,10 +277,10 @@ class AuthorizeTest extends TestCase
             ->willReturn(AuthorizationResult::fail($policy->name, [$this]));
         $this->authenticator->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->getStatusCode() === HttpStatusCode::Forbidden), ['scheme']);
-        $this->middleware->setParameters(['policy' => $policy]);
+            ->with($request, $this->callback(fn (IResponse $response): bool => $response->statusCode === HttpStatusCode::Forbidden), ['scheme']);
+        $this->middleware->parameters = ['policy' => $policy];
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
-        $this->assertSame(HttpStatusCode::Forbidden, $response->getStatusCode());
+        $this->assertSame(HttpStatusCode::Forbidden, $response->statusCode);
     }
 
     /**
@@ -336,10 +297,7 @@ class AuthorizeTest extends TestCase
     ): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
-        $this->middleware->setParameters([
-            'policyName' => $policyName,
-            'policy' => $policy
-        ]);
+        $this->middleware->parameters = ['policyName' => $policyName, 'policy' => $policy];
         $this->middleware->handle($this->createMock(IRequest::class), $this->createMock(IRequestHandler::class));
     }
 
@@ -351,10 +309,10 @@ class AuthorizeTest extends TestCase
     private function createMockAuthenticatedUser(): IPrincipal
     {
         $identity = $this->createMock(IIdentity::class);
-        $identity->method('isAuthenticated')
+        $identity->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method('getPrimaryIdentity')
+        $user->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
 
         return $user;

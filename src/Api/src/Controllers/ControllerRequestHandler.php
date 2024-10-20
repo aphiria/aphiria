@@ -43,7 +43,7 @@ final class ControllerRequestHandler implements IRequestHandler
         private readonly Closure $routeActionDelegate,
         private readonly array $routeVariables,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
-        IRouteActionInvoker $routeActionInvoker = null,
+        ?IRouteActionInvoker $routeActionInvoker = null,
         private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
@@ -54,12 +54,12 @@ final class ControllerRequestHandler implements IRequestHandler
      */
     public function handle(IRequest $request): IResponse
     {
-        $this->controller->setRequest($request);
-        $this->controller->setRequestParser(new RequestParser());
-        $this->controller->setResponseFormatter(new ResponseFormatter());
-        $this->controller->setBodyDeserializer(new NegotiatedBodyDeserializer($this->contentNegotiator));
-        $this->controller->setResponseFactory(new NegotiatedResponseFactory($this->contentNegotiator));
-        $this->controller->setUserAccessor($this->userAccessor);
+        $this->controller->request = $request;
+        $this->controller->requestParser = new RequestParser();
+        $this->controller->responseFormatter = new ResponseFormatter();
+        $this->controller->bodyDeserializer = new NegotiatedBodyDeserializer($this->contentNegotiator);
+        $this->controller->responseFactory = new NegotiatedResponseFactory($this->contentNegotiator);
+        $this->controller->userAccessor = $this->userAccessor;
 
         return $this->routeActionInvoker->invokeRouteAction(
             $this->routeActionDelegate,

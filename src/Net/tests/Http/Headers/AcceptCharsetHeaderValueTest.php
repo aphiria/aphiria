@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Headers;
 
-use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers\AcceptCharsetHeaderValue;
@@ -38,8 +37,8 @@ class AcceptCharsetHeaderValueTest extends TestCase
 
     public function testGettingCharsetReturnsSameOneSetInConstructor(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
         $this->assertSame('utf-8', $value->charset);
     }
@@ -56,12 +55,12 @@ class AcceptCharsetHeaderValueTest extends TestCase
     {
         $parameters = new ImmutableHashTable([new KeyValuePair('q', '.5')]);
         $value = new AcceptCharsetHeaderValue('utf-8', $parameters);
-        $this->assertSame(.5, $value->getQuality());
+        $this->assertSame(.5, $value->quality);
     }
 
     public function testQualityDefaultsToOne(): void
     {
         $value = new AcceptCharsetHeaderValue('utf-8', null);
-        $this->assertEquals(1.0, $value->getQuality());
+        $this->assertEquals(1.0, $value->quality);
     }
 }

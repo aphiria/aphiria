@@ -41,7 +41,7 @@ class CommandRegistryTest extends TestCase
         $expectedBinding = new CommandBinding(new Command('foo'), $commandHandler::class);
         $registry1->registerManyCommands([$expectedBinding]);
         $registry2->copy($registry1);
-        $this->assertSame([$expectedBinding], $registry2->getAllCommandBindings());
+        $this->assertSame([$expectedBinding], $registry2->commandBindings);
     }
 
     public function testGettingAllCommandBindingsReturnsExpectedBindings(): void
@@ -61,7 +61,7 @@ class CommandRegistryTest extends TestCase
             new CommandBinding(new Command('bar'), $commandHandler2::class)
         ];
         $this->commands->registerManyCommands($expectedBindings);
-        $actualBindings = $this->commands->getAllCommandBindings();
+        $actualBindings = $this->commands->commandBindings;
         $this->assertCount(2, $actualBindings);
         $this->assertSame($expectedBindings[0], $actualBindings[0]);
         $this->assertSame($expectedBindings[1], $actualBindings[1]);
@@ -85,7 +85,7 @@ class CommandRegistryTest extends TestCase
             new CommandBinding($expectedCommand1, $commandHandler1::class),
             new CommandBinding($expectedCommand2, $commandHandler2::class)
         ]);
-        $actualCommands = $this->commands->getAllCommands();
+        $actualCommands = $this->commands->commands;
         $this->assertCount(2, $actualCommands);
         $this->assertSame($expectedCommand1, $actualCommands[0]);
         $this->assertSame($expectedCommand2, $actualCommands[1]);

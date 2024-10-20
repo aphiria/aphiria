@@ -25,7 +25,7 @@ final class ElementRegistry
     public function __construct()
     {
         // Register built-in elements
-        (new ElementRegistrant())->registerElements($this);
+        new ElementRegistrant()->registerElements($this);
     }
 
     /**

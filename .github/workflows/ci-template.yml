@@ -7,6 +7,11 @@ on:
         required: false
         type: boolean
         default: false
+      run-php-cs-fixer:
+        description: Whether or not to run PHP-CS-Fixer
+        required: false
+        type: boolean
+        default: true
       run-psalm:
         description: Whether or not to run Psalm static analysis
         required: false
@@ -23,7 +28,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - php: '8.3'
+          - php: '8.4'
             stability: prefer-stable
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
@@ -39,10 +44,11 @@ jobs:
           tools: composer:v2
           coverage: xdebug
       - name: Install Dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
       - name: Run Tests
         run: composer phpunit
       - name: Run Linter
+        if: inputs.run-php-cs-fixer == true
         run: composer phpcs-test
       - name: Run Psalm Static Analysis
         if: inputs.run-psalm == true

@@ -21,6 +21,18 @@ final class Argument
 {
     /** @var list<ArgumentType> The type of argument this is */
     public readonly array $type;
+    /** @var bool Whether or not the argument is an array */
+    public bool $isArray {
+        get => ($this->typeFlag & ArgumentType::IsArray->value) === ArgumentType::IsArray->value;
+    }
+    /** @var bool Whether or not the argument is optional */
+    public bool $isOptional {
+        get => ($this->typeFlag & ArgumentType::Optional->value) === ArgumentType::Optional->value;
+    }
+    /** @var bool Whether or not the argument is required */
+    public bool $isRequired {
+        get => ($this->typeFlag & ArgumentType::Required->value) === ArgumentType::Required->value;
+    }
     /** @var int The bitwise-OR'd flag representing all the types */
     private int $typeFlag = 0;
 
@@ -50,35 +62,5 @@ final class Argument
         if (($this->typeFlag & 3) === 3) {
             throw new InvalidArgumentException('Argument type cannot be both optional and required');
         }
-    }
-
-    /**
-     * Gets whether or not the argument is an array
-     *
-     * @return bool True if the argument is an array, otherwise false
-     */
-    public function isArray(): bool
-    {
-        return ($this->typeFlag & ArgumentType::IsArray->value) === ArgumentType::IsArray->value;
-    }
-
-    /**
-     * Gets whether or not the argument is optional
-     *
-     * @return bool True if the argument is optional, otherwise false
-     */
-    public function isOptional(): bool
-    {
-        return ($this->typeFlag & ArgumentType::Optional->value) === ArgumentType::Optional->value;
-    }
-
-    /**
-     * Gets whether or not the argument is required
-     *
-     * @return bool True if the argument is required, otherwise false
-     */
-    public function isRequired(): bool
-    {
-        return ($this->typeFlag & ArgumentType::Required->value) === ArgumentType::Required->value;
     }
 }

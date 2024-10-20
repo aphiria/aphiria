@@ -51,7 +51,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
         string $type,
         IRequest $request
     ): ?MediaTypeFormatterMatch {
-        $contentTypeHeader = $this->headerParser->parseContentTypeHeader($request->getHeaders());
+        $contentTypeHeader = $this->headerParser->parseContentTypeHeader($request->headers);
 
         return $this->getBestMediaTypeFormatterMatch(
             $type,
@@ -69,7 +69,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
-            $this->headerParser->parseAcceptHeader($request->getHeaders()),
+            $this->headerParser->parseAcceptHeader($request->headers),
             self::FORMATTER_TYPE_OUTPUT
         );
     }
@@ -83,14 +83,11 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     private function compareAcceptMediaTypeHeaders(AcceptMediaTypeHeaderValue $a, AcceptMediaTypeHeaderValue $b): int
     {
-        $aQuality = $a->getQuality();
-        $bQuality = $b->getQuality();
-
-        if ($aQuality < $bQuality) {
+        if ($a->quality < $b->quality) {
             return 1;
         }
 
-        if ($aQuality > $bQuality) {
+        if ($a->quality > $b->quality) {
             return -1;
         }
 
@@ -131,7 +128,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
-        return $header->getQuality() > 0;
+        return $header->quality > 0;
     }
 
     /**
@@ -157,7 +154,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
             [$mediaType, $mediaSubType] = \explode('/', $mediaTypeHeader->mediaType);
 
             foreach ($this->mediaTypeFormatters as $mediaTypeFormatter) {
-                foreach ($mediaTypeFormatter->getSupportedMediaTypes() as $supportedMediaType) {
+                foreach ($mediaTypeFormatter->supportedMediaTypes as $supportedMediaType) {
                     if ($ioType === self::FORMATTER_TYPE_INPUT && !$mediaTypeFormatter->canReadType($type)) {
                         continue;
                     }

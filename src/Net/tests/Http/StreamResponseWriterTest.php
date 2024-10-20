@@ -23,6 +23,7 @@ use Aphiria\Net\Http\StreamResponseWriter;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class StreamResponseWriterTest extends TestCase
@@ -40,15 +41,15 @@ class StreamResponseWriterTest extends TestCase
 
         // Set up the response
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method('getHeaders')
+        $this->response->method(PropertyHook::get('headers'))
             ->willReturn(new Headers([new KeyValuePair('Foo', 'bar')]));
-        $this->response->method('getBody')
+        $this->response->method(PropertyHook::get('body'))
             ->willReturn($this->body);
-        $this->response->method('getProtocolVersion')
+        $this->response->method(PropertyHook::get('protocolVersion'))
             ->willReturn('1.1');
-        $this->response->method('getStatusCode')
+        $this->response->method(PropertyHook::get('statusCode'))
             ->willReturn(HttpStatusCode::Ok);
-        $this->response->method('getReasonPhrase')
+        $this->response->method(PropertyHook::get('reasonPhrase'))
             ->willReturn('OK');
     }
 
@@ -74,21 +75,19 @@ class StreamResponseWriterTest extends TestCase
         $response = new Response();
 
         foreach ($headerValues as $headerValue) {
-            $response->getHeaders()->add($headerName, $headerValue, true);
+            $response->headers->add($headerName, $headerValue, true);
             $expectedHeaders[] = "$headerName: $headerValue";
         }
 
         $responseWriter = new class ($this->outputStream) extends StreamResponseWriter {
             public array $headers = [];
-
-            public function header(string $value, bool $replace = true, int $statusCode = null): void
-            {
-                $this->headers[] = $value;
+            public bool $headersAreSent {
+                get => false;
             }
 
-            public function headersAreSent(): bool
+            public function header(string $value, bool $replace = true, ?int $statusCode = null): void
             {
-                return false;
+                $this->headers[] = $value;
             }
         };
         $responseWriter->writeResponse($response);
@@ -98,9 +97,8 @@ class StreamResponseWriterTest extends TestCase
     public function testWritingResponseWhenHeadersAreSentDoesNotDoAnything(): void
     {
         $writer = new class ($this->outputStream) extends StreamResponseWriter {
-            public function headersAreSent(): bool
-            {
-                return true;
+            public bool $headersAreSent {
+                get => true;
             }
         };
         $writer->writeResponse($this->response);

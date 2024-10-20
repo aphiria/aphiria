@@ -31,6 +31,6 @@ interface IEncodingMatcher
     public function getBestEncodingMatch(
         array $supportedEncodings,
         IRequest $request,
-        MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
+        ?MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
     ): ?string;
 }

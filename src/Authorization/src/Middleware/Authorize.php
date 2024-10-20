@@ -77,7 +77,7 @@ class Authorize extends ParameterizedMiddleware
             }
         }
 
-        if ($user === null || $user->getPrimaryIdentity()?->isAuthenticated() !== true) {
+        if ($user === null || $user->primaryIdentity?->isAuthenticated !== true) {
             return $this->handleUnauthenticatedUser($request, $policy);
         }
 

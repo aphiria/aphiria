@@ -51,7 +51,7 @@ EOF;
         // Compile the template
         $compiledTemplate = \str_replace(
             ['{{commands}}', '{{hr}}'],
-            [$this->getCommandText(), \str_repeat('-', $output->getDriver()->getCliWidth())],
+            [$this->getCommandText(), \str_repeat('-', $output->driver->cliWidth)],
             self::$template
         );
 
@@ -65,7 +65,7 @@ EOF;
      */
     private function getCommandText(): string
     {
-        $commands = $this->commands->getAllCommands();
+        $commands = $this->commands->commands;
 
         if (\count($commands) === 0) {
             return '  <info>No commands</info>';

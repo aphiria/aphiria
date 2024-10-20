@@ -102,7 +102,7 @@ class TrieNodeTest extends TestCase
                 [$fooARoute, $fooBRoute]
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testAddingChildThatHasLessLevelsStillItsChildren(): void
@@ -149,7 +149,7 @@ class TrieNodeTest extends TestCase
                 $bazRoutes
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testAddingChildWithMoreLevelsAddsThemAll(): void
@@ -198,7 +198,7 @@ class TrieNodeTest extends TestCase
                 $barRoutes
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testAddingChildWithSameLiteralValueMergesRoutes(): void
@@ -227,7 +227,7 @@ class TrieNodeTest extends TestCase
                 [$fooRoute, $barRoute]
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testAddingChildWithSameVariablePartsMergesRoutes(): void
@@ -270,7 +270,7 @@ class TrieNodeTest extends TestCase
                 [$fooRoute, $barRoute]
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testAddingInvalidChildNodeThrowsException(): void
@@ -324,7 +324,7 @@ class TrieNodeTest extends TestCase
                 $barRoutes
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testAddingVariableChildDifferingVariablePartsAddsItAsSeparateChild(): void
@@ -358,7 +358,7 @@ class TrieNodeTest extends TestCase
                 $barRoutes
             )
         ];
-        $this->assertEquals($expectedChildren, $this->node->getAllChildren());
+        $this->assertEquals($expectedChildren, $this->node->children);
     }
 
     public function testGettingAllChildrenReturnsLiteralThenVariableChildren(): void
@@ -367,6 +367,6 @@ class TrieNodeTest extends TestCase
         $variableChild = new VariableTrieNode(new RouteVariable('foo'), []);
         $this->node->addChild($literalChild);
         $this->node->addChild($variableChild);
-        $this->assertEquals([$literalChild, $variableChild], $this->node->getAllChildren());
+        $this->assertEquals([$literalChild, $variableChild], $this->node->children);
     }
 }

@@ -22,8 +22,8 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Security\IPrincipal;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
-use Psalm\Issue\UndefinedPropertyAssignment;
 use RuntimeException;
 
 class BasicAuthenticationHandlerTest extends TestCase
@@ -105,7 +105,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
+        $request->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
@@ -118,7 +118,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
+        $request->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $result = $this->schemeHandler->authenticate($request, $scheme);
@@ -136,7 +136,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method('getHeaders')
+        $request->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $headers->add('Authorization', $authorizationHeaderValue);
         $this->schemeHandler->expectedResult = AuthenticationResult::pass($this->createMock(IPrincipal::class), 'foo');
@@ -157,7 +157,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->method('getHeaders')
+        $response->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $this->schemeHandler->challenge($this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame($expectedWwwAuthenticateHeaderValue, $headers->getFirst('Www-Authenticate'));
@@ -167,7 +167,7 @@ class BasicAuthenticationHandlerTest extends TestCase
     {
         $response = $this->createMock(IResponse::class);
         $response->expects($this->once())
-            ->method('setStatusCode')
+            ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::Forbidden);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new BasicAuthenticationOptions());
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);

@@ -45,13 +45,13 @@
         "aphiria/router": "1.x-dev",
         "aphiria/validation": "1.x-dev",
         "monolog/monolog": "~2.1",
-        "php": "^8.3",
+        "php": "^8.4",
         "psr/log": "^3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
         "mockery/mockery": "^1.4",
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^11.5-dev"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

@@ -45,7 +45,7 @@ class AuthenticationComponentTest extends TestCase
         $this->authenticationComponent->withScheme($defaultScheme, true);
         $this->authenticationComponent->withScheme($nonDefaultScheme, false);
         $this->authenticationComponent->build();
-        $this->assertSame($defaultScheme, $this->schemes->getDefaultScheme());
+        $this->assertSame($defaultScheme, $this->schemes->defaultScheme);
         $this->assertSame($defaultScheme, $this->schemes->getScheme('foo'));
         $this->assertSame($nonDefaultScheme, $this->schemes->getScheme('bar'));
     }

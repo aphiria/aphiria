@@ -28,12 +28,12 @@ class RequiredTest extends TestCase
     public function testCreatingConstraintHasDefaultErrorMessageId(): void
     {
         $attribute = new Required();
-        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->errorMessageId);
     }
 
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $attribute = new Required('foo');
-        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->errorMessageId);
     }
 }

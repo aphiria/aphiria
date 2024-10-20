@@ -24,7 +24,7 @@ final class Alphanumeric extends ConstraintAttribute
     /**
      * @inheritdoc
      */
-    public function __construct(string $errorMessageId = null)
+    public function __construct(?string $errorMessageId = null)
     {
         parent::__construct($errorMessageId);
     }

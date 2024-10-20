@@ -20,25 +20,10 @@ use Aphiria\Net\Uri;
  */
 interface IRequest extends IHttpMessage
 {
-    /**
-     * Gets the HTTP method for the request
-     *
-     * @return string The HTTP method
-     */
-    public function getMethod(): string;
-
-    /**
-     * Gets the properties of the request
-     * These are custom pieces of metadata that the application can attach to the request
-     *
-     * @return IDictionary<string, mixed> The collection of properties
-     */
-    public function getProperties(): IDictionary;
-
-    /**
-     * Gets the URI of the request
-     *
-     * @return Uri The URI
-     */
-    public function getUri(): Uri;
+    /** @var string The HTTP method for the request */
+    public string $method { get; }
+    /** @var IDictionary<string, mixed> The properties of the request, which includes custom metadata the application can attach */
+    public IDictionary $properties { get; }
+    /** @var Uri The URI of the request */
+    public Uri $uri { get; }
 }

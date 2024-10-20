@@ -35,13 +35,23 @@ class MediaTypeHeaderValue
     public readonly ?string $suffix;
     /** @var string The type, eg "text" in "text/html" */
     public readonly string $type;
+    /** @var string The media sub-type without the suffix */
+    public string $mediaTypeWithoutSuffix {
+        get {
+            if ($this->suffix === null) {
+                return $this->subType;
+            }
+
+            return \str_replace("+{$this->suffix}", '', $this->subType);
+        }
+    }
 
     /**
      * @param string $mediaType The media type
      * @param IImmutableDictionary<string, string|null>|null $parameters The dictionary of parameter names to values, or null if no parameters
      * @throws InvalidArgumentException Thrown if the media type is not in the correct format
      */
-    public function __construct(public readonly string $mediaType, IImmutableDictionary $parameters = null)
+    public function __construct(public readonly string $mediaType, ?IImmutableDictionary $parameters = null)
     {
         /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> $this->parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
@@ -67,19 +77,5 @@ class MediaTypeHeaderValue
         } else {
             $this->charset = null;
         }
-    }
-
-    /**
-     * Gets the media sub-type without the suffix
-     *
-     * @return string The sub-type without the suffix
-     */
-    public function getSubTypeWithoutSuffix(): string
-    {
-        if ($this->suffix === null) {
-            return $this->subType;
-        }
-
-        return \str_replace("+{$this->suffix}", '', $this->subType);
     }
 }

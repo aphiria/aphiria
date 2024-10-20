@@ -224,7 +224,7 @@ class ContentNegotiationBinderTest extends TestCase
      *
      * @param array|null $additionalParameters The additional parameters to set up in the mock, or null if none
      */
-    private function setUpContainerMockResolve(array $additionalParameters = null): void
+    private function setUpContainerMockResolve(?array $additionalParameters = null): void
     {
         $parameters = [
             [JsonMediaTypeFormatter::class, new JsonMediaTypeFormatter()]

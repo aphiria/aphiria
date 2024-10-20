@@ -33,7 +33,7 @@ interface IResponseFactory
     public function createResponse(
         IRequest $request,
         HttpStatusCode|int $statusCode,
-        Headers $headers = null,
-        object|string|int|float|array $rawBody = null
+        ?Headers $headers = null,
+        object|string|int|float|array|null $rawBody = null
     ): IResponse;
 }

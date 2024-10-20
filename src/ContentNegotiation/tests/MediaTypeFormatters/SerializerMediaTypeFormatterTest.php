@@ -26,6 +26,9 @@ class SerializerMediaTypeFormatterTest extends TestCase
     protected function setUp(): void
     {
         $this->formatter = new class () extends SerializerMediaTypeFormatter {
+            public array $supportedEncodings = ['utf-8'];
+            public array $supportedMediaTypes = ['text/plain'];
+
             public function __construct()
             {
                 parent::__construct(new Serializer([new ObjectNormalizer()]), 'foo');
@@ -39,16 +42,6 @@ class SerializerMediaTypeFormatterTest extends TestCase
             public function canWriteType(string $type): bool
             {
                 return false;
-            }
-
-            public function getSupportedEncodings(): array
-            {
-                return ['utf-8'];
-            }
-
-            public function getSupportedMediaTypes(): array
-            {
-                return ['text/plain'];
             }
         };
     }

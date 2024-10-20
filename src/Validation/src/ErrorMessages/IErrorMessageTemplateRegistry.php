@@ -24,5 +24,5 @@ interface IErrorMessageTemplateRegistry
      * @param string|null $locale The optional locale
      * @return string The error message template
      */
-    public function getErrorMessageTemplate(string $errorMessageId, string $locale = null): string;
+    public function getErrorMessageTemplate(string $errorMessageId, ?string $locale = null): string;
 }

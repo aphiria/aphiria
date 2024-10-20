@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Exceptions\Components;
 
 use Aphiria\Api\Errors\ProblemDetails;
+use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
@@ -25,6 +26,7 @@ use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
 use Aphiria\Net\Http\Response;
 use Exception;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
@@ -51,6 +53,17 @@ class ExceptionHandlerComponentTest extends TestCase
     public function testBuildWithConsoleOutputWriterRegistersCallback(): void
     {
         $output = $this->createMock(IOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $output->method(PropertyHook::get('driver'))
+            ->willReturn($driver);
         $output->expects($this->once())
             ->method('writeln')
             ->with('foo');
@@ -77,8 +90,8 @@ class ExceptionHandlerComponentTest extends TestCase
             ->method('createResponse')
             ->with($request, 400, null, new ProblemDetails('type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']))
             ->willReturn(new Response(400));
-        $apiExceptionRenderer->setResponseFactory($responseFactory);
-        $apiExceptionRenderer->setRequest($request);
+        $apiExceptionRenderer->responseFactory = $responseFactory;
+        $apiExceptionRenderer->request = $request;
         $this->container->bindInstance(IApiExceptionRenderer::class, $apiExceptionRenderer);
         $this->exceptionHandlerComponent->withProblemDetails(
             Exception::class,

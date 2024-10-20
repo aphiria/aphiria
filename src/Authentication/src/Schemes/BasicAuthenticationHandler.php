@@ -35,7 +35,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
     public function authenticate(IRequest $request, AuthenticationScheme $scheme): AuthenticationResult
     {
         try {
-            $authorizationHeaderValue = (string)$request->getHeaders()->getFirst('Authorization');
+            $authorizationHeaderValue = (string)$request->headers->getFirst('Authorization');
         } catch (OutOfBoundsException $ex) {
             return AuthenticationResult::fail(
                 new MissingAuthenticationDataException('Missing authorization header', previous: $ex),
@@ -91,8 +91,8 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
     public function challenge(IRequest $request, IResponse $response, AuthenticationScheme $scheme): void
     {
         $realmValue = $scheme->options->realm === null ? '' : " realm=\"{$scheme->options->realm}\"";
-        $response->getHeaders()->add('Www-Authenticate', 'Basic' . $realmValue);
-        $response->setStatusCode(HttpStatusCode::Unauthorized);
+        $response->headers->add('Www-Authenticate', 'Basic' . $realmValue);
+        $response->statusCode = HttpStatusCode::Unauthorized;
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
      */
     public function forbid(IRequest $request, IResponse $response, AuthenticationScheme $scheme): void
     {
-        $response->setStatusCode(HttpStatusCode::Forbidden);
+        $response->statusCode = HttpStatusCode::Forbidden;
     }
 
     /**

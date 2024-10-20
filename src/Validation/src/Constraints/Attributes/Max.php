@@ -29,7 +29,7 @@ final class Max extends ConstraintAttribute
     public function __construct(
         public readonly int|float $max,
         public bool $isInclusive = true,
-        string $errorMessageId = null
+        ?string $errorMessageId = null
     ) {
         parent::__construct($errorMessageId);
     }

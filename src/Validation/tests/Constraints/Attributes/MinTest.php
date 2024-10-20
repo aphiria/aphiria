@@ -28,12 +28,12 @@ class MinTest extends TestCase
     public function testCreatingConstraintHasDefaultErrorMessageId(): void
     {
         $attribute = new Min(1);
-        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->errorMessageId);
     }
 
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $attribute = new Min(1, errorMessageId: 'foo');
-        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->errorMessageId);
     }
 }

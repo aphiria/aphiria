@@ -20,7 +20,7 @@ final class DefaultErrorMessageTemplateRegistry implements IErrorMessageTemplate
     /**
      * @inheritdoc
      */
-    public function getErrorMessageTemplate(string $errorMessageId, string $locale = null): string
+    public function getErrorMessageTemplate(string $errorMessageId, ?string $locale = null): string
     {
         return $errorMessageId;
     }

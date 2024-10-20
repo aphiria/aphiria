@@ -39,6 +39,11 @@ use Psr\Log\LoggerInterface;
  */
 class GlobalExceptionHandlerBootstrapper implements IBootstrapper
 {
+    /** @var bool Whether or not the app is running in the console */
+    protected bool $isRunningInConsole {
+        get => \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
+    }
+
     /**
      * @param IContainer $container The DI container
      */
@@ -58,7 +63,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $logger = $this->createAndBindLogger();
         $logLevelFactory = $this->createAndBindLogLevelFactory();
 
-        if ($this->isRunningInConsole()) {
+        if ($this->isRunningInConsole) {
             $this->container->bindInstance(IExceptionRenderer::class, $consoleExceptionRenderer);
             $globalExceptionHandler = new GlobalExceptionHandler($consoleExceptionRenderer, $logger, $logLevelFactory);
         } else {
@@ -90,7 +95,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 $exceptionRenderer = new ProblemDetailsExceptionRenderer();
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     HttpException::class,
-                    status: fn (HttpException $ex): HttpStatusCode => $ex->response->getStatusCode()
+                    status: fn (HttpException $ex): HttpStatusCode => $ex->response->statusCode
                 );
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     InvalidRequestBodyException::class,
@@ -174,15 +179,5 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $this->container->bindInstance(LogLevelFactory::class, $logLevelFactory);
 
         return $logLevelFactory;
-    }
-
-    /**
-     * Gets whether or not the app is running in the console
-     *
-     * @return bool True if the application is running in the console, otherwise false
-     */
-    protected function isRunningInConsole(): bool
-    {
-        return \PHP_SAPI === 'cli' || \PHP_SAPI === 'phpdbg';
     }
 }

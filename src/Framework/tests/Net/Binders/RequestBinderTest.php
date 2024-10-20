@@ -43,7 +43,7 @@ class RequestBinderTest extends TestCase
             ->method('bindFactory')
             ->with(IRequest::class, $this->callback(fn (Closure $factory): bool => $factory() === $request));
         RequestBinder::setOverridingRequest($request);
-        (new RequestBinder())->bind($this->container);
+        new RequestBinder()->bind($this->container);
     }
 
     public function testRequestDefaultsToLocalhostUriWhenRunningFromCli(): void
@@ -54,9 +54,9 @@ class RequestBinderTest extends TestCase
                 /** @var IRequest $request */
                 $request = $factory();
 
-                return (string)$request->getUri() === 'http://localhost';
+                return (string)$request->uri === 'http://localhost';
             }));
-        (new RequestBinder())->bind($this->container);
+        new RequestBinder()->bind($this->container);
     }
 
     public function testRequestHasLocalhostUriWhenRunningFromCli(): void
@@ -67,12 +67,11 @@ class RequestBinderTest extends TestCase
                 /** @var IRequest $request */
                 $request = $factory();
 
-                return (string)$request->getUri() === 'http://localhost';
+                return (string)$request->uri === 'http://localhost';
             }));
         $binder = new class () extends RequestBinder {
-            protected function isRunningInConsole(): bool
-            {
-                return true;
+            protected bool $isRunningInConsole {
+                get => true;
             }
         };
         $binder->bind($this->container);
@@ -80,6 +79,7 @@ class RequestBinderTest extends TestCase
 
     public function testRequestHasLocalhostUriWhenRunningFromHttp(): void
     {
+        // Note: This host must be different than the one set in RequestBinder when running from console for the test to pass
         $_SERVER['HTTP_HOST'] = 'example.com';
         // argv was causing issues in the test
         unset($_SERVER['argv']);
@@ -89,12 +89,11 @@ class RequestBinderTest extends TestCase
                 /** @var IRequest $request */
                 $request = $factory();
 
-                return (string)$request->getUri() === 'http://example.com';
+                return (string)$request->uri === 'http://example.com';
             }));
         $binder = new class () extends RequestBinder {
-            protected function isRunningInConsole(): bool
-            {
-                return false;
+            protected bool $isRunningInConsole {
+                get => false;
             }
         };
         $binder->bind($this->container);

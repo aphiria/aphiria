@@ -24,7 +24,7 @@ final class BasicAuthenticationOptions extends AuthenticationSchemeOptions
      * @param ?string $realm The authentication realm that defines the protection space
      * @link https://datatracker.ietf.org/doc/html/rfc2617#section-1
      */
-    public function __construct(public ?string $realm = null, string $claimsIssuer = null)
+    public function __construct(public ?string $realm = null, ?string $claimsIssuer = null)
     {
         parent::__construct($claimsIssuer);
     }

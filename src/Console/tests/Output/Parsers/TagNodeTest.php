@@ -20,6 +20,6 @@ class TagNodeTest extends TestCase
     public function testIsTag(): void
     {
         $node = new TagAstNode('foo');
-        $this->assertTrue($node->isTag());
+        $this->assertTrue($node->isTag);
     }
 }

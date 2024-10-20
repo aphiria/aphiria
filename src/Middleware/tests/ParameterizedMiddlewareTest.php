@@ -26,7 +26,7 @@ class ParameterizedMiddlewareTest extends TestCase
 
     public function testGettingParameterReturnsSameValueInSetter(): void
     {
-        $this->middleware->setParameters(['foo' => 'bar']);
+        $this->middleware->parameters = ['foo' => 'bar'];
         $this->assertSame('bar', $this->middleware->getParameter('foo'));
     }
 

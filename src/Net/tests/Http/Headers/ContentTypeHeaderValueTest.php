@@ -38,16 +38,16 @@ class ContentTypeHeaderValueTest extends TestCase
 
     public function testGettingSubTypeReturnsCorrectSubtType(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new ContentTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('bar', $value->subType);
     }
 
     public function testGettingTypeReturnsCorrectType(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new ContentTypeHeaderValue('foo/bar', $parameters);
         $this->assertSame('foo', $value->type);
     }
@@ -61,19 +61,19 @@ class ContentTypeHeaderValueTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Media type must be in format {type}/{sub-type}, received {$incorrectlyFormattedMediaType}");
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         new ContentTypeHeaderValue($incorrectlyFormattedMediaType, $parameters);
     }
 
     public function testTypeWithSuffixSetsTypeSubTypeAndSuffixesCorrectly(): void
     {
-        /** @var IImmutableDictionary<string, string|null> $parameters */
-        $parameters = $this->createMock(IImmutableDictionary::class);
+        /** @var ImmutableHashTable<string, string|null> $parameters */
+        $parameters = new ImmutableHashTable([]);
         $value = new ContentTypeHeaderValue('application/foo+json', $parameters);
         $this->assertSame('application', $value->type);
         $this->assertSame('foo+json', $value->subType);
-        $this->assertSame('foo', $value->getSubTypeWithoutSuffix());
+        $this->assertSame('foo', $value->mediaTypeWithoutSuffix);
         $this->assertSame('json', $value->suffix);
     }
 }

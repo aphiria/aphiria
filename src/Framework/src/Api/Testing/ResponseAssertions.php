@@ -50,8 +50,8 @@ class ResponseAssertions
      */
     public function assertCookieEquals(mixed $expectedValue, IResponse $response, string $cookieName): void
     {
-        foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
-            if ($cookie->getName() === $cookieName && $cookie->value === $expectedValue) {
+        foreach ($this->responseHeaderParser->parseCookies($response->headers) as $cookie) {
+            if ($cookie->name === $cookieName && $cookie->value === $expectedValue) {
                 return;
             }
         }
@@ -68,9 +68,9 @@ class ResponseAssertions
      */
     public function assertCookieIsUnset(IResponse $response, string $cookieName): void
     {
-        foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
+        foreach ($this->responseHeaderParser->parseCookies($response->headers) as $cookie) {
             if (
-                $cookie->getName() === $cookieName
+                $cookie->name === $cookieName
                 && ($cookie->value === '' || $cookie->value === null)
                 && ($cookie->maxAge === 0 || $cookie->maxAge === null)
             ) {
@@ -90,8 +90,8 @@ class ResponseAssertions
      */
     public function assertHasCookie(IResponse $response, string $cookieName): void
     {
-        foreach ($this->responseHeaderParser->parseCookies($response->getHeaders()) as $cookie) {
-            if ($cookie->getName() === $cookieName) {
+        foreach ($this->responseHeaderParser->parseCookies($response->headers) as $cookie) {
+            if ($cookie->name === $cookieName) {
                 return;
             }
         }
@@ -108,7 +108,7 @@ class ResponseAssertions
      */
     public function assertHasHeader(IResponse $response, string $headerName): void
     {
-        if (!$response->getHeaders()->containsKey($headerName)) {
+        if (!$response->headers->containsKey($headerName)) {
             throw new AssertionFailedException("Failed to assert that header $headerName is set");
         }
     }
@@ -123,14 +123,14 @@ class ResponseAssertions
      */
     public function assertHeaderEquals(mixed $expectedValue, IResponse $response, string $headerName): void
     {
-        if (!$response->getHeaders()->containsKey($headerName)) {
+        if (!$response->headers->containsKey($headerName)) {
             throw new AssertionFailedException("No header value for $headerName is set");
         }
 
         // If the expected value is an array, then get all the header values, otherwise grab just the first
         $actualHeaderValue = \is_array($expectedValue)
-            ? $response->getHeaders()->get($headerName)
-            : $response->getHeaders()->getFirst($headerName);
+            ? $response->headers->get($headerName)
+            : $response->headers->getFirst($headerName);
 
         if ($expectedValue !== $actualHeaderValue) {
             throw new AssertionFailedException('Expected header value ' . \print_r($expectedValue, true) . ', got ' . \print_r($actualHeaderValue, true));
@@ -154,7 +154,7 @@ class ResponseAssertions
 
         $actualHeaderValue = null;
 
-        if (!$response->getHeaders()->tryGetFirst($headerName, $actualHeaderValue)) {
+        if (!$response->headers->tryGetFirst($headerName, $actualHeaderValue)) {
             throw new AssertionFailedException("No header value for $headerName is set");
         }
 
@@ -176,7 +176,7 @@ class ResponseAssertions
         try {
             // Purposely not checking references here
             if ($expectedValue instanceof IBody) {
-                if ($response->getBody() != $expectedValue) {
+                if ($response->body != $expectedValue) {
                     throw new AssertionFailedException('Failed to assert that the response body equals the expected value');
                 }
             } elseif ($this->bodyDeserializer->readResponseBodyAs(TypeResolver::resolveType($expectedValue), $request, $response, ) != $expectedValue) {
@@ -216,7 +216,7 @@ class ResponseAssertions
      */
     public function assertStatusCodeEquals(HttpStatusCode|int $expectedStatusCode, IResponse $response): void
     {
-        $actualStatusCodeAsInt = $response->getStatusCode()->value;
+        $actualStatusCodeAsInt = $response->statusCode->value;
         $expectedStatusCodeAsInt = \is_int($expectedStatusCode) ? $expectedStatusCode : $expectedStatusCode->value;
 
         if ($actualStatusCodeAsInt !== $expectedStatusCodeAsInt) {

@@ -37,6 +37,7 @@ use Aphiria\Routing\UriTemplates\UriTemplate;
 use Closure;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
@@ -131,7 +132,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
         } catch (HttpException $ex) {
             $exceptionThrown = true;
-            $this->assertSame('GET', $ex->response->getHeaders()->getFirst('Allow'));
+            $this->assertSame('GET', $ex->response->headers->getFirst('Allow'));
         }
 
         $this->assertTrue($exceptionThrown, 'Failed to throw exception');
@@ -142,7 +143,7 @@ class RouterTest extends TestCase
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedHeaders = new Headers();
         $expectedResponse = $this->createMock(IResponse::class);
-        $expectedResponse->method('getHeaders')
+        $expectedResponse->method(PropertyHook::get('headers'))
             ->willReturn($expectedHeaders);
         // We want different middleware class names to be able to test multiple middleware, hence the anon classes
         $middleware1 = new class () extends MiddlewareThatIncrementsHeader {
@@ -193,7 +194,7 @@ class RouterTest extends TestCase
             $this->router->handle($request);
             $this->fail('Failed to throw exception');
         } catch (HttpException $ex) {
-            $this->assertSame(HttpStatusCode::NotFound, $ex->response->getStatusCode());
+            $this->assertSame(HttpStatusCode::NotFound, $ex->response->statusCode);
         }
     }
 
@@ -266,9 +267,9 @@ class RouterTest extends TestCase
     private function createRequestMock(string $method, string $uri): IRequest&MockObject
     {
         $request = $this->createMock(IRequest::class);
-        $request->method('getMethod')
+        $request->method(PropertyHook::get('method'))
             ->willReturn($method);
-        $request->method('getUri')
+        $request->method(PropertyHook::get('uri'))
             ->willReturn(new Uri($uri));
 
         return $request;

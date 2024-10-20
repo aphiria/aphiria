@@ -17,7 +17,7 @@ use Aphiria\Authentication\Schemes\IAuthenticationSchemeHandler;
 /**
  * Defines a scheme used for authentication
  *
- * @template  T of AuthenticationSchemeOptions
+ * @template T of AuthenticationSchemeOptions
  */
 final readonly class AuthenticationScheme
 {

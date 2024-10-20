@@ -28,12 +28,12 @@ class RegexTest extends TestCase
     public function testCreatingConstraintHasDefaultErrorMessageId(): void
     {
         $attribute = new Regex('foo');
-        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertNotEmpty($attribute->createConstraintFromAttribute()->errorMessageId);
     }
 
     public function testCreatingConstraintUsesErrorMessageIdIfSpecified(): void
     {
         $attribute = new Regex('foo', 'foo');
-        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->getErrorMessageId());
+        $this->assertSame('foo', $attribute->createConstraintFromAttribute()->errorMessageId);
     }
 }

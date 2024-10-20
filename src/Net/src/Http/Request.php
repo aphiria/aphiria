@@ -23,8 +23,47 @@ use RuntimeException;
  */
 class Request implements IRequest
 {
-    /** @var string The request method */
-    protected readonly string $method;
+    /** @inheritdoc */
+    public ?IBody $body;
+    /** @inheritdoc */
+    public private(set) Headers $headers;
+    /** @inheritdoc */
+    public private(set) string $method;
+    /** @inheritdoc */
+    public private(set) IDictionary $properties;
+    /** @inheritdoc */
+    public private(set) string $protocolVersion;
+    /** @inheritdoc */
+    public private(set) Uri $uri;
+    /** @var RequestTargetType $requestTargetType The type of request target URI this request uses */
+    protected RequestTargetType $requestTargetType;
+    /** @var string The request target */
+    protected string $requestTarget {
+        get {
+            switch ($this->requestTargetType) {
+                case RequestTargetType::OriginForm:
+                    $requestTarget = $this->uri->path;
+
+                    /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
+                    if ($requestTarget === null || $requestTarget === '') {
+                        $requestTarget = '/';
+                    }
+
+                    if (($queryString = $this->uri->queryString) !== null && $queryString !== '') {
+                        $requestTarget .= "?$queryString";
+                    }
+
+                    return $requestTarget;
+                case RequestTargetType::AuthorityForm:
+                    return $this->uri->getAuthority(false) ?? '';
+                case RequestTargetType::AsteriskForm:
+                    return '*';
+                default:
+                    // Includes the absolute form
+                    return (string)$this->uri;
+            }
+        }
+    }
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -52,14 +91,20 @@ class Request implements IRequest
      */
     public function __construct(
         string $method,
-        protected readonly Uri $uri,
-        protected readonly Headers $headers = new Headers(),
-        protected ?IBody $body = null,
-        protected readonly IDictionary $properties = new HashTable(),
-        protected readonly string $protocolVersion = '1.1',
-        protected readonly RequestTargetType $requestTargetType = RequestTargetType::OriginForm
+        Uri $uri,
+        Headers $headers = new Headers(),
+        ?IBody $body = null,
+        IDictionary $properties = new HashTable(),
+        string $protocolVersion = '1.1',
+        RequestTargetType $requestTargetType = RequestTargetType::OriginForm
     ) {
         $this->method = \strtoupper($method);
+        $this->uri = $uri;
+        $this->headers = $headers;
+        $this->body = $body;
+        $this->properties = $properties;
+        $this->protocolVersion = $protocolVersion;
+        $this->requestTargetType = $requestTargetType;
         $this->validateProperties();
         $this->addHostHeaderIfNecessary();
     }
@@ -69,7 +114,7 @@ class Request implements IRequest
      */
     public function __toString(): string
     {
-        $startLine = "$this->method {$this->getRequestTarget()} HTTP/$this->protocolVersion";
+        $startLine = "$this->method $this->requestTarget HTTP/$this->protocolVersion";
         $headers = '';
 
         if (\count($this->headers) > 0) {
@@ -86,62 +131,6 @@ class Request implements IRequest
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getBody(): ?IBody
-    {
-        return $this->body;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getHeaders(): Headers
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getProperties(): IDictionary
-    {
-        return $this->properties;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getProtocolVersion(): string
-    {
-        return $this->protocolVersion;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getUri(): Uri
-    {
-        return $this->uri;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setBody(IBody $body): void
-    {
-        $this->body = $body;
-    }
-
-    /**
      * Adds the host header if it's necessary per the request target type
      *
      * @link https://tools.ietf.org/html/rfc7230#section-5.4
@@ -155,37 +144,6 @@ class Request implements IRequest
 
         if ($requiresHostHeader && !$this->headers->containsKey('Host')) {
             $this->headers->add('Host', $this->uri->getAuthority(false) ?? '');
-        }
-    }
-
-    /**
-     * Gets the request target
-     *
-     * return @string The request target
-     */
-    private function getRequestTarget(): string
-    {
-        switch ($this->requestTargetType) {
-            case RequestTargetType::OriginForm:
-                $requestTarget = $this->uri->path;
-
-                /** @link https://tools.ietf.org/html/rfc7230#section-5.3.1 */
-                if ($requestTarget === null || $requestTarget === '') {
-                    $requestTarget = '/';
-                }
-
-                if (($queryString = $this->uri->queryString) !== null && $queryString !== '') {
-                    $requestTarget .= "?$queryString";
-                }
-
-                return $requestTarget;
-            case RequestTargetType::AuthorityForm:
-                return $this->uri->getAuthority(false) ?? '';
-            case RequestTargetType::AsteriskForm:
-                return '*';
-            default:
-                // Includes the absolute form
-                return (string)$this->uri;
         }
     }
 

@@ -75,7 +75,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
             }
         };
         $this->expectExceptionMessage(
-            (new ImpossibleBindingException([IBar::class => [$binderA]]))->getMessage(),
+            new ImpossibleBindingException([IBar::class => [$binderA]])->getMessage(),
         );
         $this->factory->createBinderMetadataCollection([$binderA, $binderB]);
     }

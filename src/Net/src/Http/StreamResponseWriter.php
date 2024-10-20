@@ -20,6 +20,10 @@ use Aphiria\IO\Streams\Stream;
  */
 class StreamResponseWriter implements IResponseWriter
 {
+    /** @inheritdoc */
+    public bool $headersAreSent {
+        get => \headers_sent();
+    }
     /** @var array<string, true> The hash table of headers that should not concatenate multiple values */
     protected static array $headersToNotConcatenate = ['Set-Cookie' => true, 'Www-Authenticate' => true, 'Proxy-Authenticate' => true];
     /** @var IStream The output stream to write the body to */
@@ -28,7 +32,7 @@ class StreamResponseWriter implements IResponseWriter
     /**
      * @param IStream|null $outputStream The output stream to write the body to (null defaults to PHP's output stream)
      */
-    public function __construct(IStream $outputStream = null)
+    public function __construct(?IStream $outputStream = null)
     {
         $this->outputStream = $outputStream ?? new Stream(\fopen('php://output', 'wb'));
     }
@@ -48,29 +52,21 @@ class StreamResponseWriter implements IResponseWriter
     /**
      * @inheritdoc
      */
-    public function headersAreSent(): bool
-    {
-        return \headers_sent();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function writeResponse(IResponse $response): void
     {
-        if ($this->headersAreSent()) {
+        if ($this->headersAreSent) {
             return;
         }
 
-        $startLine = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()->value}";
+        $startLine = "HTTP/{$response->protocolVersion} {$response->statusCode->value}";
 
-        if (($reasonPhrase = $response->getReasonPhrase()) !== null) {
+        if (($reasonPhrase = $response->reasonPhrase) !== null) {
             $startLine .= " $reasonPhrase";
         }
 
         $this->header($startLine);
 
-        foreach ($response->getHeaders() as $key => $value) {
+        foreach ($response->headers as $key => $value) {
             $headerName = (string)$key;
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
@@ -83,7 +79,7 @@ class StreamResponseWriter implements IResponseWriter
             }
         }
 
-        if (($body = $response->getBody()) !== null) {
+        if (($body = $response->body) !== null) {
             $body->writeToStream($this->outputStream);
         }
     }

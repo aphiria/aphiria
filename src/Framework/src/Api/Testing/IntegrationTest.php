@@ -43,6 +43,18 @@ use RuntimeException;
  */
 trait IntegrationTest
 {
+    /** @var string|null The app URI if one was set, otherwise null */
+    protected ?string $appUri {
+        get {
+            $appUrl = (string)\getenv('APP_URL');
+
+            if (empty($appUrl)) {
+                return null;
+            }
+
+            return $appUrl;
+        }
+    }
     /** @var IAuthenticator|IMockAuthenticator|null The authenticator */
     protected IAuthenticator|IMockAuthenticator|null $authenticator = null;
     /** @var IRequest|null The most recently sent request from the helper methods in this class */
@@ -238,22 +250,6 @@ trait IntegrationTest
     }
 
     /**
-     * Gets the current application's URI
-     *
-     * @return string|null The app URI if one was set, otherwise null
-     */
-    protected function getAppUri(): ?string
-    {
-        $appUrl = (string)\getenv('APP_URL');
-
-        if (empty($appUrl)) {
-            return null;
-        }
-
-        return $appUrl;
-    }
-
-    /**
      * Sends an OPTIONS request
      *
      * @param string|Uri $uri The URI to request
@@ -407,10 +403,10 @@ trait IntegrationTest
             return new Uri($uri);
         }
 
-        if (($appUrl = $this->getAppUri()) === null) {
+        if (($appUri = $this->appUri) === null) {
             throw new InvalidArgumentException('Environment variable "APP_URL" must be set to use a relative path');
         }
 
-        return new Uri(\rtrim($appUrl, '/') . '/' . \ltrim($uri, '/'));
+        return new Uri(\rtrim($appUri, '/') . '/' . \ltrim($uri, '/'));
     }
 }

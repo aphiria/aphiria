@@ -32,7 +32,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      * @param bool $shouldExit Whether or not to exit after handling the exception
      */
     public function __construct(
-        protected IOutput $output = new ConsoleOutput(),
+        public IOutput $output = new ConsoleOutput(),
         protected readonly bool $shouldExit = true
     ) {
     }
@@ -82,16 +82,6 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
             exit($statusCode instanceof StatusCode ? $statusCode->value : $statusCode);
             // @codeCoverageIgnoreEnd
         }
-    }
-
-    /**
-     * Sets the output
-     *
-     * @param IOutput $output The new output
-     */
-    public function setOutput(IOutput $output): void
-    {
-        $this->output = $output;
     }
 
     /**

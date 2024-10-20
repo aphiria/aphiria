@@ -35,9 +35,9 @@ class RequestHeaderParserTest extends TestCase
         $headerValues = $this->parser->parseAcceptCharsetHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertSame('utf-8', $headerValues[0]->charset);
-        $this->assertSame(1.0, $headerValues[0]->getQuality());
+        $this->assertSame(1.0, $headerValues[0]->quality);
         $this->assertSame('utf-16', $headerValues[1]->charset);
-        $this->assertSame(1.0, $headerValues[1]->getQuality());
+        $this->assertSame(1.0, $headerValues[1]->quality);
     }
 
     public function testParsingAcceptCharsetHeaderWithScoresReturnsValuesWithThoseScores(): void
@@ -48,9 +48,9 @@ class RequestHeaderParserTest extends TestCase
         $headerValues = $this->parser->parseAcceptCharsetHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertSame('utf-8', $headerValues[0]->charset);
-        $this->assertSame(0.1, $headerValues[0]->getQuality());
+        $this->assertSame(0.1, $headerValues[0]->quality);
         $this->assertSame('utf-16', $headerValues[1]->charset);
-        $this->assertSame(0.5, $headerValues[1]->getQuality());
+        $this->assertSame(0.5, $headerValues[1]->quality);
     }
 
     public function testParsingAcceptHeaderWithCharsetSetsCharsetInHeaderValue(): void
@@ -70,10 +70,10 @@ class RequestHeaderParserTest extends TestCase
         $headerValues = $this->parser->parseAcceptHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertSame('text/html', $headerValues[0]->mediaType);
-        $this->assertSame(1.0, $headerValues[0]->getQuality());
+        $this->assertSame(1.0, $headerValues[0]->quality);
         $this->assertNull($headerValues[0]->charset);
         $this->assertSame('application/json', $headerValues[1]->mediaType);
-        $this->assertSame(1.0, $headerValues[1]->getQuality());
+        $this->assertSame(1.0, $headerValues[1]->quality);
         $this->assertNull($headerValues[1]->charset);
     }
 
@@ -85,10 +85,10 @@ class RequestHeaderParserTest extends TestCase
         $headerValues = $this->parser->parseAcceptHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertSame('text/html', $headerValues[0]->mediaType);
-        $this->assertSame(0.1, $headerValues[0]->getQuality());
+        $this->assertSame(0.1, $headerValues[0]->quality);
         $this->assertNull($headerValues[0]->charset);
         $this->assertSame('application/json', $headerValues[1]->mediaType);
-        $this->assertSame(0.5, $headerValues[1]->getQuality());
+        $this->assertSame(0.5, $headerValues[1]->quality);
         $this->assertNull($headerValues[1]->charset);
     }
 
@@ -106,9 +106,9 @@ class RequestHeaderParserTest extends TestCase
         $headerValues = $this->parser->parseAcceptLanguageHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertSame('en-US', $headerValues[0]->language);
-        $this->assertSame(1.0, $headerValues[0]->getQuality());
+        $this->assertSame(1.0, $headerValues[0]->quality);
         $this->assertSame('en-GB', $headerValues[1]->language);
-        $this->assertSame(1.0, $headerValues[1]->getQuality());
+        $this->assertSame(1.0, $headerValues[1]->quality);
     }
 
     public function testParsingAcceptLanguageHeaderWithScoresReturnsValuesWithThoseScores(): void
@@ -119,9 +119,9 @@ class RequestHeaderParserTest extends TestCase
         $headerValues = $this->parser->parseAcceptLanguageHeader($headers);
         $this->assertCount(2, $headerValues);
         $this->assertSame('en-US', $headerValues[0]->language);
-        $this->assertSame(0.1, $headerValues[0]->getQuality());
+        $this->assertSame(0.1, $headerValues[0]->quality);
         $this->assertSame('en-GB', $headerValues[1]->language);
-        $this->assertSame(0.5, $headerValues[1]->getQuality());
+        $this->assertSame(0.5, $headerValues[1]->quality);
     }
 
     public function testParsingContentTypeHeaderWithCharsetSetsCharset(): void

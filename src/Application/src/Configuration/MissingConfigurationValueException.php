@@ -24,7 +24,7 @@ class MissingConfigurationValueException extends Exception
      * @inheritdoc
      * @param string $path The path to the missing configuration value
      */
-    public function __construct(string $path, int $code = 0, Throwable $previous = null)
+    public function __construct(string $path, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct("No configuration value at $path", $code, $previous);
     }

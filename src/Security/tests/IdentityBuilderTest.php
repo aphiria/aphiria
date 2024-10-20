@@ -79,15 +79,15 @@ class IdentityBuilderTest extends TestCase
             new Claim(ClaimType::Name, 'Dave', 'example.com'),
             new Claim(ClaimType::Surname, 'Young', 'example.com')
         ];
-        $identity = (new IdentityBuilder())
+        $identity = new IdentityBuilder()
             ->withClaims($claims)
             ->build();
-        $this->assertSame($claims, $identity->getClaims());
+        $this->assertSame($claims, $identity->claims);
     }
 
     public function testAddingMultipleRolesAddsMultipleRoleClaims(): void
     {
-        $identity = (new IdentityBuilder())
+        $identity = new IdentityBuilder()
             ->withRoles(['admin', 'dev'], 'example.com')
             ->build();
         $this->assertCount(2, $identity->filterClaims(ClaimType::Role));
@@ -100,17 +100,17 @@ class IdentityBuilderTest extends TestCase
     public function testAddingSingleClaimObjectAddsItToIdentity(): void
     {
         $claim = new Claim(ClaimType::Name, 'Dave', 'example.com');
-        $identity = (new IdentityBuilder())
+        $identity = new IdentityBuilder()
             ->withClaims($claim)
             ->build();
-        $this->assertSame([$claim], $identity->getClaims());
+        $this->assertSame([$claim], $identity->claims);
     }
 
     public function testNotAddingAuthenticationSchemeNameDoesNotSetOneInIdentity(): void
     {
-        $identity = (new IdentityBuilder())
+        $identity = new IdentityBuilder()
             ->build();
-        $this->assertNull($identity->getAuthenticationSchemeName());
+        $this->assertNull($identity->authenticationSchemeName);
     }
 
     #[DataProvider('provideClaimsCalls')]
@@ -131,9 +131,9 @@ class IdentityBuilderTest extends TestCase
 
     public function testWithAuthenticationSchemeNameSetsAuthenticationSchemeNameInIdentity(): void
     {
-        $identity = (new IdentityBuilder())
+        $identity = new IdentityBuilder()
             ->withAuthenticationSchemeName('foo')
             ->build();
-        $this->assertSame('foo', $identity->getAuthenticationSchemeName());
+        $this->assertSame('foo', $identity->authenticationSchemeName);
     }
 }

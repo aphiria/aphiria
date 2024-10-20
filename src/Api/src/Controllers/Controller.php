@@ -34,84 +34,99 @@ use LogicException;
  */
 class Controller
 {
-    /** @var IBodyDeserializer|null The body deserializer */
-    protected ?IBodyDeserializer $bodyDeserializer = null;
-    /** @var IRequest|null The current request */
-    protected ?IRequest $request = null;
-    /** @var RequestParser|null The parser to use to get data from the current request */
-    protected ?RequestParser $requestParser = null;
+    /**
+     * The body deserializer
+     *
+     * @var IBodyDeserializer
+     * @throw LogicException Thrown if the virtual body deserializer is not set
+     */
+    public IBodyDeserializer $bodyDeserializer {
+        get => $this->_bodyDeserializer === null ? throw new LogicException('Body deserializer is not set') : $this->_bodyDeserializer;
+        set {
+            $this->_bodyDeserializer = $value;
+        }
+    }
+    /**
+     * The current request
+     *
+     * @var IRequest
+     * @throw LogicException Thrown if the virtual request is not set
+     */
+    public IRequest $request {
+        get => $this->_request === null ? throw new LogicException('Request is not set') : $this->_request;
+        set {
+            $this->_request = $value;
+        }
+    }
+    /**
+     * The request parser
+     *
+     * @var RequestParser
+     * @throw LogicException Thrown if the virtual request parser is not set
+     */
+    public RequestParser $requestParser {
+        get => $this->_requestParser === null ? throw new LogicException('Request parser is not set') : $this->_requestParser;
+        set => $this->_requestParser = $value;
+    }
+    /**
+     * The response factory
+     *
+     * @var IResponseFactory
+     * @throw LogicException Thrown if the virtual response factory is not set
+     */
+    public IResponseFactory $responseFactory {
+        get => $this->_responseFactory === null ? throw new LogicException('Response factory is not set') : $this->_responseFactory;
+        set {
+            $this->_responseFactory = $value;
+        }
+    }
+    /**
+     * The response formatter
+     *
+     * @var ResponseFormatter
+     * @throw LogicException Thrown if the virtual response formatter is not set
+     */
+    public ResponseFormatter $responseFormatter {
+        get => $this->_responseFormatter === null ? throw new LogicException('Response formatter is not set') : $this->_responseFormatter;
+        set {
+            $this->_responseFormatter = $value;
+        }
+    }
+    /**
+     * The user accessor
+     *
+     * @var IUserAccessor
+     * @throw LogicException Thrown if the virtual user accessor is not set
+     */
+    public IUserAccessor $userAccessor {
+        get => $this->_userAccessor === null ? throw new LogicException('User accessor is not set') : $this->_userAccessor;
+        set {
+            $this->_userAccessor = $value;
+        }
+    }
+    /**
+     * Gets the current user if one was set, otherwise null
+     *
+     * @var IPrincipal|null
+     * @throws LogicException Thrown if the user accessor or request are not set
+     */
+    protected ?IPrincipal $user {
+        get {
+            return $this->userAccessor->getUser($this->request);
+        }
+    }
+    /** @var IBodyDeserializer|null The virtual body deserializer */
+    private ?IBodyDeserializer $_bodyDeserializer = null;
+    /** @var IRequest|null The virtual current request */
+    private ?IRequest $_request = null;
+    /** @var RequestParser|null The virtual parser to use to get data from the current request */
+    private ?RequestParser $_requestParser = null;
     /** @var IResponseFactory|null The response factory */
-    protected ?IResponseFactory $responseFactory = null;
-    /** @var ResponseFormatter|null The formatter to use to write data to the response */
-    protected ?ResponseFormatter $responseFormatter = null;
-    /** @var IUserAccessor|null The user accessor */
-    protected ?IUserAccessor $userAccessor = null;
-
-    /**
-     * Sets the body deserializer
-     *
-     * @param IBodyDeserializer $bodyDeserializer The body deserializer
-     * @internal
-     */
-    public function setBodyDeserializer(IBodyDeserializer $bodyDeserializer): void
-    {
-        $this->bodyDeserializer = $bodyDeserializer;
-    }
-
-    /**
-     * Sets the current request
-     *
-     * @param IRequest $request The current request
-     * @internal
-     */
-    public function setRequest(IRequest $request): void
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * Sets the request parser
-     *
-     * @param RequestParser $requestParser The request parser
-     * @internal
-     */
-    public function setRequestParser(RequestParser $requestParser): void
-    {
-        $this->requestParser = $requestParser;
-    }
-
-    /**
-     * Sets the response factory
-     *
-     * @param IResponseFactory $responseFactory The response factory
-     * @internal
-     */
-    public function setResponseFactory(IResponseFactory $responseFactory): void
-    {
-        $this->responseFactory = $responseFactory;
-    }
-
-    /**
-     * Sets the response formatter
-     *
-     * @param ResponseFormatter $responseFormatter The response formatter
-     * @internal
-     */
-    public function setResponseFormatter(ResponseFormatter $responseFormatter): void
-    {
-        $this->responseFormatter = $responseFormatter;
-    }
-
-    /**
-     * Sets the user accessor
-     *
-     * @param IUserAccessor $userAccessor The user accessor
-     * @internal
-     */
-    public function setUserAccessor(IUserAccessor $userAccessor): void
-    {
-        $this->userAccessor = $userAccessor;
-    }
+    private ?IResponseFactory $_responseFactory = null;
+    /** @var ResponseFormatter|null The virtual formatter to use to write data to the response */
+    private ?ResponseFormatter $_responseFormatter = null;
+    /** @var IUserAccessor|null The virtual user accessor */
+    private ?IUserAccessor $_userAccessor = null;
 
     /**
      * Creates an accepted response
@@ -122,12 +137,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function accepted(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function accepted(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::Accepted,
@@ -145,12 +156,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function badRequest(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function badRequest(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::BadRequest,
@@ -168,12 +175,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function conflict(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function conflict(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::Conflict,
@@ -193,12 +196,8 @@ class Controller
      * @throws LogicException Thrown if the request is not set
      * @throws InvalidArgumentException Thrown if the URI was not the correct type
      */
-    protected function created(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function created(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         $headers = $headers ?? new Headers();
         $headers->add('Location', (string)$uri);
 
@@ -219,12 +218,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function forbidden(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function forbidden(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::Forbidden,
@@ -245,28 +240,9 @@ class Controller
      * @throws LogicException Thrown if the request is not set
      * @throws InvalidArgumentException Thrown if the URI is not a string nor an instance of Uri
      */
-    protected function found(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function found(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
         return $this->redirect(HttpStatusCode::Found, $uri, $body, $headers);
-    }
-
-    /**
-     * Gets the current authenticated user
-     *
-     * @return IPrincipal|null The current user if one was set, otherwise null
-     * @throws LogicException Thrown if the request or user accessor are not set
-     */
-    protected function getUser(): ?IPrincipal
-    {
-        if (!$this->userAccessor instanceof IUserAccessor) {
-            throw new LogicException('User accessor is not set');
-        }
-
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
-        return $this->userAccessor->getUser($this->request);
     }
 
     /**
@@ -278,12 +254,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function internalServerError(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function internalServerError(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::InternalServerError,
@@ -303,7 +275,7 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function movedPermanently(string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function movedPermanently(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
         return $this->redirect(HttpStatusCode::MovedPermanently, $uri, $body, $headers);
     }
@@ -316,12 +288,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function noContent(Headers $headers = null): IResponse
+    protected function noContent(?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::NoContent,
@@ -338,12 +306,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function notFound(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function notFound(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::NotFound,
@@ -361,12 +325,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function ok(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function ok(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::Ok,
@@ -385,10 +345,6 @@ class Controller
      */
     protected function readRequestBodyAs(string $type): mixed
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         try {
             return $this->bodyDeserializer->readRequestBodyAs($type, $this->request);
         } catch (FailedContentNegotiationException $ex) {
@@ -415,12 +371,8 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    protected function unauthorized(object|string|int|float|array $body = null, Headers $headers = null): IResponse
+    protected function unauthorized(object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::Unauthorized,
@@ -441,12 +393,11 @@ class Controller
      * @throws HttpException Thrown if there was an error creating the response
      * @throws LogicException Thrown if the request is not set
      */
-    private function redirect(HttpStatusCode|int $statusCode, string|Uri $uri, object|string|int|float|array $body = null, Headers $headers = null): IResponse
-    {
-        if (!$this->request instanceof IRequest) {
-            throw new LogicException('Request is not set');
-        }
-
+    private function redirect(
+        HttpStatusCode|int $statusCode,
+        string|Uri $uri, object|string|int|float|array|null $body = null,
+        ?Headers $headers = null
+    ): IResponse {
         if (\is_string($uri)) {
             $uriString = $uri;
         } else {
@@ -459,7 +410,7 @@ class Controller
             $headers,
             $body
         );
-        $response->getHeaders()->add('Location', $uriString);
+        $response->headers->add('Location', $uriString);
 
         return $response;
     }

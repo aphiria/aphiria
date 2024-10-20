@@ -25,7 +25,7 @@ final class ImpossibleBindingException extends Exception
      * @inheritdoc
      * @param array<class-string, list<Binder>> $failedInterfacesToBinders The mapping of failed interfaces to binders
      */
-    public function __construct(array $failedInterfacesToBinders, int $code = 0, Throwable $previous = null)
+    public function __construct(array $failedInterfacesToBinders, int $code = 0, ?Throwable $previous = null)
     {
         $message = 'Impossible to resolve following interfaces: ';
 

@@ -56,7 +56,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $this->assertCount(1, $routeArr[0]->middlewareBindings);
         $this->assertSame(MiddlewareLibraryMiddleware::class, $routeArr[0]->middlewareBindings[0]->className);
@@ -77,7 +77,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $this->assertCount(1, $routeArr[0]->middlewareBindings);
         $this->assertSame(DummyMiddleware::class, $routeArr[0]->middlewareBindings[0]->className);
@@ -93,7 +93,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$nonController::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $this->assertEmpty($routes->getAll());
+        $this->assertEmpty($routes->values);
     }
 
     public function testRegisteringRoutesWithControllerThatIsHttpsOnlyMakesChildRoutesHttpsOnly(): void
@@ -117,7 +117,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(2, $routeArr);
         $this->assertTrue($routeArr[0]->uriTemplate->isHttpsOnly);
         $this->assertTrue($routeArr[1]->uriTemplate->isHttpsOnly);
@@ -138,7 +138,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
@@ -159,7 +159,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertSame('api.example.com', $route->uriTemplate->hostTemplate);
@@ -186,7 +186,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(2, $routeArr);
         $this->assertEquals(['foo' => 'bar'], $routeArr[0]->parameters);
         $this->assertEquals(['foo' => 'bar', 'baz' => 'blah'], $routeArr[1]->parameters);
@@ -207,7 +207,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertSame('/foo/bar', $route->uriTemplate->pathTemplate);
@@ -238,7 +238,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(2, $routeArr);
         // Note: The HTTP method constraint gets automatically added, too
         $this->assertCount(2, $routeArr[0]->constraints);
@@ -263,7 +263,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertSame('/foo', $route->uriTemplate->pathTemplate);
@@ -293,7 +293,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(1, $route->middlewareBindings);
@@ -319,7 +319,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(1, $route->middlewareBindings);
@@ -345,7 +345,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $this->assertCount(1, $routeArr[0]->middlewareBindings);
         $this->assertSame(DummyMiddleware::class, $routeArr[0]->middlewareBindings[0]->className);
@@ -369,7 +369,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);
@@ -398,7 +398,7 @@ class AttributeRouteRegistrantTest extends TestCase
             ->willReturn([$controller::class]);
         $routes = new RouteCollection();
         $this->registrant->registerRoutes($routes);
-        $routeArr = $routes->getAll();
+        $routeArr = $routes->values;
         $this->assertCount(1, $routeArr);
         $route = $routeArr[0];
         $this->assertCount(2, $route->middlewareBindings);

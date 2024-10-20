@@ -30,6 +30,16 @@ use Aphiria\DependencyInjection\IContainer;
 class AuthenticationBinder extends Binder
 {
     /**
+     * Whether or not we're in the testing environment
+     *
+     * @var bool
+     * @note If you use different environment variable values for testing, override this
+     */
+    protected bool $inTestingEnvironment {
+        get => \getenv('APP_ENV') === 'testing';
+    }
+
+    /**
      * @inheritdoc
      */
     public function bind(IContainer $container): void
@@ -41,7 +51,7 @@ class AuthenticationBinder extends Binder
         $userAccessor = $this->getUserAccessor($container);
         $container->bindInstance(IUserAccessor::class, $userAccessor);
 
-        if ($this->inTestingEnvironment()) {
+        if ($this->inTestingEnvironment) {
             $authenticator = new MockAuthenticator($schemes, $schemeHandlerResolver);
             $container->bindInstance(IMockAuthenticator::class, $authenticator);
         } else {
@@ -71,16 +81,5 @@ class AuthenticationBinder extends Binder
     protected function getUserAccessor(IContainer $container): IUserAccessor
     {
         return new RequestPropertyUserAccessor();
-    }
-
-    /**
-     * Gets whether we're in the testing environment
-     *
-     * @return bool True if we're in the testing environment, otherwise false
-     * @note If you use different environment variable values for testing, override this
-     */
-    protected function inTestingEnvironment(): bool
-    {
-        return \getenv('APP_ENV') === 'testing';
     }
 }

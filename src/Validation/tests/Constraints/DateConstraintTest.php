@@ -38,12 +38,12 @@ class DateConstraintTest extends TestCase
     public function testGettingErrorMessageId(): void
     {
         $constraint = new DateConstraint(['Ymd'], 'foo');
-        $this->assertSame('foo', $constraint->getErrorMessageId());
+        $this->assertSame('foo', $constraint->errorMessageId);
     }
 
     public function testGettingErrorMessagePlaceholdersIncludesValue(): void
     {
-        $this->assertEquals(['value' => 'val'], (new DateConstraint(['Ymd']))->getErrorMessagePlaceholders('val'));
+        $this->assertEquals(['value' => 'val'], new DateConstraint(['Ymd'])->getErrorMessagePlaceholders('val'));
     }
 
     public function testUnequalValuesFail(): void

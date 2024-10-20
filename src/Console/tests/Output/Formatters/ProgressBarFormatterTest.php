@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Console\Tests\Output\Formatters;
 
+use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Output\Formatters\ProgressBarFormatter;
 use Aphiria\Console\Output\Formatters\ProgressBarFormatterOptions;
 use Aphiria\Console\Output\IOutput;
@@ -19,6 +20,7 @@ use Exception;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class ProgressBarFormatterTest extends TestCase
@@ -28,6 +30,17 @@ class ProgressBarFormatterTest extends TestCase
     protected function setUp(): void
     {
         $this->output = $this->createMock(IOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $this->output->method(PropertyHook::get('driver'))
+            ->willReturn($driver);
     }
 
     protected function tearDown(): void
@@ -64,19 +77,32 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressClearsPreviousOutputUsingAnsiCodes(): void
     {
         // Use a redraw frequency of 0 so that it redraws every time
-        $output = Mockery::mock(IOutput::class);
-        $output->shouldReceive('write')
-            ->withAnyArgs();
-        $output->shouldReceive('write')
-            ->with(
-                fn (mixed $value): bool => $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $value, true)
-            );
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $output = $this->createMock(IOutput::class);
+        $output->method(PropertyHook::get('driver'))
+            ->willReturn($driver);
+        $calledWriteSuccessfullyAtLeastOnce = false;
+        $output->expects($this->atLeastOnce())
+            ->method('write')
+            ->with($this->callback(function (array|string $messages) use (&$calledWriteSuccessfullyAtLeastOnce): bool {
+                $calledWriteSuccessfullyAtLeastOnce = $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $messages, true);
+
+                return true;
+            }));
         $formatter = new ProgressBarFormatter($output);
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12, redrawFrequency: 0);
         $formatter->onProgressChanged(0, 1, 10, $options);
         $formatter->onProgressChanged(1, 2, 10, $options);
         // Dummy assertion
-        $this->assertTrue(true);
+        $this->assertTrue($calledWriteSuccessfullyAtLeastOnce);
     }
 
     public function testOnProgressThatReachesMaxStepsDrawsCompleteProgressBar(): void

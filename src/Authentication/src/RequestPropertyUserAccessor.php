@@ -29,7 +29,7 @@ final class RequestPropertyUserAccessor implements IUserAccessor
     public function getUser(IRequest $request): ?IPrincipal
     {
         $user = null;
-        $request->getProperties()->tryGet(self::USER_KEY, $user);
+        $request->properties->tryGet(self::USER_KEY, $user);
 
         /** @var IPrincipal|null $user */
         return $user;
@@ -40,6 +40,6 @@ final class RequestPropertyUserAccessor implements IUserAccessor
      */
     public function setUser(?IPrincipal $user, IRequest $request): void
     {
-        $request->getProperties()->add(self::USER_KEY, $user);
+        $request->properties->add(self::USER_KEY, $user);
     }
 }

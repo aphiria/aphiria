@@ -30,22 +30,22 @@ class AuthenticationSchemeRegistryTest extends TestCase
 
     public function testGetDefaultSchemeReturnsNullIfNoDefaultSchemeIsRegistered(): void
     {
-        $this->assertNull($this->schemes->getDefaultScheme());
+        $this->assertNull($this->schemes->defaultScheme);
     }
 
     public function testGetDefaultSchemeReturnsSchemeIfItIsTheOnlyOneRegistered(): void
     {
-        $this->assertNull($this->schemes->getDefaultScheme());
+        $this->assertNull($this->schemes->defaultScheme);
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler1 */
         $schemeHandler1 = $this->createMock(IAuthenticationSchemeHandler::class);
         $scheme1 = new AuthenticationScheme('foo', $schemeHandler1::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($scheme1);
-        $this->assertSame($scheme1, $this->schemes->getDefaultScheme());
+        $this->assertSame($scheme1, $this->schemes->defaultScheme);
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler2 */
         $schemeHandler2 = $this->createMock(IAuthenticationSchemeHandler::class);
         $scheme2 = new AuthenticationScheme('bar', $schemeHandler2::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($scheme2);
-        $this->assertNull($this->schemes->getDefaultScheme());
+        $this->assertNull($this->schemes->defaultScheme);
     }
 
     public function testGetSchemeWithMatchingSchemeReturnsIt(): void
@@ -70,11 +70,11 @@ class AuthenticationSchemeRegistryTest extends TestCase
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $expectedScheme = new AuthenticationScheme('foo', $schemeHandler::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($expectedScheme, true);
-        $this->assertSame($expectedScheme, $this->schemes->getDefaultScheme());
+        $this->assertSame($expectedScheme, $this->schemes->defaultScheme);
 
         // Test registering another non-default scheme to make sure it's not just marking the first one as default
         $nonDefaultScheme = new AuthenticationScheme('bar', $schemeHandler::class, new AuthenticationSchemeOptions());
         $this->schemes->registerScheme($nonDefaultScheme);
-        $this->assertSame($expectedScheme, $this->schemes->getDefaultScheme());
+        $this->assertSame($expectedScheme, $this->schemes->defaultScheme);
     }
 }

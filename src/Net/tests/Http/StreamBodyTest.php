@@ -14,14 +14,13 @@ namespace Aphiria\Net\Tests\Http;
 
 use Aphiria\IO\Streams\IStream;
 use Aphiria\Net\Http\StreamBody;
-use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class StreamBodyTest extends TestCase
 {
     public function testCastingToStringConvertsUnderlyingStreamToString(): void
     {
-        /** @var IStream&MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -33,22 +32,19 @@ class StreamBodyTest extends TestCase
     public function testGettingLengthReturnsUnderlyingStreamLength(): void
     {
         $nullLengthStream = $this->createMock(IStream::class);
-        $nullLengthStream->expects($this->once())
-            ->method('getLength')
+        $nullLengthStream->method(PropertyHook::get('length'))
             ->willReturn(null);
         $nullLengthBody = new StreamBody($nullLengthStream);
-        $this->assertNull($nullLengthBody->getLength());
+        $this->assertNull($nullLengthBody->length);
         $definedLengthStream = $this->createMock(IStream::class);
-        $definedLengthStream->expects($this->once())
-            ->method('getLength')
+        $definedLengthStream->method(PropertyHook::get('length'))
             ->willReturn(1);
         $definedLengthBody = new StreamBody($definedLengthStream);
-        $this->assertSame(1, $definedLengthBody->getLength());
+        $this->assertSame(1, $definedLengthBody->length);
     }
 
     public function testReadingAsStreamReturnsUnderlyingStream(): void
     {
-        /** @var IStream $stream */
         $stream = $this->createMock(IStream::class);
         $body = new StreamBody($stream);
         $this->assertSame($stream, $body->readAsStream());
@@ -59,7 +55,6 @@ class StreamBodyTest extends TestCase
      */
     public function testReadingAsStringConvertsUnderlyingStreamToString(): void
     {
-        /** @var IStream&MockObject $stream */
         $stream = $this->createMock(IStream::class);
         $stream->expects($this->once())
             ->method('__toString')
@@ -73,15 +68,12 @@ class StreamBodyTest extends TestCase
      */
     public function testWritingToStreamForNonSeekableStreamDoesNotRewindItBeforeCopyingIt(): void
     {
-        /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream&MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
-        $underlyingStream->expects($this->once())
-            ->method('isSeekable')
+        $underlyingStream->method(PropertyHook::get('isSeekable'))
             ->willReturn(false);
         $underlyingStream->expects($this->never())
             ->method('rewind');
@@ -94,15 +86,12 @@ class StreamBodyTest extends TestCase
      */
     public function testWritingToStreamForSeekableStreamRewindsItBeforeCopyingIt(): void
     {
-        /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream&MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
-        $underlyingStream->expects($this->once())
-            ->method('isSeekable')
+        $underlyingStream->method(PropertyHook::get('isSeekable'))
             ->willReturn(true);
         $underlyingStream->expects($this->once())
             ->method('rewind');
@@ -115,9 +104,7 @@ class StreamBodyTest extends TestCase
      */
     public function testWritingToStreamWritesToUnderlyingStream(): void
     {
-        /** @var IStream $outputStream */
         $outputStream = $this->createMock(IStream::class);
-        /** @var IStream&MockObject $underlyingStream */
         $underlyingStream = $this->createMock(IStream::class);
         $underlyingStream->expects($this->once())
             ->method('copyToStream')

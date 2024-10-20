@@ -78,7 +78,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
             }
         }
 
-        $routes->addMany($routeBuilders->build()->getAll());
+        $routes->addMany($routeBuilders->build()->values);
     }
 
     /**
@@ -193,10 +193,6 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 if (!empty($routeAttributeInstance->parameters)) {
                     $routeBuilder->withManyParameters($routeAttributeInstance->parameters);
                 }
-            }
-
-            if ($routeBuilder === null) {
-                continue;
             }
         }
     }

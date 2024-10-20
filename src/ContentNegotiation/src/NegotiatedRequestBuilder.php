@@ -81,7 +81,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
                 throw new InvalidArgumentException("No media type formatter available for $type");
             }
 
-            $encoding = $mediaTypeFormatterMatch->formatter->getDefaultEncoding();
+            $encoding = $mediaTypeFormatterMatch->formatter->defaultEncoding;
             $bodyStream = new Stream(\fopen('php://temp', 'w+b'));
             $mediaTypeFormatterMatch->formatter->writeToStream($body, $bodyStream, $encoding);
             $new->body = new StreamBody($bodyStream);

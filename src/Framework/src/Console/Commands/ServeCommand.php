@@ -27,7 +27,7 @@ class ServeCommand extends Command
      * @param string|null $routerPath The path to the router file, or null if using the default
      * @throws MissingConfigurationValueException Thrown if the localhost router path is not set in the config
      */
-    public function __construct(string $routerPath = null)
+    public function __construct(?string $routerPath = null)
     {
         $routerPath ??= GlobalConfiguration::getString('aphiria.api.localhostRouterPath');
 

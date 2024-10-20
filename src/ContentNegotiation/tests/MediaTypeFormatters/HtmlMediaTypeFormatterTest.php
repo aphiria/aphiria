@@ -42,22 +42,22 @@ class HtmlMediaTypeFormatterTest extends TestCase
 
     public function testCorrectSupportedEncodingsAreReturned(): void
     {
-        $this->assertEquals(['utf-8', 'utf-16'], $this->formatter->getSupportedEncodings());
+        $this->assertEquals(['utf-8', 'utf-16'], $this->formatter->supportedEncodings);
     }
 
     public function testCorrectSupportedMediaTypesAreReturned(): void
     {
-        $this->assertEquals(['text/html'], $this->formatter->getSupportedMediaTypes());
+        $this->assertEquals(['text/html'], $this->formatter->supportedMediaTypes);
     }
 
     public function testDefaultEncodingReturnsFirstSupportedEncoding(): void
     {
-        $this->assertSame('utf-8', $this->formatter->getDefaultEncoding());
+        $this->assertSame('utf-8', $this->formatter->defaultEncoding);
     }
 
     public function testDefaultMediaTypeReturnsFirstSupportedMediaType(): void
     {
-        $this->assertSame('text/html', $this->formatter->getDefaultMediaType());
+        $this->assertSame('text/html', $this->formatter->defaultMediaType);
     }
 
     public function testReadingAsArrayOfStringsThrowsException(): void

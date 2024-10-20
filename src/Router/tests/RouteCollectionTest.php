@@ -39,7 +39,7 @@ class RouteCollectionTest extends TestCase
         $expectedRoute = new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), [], [], 'name');
         $routes1->add($expectedRoute);
         $routes2->copy($routes1);
-        $this->assertSame([$expectedRoute], $routes2->getAll());
+        $this->assertSame([$expectedRoute], $routes2->values);
         $this->assertSame($expectedRoute, $routes2->getNamedRoute('name'));
     }
 
@@ -54,7 +54,7 @@ class RouteCollectionTest extends TestCase
             new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), [])
         ];
         $collection = new RouteCollection($expectedRoutes);
-        $this->assertEquals($expectedRoutes, $collection->getAll());
+        $this->assertEquals($expectedRoutes, $collection->values);
     }
 
     public function testGettingAllRoutesReturnsAllRegisteredRoutes(): void
@@ -73,7 +73,7 @@ class RouteCollectionTest extends TestCase
             new Route(new UriTemplate('def'), new RouteAction($controller::class, 'baz'), [])
         ];
         $this->collection->addMany($expectedRoutes);
-        $this->assertEquals($expectedRoutes, $this->collection->getAll());
+        $this->assertEquals($expectedRoutes, $this->collection->values);
     }
 
     public function testGettingNamedRouteThatDoesNotExistReturnsNull(): void

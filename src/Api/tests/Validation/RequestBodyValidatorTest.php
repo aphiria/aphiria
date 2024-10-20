@@ -24,6 +24,7 @@ use Aphiria\Validation\ValidationException;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class RequestBodyValidatorTest extends TestCase
@@ -74,7 +75,7 @@ class RequestBodyValidatorTest extends TestCase
             ->with($this->request)
             ->willReturn(null);
         $this->errorMessageInterpolator->expects($this->never())
-            ->method('setDefaultLocale');
+            ->method(PropertyHook::set('defaultLocale'));
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion
         $this->assertTrue(true);
@@ -127,7 +128,7 @@ class RequestBodyValidatorTest extends TestCase
             ->with($this->request)
             ->willReturn('en-US');
         $this->errorMessageInterpolator->expects($this->once())
-            ->method('setDefaultLocale')
+            ->method(PropertyHook::set('defaultLocale'))
             ->with('en-US');
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion
@@ -142,7 +143,7 @@ class RequestBodyValidatorTest extends TestCase
             ->with($this->request)
             ->willReturn('en-US');
         $this->errorMessageInterpolator->expects($this->once())
-            ->method('setDefaultLocale')
+            ->method(PropertyHook::set('defaultLocale'))
             ->with('en-US');
         // Double-validating this body should be sufficient to test this
         $this->requestBodyValidator->validate($this->request, $this);

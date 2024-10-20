@@ -23,15 +23,15 @@ final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
 {
     /** @var IImmutableDictionary<string, string|null> The dictionary of parameter names to values */
     public readonly IImmutableDictionary $parameters;
-    /** @var float The quality score of the header */
-    private float $quality;
+    /** @inheritdoc */
+    public private(set) float $quality;
 
     /**
      * @param string $charset The charset value
      * @param IImmutableDictionary<string, string|null>|null $parameters The dictionary of parameters, or null if there are no parameters
      * @throws InvalidArgumentException Thrown if the quality score is not between 0 and 1
      */
-    public function __construct(public readonly string $charset, IImmutableDictionary $parameters = null)
+    public function __construct(public readonly string $charset, ?IImmutableDictionary $parameters = null)
     {
         /** @var IImmutableDictionary<string, string|null>|ImmutableHashTable<string, string|null> parameters */
         $this->parameters = $parameters ?? new ImmutableHashTable([]);
@@ -43,13 +43,5 @@ final class AcceptCharsetHeaderValue implements IHeaderValueWithQualityScore
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getQuality(): float
-    {
-        return $this->quality;
     }
 }

@@ -51,32 +51,32 @@ class RequestTest extends TestCase
 
     public function testGettingBody(): void
     {
-        $this->assertSame($this->body, $this->request->getBody());
+        $this->assertSame($this->body, $this->request->body);
     }
 
     public function testGettingHeaders(): void
     {
-        $this->assertSame($this->headers, $this->request->getHeaders());
+        $this->assertSame($this->headers, $this->request->headers);
     }
 
     public function testGettingMethod(): void
     {
-        $this->assertSame('GET', $this->request->getMethod());
+        $this->assertSame('GET', $this->request->method);
     }
 
     public function testGettingProperties(): void
     {
-        $this->assertSame($this->properties, $this->request->getProperties());
+        $this->assertSame($this->properties, $this->request->properties);
     }
 
     public function testGettingProtocolVersion(): void
     {
-        $this->assertSame('2.0', $this->request->getProtocolVersion());
+        $this->assertSame('2.0', $this->request->protocolVersion);
     }
 
     public function testGettingUri(): void
     {
-        $this->assertSame($this->uri, $this->request->getUri());
+        $this->assertSame($this->uri, $this->request->uri);
     }
 
     public function testHostHeaderIsNotAddedIfItAlreadyExists(): void
@@ -84,14 +84,14 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $headers->add('Host', 'foo.com');
         $request = new Request('GET', new Uri('https://bar.com'), $headers);
-        $this->assertSame('foo.com', $request->getHeaders()->getFirst('Host'));
+        $this->assertSame('foo.com', $request->headers->getFirst('Host'));
     }
 
     public function testMultipleHeaderValuesAreConcatenatedWithCommas(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
-        $request->getHeaders()->add('Foo', 'bar');
-        $request->getHeaders()->add('Foo', 'baz', true);
+        $request->headers->add('Foo', 'bar');
+        $request->headers->add('Foo', 'baz', true);
         $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar, baz\r\n\r\n", (string)$request);
     }
 
@@ -145,14 +145,14 @@ class RequestTest extends TestCase
     public function testRequestWithHeadersAndBodyEndsWithBody(): void
     {
         $request = new Request('GET', new Uri('https://example.com'), new Headers(), new StringBody('foo'));
-        $request->getHeaders()->add('Foo', 'bar');
+        $request->headers->add('Foo', 'bar');
         $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string)$request);
     }
 
     public function testRequestWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
-        $request->getHeaders()->add('Foo', 'bar');
+        $request->headers->add('Foo', 'bar');
         $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\n", (string)$request);
     }
 
@@ -166,8 +166,8 @@ class RequestTest extends TestCase
     {
         /** @var IBody $body */
         $body = $this->createMock(IBody::class);
-        $this->request->setBody($body);
-        $this->assertSame($body, $this->request->getBody());
+        $this->request->body = $body;
+        $this->assertSame($body, $this->request->body);
     }
 
     public function testSettingInvalidMethodThrowsException(): void

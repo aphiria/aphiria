@@ -19,6 +19,20 @@ use Aphiria\IO\Streams\IStream;
  */
 interface IMediaTypeFormatter
 {
+    /** @var string The default character encoding this formatter supports */
+    public string $defaultEncoding { get; }
+    /** @var string The default media type this formatter supports */
+    public string $defaultMediaType { get; }
+    /** @var list<string> The list of character encodings this formatter supports */
+    public array $supportedEncodings { get; }
+    /**
+     * The list of media types this formatter supports
+     * These media types are listed in the order of preference by the formatter
+     *
+     * @var list<string>
+     */
+    public array $supportedMediaTypes { get; }
+
     /**
      * Gets whether or not the formatter can read the input type
      *
@@ -34,35 +48,6 @@ interface IMediaTypeFormatter
      * @return bool True if this formatter can write the input type, otherwise false
      */
     public function canWriteType(string $type): bool;
-
-    /**
-     * Gets the default character encoding this formatter supports
-     *
-     * @return string The default character encoding
-     */
-    public function getDefaultEncoding(): string;
-
-    /**
-     * Gets the default media type this formatter supports
-     *
-     * @return string The default media type
-     */
-    public function getDefaultMediaType(): string;
-
-    /**
-     * Gets the list of character encodings this formatter supports
-     *
-     * @return list<string> The list of supported character encodings
-     */
-    public function getSupportedEncodings(): array;
-
-    /**
-     * Gets the list of media types this formatter supports
-     * These media types are listed in the order of preference by the formatter
-     *
-     * @return list<string> The list of supported media types
-     */
-    public function getSupportedMediaTypes(): array;
 
     /**
      * Reads content from a string and converts it to the input type

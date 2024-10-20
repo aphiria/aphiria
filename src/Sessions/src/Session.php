@@ -21,29 +21,49 @@ use InvalidArgumentException;
  */
 class Session implements ISession
 {
-    /** The key for new flash keys */
+    /** @const The key for new flash keys */
     public const string NEW_FLASH_KEYS_KEY = '__APHIRIA_NEW_FLASH_KEYS';
-    /** The key for stale flash keys */
+    /** @const The key for stale flash keys */
     public const string STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
-
-    /** @var int|string The session Id */
-    private int|string $id = '';
-    /** @var array<string, mixed> The mapping of variable names to values */
-    private array $vars = [];
+    /** @inheritdoc */
+    public private(set) array $variables = [];
+    /** @inheritdoc */
+    public int|string $id  {
+        get => $this->id;
+        set (mixed $value) {
+            if ($this->idGenerator->idIsValid($value)) {
+                $this->id = $value;
+            } else {
+                $this->regenerateId();
+            }
+        }
+    }
+    /** @var list<string> The list of new flash keys */
+    protected array $newFlashKeys {
+        get => $this->getVariable(self::NEW_FLASH_KEYS_KEY, []);
+    }
+    /** @var list<string> The list of stale flash keys */
+    protected array $staleFlashKeys {
+        get => $this->getVariable(self::STALE_FLASH_KEYS_KEY, []);
+    }
 
     /**
      * @param int|string|null $id The Id of the session
      * @param IIdGenerator $idGenerator The Id generator to use, or null if using the default one
      */
     public function __construct(
-        int|string $id = null,
+        int|string|null $id = null,
         private readonly IIdGenerator $idGenerator = new UuidV4IdGenerator()
     ) {
-        if ($id === null) {
-            $this->regenerateId();
-        } else {
-            $this->setId($id);
-        }
+        $this->id = $id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addManyVariables(array $variables): void
+    {
+        $this->variables = [...$this->variables, ...$variables];
     }
 
     /**
@@ -51,47 +71,47 @@ class Session implements ISession
      */
     public function ageFlashData(): void
     {
-        foreach ($this->getStaleFlashKeys() as $oldKey) {
-            $this->delete($oldKey);
+        foreach ($this->staleFlashKeys as $oldKey) {
+            $this->deleteVariable($oldKey);
         }
 
-        $this->set(self::STALE_FLASH_KEYS_KEY, $this->getNewFlashKeys());
-        $this->set(self::NEW_FLASH_KEYS_KEY, []);
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, $this->newFlashKeys);
+        $this->setVariable(self::NEW_FLASH_KEYS_KEY, []);
     }
 
     /**
      * @inheritdoc
      */
-    public function containsKey(string $key): bool
+    public function containsVariable(string $name): bool
     {
-        return isset($this->vars[$key]);
+        return isset($this->variables[$name]);
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(string $key): void
+    public function deleteVariable(string $name): void
     {
-        unset($this->vars[$key]);
+        unset($this->variables[$name]);
     }
 
     /**
      * @inheritdoc
      */
-    public function flash(string $key, $value): void
+    public function flash(string $name, $value): void
     {
-        $this->set($key, $value);
-        $newFlashKeys = $this->getNewFlashKeys();
-        $newFlashKeys[] = $key;
-        $this->set(self::NEW_FLASH_KEYS_KEY, $newFlashKeys);
-        $staleFlashKeys = $this->getStaleFlashKeys();
+        $this->setVariable($name, $value);
+        $newFlashKeys = $this->newFlashKeys;
+        $newFlashKeys[] = $name;
+        $this->setVariable(self::NEW_FLASH_KEYS_KEY, $newFlashKeys);
+        $staleFlashKeys = $this->staleFlashKeys;
 
         // Remove the data from the list of stale keys, if it was there
-        if (($staleKey = \array_search($key, $staleFlashKeys, true)) !== false) {
+        if (($staleKey = \array_search($name, $staleFlashKeys, true)) !== false) {
             unset($staleFlashKeys[$staleKey]);
         }
 
-        $this->set(self::STALE_FLASH_KEYS_KEY, $staleFlashKeys);
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, $staleFlashKeys);
     }
 
     /**
@@ -99,31 +119,15 @@ class Session implements ISession
      */
     public function flush(): void
     {
-        $this->vars = [];
+        $this->variables = [];
     }
 
     /**
      * @inheritdoc
      */
-    public function get(string $key, mixed $defaultValue = null): mixed
+    public function getVariable(string $name, mixed $defaultValue = null): mixed
     {
-        return $this->vars[$key] ?? $defaultValue;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAll(): array
-    {
-        return $this->vars;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getId(): int|string
-    {
-        return $this->id;
+        return $this->variables[$name] ?? $defaultValue;
     }
 
     /**
@@ -131,7 +135,7 @@ class Session implements ISession
      */
     public function offsetExists(mixed $offset): bool
     {
-        return $this->containsKey((string)$offset);
+        return $this->containsVariable((string)$offset);
     }
 
     /**
@@ -139,7 +143,7 @@ class Session implements ISession
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get((string)$offset);
+        return $this->getVariable((string)$offset);
     }
 
     /**
@@ -151,7 +155,7 @@ class Session implements ISession
             throw new InvalidArgumentException('Key cannot be empty');
         }
 
-        $this->set((string)$offset, $value);
+        $this->setVariable((string)$offset, $value);
     }
 
     /**
@@ -159,7 +163,7 @@ class Session implements ISession
      */
     public function offsetUnset(mixed $offset): void
     {
-        unset($this->vars[(string)$offset]);
+        unset($this->variables[(string)$offset]);
     }
 
     /**
@@ -167,10 +171,10 @@ class Session implements ISession
      */
     public function reflash(): void
     {
-        $newFlashKeys = $this->getNewFlashKeys();
-        $staleFlashKeys = $this->getStaleFlashKeys();
-        $this->set(self::NEW_FLASH_KEYS_KEY, [...$newFlashKeys, ...$staleFlashKeys]);
-        $this->set(self::STALE_FLASH_KEYS_KEY, []);
+        $newFlashKeys = $this->newFlashKeys;
+        $staleFlashKeys = $this->staleFlashKeys;
+        $this->setVariable(self::NEW_FLASH_KEYS_KEY, [...$newFlashKeys, ...$staleFlashKeys]);
+        $this->setVariable(self::STALE_FLASH_KEYS_KEY, []);
     }
 
     /**
@@ -178,58 +182,14 @@ class Session implements ISession
      */
     public function regenerateId(): void
     {
-        $this->setId($this->idGenerator->generate());
+        $this->id = $this->idGenerator->generate();
     }
 
     /**
      * @inheritdoc
      */
-    public function set(string $key, $value): void
+    public function setVariable(string $name, $value): void
     {
-        $this->vars[$key] = $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setId(int|string $id): void
-    {
-        if ($this->idGenerator->idIsValid($id)) {
-            $this->id = $id;
-        } else {
-            $this->regenerateId();
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setMany(array $variables): void
-    {
-        $this->vars = [...$this->vars, ...$variables];
-    }
-
-    /**
-     * Gets the new flash keys array
-     *
-     * @return list<string> The list of new flashed keys
-     * @psalm-suppress MixedReturnStatement This will always return an array of strings
-     * @psalm-suppress MixedInferredReturnType Ditto
-     */
-    protected function getNewFlashKeys(): array
-    {
-        return $this->get(self::NEW_FLASH_KEYS_KEY, []);
-    }
-
-    /**
-     * Gets the stale flash keys array
-     *
-     * @return list<string> The list of stale flashed keys
-     * @psalm-suppress MixedReturnStatement This will always return an array of strings
-     * @psalm-suppress MixedInferredReturnType Ditto
-     */
-    protected function getStaleFlashKeys(): array
-    {
-        return $this->get(self::STALE_FLASH_KEYS_KEY, []);
+        $this->variables[$name] = $value;
     }
 }

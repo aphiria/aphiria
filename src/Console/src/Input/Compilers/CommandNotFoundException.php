@@ -25,7 +25,7 @@ final class CommandNotFoundException extends InvalidArgumentException
      * @param int $code The exception code
      * @param Throwable|null $previous The previous exception
      */
-    public function __construct(public readonly string $commandName, int $code = 0, Throwable $previous = null)
+    public function __construct(public readonly string $commandName, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct("No command found with name \"{$this->commandName}\"", $code, $previous);
     }

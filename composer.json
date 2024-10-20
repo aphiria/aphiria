@@ -86,7 +86,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "monolog/monolog": "~2.6",
-        "php": "^8.3",
+        "php": "^8.4",
         "psr/container": "^2.0",
         "psr/http-factory": "^1.0",
         "psr/http-message": "^2.0",
@@ -98,11 +98,12 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.6",
-        "mockery/mockery": "^1.5",
+        "mockery/mockery": "^1.6",
+        "nikic/php-parser": "^5.3",
         "nyholm/psr7": "^1.5",
-        "phpunit/phpunit": "^10.1",
+        "phpunit/phpunit": "^11.5-dev",
         "psalm/plugin-mockery": "^1.1",
-        "vimeo/psalm": "^5.1"
+        "vimeo/psalm": "dev-master"
     },
     "scripts": {
         "phpcs-test": "@phpcs-fix --dry-run",

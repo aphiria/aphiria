@@ -19,8 +19,24 @@ use InvalidArgumentException;
  */
 final class CommandRegistry
 {
-    /** @var array<string, CommandBinding> The mapping o command names to their bindings */
-    private array $bindings = [];
+    /** @var list<CommandBinding> The list of command bindings */
+    public array $commandBindings {
+        get => \array_values($this->commandNamesToBindings);
+    }
+    /** @var list<Command> The list of commands */
+    public array $commands {
+        get {
+            $commands = [];
+
+            foreach ($this->commandNamesToBindings as $binding) {
+                $commands[] = $binding->command;
+            }
+
+            return $commands;
+        }
+    }
+    /** @var array<string, CommandBinding> The mapping to command names to their bindings */
+    private array $commandNamesToBindings = [];
 
     /**
      * Copies a command registry into this one
@@ -30,33 +46,7 @@ final class CommandRegistry
      */
     public function copy(CommandRegistry $commands): void
     {
-        $this->bindings = $commands->bindings;
-    }
-
-    /**
-     * Gets the list of all command bindings
-     *
-     * @return list<CommandBinding> The list of command bindings
-     */
-    public function getAllCommandBindings(): array
-    {
-        return \array_values($this->bindings);
-    }
-
-    /**
-     * Gets a list of all commands
-     *
-     * @return list<Command> The list of commands
-     */
-    public function getAllCommands(): array
-    {
-        $commands = [];
-
-        foreach ($this->bindings as $binding) {
-            $commands[] = $binding->command;
-        }
-
-        return $commands;
+        $this->commandNamesToBindings = $commands->commandNamesToBindings;
     }
 
     /**
@@ -68,7 +58,7 @@ final class CommandRegistry
      */
     public function registerCommand(Command $command, string $commandHandlerClassName): void
     {
-        $this->bindings[self::normalizeCommandName($command->name)] = new CommandBinding($command, $commandHandlerClassName);
+        $this->commandNamesToBindings[self::normalizeCommandName($command->name)] = new CommandBinding($command, $commandHandlerClassName);
     }
 
     /**
@@ -79,7 +69,7 @@ final class CommandRegistry
     public function registerManyCommands(array $bindings): void
     {
         foreach ($bindings as $binding) {
-            $this->bindings[self::normalizeCommandName($binding->command->name)] = $binding;
+            $this->commandNamesToBindings[self::normalizeCommandName($binding->command->name)] = $binding;
         }
     }
 
@@ -96,13 +86,13 @@ final class CommandRegistry
     {
         $normalizedCommandName = self::normalizeCommandName($commandName);
 
-        if (!isset($this->bindings[$normalizedCommandName])) {
+        if (!isset($this->commandNamesToBindings[$normalizedCommandName])) {
             $binding = null;
 
             return false;
         }
 
-        $binding = $this->bindings[$normalizedCommandName];
+        $binding = $this->commandNamesToBindings[$normalizedCommandName];
 
         return true;
     }

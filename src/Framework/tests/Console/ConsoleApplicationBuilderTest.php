@@ -16,6 +16,7 @@ use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
 use Aphiria\Console\Commands\ICommandHandler;
+use Aphiria\Console\Drivers\IDriver;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
@@ -25,6 +26,7 @@ use Aphiria\DependencyInjection\ResolutionException;
 use Aphiria\DependencyInjection\UniversalContext;
 use Aphiria\Framework\Console\ConsoleApplication;
 use Aphiria\Framework\Console\ConsoleApplicationBuilder;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -42,7 +44,19 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->input = new Input('foo');
         $this->container->bindInstance(IServiceResolver::class, $this->container);
         $this->container->bindInstance(Input::class, $this->input);
-        $this->container->bindInstance(IOutput::class, $this->createMock(IOutput::class));
+        $output = $this->createMock(IOutput::class);
+        $driver = new class () implements IDriver {
+            public int $cliWidth = 3;
+            public int $cliHeight = 2;
+
+            public function readHiddenInput(IOutput $output): ?string
+            {
+                return null;
+            }
+        };
+        $output->method(PropertyHook::get('driver'))
+            ->willReturn($driver);
+        $this->container->bindInstance(IOutput::class, $output);
     }
 
     public function testBuildBuildsModulesBeforeComponentsAreInitialized(): void

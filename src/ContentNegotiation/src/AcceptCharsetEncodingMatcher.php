@@ -36,9 +36,9 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
     public function getBestEncodingMatch(
         array $supportedEncodings,
         IRequest $request,
-        MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
+        ?MediaTypeHeaderValue $matchedMediaTypeHeaderValue = null
     ): ?string {
-        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($request->getHeaders());
+        $acceptCharsetHeaders = $this->headerParser->parseAcceptCharsetHeader($request->headers);
         $rankedAcceptCharsetHeaders = $this->rankAcceptCharsetHeaders($acceptCharsetHeaders);
 
         foreach ($rankedAcceptCharsetHeaders as $acceptCharsetHeader) {
@@ -76,14 +76,11 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
      */
     private function compareAcceptCharsetHeaders(AcceptCharsetHeaderValue $a, AcceptCharsetHeaderValue $b): int
     {
-        $aQuality = $a->getQuality();
-        $bQuality = $b->getQuality();
-
-        if ($aQuality < $bQuality) {
+        if ($a->quality < $b->quality) {
             return 1;
         }
 
-        if ($aQuality > $bQuality) {
+        if ($a->quality > $b->quality) {
             return -1;
         }
 
@@ -113,7 +110,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
      */
     private function filterZeroScores(IHeaderValueWithQualityScore $header): bool
     {
-        return $header->getQuality() > 0;
+        return $header->quality > 0;
     }
 
     /**

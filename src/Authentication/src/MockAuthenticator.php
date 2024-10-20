@@ -40,7 +40,7 @@ class MockAuthenticator extends Authenticator implements IMockAuthenticator
     /**
      * @inheritdoc
      */
-    public function authenticate(IRequest $request, array|string $schemeNames = null): AuthenticationResult
+    public function authenticate(IRequest $request, array|string|null $schemeNames = null): AuthenticationResult
     {
         $authResult = parent::authenticate($request, $schemeNames);
         // We only act as a principal for a single authentication call
@@ -59,9 +59,9 @@ class MockAuthenticator extends Authenticator implements IMockAuthenticator
     ): AuthenticationResult {
         if ($this->actor !== null) {
             // Since we aren't actually calling the scheme handler, be sure to set the scheme name for any identities without one
-            foreach ($this->actor->getIdentities() as $identity) {
-                if ($identity->getAuthenticationSchemeName() === null) {
-                    $identity->setAuthenticationSchemeName($scheme->name);
+            foreach ($this->actor->identities as $identity) {
+                if ($identity->authenticationSchemeName === null) {
+                    $identity->authenticationSchemeName = $scheme->name;
                 }
             }
 

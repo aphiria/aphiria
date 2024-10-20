@@ -19,6 +19,7 @@ use Aphiria\Net\Http\IBody;
 use Aphiria\Net\Http\MultipartBody;
 use Aphiria\Net\Http\MultipartBodyPart;
 use Aphiria\Net\Http\StringBody;
+use PHPUnit\Framework\MockObject\Runtime\PropertyHook;
 use PHPUnit\Framework\TestCase;
 
 class MultipartBodyTest extends TestCase
@@ -38,11 +39,9 @@ class MultipartBodyTest extends TestCase
     public function testGettingLengthWithABodyPartWithNullLengthReturnsNull(): void
     {
         $streamMock1 = $this->createMock(IStream::class);
-        $streamMock1->expects($this->once())
-            ->method('isReadable')
+        $streamMock1->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock1->expects($this->once())
-            ->method('getLength')
+        $streamMock1->method(PropertyHook::get('length'))
             ->willReturn(1);
         $body1 = $this->createMock(IBody::class);
         $body1->expects($this->once())
@@ -50,11 +49,9 @@ class MultipartBodyTest extends TestCase
             ->willReturn($streamMock1);
         $body2 = $this->createMock(IBody::class);
         $streamMock2 = $this->createMock(IStream::class);
-        $streamMock2->expects($this->once())
-            ->method('isReadable')
+        $streamMock2->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock2->expects($this->once())
-            ->method('getLength')
+        $streamMock2->method(PropertyHook::get('length'))
             ->willReturn(null);
         $body2->expects($this->once())
             ->method('readAsStream')
@@ -64,17 +61,15 @@ class MultipartBodyTest extends TestCase
             new MultipartBodyPart(new Headers(), $body2)
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertNull($body->getLength());
+        $this->assertNull($body->length);
     }
 
     public function testGettingLengthWithBodyPartsWithLengthsReturnsSumOfLengths(): void
     {
         $streamMock1 = $this->createMock(IStream::class);
-        $streamMock1->expects($this->once())
-            ->method('isReadable')
+        $streamMock1->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock1->expects($this->once())
-            ->method('getLength')
+        $streamMock1->method(PropertyHook::get('length'))
             ->willReturn(1);
         $body1 = $this->createMock(IBody::class);
         $body1->expects($this->once())
@@ -82,11 +77,9 @@ class MultipartBodyTest extends TestCase
             ->willReturn($streamMock1);
         $body2 = $this->createMock(IBody::class);
         $streamMock2 = $this->createMock(IStream::class);
-        $streamMock2->expects($this->once())
-            ->method('isReadable')
+        $streamMock2->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock2->expects($this->once())
-            ->method('getLength')
+        $streamMock2->method(PropertyHook::get('length'))
             ->willReturn(2);
         $body2->expects($this->once())
             ->method('readAsStream')
@@ -106,7 +99,7 @@ class MultipartBodyTest extends TestCase
          * stream 2
          * \r\n--{boundary}--
          */
-        $this->assertSame(5 + 4 + 1 + 7 + 4 + 2 + 9, $body->getLength());
+        $this->assertSame(5 + 4 + 1 + 7 + 4 + 2 + 9, $body->length);
     }
 
     public function testGettingPartsReturnsParts(): void

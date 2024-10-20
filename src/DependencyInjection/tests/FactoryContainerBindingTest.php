@@ -21,9 +21,9 @@ class FactoryContainerBindingTest extends TestCase
     {
         $factory = fn (): object => $this;
         $singletonFactory = new FactoryContainerBinding($factory, true);
-        $this->assertTrue($singletonFactory->resolveAsSingleton());
+        $this->assertTrue($singletonFactory->resolveAsSingleton);
         $prototypeFactory = new FactoryContainerBinding($factory, false);
-        $this->assertFalse($prototypeFactory->resolveAsSingleton());
+        $this->assertFalse($prototypeFactory->resolveAsSingleton);
     }
 
     public function testGettingFactory(): void

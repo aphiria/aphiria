@@ -50,7 +50,7 @@ class RouteListCommandHandler implements ICommandHandler
         $showMiddleware = isset($input->options['middleware']);
         /** @var array $middlewareOptions */
         $middlewareOptions = $input->options['middleware'] ?? [];
-        $sortedRoutes = $this->routes->getAll();
+        $sortedRoutes = $this->routes->values;
         \usort($sortedRoutes, fn (Route $routeA, Route $routeB): int => $this->compareRoutes($routeA, $routeB));
         $rows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>']];
 
@@ -61,7 +61,7 @@ class RouteListCommandHandler implements ICommandHandler
                 $formattedMiddlewareClassNames = [];
 
                 if (\in_array('global', $middlewareOptions)) {
-                    foreach ($this->middleware->getAll() as $middleware) {
+                    foreach ($this->middleware->values as $middleware) {
                         $formattedMiddlewareClassNames[] = "<comment>{$this->formatClassName($middleware::class, $useFqn)}</comment>";
                     }
                 }
@@ -136,7 +136,7 @@ class RouteListCommandHandler implements ICommandHandler
 
         foreach ($route->constraints as $constraint) {
             if ($constraint instanceof HttpMethodRouteConstraint) {
-                $httpMethods = $constraint->getAllowedMethods();
+                $httpMethods = $constraint->allowedMethods;
                 break;
             }
         }

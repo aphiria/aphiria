@@ -67,20 +67,20 @@ final class Session implements IMiddleware
         $requestCookies = $this->requestParser->parseCookies($request);
 
         if ($requestCookies->containsKey($this->sessionCookieName)) {
-            $this->session->setId((string)$requestCookies->get($this->sessionCookieName));
+            $this->session->id = (string)$requestCookies->get($this->sessionCookieName);
         } else {
             $this->session->regenerateId();
         }
 
         $this->sessionHandler->open('', $this->sessionCookieName);
         /** @var array<string, mixed>|false $sessionVars */
-        $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->getId()));
-        $this->session->setMany($sessionVars === false ? [] : $sessionVars);
+        $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->id));
+        $this->session->addManyVariables($sessionVars === false ? [] : $sessionVars);
 
         $response = $next->handle($request);
 
         $this->session->ageFlashData();
-        $this->sessionHandler->write((string)$this->session->getId(), \serialize($this->session->getAll()));
+        $this->sessionHandler->write((string)$this->session->id, \serialize($this->session->variables));
         $this->writeSessionToResponse($response);
 
         return $response;
@@ -97,7 +97,7 @@ final class Session implements IMiddleware
             $response,
             new Cookie(
                 $this->sessionCookieName,
-                $this->session->getId(),
+                $this->session->id,
                 $this->sessionTtl,
                 $this->sessionCookiePath,
                 $this->sessionCookieDomain,

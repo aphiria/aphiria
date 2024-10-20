@@ -26,10 +26,10 @@ class UserTest extends TestCase
         $user = new User([]);
         $identity1 = new Identity([], 'http://example.com');
         $user->addIdentity($identity1);
-        $this->assertSame([$identity1], $user->getIdentities());
+        $this->assertSame([$identity1], $user->identities);
         $identity2 = new Identity([], 'http://example.com');
         $user->addIdentity($identity2);
-        $this->assertSame([$identity1, $identity2], $user->getIdentities());
+        $this->assertSame([$identity1, $identity2], $user->identities);
     }
     public function testAddingIdentityCanResetPrimaryIdentity(): void
     {
@@ -40,13 +40,13 @@ class UserTest extends TestCase
          */
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
-        $this->assertNull($user->getPrimaryIdentity());
+        $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');
         $user->addIdentity($identity1);
-        $this->assertSame($identity1, $user->getPrimaryIdentity());
+        $this->assertSame($identity1, $user->primaryIdentity);
         $identity2 = new Identity([], 'http://example.com');
         $user->addIdentity($identity2);
-        $this->assertSame($identity2, $user->getPrimaryIdentity());
+        $this->assertSame($identity2, $user->primaryIdentity);
     }
 
     public function testAddingManyIdentitiesAddsThem(): void
@@ -55,10 +55,10 @@ class UserTest extends TestCase
         $identity1 = new Identity([], 'http://example.com');
         $identity2 = new Identity([], 'http://example.com');
         $user->addManyIdentities([$identity1, $identity2]);
-        $this->assertSame([$identity1, $identity2], $user->getIdentities());
+        $this->assertSame([$identity1, $identity2], $user->identities);
         $identity3 = new Identity([], 'http://example.com');
         $user->addManyIdentities([$identity3]);
-        $this->assertSame([$identity1, $identity2, $identity3], $user->getIdentities());
+        $this->assertSame([$identity1, $identity2, $identity3], $user->identities);
     }
 
     public function testAddingManyIdentitiesCanResetPrimaryIdentity(): void
@@ -70,11 +70,11 @@ class UserTest extends TestCase
          */
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
-        $this->assertNull($user->getPrimaryIdentity());
+        $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');
         $identity2 = new Identity([], 'http://example.com');
         $user->addManyIdentities([$identity1, $identity2]);
-        $this->assertSame($identity2, $user->getPrimaryIdentity());
+        $this->assertSame($identity2, $user->primaryIdentity);
     }
 
     public function testFilteringClaimsOnlyReturnsClaimsOfThatType(): void
@@ -109,14 +109,14 @@ class UserTest extends TestCase
             new Claim('baz', 'qiz', 'http://example.com')
         ];
         $user = new User([new Identity($identity1Claims), new Identity($identity2Claims)]);
-        $this->assertSame([...$identity1Claims, ...$identity2Claims], $user->getClaims());
+        $this->assertSame([...$identity1Claims, ...$identity2Claims], $user->claims);
     }
 
     public function testGettingIdentitiesReturnsOnesSetInConstructor(): void
     {
         $identities = [new Identity([], 'http://example.com'), new Identity([], 'http://example.com')];
         $user = new User($identities);
-        $this->assertSame($identities, $user->getIdentities());
+        $this->assertSame($identities, $user->identities);
     }
 
     public function testHasClaimReturnsWhetherOrNotAnyIdentityHasClaim(): void
@@ -155,7 +155,7 @@ class UserTest extends TestCase
         $user1 = new User($user1Identities);
         $user2 = new User($user2Identities);
         $mergedUser = $user1->mergeIdentities($user2, true);
-        $mergedIdentities = $mergedUser->getIdentities();
+        $mergedIdentities = $mergedUser->identities;
         $this->assertCount(3, $mergedIdentities);
         $this->assertSame(
             [...$user1Identities, ...$user2Identities],
@@ -173,7 +173,7 @@ class UserTest extends TestCase
         $user1 = new User($user1Identities);
         $user2 = new User($user2Identities);
         $mergedUser = $user1->mergeIdentities($user2);
-        $mergedIdentities = $mergedUser->getIdentities();
+        $mergedIdentities = $mergedUser->identities;
         $this->assertCount(2, $mergedIdentities);
         $this->assertSame(
             [...$user1Identities, $user2Identities[0]],
@@ -188,9 +188,9 @@ class UserTest extends TestCase
             new Identity([], 'http://example.com')
         ];
         $user = new User($identities);
-        $this->assertSame($identities[0], $user->getPrimaryIdentity());
+        $this->assertSame($identities[0], $user->primaryIdentity);
         $user->addIdentity(new Identity([], 'http://example.com'));
-        $this->assertSame($identities[0], $user->getPrimaryIdentity());
+        $this->assertSame($identities[0], $user->primaryIdentity);
     }
 
     public function testPrimaryIdentityRespectsSelectorIfSpecified(): void
@@ -202,19 +202,19 @@ class UserTest extends TestCase
          */
         $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
-        $this->assertNull($user->getPrimaryIdentity());
+        $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');
         $user->addIdentity($identity1);
-        $this->assertSame($identity1, $user->getPrimaryIdentity());
+        $this->assertSame($identity1, $user->primaryIdentity);
         $identity2 = new Identity([], 'http://example.com');
         $user->addIdentity($identity2);
-        $this->assertSame($identity2, $user->getPrimaryIdentity());
+        $this->assertSame($identity2, $user->primaryIdentity);
     }
 
     public function testSettingSingleIdentityInConstructorConvertsItToArray(): void
     {
         $identity = new Identity([], 'http://example.com');
         $user = new User($identity);
-        $this->assertSame([$identity], $user->getIdentities());
+        $this->assertSame([$identity], $user->identities);
     }
 }
