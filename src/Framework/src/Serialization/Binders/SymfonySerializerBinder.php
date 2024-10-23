@@ -72,7 +72,7 @@ final class SymfonySerializerBinder extends Binder
             }
         }
 
-        /** @var list<class-string> $normalizerNames */
+        /** @var list<class-string<NormalizerInterface>|class-string<DenormalizerInterface>> $normalizerNames */
         $normalizerNames = GlobalConfiguration::getArray('aphiria.serialization.normalizers');
 
         foreach ($normalizerNames as $normalizerName) {
