@@ -1092,12 +1092,12 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
-                string|Closure $type = null,
-                string|Closure $title = null,
-                string|Closure $detail = null,
+                string|Closure|null $type = null,
+                string|Closure|null $title = null,
+                string|Closure|null $detail = null,
                 HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
-                string|Closure $instance = null,
-                array|Closure $extensions = null
+                string|Closure|null $instance = null,
+                array|Closure|null $extensions = null
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
             }
@@ -1132,12 +1132,12 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
-                string|Closure $type = null,
-                string|Closure $title = null,
-                string|Closure $detail = null,
+                string|Closure|null $type = null,
+                string|Closure|null $title = null,
+                string|Closure|null $detail = null,
                 HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
-                string|Closure $instance = null,
-                array|Closure $extensions = null
+                string|Closure|null $instance = null,
+                array|Closure|null $extensions = null
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
             }
