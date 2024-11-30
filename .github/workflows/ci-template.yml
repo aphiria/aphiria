@@ -11,12 +11,12 @@ on:
         description: Whether or not to run PHP-CS-Fixer
         required: false
         type: boolean
-        default: true
+        default: false # Update to true when PHP-CS-Fixer supports PHP 8.4
       run-psalm:
         description: Whether or not to run Psalm static analysis
         required: false
         type: boolean
-        default: false
+        default: false # Update to true when Psalm supports PHP 8.4
     secrets:
       ci-ssh-key:
         description: The SSH key for splitting subtrees
