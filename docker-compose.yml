@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  php:
+    build:
+      context: .
+    working_dir: /aphiria
+    volumes:
+      - ./:/aphiria
+    ports:
+      - "9003:9003"

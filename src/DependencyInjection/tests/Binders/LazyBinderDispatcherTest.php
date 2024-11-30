@@ -223,7 +223,7 @@ class LazyBinderDispatcherTest extends TestCase
      * @param IBinderMetadataCollectionCache|null $collectionCache The collection cache if we're using one, otherwise null
      * @return LazyBinderDispatcher The dispatcher
      */
-    private function createDispatcher(IBinderMetadataCollectionCache $collectionCache = null): LazyBinderDispatcher
+    private function createDispatcher(?IBinderMetadataCollectionCache $collectionCache = null): LazyBinderDispatcher
     {
         return new LazyBinderDispatcher($collectionCache);
     }
