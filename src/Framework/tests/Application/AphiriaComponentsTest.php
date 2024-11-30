@@ -1095,7 +1095,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure|null $type = null,
                 string|Closure|null $title = null,
                 string|Closure|null $detail = null,
-                HttpStatusCode|int|Closure|null $status = HttpStatusCode::InternalServerError,
+                HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure|null $instance = null,
                 array|Closure|null $extensions = null
             ): void {
