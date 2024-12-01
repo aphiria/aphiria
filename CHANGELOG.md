@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.0.0-alpha11](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha10...v1.0.0-alpha11) (?)
+
+### Changed
+
+- Nothing
+
+### Added
+
+- Nothing
+
+### Fixed
+
+- Nothing
+
 ## [v1.0.0-alpha10](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha9...v1.0.0-alpha10) (2024-12-01)
 
 ### Changed
@@ -7,11 +21,10 @@
 - Required PHP 8.4 ([#303](https://github.com/aphiria/aphiria/pull/303), [#305](https://github.com/aphiria/aphiria/pull/305), [#313](https://github.com/aphiria/aphiria/pull/313))
 - Updated to Symfony 7.0 ([#306](https://github.com/aphiria/aphiria/pull/306))
 - Refactored a multitude of `getXxx()` and `setXxx()` methods to use property hooks ([#313](https://github.com/aphiria/aphiria/pull/313))
-- Added Docker Compose support to simplify development ([#317](https://github.com/aphiria/aphiria/pull/317))
 
 ### Added
 
-- Nothing
+- Added Docker Compose support to simplify development ([#317](https://github.com/aphiria/aphiria/pull/317))
 
 ### Fixed
 
