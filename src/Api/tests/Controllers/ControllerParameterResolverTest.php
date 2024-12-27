@@ -726,8 +726,7 @@ class ControllerParameterResolverTest extends TestCase
         Controller $controller,
         string $methodName,
         string $parameterName
-    ): void
-    {
+    ): void {
         $this->expectException(MissingControllerParameterValueException::class);
         $this->expectExceptionMessage("No valid value for parameter $parameterName");
         $this->resolver->resolveParameter(
@@ -747,8 +746,7 @@ class ControllerParameterResolverTest extends TestCase
         Controller $controller,
         string $methodName,
         string $parameterName
-    ): void
-    {
+    ): void {
         $this->expectException(MissingControllerParameterValueException::class);
         $this->expectExceptionMessage("No valid value for parameter $parameterName");
         $this->resolver->resolveParameter(
@@ -768,8 +766,7 @@ class ControllerParameterResolverTest extends TestCase
         Controller $controller,
         string $methodName,
         string $parameterName
-    ): void
-    {
+    ): void {
         $this->expectException(MissingControllerParameterValueException::class);
         $this->expectExceptionMessage("No valid value for parameter $parameterName");
         $this->resolver->resolveParameter(
