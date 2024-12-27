@@ -2,18 +2,18 @@
 
 namespace Aphiria\Routing\Tests\Attributes;
 
-use Aphiria\Routing\Attributes\RouteParameter;
+use Aphiria\Routing\Attributes\RouteVariable;
 use PHPUnit\Framework\TestCase;
 
-class RouteParameterTest extends TestCase
+class RouteVariableTest extends TestCase
 {
     public function testNameCanBeCustomized(): void
     {
-        $this->assertSame('foo', new RouteParameter('foo')->name);
+        $this->assertSame('foo', new RouteVariable('foo')->name);
     }
 
     public function testNameDefaultsToNull(): void
     {
-        $this->assertNull(new RouteParameter()->name);
+        $this->assertNull(new RouteVariable()->name);
     }
 }

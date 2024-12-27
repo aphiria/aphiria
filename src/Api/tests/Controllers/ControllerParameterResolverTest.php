@@ -30,7 +30,7 @@ use Aphiria\Net\Http\StringBody;
 use Aphiria\Net\Uri;
 use Aphiria\Routing\Attributes\Header;
 use Aphiria\Routing\Attributes\QueryString;
-use Aphiria\Routing\Attributes\RouteParameter;
+use Aphiria\Routing\Attributes\RouteVariable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -217,15 +217,15 @@ class ControllerParameterResolverTest extends TestCase
         ];
     }
 
-    public static function scalarParameterWithRouteParameterValuesDataProvider(): array
+    public static function scalarParameterWithRouteVariableValuesDataProvider(): array
     {
         $controller = new class () extends Controller {
-            public function boolParameterWithName(#[RouteParameter('bar')] bool $foo): IResponse
+            public function boolParameterWithName(#[RouteVariable('bar')] bool $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function boolParameterWithNoName(#[RouteParameter] bool $foo): IResponse
+            public function boolParameterWithNoName(#[RouteVariable] bool $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
@@ -240,42 +240,42 @@ class ControllerParameterResolverTest extends TestCase
                 return $this->createResponseWithBody($foo);
             }
 
-            public function floatParameterWithName(#[RouteParameter('bar')] float $foo): IResponse
+            public function floatParameterWithName(#[RouteVariable('bar')] float $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function floatParameterWithNoName(#[RouteParameter] float $foo): IResponse
+            public function floatParameterWithNoName(#[RouteVariable] float $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function intParameterWithName(#[RouteParameter('bar')] int $foo): IResponse
+            public function intParameterWithName(#[RouteVariable('bar')] int $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function intParameterWithNoName(#[RouteParameter] int $foo): IResponse
+            public function intParameterWithNoName(#[RouteVariable] int $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function noTypeWithName(#[RouteParameter('bar')] $foo): IResponse
+            public function noTypeWithName(#[RouteVariable('bar')] $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function noTypeWithNoName(#[RouteParameter] $foo): IResponse
+            public function noTypeWithNoName(#[RouteVariable] $foo): IResponse
             {
                 return $this->createResponseWithBody((string)$foo);
             }
 
-            public function stringParameterWithName(#[RouteParameter('bar')] string $foo): IResponse
+            public function stringParameterWithName(#[RouteVariable('bar')] string $foo): IResponse
             {
                 return $this->createResponseWithBody($foo);
             }
 
-            public function stringParameterWithNoName(#[RouteParameter] string $foo): IResponse
+            public function stringParameterWithNoName(#[RouteVariable] string $foo): IResponse
             {
                 return $this->createResponseWithBody($foo);
             }
@@ -352,14 +352,14 @@ class ControllerParameterResolverTest extends TestCase
         ];
     }
 
-    public static function routeParameterWithNoValidValuesDataProvider(): array
+    public static function routeVariableWithNoValidValuesDataProvider(): array
     {
         $controller = new class () extends Controller {
-            public function fooWithAttribute(#[RouteParameter] string $foo): IResponse
+            public function fooWithAttribute(#[RouteVariable] string $foo): IResponse
             {
                 return new Response();
             }
-            public function fooWithNamedAttribute(#[RouteParameter('bar')] string $foo): IResponse
+            public function fooWithNamedAttribute(#[RouteVariable('bar')] string $foo): IResponse
             {
                 return new Response();
             }
@@ -616,8 +616,8 @@ class ControllerParameterResolverTest extends TestCase
      * @param mixed $scalarValue Ths scalar value
      * @param string|null $parameterNameFromAttribute The parameter name used in the attribute
      */
-    #[DataProvider('scalarParameterWithRouteParameterValuesDataProvider')]
-    public function testResolvingScalarParametersWithRouteParameterAttributeUsesRouteParameter(
+    #[DataProvider('scalarParameterWithRouteVariableValuesDataProvider')]
+    public function testResolvingScalarParametersWithRouteVariableAttributeUsesRouteVariable(
         Controller $controller,
         string $methodName,
         string $parameterName,
@@ -763,7 +763,7 @@ class ControllerParameterResolverTest extends TestCase
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
      */
-    #[DataProvider('routeParameterWithNoValidValuesDataProvider')]
+    #[DataProvider('routeVariableWithNoValidValuesDataProvider')]
     public function testResolvingRouteParametersWithoutValidValueThrowsException(
         Controller $controller,
         string $methodName,

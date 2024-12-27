@@ -22,6 +22,7 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use OutOfBoundsException;
+use ReflectionMethod;
 
 /**
  * Defines the route URI factory that uses an abstract syntax tree to create URIs
@@ -49,6 +50,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
             throw new OutOfBoundsException("Route \"$routeName\" does not exist");
         }
 
+        $reflectionMethod = new ReflectionMethod($route->action->className, $route->action->methodName);
+
         try {
             $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
         } catch (LexingException $ex) {
@@ -63,10 +66,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
         foreach ($ast->children as $childAstNode) {
             switch ($childAstNode->type) {
                 case AstNodeType::Host:
-                    $host = $this->compileHost($childAstNode, $routeVariables);
+                    $host = $this->compileHost($childAstNode, $routeVariables, $reflectionMethod);
                     break;
                 case AstNodeType::Path:
-                    $path = $this->compilePath($childAstNode, $routeVariables);
+                    $path = $this->compilePath($childAstNode, $routeVariables, $reflectionMethod);
                     break;
             }
         }
@@ -90,9 +93,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
      *
      * @param AstNode $node The host AST node
      * @param array<string, mixed> $routeVariables The route variables
+     * @param ReflectionMethod $reflectionMethod The reflected route action
      * @return string The compiled host portion of the URI
      */
-    private function compileHost(AstNode $node, array &$routeVariables): string
+    private function compileHost(AstNode $node, array &$routeVariables, ReflectionMethod $reflectionMethod): string
     {
         $hostParts = [];
         $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
@@ -119,7 +123,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     break;
                 case AstNodeType::OptionalRoutePart:
                     $inOptionalRoutePart = true;
-                    $hostParts[] = $this->compileHost($childNode, $routeVariables);
+                    $hostParts[] = $this->compileHost($childNode, $routeVariables, $reflectionMethod);
                     break;
                 case AstNodeType::Variable:
                     if (isset($routeVariables[(string)$childNode->value])) {
@@ -152,9 +156,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
      *
      * @param AstNode $node The path AST node
      * @param array<string, mixed> $routeVariables The route variables
+     * @param ReflectionMethod $reflectionMethod The reflected route action
      * @return string The compiled path portion of the URI
      */
-    private function compilePath(AstNode $node, array &$routeVariables): string
+    private function compilePath(AstNode $node, array &$routeVariables, ReflectionMethod $reflectionMethod): string
     {
         $path = '';
         $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
@@ -180,7 +185,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     $path .= (string)$childNode->value;
                     break;
                 case AstNodeType::OptionalRoutePart:
-                    $path .= $this->compilePath($childNode, $routeVariables);
+                    $path .= $this->compilePath($childNode, $routeVariables, $reflectionMethod);
                     break;
                 case AstNodeType::Variable:
                     if (isset($routeVariables[(string)$childNode->value])) {

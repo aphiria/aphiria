@@ -20,7 +20,7 @@ use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Routing\Attributes\Header;
 use Aphiria\Routing\Attributes\QueryString;
-use Aphiria\Routing\Attributes\RouteParameter;
+use Aphiria\Routing\Attributes\RouteVariable;
 use ArrayAccess;
 use Closure;
 use ReflectionNamedType;
@@ -61,9 +61,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             );
         }
 
-        // If this uses the #[RouteParameter] attribute, resolve it from the route
-        if (\count($routeParameterAttributes = $reflectionParameter->getAttributes(RouteParameter::class)) === 1) {
-            $parameterName = $routeParameterAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
+        // If this uses the #[RouteVariable] attribute, resolve it from the route
+        if (\count($routeVariableAttributes = $reflectionParameter->getAttributes(RouteVariable::class)) === 1) {
+            $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
             return $this->resolveScalarParameter(
                 fn (): bool => isset($routeVariables[$parameterName]),
