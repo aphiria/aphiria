@@ -26,6 +26,7 @@ use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\RouteUriCreationException;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use OutOfBoundsException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class AstRouteUriFactoryTest extends TestCase
@@ -37,6 +38,44 @@ class AstRouteUriFactoryTest extends TestCase
     {
         $this->routes = new RouteCollection();
         $this->uriFactory = new AstRouteUriFactory($this->routes);
+    }
+
+    public static function namedAttributeParameterProvider(): array
+    {
+        $controller = new class () {
+            public function queryString(#[QueryString('foo')] string $unused): void
+            {
+            }
+            public function routeVariable(#[RouteVariable('foo')] string $unused1, #[RouteVariable('bar')] string $unused2): void
+            {
+            }
+        };
+
+        return [
+            [$controller, 'queryString', null, '/', '/?foo=bar', ['foo' => 'bar']],
+            [$controller, 'routeVariable', ':foo.example.com', '/:bar', 'https://qux.example.com/quux', ['foo' => 'qux', 'bar' => 'quux']]
+        ];
+    }
+
+    /**
+     * @param object $controller The route action controller
+     * @param string $methodName The name of the route action method
+     * @param string|null $hostTemplate The optional host template
+     * @param string $pathTemplate The path template
+     * @param string $expectedUri The expected URI
+     * @param array<string, mixed> $routeVariables The route variables
+     */
+    #[DataProvider('namedAttributeParameterProvider')]
+    public function testCreatingUriWithNamedAttributeParametersUsesThoseNamesInsteadOfVariableNameFromController(
+        object $controller,
+        string $methodName,
+        ?string $hostTemplate,
+        string $pathTemplate,
+        string $expectedUri,
+        array $routeVariables
+    ): void {
+        $this->addRouteWithUriTemplate($methodName, $hostTemplate, $pathTemplate, controller: $controller, methodName: $methodName);
+        $this->assertSame($expectedUri, $this->uriFactory->createRouteUri($methodName, $routeVariables));
     }
 
     public function testCreatingUriForUnregisteredRouteThrowsException(): void
