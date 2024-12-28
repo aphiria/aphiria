@@ -82,12 +82,54 @@ class AstRouteUriFactoryTest extends TestCase
         };
 
         return [
-            ['Invalid route variable "foo"', $controller, 'noParameters', null, '', ['foo' => 'bar']],
-            ['Invalid route variable "bar", expected "foo"', $controller, 'queryString', null, '', ['bar' => 'baz']],
-            ['Invalid route variable "bar", expected "foo"', $controller, 'routeVariable', null, '/:foo', ['bar' => 'baz']],
-            ['Invalid route variable "bar", expected "foo"', $controller, 'unspecified', null, '/:foo', ['bar' => 'baz']],
-            ['Invalid route variables "bar", "qux", expected "foo"', $controller, 'routeVariable', null, '/:foo', ['bar' => 'baz', 'qux' => 'quz']],
-            ['Invalid route variable "baz", expected "foo", "bar"', $controller, 'multipleParameters', null, '/:foo', ['baz' => 'qux']]
+            [
+                'Following route variables have no matching route action parameter in ' . $controller::class . '::noParameters: "foo"',
+                $controller,
+                'noParameters',
+                null,
+                '',
+                ['foo' => 'bar']
+            ],
+            [
+                'Following route action parameters have no matching value in ' . $controller::class . '::queryString: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::queryString: "bar"',
+                $controller,
+                'queryString',
+                null,
+                '',
+                ['bar' => 'baz']
+            ],
+            [
+                'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar"',
+                $controller,
+                'routeVariable',
+                null,
+                '/:foo',
+                ['bar' => 'baz']
+            ],
+            [
+                'Following route action parameters have no matching value in ' . $controller::class . '::unspecified: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::unspecified: "bar"',
+                $controller,
+                'unspecified',
+                null,
+                '/:foo',
+                ['bar' => 'baz']
+            ],
+            [
+                'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar", "qux"',
+                $controller,
+                'routeVariable',
+                null,
+                '/:foo',
+                ['bar' => 'baz', 'qux' => 'quz']
+            ],
+            [
+                'Following route action parameters have no matching value in ' . $controller::class . '::multipleParameters: "foo", "bar".  Following route variables have no matching route action parameter in ' . $controller::class . '::multipleParameters: "baz"',
+                $controller,
+                'multipleParameters',
+                null,
+                '/:foo',
+                ['baz' => 'qux']
+            ]
         ];
     }
 
@@ -128,18 +170,22 @@ class AstRouteUriFactoryTest extends TestCase
         ?string $hostTemplate,
         string $pathTemplate,
         array $routeVariables
-    ): void
-    {
+    ): void {
         $this->expectException(RouteUriCreationException::class);
-        $this->expectExceptionMessage($expectedExceptionMessage);
         $this->addRouteWithUriTemplate($methodName, $hostTemplate, $pathTemplate, controller: $controller, methodName: $methodName);
-        $this->uriFactory->createRouteUri($methodName, $routeVariables);
+
+        try {
+            $this->uriFactory->createRouteUri($methodName, $routeVariables);
+        } catch (RouteUriCreationException $ex) {
+            $this->assertSame($expectedExceptionMessage, $ex->getPrevious()->getMessage());
+            throw $ex;
+        }
     }
 
     public function testCreatingUriWithInvalidRouteActionThrowsException(): void
     {
         $this->expectException(RouteUriCreationException::class);
-        $this->expectExceptionMessage('Failed to reflect route action ' . $this::class . '::__doesNotExist');
+        $this->expectExceptionMessage('Failed to create route action parameters for ' . $this::class . '::__doesNotExist');
         $this->addRouteWithUriTemplate('foo', null, '', controller: $this, methodName: '__doesNotExist');
         $this->uriFactory->createRouteUri('foo');
     }
