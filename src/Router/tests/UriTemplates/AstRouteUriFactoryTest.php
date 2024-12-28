@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\Tests\UriTemplates;
 
+use Aphiria\Routing\Attributes\Header;
+use Aphiria\Routing\Attributes\QueryString;
+use Aphiria\Routing\Attributes\RouteVariable;
 use Aphiria\Routing\Route;
 use Aphiria\Routing\RouteAction;
 use Aphiria\Routing\RouteCollection;
@@ -85,7 +88,12 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithMultipleHostVarsPopulatesThemFromArgs(): void
     {
-        $this->addRouteWithUriTemplate('foo', ':foo.:bar.example.com', '');
+        $controller = new class () {
+            public function foo(string $foo, string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', ':foo.:bar.example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://dave.young.example.com',
             $this->uriFactory->createRouteUri('foo', ['foo' => 'dave', 'bar' => 'young'])
@@ -94,7 +102,12 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithMultiplePathVarsPopulatesThemFromArgs(): void
     {
-        $this->addRouteWithUriTemplate('foo', null, '/:foo/:bar');
+        $controller = new class () {
+            public function foo(string $foo, string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/:foo/:bar', controller: $controller, methodName: 'foo');
         $this->assertSame(
             '/dave/young',
             $this->uriFactory->createRouteUri('foo', ['foo' => 'dave', 'bar' => 'young'])
@@ -118,7 +131,12 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithOptionalHostVarSetsItIfValueExists(): void
     {
-        $this->addRouteWithUriTemplate('foo', '[:foo.]example.com', '');
+        $controller = new class () {
+            public function foo(string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', '[:foo.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://bar.example.com',
             $this->uriFactory->createRouteUri('foo', ['foo' => 'bar'])
@@ -133,13 +151,23 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithOptionalNestedHostsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
     {
-        $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '');
+        $controller = new class () {
+            public function foo(string $foo, string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame('https://example.com', $this->uriFactory->createRouteUri('foo', ['foo' => '1']));
     }
 
     public function testCreatingUriWithOptionalNestedHostsWithDefinedVarsIncludesThem(): void
     {
-        $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '');
+        $controller = new class () {
+            public function foo(string $foo, string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://1.example.com',
             $this->uriFactory->createRouteUri('foo', ['bar' => '1'])
@@ -152,13 +180,23 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithOptionalNestedPathsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
     {
-        $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar[/:baz]]');
+        $controller = new class () {
+            public function foo(string $bar, string $baz): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar[/:baz]]', controller: $controller, methodName: 'foo');
         $this->assertSame('https://example.com/foo', $this->uriFactory->createRouteUri('foo', ['baz' => '1']));
     }
 
     public function testCreatingUriWithOptionalNestedPathsWithDefinedVarsIncludesThem(): void
     {
-        $this->addRouteWithUriTemplate('foo', 'example.com', 'foo[/:bar[/:baz]]');
+        $controller = new class () {
+            public function foo(string $bar, string $baz): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', 'example.com', 'foo[/:bar[/:baz]]', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://example.com/foo/1',
             $this->uriFactory->createRouteUri('foo', ['bar' => '1'])
@@ -171,7 +209,12 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithOptionalPathVarDoesNotSetItIfValueDoesNotExist(): void
     {
-        $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]');
+        $controller = new class () {
+            public function foo(string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]', controller: $controller, methodName: 'foo');
         $this->assertSame('https://example.com/foo', $this->uriFactory->createRouteUri('foo'));
 
         $this->addRouteWithUriTemplate('bar', 'example.com', '/foo[/:bar[/:baz]]');
@@ -180,7 +223,12 @@ class AstRouteUriFactoryTest extends TestCase
 
     public function testCreatingUriWithOptionalPathVarIncludesItIfSet(): void
     {
-        $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]');
+        $controller = new class () {
+            public function foo(string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://example.com/foo/baz',
             $this->uriFactory->createRouteUri('foo', ['bar' => 'baz'])
@@ -215,6 +263,108 @@ class AstRouteUriFactoryTest extends TestCase
         $this->assertSame('/foo/bar', $this->uriFactory->createRouteUri('foo'));
     }
 
+    public function testCreatingUriWithRouteVariableAttributeWillUseItsValueForHost(): void
+    {
+        $controller = new class () {
+            public function foo(#[RouteVariable] string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', ':foo.example.com', '', controller: $controller, methodName: 'foo');
+        $this->assertSame('https://bar.example.com', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
+    }
+
+    public function testCreatingUriWithRouteVariableAttributeWillUseItsValueForPath(): void
+    {
+        $controller = new class () {
+            public function foo(#[RouteVariable] string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/:foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
+    }
+
+    public function testCreatingUriWithMultipleQueryStringAttributesWillUseValuesInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/foo?foo=1&bar=2', $this->uriFactory->createRouteUri('foo', ['foo' => '1', 'bar' => '2']));
+    }
+
+    public function testCreatingUriWithQueryStringAttributeWillUseItsValueInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(#[QueryString] string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
+    }
+
+    public function testCreatingUriWithNoAttributeWillUseItsValueInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
+    }
+
+    public function testCreatingUriWithQueryStringAttributeWillUrlEncodeItsValueInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(#[QueryString] string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        // We are specifically using spaces as the special characters here to ensure they're being encoded to "%20" (what's used in URLs), not "+" (what's used in form data)
+        $this->assertSame('/foo?foo=%20bar%20', $this->uriFactory->createRouteUri('foo', ['foo' => ' bar ']));
+    }
+
+    public function testCreatingUriWithHeaderAttributeDoesNotUseItInOptionalHostRoutePart(): void
+    {
+        $controller = new class () {
+            public function foo(#[Header] string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', '[:foo.]example.com', '', controller: $controller, methodName: 'foo');
+        $this->assertSame('https://example.com', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
+    }
+
+    public function testCreatingUriWithHeaderAttributeDoesNotUseItInOptionalPathRoutePart(): void
+    {
+        $controller = new class () {
+            public function foo(#[Header] string $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '[/:foo]', controller: $controller, methodName: 'foo');
+        $this->assertSame('/', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
+    }
+
+    public function testCreatingUriWillThrowExceptionWhenQueryStringAttributeParamIsOnlyParamThatMatchesRequiredRouteVariable(): void
+    {
+        $this->expectException(RouteUriCreationException::class);
+        $this->expectExceptionMessage('No value set for foo in path');
+        $controller = new class () {
+            public function foo(#[QueryString] $foo): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/:foo', controller: $controller, methodName: 'foo');
+        $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']);
+    }
+
     /**
      * Adds a route with a URI template
      *
@@ -222,21 +372,29 @@ class AstRouteUriFactoryTest extends TestCase
      * @param string|null $hostTemplate The host template
      * @param string $pathTemplate The path template
      * @param bool $isHttpsOnly Whether or not the URI is HTTPS-only
+     * @param object|null $controller The optional controller to map the route action to
+     * @param string|null $methodName The optional controller method name to map the route action to
      */
     private function addRouteWithUriTemplate(
         string $name,
         ?string $hostTemplate,
         string $pathTemplate,
-        bool $isHttpsOnly = true
+        bool $isHttpsOnly = true,
+        ?object $controller = null,
+        ?string $methodName = null
     ): void {
-        $controller = new class () {
-            public function bar(): void
-            {
-            }
-        };
+        if ($controller === null && $methodName === null) {
+            $controller = new class () {
+                public function bar(): void
+                {
+                }
+            };
+            $methodName = 'bar';
+        }
+
         $this->routes->add(new Route(
             new UriTemplate($pathTemplate, $hostTemplate, $isHttpsOnly),
-            new RouteAction($controller::class, 'bar'),
+            new RouteAction($controller::class, $methodName),
             [],
             [],
             $name
