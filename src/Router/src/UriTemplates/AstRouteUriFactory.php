@@ -12,9 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing\UriTemplates;
 
-use Aphiria\Routing\Attributes\Header;
-use Aphiria\Routing\Attributes\QueryString;
-use Aphiria\Routing\Attributes\RouteVariable;
+use Aphiria\Routing\RouteActionParameterValues;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\UriTemplates\Lexers\IUriTemplateLexer;
 use Aphiria\Routing\UriTemplates\Lexers\LexingException;
@@ -24,9 +22,9 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNode;
 use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
+use InvalidArgumentException;
 use OutOfBoundsException;
 use ReflectionException;
-use ReflectionMethod;
 
 /**
  * Defines the route URI factory that uses an abstract syntax tree to create URIs
@@ -54,61 +52,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
             throw new OutOfBoundsException("Route \"$routeName\" does not exist");
         }
 
-        /** @var array{routeVariables: array<string, mixed>, queryString: array<string, mixed>, unspecified: array<string, mixed>} $routeVariablesBySource */
-        $routeVariablesBySource = ['routeVariables' => [], 'queryString' => [], 'unspecified' => []];
-
         try {
-            $reflectionMethod = new ReflectionMethod($route->action->className, $route->action->methodName);
-        } catch (ReflectionException $ex) {
-            throw new RouteUriCreationException("Failed to reflect route action {$route->action->className}::{$route->action->methodName}", 0, $ex);
-        }
-
-        foreach ($reflectionMethod->getParameters() as $parameter) {
-            $parameterName = $parameter->getName();
-
-            if (\count($routeVariableAttributes = $parameter->getAttributes(RouteVariable::class)) === 1) {
-                $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $parameterName;
-                $routeVariablesBySource['routeVariables'][$parameterName] = $routeVariables[$parameterName] ?? null;
-                continue;
-            }
-
-            if (\count($queryStringAttributes = $parameter->getAttributes(QueryString::class)) === 1) {
-                $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $parameterName;
-                $routeVariablesBySource['queryString'][$parameterName] = $routeVariables[$parameterName] ?? null;
-                continue;
-            }
-
-            // Don't include #[Header] parameters at all in the URI
-            if (\count($parameter->getAttributes(Header::class)) > 0) {
-                continue;
-            }
-
-            $routeVariablesBySource['unspecified'][$parameterName] = $routeVariables[$parameterName] ?? null;
-        }
-
-        $invalidRouteVariables = [];
-
-        foreach ($routeVariables as $name => $value) {
-            if (
-                !array_key_exists($name, $routeVariablesBySource['routeVariables'])
-                && !array_key_exists($name, $routeVariablesBySource['queryString'])
-                && !array_key_exists($name, $routeVariablesBySource['unspecified'])
-            ) {
-                $invalidRouteVariables[] = $name;
-            }
-        }
-
-        if (!empty($invalidRouteVariables)) {
-            throw new RouteUriCreationException(
-                \sprintf(
-                    'Invalid route variable%s "%s"%s',
-                    \count($invalidRouteVariables) > 1 ? 's' : '',
-                    \implode("\", \"", $invalidRouteVariables),
-                    \count($routeVariablesBySource['routeVariables']) > 0 || \count($routeVariablesBySource['queryString']) > 0 || \count($routeVariablesBySource['unspecified']) > 0
-                        ? ', expected "' . \implode("\", \"", \array_merge(\array_keys($routeVariablesBySource['routeVariables']), \array_keys($routeVariablesBySource['queryString']), \array_keys($routeVariablesBySource['unspecified']))) . '"'
-                        : ''
-                )
-            );
+            $routeActionParameters = new RouteActionParameterValues($route->action, $routeVariables);
+        } catch (ReflectionException|InvalidArgumentException $ex) {
+            throw new RouteUriCreationException("Failed to create route action parameters for {$route->action->className}::{$route->action->methodName}", 0, $ex);
         }
 
         try {
@@ -125,17 +72,17 @@ final class AstRouteUriFactory implements IRouteUriFactory
         foreach ($ast->children as $childAstNode) {
             switch ($childAstNode->type) {
                 case AstNodeType::Host:
-                    $host = $this->compileHost($childAstNode, $routeVariablesBySource, $reflectionMethod);
+                    $host = $this->compileHost($childAstNode, $routeActionParameters);
                     break;
                 case AstNodeType::Path:
-                    $path = $this->compilePath($childAstNode, $routeVariablesBySource, $reflectionMethod);
+                    $path = $this->compilePath($childAstNode, $routeActionParameters);
                     break;
             }
         }
 
         // See if we need to append any query string parameters from the unused variables
         $queryString = \http_build_query(
-            $routeVariablesBySource['queryString'] + $routeVariablesBySource['unspecified'],
+            $routeActionParameters->unusedQueryStringParameters + $routeActionParameters->unusedUnspecifiedParameters,
             encoding_type: PHP_QUERY_RFC3986
         );
         $path .= empty($queryString) ? '' : "?$queryString";
@@ -158,13 +105,15 @@ final class AstRouteUriFactory implements IRouteUriFactory
      * Compiles the host from the AST
      *
      * @param AstNode $node The host AST node
-     * @param array{routeVariables: array<string, mixed>, queryString: array<string, mixed>, unspecified: array<string, mixed>} $routeVariablesBySource The route variables
-     * @param ReflectionMethod $reflectionMethod The reflected route action
+     * @param RouteActionParameterValues $routeActionParameters The collection of route action parameters
      * @param bool $inUndefinedOptionalRoutePart Whether or not we're in an undefined optional route part
      * @return string The compiled host portion of the URI
      */
-    private function compileHost(AstNode $node, array &$routeVariablesBySource, ReflectionMethod $reflectionMethod, bool $inUndefinedOptionalRoutePart = false): string
-    {
+    private function compileHost(
+        AstNode $node,
+        RouteActionParameterValues $routeActionParameters,
+        bool $inUndefinedOptionalRoutePart = false
+    ): string {
         $hostParts = [];
         $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
         $optionalSegmentBuffer = '';
@@ -174,14 +123,11 @@ final class AstRouteUriFactory implements IRouteUriFactory
             // This prevents us from using the "bar" value in the case of [/:foo[/:bar]] if "foo" was not specified but "bar" was
             if ($inUndefinedOptionalRoutePart) {
                 if ($childNode->type === AstNodeType::Variable) {
-                    unset(
-                        $routeVariablesBySource['routeVariables'][(string)$childNode->value],
-                        $routeVariablesBySource['queryString'][(string)$childNode->value],
-                        $routeVariablesBySource['unspecified'][(string)$childNode->value]
-                    );
+                    // Use up any unspecified parameter so that it does not get marked for use in the query string
+                    $routeActionParameters->tryGetUnspecifiedParameterValue((string)$childNode->value, $routeVariable);
                 } elseif ($childNode->type === AstNodeType::OptionalRoutePart) {
                     // Keep stepping through the tree, but don't bother capturing the path because we're not going to use any of it anyway
-                    $this->compileHost($childNode, $routeVariablesBySource, $reflectionMethod, $inUndefinedOptionalRoutePart);
+                    $this->compileHost($childNode, $routeActionParameters, $inUndefinedOptionalRoutePart);
                 }
 
                 continue;
@@ -207,20 +153,13 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     break;
                 case AstNodeType::OptionalRoutePart:
                     $inOptionalRoutePart = true;
-                    $hostParts[] = $this->compileHost($childNode, $routeVariablesBySource, $reflectionMethod, $inUndefinedOptionalRoutePart);
+                    $hostParts[] = $this->compileHost($childNode, $routeActionParameters, $inUndefinedOptionalRoutePart);
                     break;
                 case AstNodeType::Variable:
                     $routeVariable = null;
 
-                    if (isset($routeVariablesBySource['routeVariables'][(string)$childNode->value])) {
-                        $routeVariable = (string)$routeVariablesBySource['routeVariables'][(string)$childNode->value];
-                        unset($routeVariablesBySource['routeVariables'][(string)$childNode->value]);
-                    }
-
-                    if (isset($routeVariablesBySource['unspecified'][(string)$childNode->value])) {
-                        $routeVariable = (string)$routeVariablesBySource['unspecified'][(string)$childNode->value];
-                        unset($routeVariablesBySource['unspecified'][(string)$childNode->value]);
-                    }
+                    $routeActionParameters->tryGetRouteVariableParameterValue((string)$childNode->value, $routeVariable)
+                        || $routeActionParameters->tryGetUnspecifiedParameterValue((string)$childNode->value, $routeVariable);
 
                     if ($routeVariable !== null) {
                         // Check if we've hit a defined variable, eg "[:foo.]bar.com", flush the buffer, eg "."
@@ -251,13 +190,15 @@ final class AstRouteUriFactory implements IRouteUriFactory
      * Compiles the path from the AST
      *
      * @param AstNode $node The path AST node
-     * @param array{routeVariables: array<string, mixed>, queryString: array<string, mixed>, unspecified: array<string, mixed>} $routeVariablesBySource The route variables
-     * @param ReflectionMethod $reflectionMethod The reflected route action
+     * @param RouteActionParameterValues $routeActionParameters The collection of route action parameters
      * @param bool $inUndefinedOptionalRoutePart Whether or not we're in an undefined optional route part
      * @return string The compiled path portion of the URI
      */
-    private function compilePath(AstNode $node, array &$routeVariablesBySource, ReflectionMethod $reflectionMethod, bool $inUndefinedOptionalRoutePart = false): string
-    {
+    private function compilePath(
+        AstNode $node,
+        RouteActionParameterValues $routeActionParameters,
+        bool $inUndefinedOptionalRoutePart = false
+    ): string {
         $path = '';
         $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
         $optionalSegmentBuffer = '';
@@ -267,14 +208,11 @@ final class AstRouteUriFactory implements IRouteUriFactory
             // This prevents us from using the "bar" value in the case of [/:foo[/:bar]] if "foo" was not specified but "bar" was
             if ($inUndefinedOptionalRoutePart) {
                 if ($childNode->type === AstNodeType::Variable) {
-                    unset(
-                        $routeVariablesBySource['routeVariables'][(string)$childNode->value],
-                        $routeVariablesBySource['queryString'][(string)$childNode->value],
-                        $routeVariablesBySource['unspecified'][(string)$childNode->value]
-                    );
+                    // Use up any unspecified parameter so that it does not get marked for use in the query string
+                    $routeActionParameters->tryGetUnspecifiedParameterValue((string)$childNode->value, $routeVariable);
                 } elseif ($childNode->type === AstNodeType::OptionalRoutePart) {
                     // Keep stepping through the tree, but don't bother capturing the path because we're not going to use any of it anyway
-                    $this->compilePath($childNode, $routeVariablesBySource, $reflectionMethod, $inUndefinedOptionalRoutePart);
+                    $this->compilePath($childNode, $routeActionParameters, $inUndefinedOptionalRoutePart);
                 }
 
                 continue;
@@ -299,20 +237,13 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     $path .= (string)$childNode->value;
                     break;
                 case AstNodeType::OptionalRoutePart:
-                    $path .= $this->compilePath($childNode, $routeVariablesBySource, $reflectionMethod, $inUndefinedOptionalRoutePart);
+                    $path .= $this->compilePath($childNode, $routeActionParameters, $inUndefinedOptionalRoutePart);
                     break;
                 case AstNodeType::Variable:
                     $routeVariable = null;
 
-                    if (isset($routeVariablesBySource['routeVariables'][(string)$childNode->value])) {
-                        $routeVariable = (string)$routeVariablesBySource['routeVariables'][(string)$childNode->value];
-                        unset($routeVariablesBySource['routeVariables'][(string)$childNode->value]);
-                    }
-
-                    if (isset($routeVariablesBySource['unspecified'][(string)$childNode->value])) {
-                        $routeVariable = (string)$routeVariablesBySource['unspecified'][(string)$childNode->value];
-                        unset($routeVariablesBySource['unspecified'][(string)$childNode->value]);
-                    }
+                    $routeActionParameters->tryGetRouteVariableParameterValue((string)$childNode->value, $routeVariable)
+                        || $routeActionParameters->tryGetUnspecifiedParameterValue((string)$childNode->value, $routeVariable);
 
                     if ($routeVariable !== null) {
                         // Check if we've hit a defined variable, eg "/foo[/:bar]", flush the buffer, eg "/"

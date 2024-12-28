@@ -257,7 +257,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedHostsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
     {
         $controller = new class () {
-            public function foo(string $foo, string $bar): void
+            public function foo(?string $foo, ?string $bar): void
             {
             }
         };
@@ -268,7 +268,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedHostsWithDefinedVarsIncludesThem(): void
     {
         $controller = new class () {
-            public function foo(string $foo, string $bar): void
+            public function foo(?string $foo, ?string $bar): void
             {
             }
         };
@@ -286,7 +286,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedPathsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
     {
         $controller = new class () {
-            public function foo(string $bar, string $baz): void
+            public function foo(?string $bar, ?string $baz): void
             {
             }
         };
@@ -297,7 +297,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedPathsWithDefinedVarsIncludesThem(): void
     {
         $controller = new class () {
-            public function foo(string $bar, string $baz): void
+            public function foo(?string $bar, ?string $baz): void
             {
             }
         };
@@ -315,7 +315,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalPathVarDoesNotSetItIfValueDoesNotExist(): void
     {
         $controller = new class () {
-            public function foo(string $bar): void
+            public function foo(?string $bar): void
             {
             }
         };
