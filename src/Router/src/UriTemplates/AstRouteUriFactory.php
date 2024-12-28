@@ -60,7 +60,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         try {
             $reflectionMethod = new ReflectionMethod($route->action->className, $route->action->methodName);
         } catch (ReflectionException $ex) {
-            throw new RouteUriCreationException('Failed to reflect route action', 0, $ex);
+            throw new RouteUriCreationException("Failed to reflect route action {$route->action->className}::{$route->action->methodName}", 0, $ex);
         }
 
         foreach ($reflectionMethod->getParameters() as $parameter) {

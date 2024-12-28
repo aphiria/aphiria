@@ -139,7 +139,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithInvalidRouteActionThrowsException(): void
     {
         $this->expectException(RouteUriCreationException::class);
-        $this->expectExceptionMessage('Failed to reflect route action');
+        $this->expectExceptionMessage('Failed to reflect route action ' . $this::class . '::__doesNotExist');
         $this->addRouteWithUriTemplate('foo', null, '', controller: $this, methodName: '__doesNotExist');
         $this->uriFactory->createRouteUri('foo');
     }
