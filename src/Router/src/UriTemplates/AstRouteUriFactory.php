@@ -25,6 +25,7 @@ use Aphiria\Routing\UriTemplates\Parsers\AstNodeType;
 use Aphiria\Routing\UriTemplates\Parsers\IUriTemplateParser;
 use Aphiria\Routing\UriTemplates\Parsers\UriTemplateParser;
 use OutOfBoundsException;
+use ReflectionException;
 use ReflectionMethod;
 
 /**
@@ -55,32 +56,25 @@ final class AstRouteUriFactory implements IRouteUriFactory
 
         /** @var array{routeVariables: array<string, mixed>, queryString: array<string, mixed>, unspecified: array<string, mixed>} $routeVariablesBySource */
         $routeVariablesBySource = ['routeVariables' => [], 'queryString' => [], 'unspecified' => []];
-        $reflectionMethod = new ReflectionMethod($route->action->className, $route->action->methodName);
+
+        try {
+            $reflectionMethod = new ReflectionMethod($route->action->className, $route->action->methodName);
+        } catch (ReflectionException $ex) {
+            throw new RouteUriCreationException('Failed to reflect route action', 0, $ex);
+        }
 
         foreach ($reflectionMethod->getParameters() as $parameter) {
             $parameterName = $parameter->getName();
 
             if (\count($routeVariableAttributes = $parameter->getAttributes(RouteVariable::class)) === 1) {
                 $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $parameterName;
-
-                // We only want to use route variables with a corresponding route action parameter
-                if (!isset($routeVariables[$parameterName])) {
-                    continue;
-                }
-
-                $routeVariablesBySource['routeVariables'][$parameterName] = $routeVariables[$parameterName];
+                $routeVariablesBySource['routeVariables'][$parameterName] = $routeVariables[$parameterName] ?? null;
                 continue;
             }
 
             if (\count($queryStringAttributes = $parameter->getAttributes(QueryString::class)) === 1) {
                 $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $parameterName;
-
-                // We only want to use query string values with a corresponding route action parameter
-                if (!isset($routeVariables[$parameterName])) {
-                    continue;
-                }
-
-                $routeVariablesBySource['queryString'][$parameterName] = $routeVariables[$parameterName];
+                $routeVariablesBySource['queryString'][$parameterName] = $routeVariables[$parameterName] ?? null;
                 continue;
             }
 
@@ -89,11 +83,32 @@ final class AstRouteUriFactory implements IRouteUriFactory
                 continue;
             }
 
-            if (!isset($routeVariables[$parameterName])) {
-                continue;
-            }
+            $routeVariablesBySource['unspecified'][$parameterName] = $routeVariables[$parameterName] ?? null;
+        }
 
-            $routeVariablesBySource['unspecified'][$parameterName] = $routeVariables[$parameterName];
+        $invalidRouteVariables = [];
+
+        foreach ($routeVariables as $name => $value) {
+            if (
+                !array_key_exists($name, $routeVariablesBySource['routeVariables'])
+                && !array_key_exists($name, $routeVariablesBySource['queryString'])
+                && !array_key_exists($name, $routeVariablesBySource['unspecified'])
+            ) {
+                $invalidRouteVariables[] = $name;
+            }
+        }
+
+        if (!empty($invalidRouteVariables)) {
+            throw new RouteUriCreationException(
+                \sprintf(
+                    'Invalid route variable%s "%s"%s',
+                    \count($invalidRouteVariables) > 1 ? 's' : '',
+                    \implode("\", \"", $invalidRouteVariables),
+                    \count($routeVariablesBySource['routeVariables']) > 0 || \count($routeVariablesBySource['queryString']) > 0 || \count($routeVariablesBySource['unspecified']) > 0
+                        ? ', expected "' . \implode("\", \"", \array_merge(\array_keys($routeVariablesBySource['routeVariables']), \array_keys($routeVariablesBySource['queryString']), \array_keys($routeVariablesBySource['unspecified']))) . '"'
+                        : ''
+                )
+            );
         }
 
         try {
