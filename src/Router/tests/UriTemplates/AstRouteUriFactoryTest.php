@@ -60,6 +60,10 @@ class AstRouteUriFactoryTest extends TestCase
     public static function invalidRouteVariableProvider(): array
     {
         $controller = new class () {
+            public function implicit(string $foo): void
+            {
+            }
+
             public function multipleParameters(string $foo, string $bar): void
             {
             }
@@ -75,10 +79,6 @@ class AstRouteUriFactoryTest extends TestCase
             public function routeVariable(#[RouteVariable] string $foo): void
             {
             }
-
-            public function unspecified(string $foo): void
-            {
-            }
         };
 
         return [
@@ -91,7 +91,7 @@ class AstRouteUriFactoryTest extends TestCase
                 ['foo' => 'bar']
             ],
             [
-                'Following route action parameters have no matching value in ' . $controller::class . '::queryString: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::queryString: "bar"',
+                'Following route action parameters have no matching value in ' . $controller::class . '::queryString: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::queryString: "bar"',
                 $controller,
                 'queryString',
                 null,
@@ -99,7 +99,7 @@ class AstRouteUriFactoryTest extends TestCase
                 ['bar' => 'baz']
             ],
             [
-                'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar"',
+                'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar"',
                 $controller,
                 'routeVariable',
                 null,
@@ -107,15 +107,15 @@ class AstRouteUriFactoryTest extends TestCase
                 ['bar' => 'baz']
             ],
             [
-                'Following route action parameters have no matching value in ' . $controller::class . '::unspecified: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::unspecified: "bar"',
+                'Following route action parameters have no matching value in ' . $controller::class . '::implicit: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::implicit: "bar"',
                 $controller,
-                'unspecified',
+                'implicit',
                 null,
                 '/:foo',
                 ['bar' => 'baz']
             ],
             [
-                'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo".  Following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar", "qux"',
+                'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar", "qux"',
                 $controller,
                 'routeVariable',
                 null,
@@ -123,7 +123,7 @@ class AstRouteUriFactoryTest extends TestCase
                 ['bar' => 'baz', 'qux' => 'quz']
             ],
             [
-                'Following route action parameters have no matching value in ' . $controller::class . '::multipleParameters: "foo", "bar".  Following route variables have no matching route action parameter in ' . $controller::class . '::multipleParameters: "baz"',
+                'Following route action parameters have no matching value in ' . $controller::class . '::multipleParameters: "foo", "bar", following route variables have no matching route action parameter in ' . $controller::class . '::multipleParameters: "baz"',
                 $controller,
                 'multipleParameters',
                 null,

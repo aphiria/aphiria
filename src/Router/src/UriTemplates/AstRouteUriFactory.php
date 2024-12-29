@@ -69,13 +69,13 @@ final class AstRouteUriFactory implements IRouteUriFactory
         $host = null;
         $path = '';
 
-        foreach ($ast->children as $childAstNode) {
-            switch ($childAstNode->type) {
+        foreach ($ast->children as $childNode) {
+            switch ($childNode->type) {
                 case AstNodeType::Host:
-                    $host = \implode('', \array_reverse($this->compileNode(true, $childAstNode, $routeActionParameters)));
+                    $host = \implode('', \array_reverse($this->compileNode(true, $childNode, $routeActionParameters)));
                     break;
                 case AstNodeType::Path:
-                    $path = \implode('', $this->compileNode(false, $childAstNode, $routeActionParameters));
+                    $path = \implode('', $this->compileNode(false, $childNode, $routeActionParameters));
                     break;
             }
         }
@@ -122,8 +122,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
             // This prevents us from using the "bar" value in the case of [/:foo[/:bar]] if "foo" was not specified but "bar" was
             if ($inUndefinedOptionalRoutePart) {
                 if ($childNode->type === AstNodeType::Variable) {
-                    // Use up any unspecified parameter so that it does not get marked for use in the query string
-                    $routeActionParameters->tryGetUnspecifiedParameterValue((string)$childNode->value, $routeVariable);
+                    // Use up any implicit parameter so that it does not get included in the query string
+                    $routeActionParameters->tryUseImplicitParameterValue((string)$childNode->value, $routeVariable);
                 } elseif ($childNode->type === AstNodeType::OptionalRoutePart) {
                     // Keep stepping through the tree, but don't bother capturing the path because we're not going to use any of it anyway
                     $this->compileNode($compilingHost, $childNode, $routeActionParameters, $inUndefinedOptionalRoutePart);
@@ -157,8 +157,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
                 case AstNodeType::Variable:
                     $routeVariable = null;
 
-                    $routeActionParameters->tryGetRouteVariableParameterValue((string)$childNode->value, $routeVariable)
-                    || $routeActionParameters->tryGetUnspecifiedParameterValue((string)$childNode->value, $routeVariable);
+                    $routeActionParameters->tryUseRouteVariableParameterValue((string)$childNode->value, $routeVariable)
+                    || $routeActionParameters->tryUseImplicitParameterValue((string)$childNode->value, $routeVariable);
 
                     if ($routeVariable !== null) {
                         // Check if we've hit a defined variable, eg "[:foo.]bar.com", flush the buffer, eg "."
@@ -181,7 +181,6 @@ final class AstRouteUriFactory implements IRouteUriFactory
             }
         }
 
-        // The delimiters are in the host parts, so just glue it together with an empty string
         return $parts;
     }
 }

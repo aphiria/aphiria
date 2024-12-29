@@ -27,20 +27,8 @@ class RouteActionParameterValues
         get {
             $unusedParameters = $this->queryStringNamesToValues;
 
-            foreach ($this->unusedUnspecifiedParameters as $name => $bool) {
-                $unusedParameters[$name] = $this->unspecifiedParameterNamesToValues[$name];
-            }
-
-            return $unusedParameters;
-        }
-    }
-    /** @var array<string, mixed> The map of unused unspecified parameters to values */
-    public array $unusedUnspecifiedParameters {
-        get {
-            $unusedParameters = [];
-
-            foreach ($this->unusedUnspecifiedParameterNames as $name => $bool) {
-                $unusedParameters[$name] = $this->unspecifiedParameterNamesToValues[$name];
+            foreach ($this->unusedImplicitParameterNames as $name => $bool) {
+                $unusedParameters[$name] = $this->implicitParameterNamesToValues[$name];
             }
 
             return $unusedParameters;
@@ -50,16 +38,16 @@ class RouteActionParameterValues
     private array $queryStringNamesToValues = [];
     /** @var array<string, mixed> The mapping of route variable parameter names to values */
     private array $routeVariableNamesToValues = [];
-    /** @var array<string, mixed> The mapping of unspecified parameter names to values */
-    private array $unspecifiedParameterNamesToValues = [];
-    /** @var array<string, true> The map of unused unspecified parameter names to true */
-    private array $unusedUnspecifiedParameterNames = [];
+    /** @var array<string, mixed> The mapping of implicit parameter names to values */
+    private array $implicitParameterNamesToValues = [];
+    /** @var array<string, true> The map of unused implicit parameter names to true */
+    private array $unusedImplicitParameterNames = [];
 
     /**
      * @param RouteAction $routeAction The route action whose parameters we are collecting
      * @param array<string, mixed> $routeVariables The mapping of route variables to values
      * @throws ReflectionException Thrown if there was an error reflecting the route action
-     * @throws InvalidArgumentException Thrown if not all route variables needed to create the route were specified
+     * @throws InvalidArgumentException Thrown if not all route variables needed to create the URI were specified
      */
     public function __construct(RouteAction $routeAction, array $routeVariables)
     {
@@ -102,8 +90,6 @@ class RouteActionParameterValues
                     $parametersWithMissingValues[] = $parameterName;
                 }
 
-                $this->unusedQueryStringParameterNames[$parameterName] = true;
-
                 continue;
             }
 
@@ -112,22 +98,43 @@ class RouteActionParameterValues
                 continue;
             }
 
-            // Put the rest of the variables into an unspecified list
+            // Put the rest of the variables into an implicit list
             if (isset($routeVariables[$parameterName])) {
-                $this->unspecifiedParameterNamesToValues[$parameterName] = $routeVariables[$parameterName];
+                $this->implicitParameterNamesToValues[$parameterName] = $routeVariables[$parameterName];
                 unset($routeVariables[$parameterName]);
             } elseif ($parameter->isDefaultValueAvailable()) {
-                $this->unspecifiedParameterNamesToValues[$parameterName] = $parameter->getDefaultValue();
+                $this->implicitParameterNamesToValues[$parameterName] = $parameter->getDefaultValue();
             } elseif ($parameter->allowsNull()) {
-                $this->unspecifiedParameterNamesToValues[$parameterName] = null;
+                $this->implicitParameterNamesToValues[$parameterName] = null;
             } else {
                 $parametersWithMissingValues[] = $parameterName;
             }
 
-            $this->unusedUnspecifiedParameterNames[$parameterName] = true;
+            $this->unusedImplicitParameterNames[$parameterName] = true;
         }
 
         $this->validateRouteVariablesAndRouteActionParameters($routeAction, $parametersWithMissingValues, $routeVariables);
+    }
+
+    /**
+     * Tries to use the value of an implicit parameter
+     *
+     * @param string $name The name of the parameter whose value we want
+     * @param mixed $value The value of the parameter
+     * @param-out mixed $value
+     * @return True if the parameter had a value, otherwise false
+     */
+    public function tryUseImplicitParameterValue(string $name, mixed &$value): bool
+    {
+        if (\array_key_exists($name, $this->implicitParameterNamesToValues)) {
+            $value = $this->implicitParameterNamesToValues[$name];
+            // Mark this as used
+            unset($this->unusedImplicitParameterNames[$name]);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -138,31 +145,10 @@ class RouteActionParameterValues
      * @param-out mixed $value
      * @return True if the parameter had a value, otherwise false
      */
-    public function tryGetRouteVariableParameterValue(string $name, mixed &$value): bool
+    public function tryUseRouteVariableParameterValue(string $name, mixed &$value): bool
     {
         if (\array_key_exists($name, $this->routeVariableNamesToValues)) {
             $value = $this->routeVariableNamesToValues[$name];
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets the value of an unspecified parameter
-     *
-     * @param string $name The name of the parameter whose value we want
-     * @param mixed $value The value of the parameter
-     * @param-out mixed $value
-     * @return True if the parameter had a value, otherwise false
-     */
-    public function tryGetUnspecifiedParameterValue(string $name, mixed &$value): bool
-    {
-        if (\array_key_exists($name, $this->unspecifiedParameterNamesToValues)) {
-            $value = $this->unspecifiedParameterNamesToValues[$name];
-            // Mark this as used
-            unset($this->unusedUnspecifiedParameterNames[$name]);
 
             return true;
         }
@@ -196,12 +182,9 @@ class RouteActionParameterValues
 
         // Throw an error if any extra route variables were passed in because they may indicate a logic flaw
         if (!empty($routeVariables)) {
-            if (!empty($exceptionMessage)) {
-                $exceptionMessage .= '.  ';
-            }
-
             $exceptionMessage .= \sprintf(
-                'Following route variables have no matching route action parameter in %s::%s: "%s"',
+                '%sollowing route variables have no matching route action parameter in %s::%s: "%s"',
+                empty($exceptionMessage) ? 'F' : ', f',
                 $routeAction->className,
                 $routeAction->methodName,
                 \implode("\", \"", \array_keys($routeVariables))
