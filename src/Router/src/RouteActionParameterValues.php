@@ -16,6 +16,7 @@ use Aphiria\Routing\Attributes\RouteVariable;
 use InvalidArgumentException;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionParameter;
 
 /**
  * Defines the collection for route action parameter values
@@ -61,14 +62,7 @@ class RouteActionParameterValues
             if (\count($routeVariableAttributes = $parameter->getAttributes(RouteVariable::class)) === 1) {
                 $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $parameterName;
 
-                if (isset($routeVariables[$parameterName])) {
-                    $this->routeVariableNamesToValues[$parameterName] = $routeVariables[$parameterName];
-                    unset($routeVariables[$parameterName]);
-                } elseif ($parameter->isDefaultValueAvailable()) {
-                    $this->routeVariableNamesToValues[$parameterName] = $parameter->getDefaultValue();
-                } elseif ($parameter->allowsNull()) {
-                    $this->routeVariableNamesToValues[$parameterName] = null;
-                } else {
+                if (!$this->tryAddParameter($this->routeVariableNamesToValues, $parameter, $parameterName, $routeVariables)) {
                     $parametersWithMissingValues[] = $parameterName;
                 }
 
@@ -79,14 +73,7 @@ class RouteActionParameterValues
             if (\count($queryStringAttributes = $parameter->getAttributes(QueryString::class)) === 1) {
                 $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $parameterName;
 
-                if (isset($routeVariables[$parameterName])) {
-                    $this->queryStringNamesToValues[$parameterName] = $routeVariables[$parameterName];
-                    unset($routeVariables[$parameterName]);
-                } elseif ($parameter->isDefaultValueAvailable()) {
-                    $this->queryStringNamesToValues[$parameterName] = $parameter->getDefaultValue();
-                } elseif ($parameter->allowsNull()) {
-                    $this->queryStringNamesToValues[$parameterName] = null;
-                } else {
+                if (!$this->tryAddParameter($this->queryStringNamesToValues, $parameter, $parameterName, $routeVariables)) {
                     $parametersWithMissingValues[] = $parameterName;
                 }
 
@@ -99,14 +86,7 @@ class RouteActionParameterValues
             }
 
             // Put the rest of the variables into an implicit list
-            if (isset($routeVariables[$parameterName])) {
-                $this->implicitParameterNamesToValues[$parameterName] = $routeVariables[$parameterName];
-                unset($routeVariables[$parameterName]);
-            } elseif ($parameter->isDefaultValueAvailable()) {
-                $this->implicitParameterNamesToValues[$parameterName] = $parameter->getDefaultValue();
-            } elseif ($parameter->allowsNull()) {
-                $this->implicitParameterNamesToValues[$parameterName] = null;
-            } else {
+            if (!$this->tryAddParameter($this->implicitParameterNamesToValues, $parameter, $parameterName, $routeVariables)) {
                 $parametersWithMissingValues[] = $parameterName;
             }
 
@@ -149,6 +129,7 @@ class RouteActionParameterValues
     {
         if (\array_key_exists($name, $this->routeVariableNamesToValues)) {
             $value = $this->routeVariableNamesToValues[$name];
+            // Unlike implicit parameters, we won't bother tracking its usage because that's only useful for populating the query string, which route variables will never do
 
             return true;
         }
@@ -194,5 +175,35 @@ class RouteActionParameterValues
         if (!empty($exceptionMessage)) {
             throw new InvalidArgumentException($exceptionMessage);
         }
+    }
+
+    /**
+     * Tries to add a parameter to a collection
+     *
+     * @param array<string, mixed> $collection The collection to add the parameter to
+     * @param ReflectionParameter $parameter The reflected parameter
+     * @param string $parameterName The name of the parameter (could have been retrieved from an attribute, eg #[RouteVariable('foo')])
+     * @return bool True if the parameter was successfully added, otherwise false
+     */
+    private function tryAddParameter(
+        array &$collection,
+        ReflectionParameter $parameter,
+        string $parameterName,
+        array &$routeVariables
+    ): bool {
+        $successful = true;
+
+        if (isset($routeVariables[$parameterName])) {
+            $collection[$parameterName] = $routeVariables[$parameterName];
+            unset($routeVariables[$parameterName]);
+        } elseif ($parameter->isDefaultValueAvailable()) {
+            $collection[$parameterName] = $parameter->getDefaultValue();
+        } elseif ($parameter->allowsNull()) {
+            $collection[$parameterName] = null;
+        } else {
+            $successful = false;
+        }
+
+        return $successful;
     }
 }
