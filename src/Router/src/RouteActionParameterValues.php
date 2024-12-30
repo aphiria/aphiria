@@ -102,10 +102,8 @@ class RouteActionParameterValues
      */
     public function tryUseImplicitParameterValue(string $name, mixed &$value): bool
     {
-        // TODO: Add tests for using route variables twice
         if (\array_key_exists($name, $this->implicitParameterNamesToValues) && isset($this->unusedImplicitParameterNames[$name])) {
             $value = $this->implicitParameterNamesToValues[$name];
-            // Mark this as used
             unset($this->unusedImplicitParameterNames[$name]);
 
             return true;

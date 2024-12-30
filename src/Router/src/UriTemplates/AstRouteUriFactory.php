@@ -164,10 +164,10 @@ final class AstRouteUriFactory implements IRouteUriFactory
                     $routeVariable = null;
 
                     $routeActionParameters->tryUseRouteVariableParameterValue((string)$childNode->value, $routeVariable)
-                    || $routeActionParameters->tryUseImplicitParameterValue((string)$childNode->value, $routeVariable);
+                        || $routeActionParameters->tryUseImplicitParameterValue((string)$childNode->value, $routeVariable);
 
                     if ($routeVariable !== null) {
-                        // Check if we've hit a defined variable, eg "[:foo.]bar.com", flush the buffer, eg "."
+                        // Check if we've hit a defined variable, eg "[:foo.]bar.com", and flush the buffer, eg "."
                         if (!empty($optionalSegmentBuffer)) {
                             $parts[] = $optionalSegmentBuffer;
                             $optionalSegmentBuffer = '';
