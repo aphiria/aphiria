@@ -39,12 +39,7 @@ class RouteActionParameterValuesTest extends TestCase
             [
                 $controller,
                 'queryString',
-                function (RouteActionParameterValues $parameters, mixed &$value) {
-                    $queryStringParameters = $parameters->queryStringParameters;
-                    $value = $queryStringParameters['foo'] ?? null;
-
-                    return \array_key_exists('foo', $queryStringParameters);
-                },
+                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value),
                 'bar'
             ],
             [
@@ -80,12 +75,7 @@ class RouteActionParameterValuesTest extends TestCase
             [
                 $controller,
                 'queryString',
-                function (RouteActionParameterValues $parameters, mixed &$value) {
-                    $queryStringParameters = $parameters->queryStringParameters;
-                    $value = $queryStringParameters['foo'] ?? null;
-
-                    return \array_key_exists('foo', $queryStringParameters);
-                }
+                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value)
             ],
             [
                 $controller,
@@ -133,21 +123,7 @@ class RouteActionParameterValuesTest extends TestCase
         ];
     }
 
-    public function testGettingQueryStringParametersIncludesUnusedImplicitParameters(): void
-    {
-        $controller = new class () {
-            public function foo(#[QueryString] string $foo, string $bar): void
-            {
-            }
-        };
-        $routeAction = new RouteAction($controller::class, 'foo');
-        $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
-        $this->assertSame(['foo' => '1', 'bar' => '2'], $parameters->queryStringParameters);
-        $parameters->tryUseImplicitParameterValue('bar', $value);
-        $this->assertSame(['foo' => '1'], $parameters->queryStringParameters);
-    }
-
-    public function testGettingQueryStringAttributeParametersWithNamesReturnsThoseNames(): void
+    public function testUsingRemainingQueryStringAttributeParametersWithNamesReturnsThoseNames(): void
     {
         $controller = new class() {
             public function foo(#[QueryString('baz')] string $foo, #[QueryString('quz')] string $bar): void
@@ -156,10 +132,10 @@ class RouteActionParameterValuesTest extends TestCase
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['baz' => '1', 'quz' => '2']);
-        $this->assertSame(['baz' => '1', 'quz' => '2'], $parameters->queryStringParameters);
+        $this->assertSame(['baz' => '1', 'quz' => '2'], $parameters->useRemainingQueryStringParameterValues());
     }
 
-    public function testGettingQueryStringAttributeParametersWithoutNamesReturnsNamesOfParameters(): void
+    public function testUsingRemainingQueryStringAttributeParametersWithoutNamesReturnsNamesOfParameters(): void
     {
         $controller = new class() {
             public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void
@@ -168,7 +144,33 @@ class RouteActionParameterValuesTest extends TestCase
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
-        $this->assertSame(['foo' => '1', 'bar' => '2'], $parameters->queryStringParameters);
+        $this->assertSame(['foo' => '1', 'bar' => '2'], $parameters->useRemainingQueryStringParameterValues());
+    }
+
+    public function testUsingRemainingImplicitParametersOnlyReturnsValuesThatAreUnused(): void
+    {
+        $controller = new class() {
+            public function foo(string $foo, string $bar): void
+            {
+            }
+        };
+        $routeAction = new RouteAction($controller::class, 'foo');
+        $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
+        $this->assertSame(['foo' => '1', 'bar' => '2'], $parameters->useRemainingImplicitParameterValues());
+        $this->assertEmpty($parameters->useRemainingImplicitParameterValues());
+    }
+
+    public function testUsingRemainingQueryStringParametersOnlyReturnsValuesThatAreUnused(): void
+    {
+        $controller = new class() {
+            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void
+            {
+            }
+        };
+        $routeAction = new RouteAction($controller::class, 'foo');
+        $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
+        $this->assertSame(['foo' => '1', 'bar' => '2'], $parameters->useRemainingQueryStringParameterValues());
+        $this->assertEmpty($parameters->useRemainingQueryStringParameterValues());
     }
 
     public function testHeaderAttributeParametersAreNotIncludedInAnyCollection(): void
@@ -184,7 +186,59 @@ class RouteActionParameterValuesTest extends TestCase
         $this->assertNull($value);
         $this->assertFalse($parameters->tryUseImplicitParameterValue('foo', $value));
         $this->assertNull($value);
-        $this->assertEmpty($parameters->queryStringParameters);
+        $this->assertEmpty($parameters->useRemainingQueryStringParameterValues());
+        $this->assertEmpty($parameters->useRemainingImplicitParameterValues());
+    }
+
+    public function testTryingToUseImplicitParametersOnlyReturnsValuesThatAreUnused(): void
+    {
+        $controller = new class() {
+            public function foo(string $foo): void
+            {
+            }
+        };
+        $routeAction = new RouteAction($controller::class, 'foo');
+        $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1']);
+        $value = null;
+        $this->assertTrue($parameters->tryUseImplicitParameterValue('foo', $value));
+        $this->assertSame('1', $value);
+        $value = null;
+        $this->assertFalse($parameters->tryUseQueryStringParameterValue('foo', $value));
+        $this->assertNull($value);
+    }
+
+    public function testTryingToUseQueryStringParametersOnlyReturnsValuesThatAreUnused(): void
+    {
+        $controller = new class() {
+            public function foo(#[QueryString] string $foo): void
+            {
+            }
+        };
+        $routeAction = new RouteAction($controller::class, 'foo');
+        $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1']);
+        $value = null;
+        $this->assertTrue($parameters->tryUseQueryStringParameterValue('foo', $value));
+        $this->assertSame('1', $value);
+        $value = null;
+        $this->assertFalse($parameters->tryUseQueryStringParameterValue('foo', $value));
+        $this->assertNull($value);
+    }
+
+    public function testTryingToUseRouteVariableParametersOnlyReturnsValuesThatAreUnused(): void
+    {
+        $controller = new class() {
+            public function foo(#[RouteVariable] string $foo): void
+            {
+            }
+        };
+        $routeAction = new RouteAction($controller::class, 'foo');
+        $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1']);
+        $value = null;
+        $this->assertTrue($parameters->tryUseRouteVariableParameterValue('foo', $value));
+        $this->assertSame('1', $value);
+        $value = null;
+        $this->assertFalse($parameters->tryUseRouteVariableParameterValue('foo', $value));
+        $this->assertNull($value);
     }
 
     public function testTryingToUseExistingRouteVariableAttributeParameterReturnsTrue(): void
@@ -308,7 +362,6 @@ class RouteActionParameterValuesTest extends TestCase
         $routeAction = new RouteAction($controller::class, $methodName);
         $parameters = new RouteActionParameterValues($routeAction, []);
         $value = null;
-        $valueGetter($parameters, $value);
         $this->assertTrue($valueGetter($parameters, $value));
         $this->assertSame($expectedValue, $value);
     }
@@ -328,7 +381,6 @@ class RouteActionParameterValuesTest extends TestCase
         $routeAction = new RouteAction($controller::class, $methodName);
         $parameters = new RouteActionParameterValues($routeAction, []);
         $value = null;
-        $valueGetter($parameters, $value);
         $this->assertTrue($valueGetter($parameters, $value));
         $this->assertNull($value);
     }

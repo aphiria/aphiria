@@ -81,7 +81,13 @@ final class AstRouteUriFactory implements IRouteUriFactory
         }
 
         // See if we need to append any query string parameters from the unused variables
-        $queryString = \http_build_query($routeActionParameters->queryStringParameters, encoding_type: PHP_QUERY_RFC3986);
+        $queryString = \http_build_query(
+            \array_merge(
+                $routeActionParameters->useRemainingQueryStringParameterValues(),
+                $routeActionParameters->useRemainingImplicitParameterValues()
+            ),
+            encoding_type: PHP_QUERY_RFC3986
+        );
         $path .= empty($queryString) ? '' : "?$queryString";
 
         if ($host === null) {

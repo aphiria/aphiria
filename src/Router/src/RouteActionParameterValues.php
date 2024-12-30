@@ -23,26 +23,18 @@ use ReflectionParameter;
  */
 class RouteActionParameterValues
 {
-    /** @var array<string, mixed> The map of query string parameters to values */
-    public array $queryStringParameters {
-        get {
-            $unusedParameters = $this->queryStringNamesToValues;
-
-            foreach ($this->unusedImplicitParameterNames as $name => $bool) {
-                $unusedParameters[$name] = $this->implicitParameterNamesToValues[$name];
-            }
-
-            return $unusedParameters;
-        }
-    }
+    /** @var array<string, mixed> The mapping of implicit parameter names to values */
+    private array $implicitParameterNamesToValues = [];
     /** @var array<string, mixed> The mapping of query string parameter names to values */
     private array $queryStringNamesToValues = [];
     /** @var array<string, mixed> The mapping of route variable parameter names to values */
     private array $routeVariableNamesToValues = [];
-    /** @var array<string, mixed> The mapping of implicit parameter names to values */
-    private array $implicitParameterNamesToValues = [];
     /** @var array<string, true> The map of unused implicit parameter names to true */
     private array $unusedImplicitParameterNames = [];
+    /** @var array<string, true> The map of unused query string parameter names to true */
+    private array $unusedQueryStringParameterNames = [];
+    /** @var array<string, true> The map of unused route variable parameter names to true */
+    private array $unusedRouteVariableParameterNames = [];
 
     /**
      * @param RouteAction $routeAction The route action whose parameters we are collecting
@@ -62,7 +54,9 @@ class RouteActionParameterValues
             if (\count($routeVariableAttributes = $parameter->getAttributes(RouteVariable::class)) === 1) {
                 $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $parameterName;
 
-                if (!$this->tryAddParameter($this->routeVariableNamesToValues, $parameter, $parameterName, $routeVariables)) {
+                if ($this->tryAddParameter($this->routeVariableNamesToValues, $parameter, $parameterName, $routeVariables)) {
+                    $this->unusedRouteVariableParameterNames[$parameterName] = true;
+                } else {
                     $parametersWithMissingValues[] = $parameterName;
                 }
 
@@ -73,7 +67,9 @@ class RouteActionParameterValues
             if (\count($queryStringAttributes = $parameter->getAttributes(QueryString::class)) === 1) {
                 $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $parameterName;
 
-                if (!$this->tryAddParameter($this->queryStringNamesToValues, $parameter, $parameterName, $routeVariables)) {
+                if ($this->tryAddParameter($this->queryStringNamesToValues, $parameter, $parameterName, $routeVariables)) {
+                    $this->unusedQueryStringParameterNames[$parameterName] = true;
+                } else {
                     $parametersWithMissingValues[] = $parameterName;
                 }
 
@@ -86,11 +82,11 @@ class RouteActionParameterValues
             }
 
             // Put the rest of the variables into an implicit list
-            if (!$this->tryAddParameter($this->implicitParameterNamesToValues, $parameter, $parameterName, $routeVariables)) {
+            if ($this->tryAddParameter($this->implicitParameterNamesToValues, $parameter, $parameterName, $routeVariables)) {
+                $this->unusedImplicitParameterNames[$parameterName] = true;
+            } else {
                 $parametersWithMissingValues[] = $parameterName;
             }
-
-            $this->unusedImplicitParameterNames[$parameterName] = true;
         }
 
         $this->validateRouteVariablesAndRouteActionParameters($routeAction, $parametersWithMissingValues, $routeVariables);
@@ -106,10 +102,31 @@ class RouteActionParameterValues
      */
     public function tryUseImplicitParameterValue(string $name, mixed &$value): bool
     {
-        if (\array_key_exists($name, $this->implicitParameterNamesToValues)) {
+        // TODO: Add tests for using route variables twice
+        if (\array_key_exists($name, $this->implicitParameterNamesToValues) && isset($this->unusedImplicitParameterNames[$name])) {
             $value = $this->implicitParameterNamesToValues[$name];
             // Mark this as used
             unset($this->unusedImplicitParameterNames[$name]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the value of a query string parameter
+     *
+     * @param string $name The name of the parameter whose value we want
+     * @param mixed $value The value of the parameter
+     * @param-out mixed $value
+     * @return True if the parameter had a value, otherwise false
+     */
+    public function tryUseQueryStringParameterValue(string $name, mixed &$value): bool
+    {
+        if (\array_key_exists($name, $this->queryStringNamesToValues) && isset($this->unusedQueryStringParameterNames[$name])) {
+            $value = $this->queryStringNamesToValues[$name];
+            unset($this->unusedQueryStringParameterNames[$name]);
 
             return true;
         }
@@ -127,14 +144,48 @@ class RouteActionParameterValues
      */
     public function tryUseRouteVariableParameterValue(string $name, mixed &$value): bool
     {
-        if (\array_key_exists($name, $this->routeVariableNamesToValues)) {
+        if (\array_key_exists($name, $this->routeVariableNamesToValues) && isset($this->unusedRouteVariableParameterNames[$name])) {
             $value = $this->routeVariableNamesToValues[$name];
-            // Unlike implicit parameters, we won't bother tracking its usage because that's only useful for populating the query string, which route variables will never do
+            unset($this->unusedRouteVariableParameterNames[$name]);
 
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Uses all remaining implicit parameter values
+     *
+     * @return array<string, mixed> The parameter names to values
+     */
+    public function useRemainingImplicitParameterValues(): array
+    {
+        $parameters = [];
+
+        foreach ($this->unusedImplicitParameterNames as $name => $bool) {
+            $parameters[$name] = $this->implicitParameterNamesToValues[$name];
+            unset($this->unusedImplicitParameterNames[$name]);
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Uses all remaining query string parameter values
+     *
+     * @return array<string, mixed> The parameter names to values
+     */
+    public function useRemainingQueryStringParameterValues(): array
+    {
+        $parameters = [];
+
+        foreach ($this->unusedQueryStringParameterNames as $name => $bool) {
+            $parameters[$name] = $this->queryStringNamesToValues[$name];
+            unset($this->unusedQueryStringParameterNames[$name]);
+        }
+
+        return $parameters;
     }
 
     /**
@@ -193,7 +244,7 @@ class RouteActionParameterValues
     ): bool {
         $successful = true;
 
-        if (isset($routeVariables[$parameterName])) {
+        if (\array_key_exists($parameterName, $routeVariables)) {
             $collection[$parameterName] = $routeVariables[$parameterName];
             unset($routeVariables[$parameterName]);
         } elseif ($parameter->isDefaultValueAvailable()) {
