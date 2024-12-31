@@ -6,4 +6,4 @@ services:
     volumes:
       - ./:/aphiria
     ports:
-      - "9003:9003"
+      - "9003"
