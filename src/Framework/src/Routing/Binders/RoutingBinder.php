@@ -16,6 +16,8 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\MissingConfigurationValueException;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\IContainer;
+use Aphiria\Framework\Routing\IRouteRequestFactory;
+use Aphiria\Framework\Routing\RouteRequestFactory;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Caching\FileRouteCache;
 use Aphiria\Routing\Caching\IRouteCache;
@@ -72,7 +74,8 @@ final class RoutingBinder extends Binder
             true
         );
 
-        $container->bindInstance(IRouteUriFactory::class, new AstRouteUriFactory($routes));
+        $container->bindInstance(IRouteUriFactory::class, $routeUriFactory = new AstRouteUriFactory($routes));
+        $container->bindInstance(IRouteRequestFactory::class, new RouteRequestFactory($routes, $routeUriFactory));
 
         // Register some route attribute dependencies
         /** @var list<string> $attributePaths */

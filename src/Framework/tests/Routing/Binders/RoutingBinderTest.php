@@ -16,6 +16,8 @@ use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Routing\Binders\RoutingBinder;
+use Aphiria\Framework\Routing\IRouteRequestFactory;
+use Aphiria\Framework\Routing\RouteRequestFactory;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Caching\FileRouteCache;
 use Aphiria\Routing\Caching\IRouteCache;
@@ -105,6 +107,23 @@ class RoutingBinderTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testRouteRequestFactoryIsBound(): void
+    {
+        GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
+        $this->setUpContainerMock();
+        $this->container->shouldReceive('bindFactory')
+            ->with(
+                [IRouteMatcher::class, TrieRouteMatcher::class],
+                Mockery::on(function (Closure $factory) {
+                    return $factory() instanceof TrieRouteMatcher;
+                }),
+                true
+            );
+        $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
     public function testRouteUriFactoryIsBound(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -165,6 +184,7 @@ class RoutingBinderTest extends TestCase
             [ITrieCache::class, FileTrieCache::class],
             [RouteRegistrantCollection::class, RouteRegistrantCollection::class],
             [IRouteUriFactory::class, AstRouteUriFactory::class],
+            [IRouteRequestFactory::class, RouteRequestFactory::class],
             [AttributeRouteRegistrant::class, AttributeRouteRegistrant::class]
         ];
 
