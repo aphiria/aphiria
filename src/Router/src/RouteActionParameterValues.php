@@ -109,6 +109,8 @@ class RouteActionParameterValues
             return true;
         }
 
+        $value = null;
+
         return false;
     }
 
@@ -129,6 +131,8 @@ class RouteActionParameterValues
             return true;
         }
 
+        $value = null;
+
         return false;
     }
 
@@ -148,6 +152,8 @@ class RouteActionParameterValues
 
             return true;
         }
+
+        $value = null;
 
         return false;
     }

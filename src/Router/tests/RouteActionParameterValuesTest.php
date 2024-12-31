@@ -267,7 +267,7 @@ class RouteActionParameterValuesTest extends TestCase
         $this->assertSame('baz', $value);
     }
 
-    public function testTryingToUseNonExistentRouteVariableAttributeParameterReturnsFalse(): void
+    public function testTryingToUseNonExistentRouteVariableAttributeParameterReturnsFalseAndUnsetsValue(): void
     {
         $controller = new class() {
             public function foo(#[RouteVariable] string $foo): void
@@ -276,11 +276,13 @@ class RouteActionParameterValuesTest extends TestCase
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => 'bar']);
+        // Set the value to a dummy value so we can test that it's set back to null
+        $value = 'foo';
         $this->assertFalse($parameters->tryUseRouteVariableParameterValue('baz', $value));
         $this->assertNull($value);
     }
 
-    public function testTryingToUseNonExistentRouteVariableAttributeParameterWithNameReturnsFalse(): void
+    public function testTryingToUseNonExistentRouteVariableAttributeParameterWithNameReturnsFalseAndUnsetsValue(): void
     {
         $controller = new class() {
             public function foo(#[RouteVariable('bar')] string $foo): void
@@ -289,6 +291,8 @@ class RouteActionParameterValuesTest extends TestCase
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['bar' => 'baz']);
+        // Set the value to a dummy value so we can test that it's set back to null
+        $value = 'foo';
         $this->assertFalse($parameters->tryUseRouteVariableParameterValue('foo', $value));
         $this->assertNull($value);
     }
@@ -306,7 +310,7 @@ class RouteActionParameterValuesTest extends TestCase
         $this->assertSame('bar', $value);
     }
 
-    public function testTryingToUseNonExistentImplicitParameterReturnsFalse(): void
+    public function testTryingToUseNonExistentImplicitParameterReturnsFalseAndUnsetsValue(): void
     {
         $controller = new class() {
             public function foo(): void
@@ -315,6 +319,8 @@ class RouteActionParameterValuesTest extends TestCase
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, []);
+        // Set the value to a dummy value so we can test that it's set back to null
+        $value = 'foo';
         $this->assertFalse($parameters->tryUseImplicitParameterValue('foo', $value));
         $this->assertNull($value);
     }
