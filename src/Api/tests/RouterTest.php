@@ -227,7 +227,7 @@ class RouterTest extends TestCase
             ->willReturn($expectedResponse);
         $this->assertSame($expectedResponse, $this->router->handle($request));
         // Verify the request was set
-        $this->assertSame($request, $controller->getRequest());
+        $this->assertSame($request, $controller->request);
     }
 
     public function testRouteActionWithInvalidControllerInstanceThrowsExceptionThatIsCaught(): void

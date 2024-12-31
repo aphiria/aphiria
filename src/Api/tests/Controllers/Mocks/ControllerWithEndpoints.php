@@ -26,123 +26,13 @@ use RuntimeException;
 class ControllerWithEndpoints extends BaseController
 {
     /**
-     * Mocks a method with an array parameter
-     *
-     * @param array $foo The array
-     * @return IResponse The response
-     */
-    public function arrayParameter(array $foo): IResponse
-    {
-        return $this->createResponseWithBody(\json_encode($foo));
-    }
-
-    /**
-     * Mocks a method with a bool parameter
-     *
-     * @param bool $foo The bool
-     * @return IResponse The response
-     */
-    public function boolParameter(bool $foo): IResponse
-    {
-        return $this->createResponseWithBody((string)$foo);
-    }
-
-    /**
-     * Mocks a method with a callable parameter
-     *
-     * @param callable $foo The callable
-     * @return IResponse The response
-     * @psalm-suppress InvalidCast This cast is actually allowed
-     */
-    public function callableParameter(callable $foo): IResponse
-    {
-        return $this->createResponseWithBody((string)$foo);
-    }
-
-    /**
-     * Mocks a method with a parameter with a default value
-     *
-     * @param string $foo The string
-     * @return IResponse The response
-     */
-    public function defaultValueParameter(string $foo = 'bar'): IResponse
-    {
-        return $this->createResponseWithBody($foo);
-    }
-
-    /**
-     * Mocks a method with a float parameter
-     *
-     * @param float $foo The float
-     * @return IResponse The response
-     */
-    public function floatParameter(float $foo): IResponse
-    {
-        return $this->createResponseWithBody((string)$foo);
-    }
-
-    /**
-     * Gets the current request (for use in tests)
-     *
-     * @return IRequest|null The current request, or null if it isn't set yet
-     */
-    public function getRequest(): ?IRequest
-    {
-        return $this->request;
-    }
-
-    /**
-     * Mocks a method with an int parameter
-     *
-     * @param int $foo The int
-     * @return IResponse The response
-     */
-    public function intParameter(int $foo): IResponse
-    {
-        return $this->createResponseWithBody((string)$foo);
-    }
-
-    /**
      * Mocks a method that takes in no parameters
      *
      * @return Response The method name
      */
     public function noParameters(): IResponse
     {
-        return $this->createResponseWithBody('noParameters');
-    }
-
-    /**
-     * Mocks a method with a parameter with no type hint
-     *
-     * @param mixed $foo The parameter to use in the response
-     * @return Response The response
-     */
-    public function noTypeHintParameter($foo): IResponse
-    {
-        return $this->createResponseWithBody((string)$foo);
-    }
-
-    /**
-     * Mocks a method that takes in a nullable object parameter
-     *
-     * @param User|null $user The user
-     * @return Response The response
-     */
-    public function nullableObjectParameter(?User $user): IResponse
-    {
-        return $this->createResponseWithBody($user === null ? 'null' : 'notnull');
-    }
-
-    /**
-     * Mocks a method that takes in a nullable scalar parameter
-     *
-     * @param int|null $foo The nullable parameter
-     * @return Response The response
-     */
-    public function nullableScalarParameter(?int $foo): IResponse
-    {
-        return $this->createResponseWithBody($foo === null ? 'null' : 'notnull');
+        return new Response(body: new StringBody('noParameters'));
     }
 
     /**
@@ -164,14 +54,6 @@ class ControllerWithEndpoints extends BaseController
     public function popo(): User
     {
         return new User(123, 'foo@bar.com');
-    }
-
-    /**
-     * Mocks a method that does not return anything
-     */
-    public function returnsNothing(): void
-    {
-        // Don't do anything
     }
 
     /**

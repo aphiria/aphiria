@@ -18,6 +18,11 @@ use Aphiria\ContentNegotiation\MediaTypeFormatters\SerializationException;
 use Aphiria\ContentNegotiation\NegotiatedBodyDeserializer;
 use Aphiria\Net\Formatting\UriParser;
 use Aphiria\Net\Http\IRequest;
+use Aphiria\Routing\Attributes\Header;
+use Aphiria\Routing\Attributes\QueryString;
+use Aphiria\Routing\Attributes\RouteVariable;
+use ArrayAccess;
+use Closure;
 use ReflectionNamedType;
 use ReflectionParameter;
 
@@ -47,6 +52,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         $queryStringVars = $this->uriParser->parseQueryString($request->uri);
         $reflectionParameterType = $reflectionParameter->getType();
 
+        // Try to resolve an object parameter
         if ($reflectionParameterType instanceof ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
             return $this->resolveObjectParameter(
                 $reflectionParameter,
@@ -55,24 +61,62 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             );
         }
 
+        // If this uses the #[RouteVariable] attribute, resolve it from the route
+        if (\count($routeVariableAttributes = $reflectionParameter->getAttributes(RouteVariable::class)) === 1) {
+            $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
+
+            return $this->resolveScalarParameter(
+                fn (): bool => isset($routeVariables[$parameterName]),
+                fn (): mixed => $routeVariables[$parameterName],
+                $reflectionParameter
+            );
+        }
+
+        // If this uses the #[QueryString] attribute, resolve it from the query string
+        if (\count($queryStringAttributes = $reflectionParameter->getAttributes(QueryString::class)) === 1) {
+            $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
+
+            return $this->resolveScalarParameter(
+                fn (): bool => isset($queryStringVars[$parameterName]),
+                fn (): mixed => $queryStringVars[$parameterName],
+                $reflectionParameter
+            );
+        }
+
+        // If this uses the #[Header] attribute, resolve it from the headers
+        if (\count($headerAttributes = $reflectionParameter->getAttributes(Header::class)) === 1) {
+            $parameterName = $headerAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
+
+            return $this->resolveScalarParameter(
+                fn (): bool => isset($request->headers[$parameterName]),
+                fn (): mixed => $request->headers->getFirst($parameterName),
+                $reflectionParameter
+            );
+        }
+
+        // No attributes for where to resolve the value from, so check the route
         if (isset($routeVariables[$reflectionParameter->getName()])) {
-            return $this->resolveScalarParameter($reflectionParameter, $routeVariables[$reflectionParameter->getName()]);
+            return $this->resolveScalarParameter(
+                fn (): bool => isset($routeVariables[$reflectionParameter->getName()]),
+                fn (): mixed => $routeVariables[$reflectionParameter->getName()],
+                $reflectionParameter
+            );
         }
 
+        // No attributes for where to resolve the value from, so now check the query string
         if (isset($queryStringVars[$reflectionParameter->getName()])) {
-            return $this->resolveScalarParameter($reflectionParameter, $queryStringVars[$reflectionParameter->getName()]);
+            return $this->resolveScalarParameter(
+                fn (): bool => isset($queryStringVars[$reflectionParameter->getName()]),
+                fn (): mixed => $queryStringVars[$reflectionParameter->getName()],
+                $reflectionParameter
+            );
         }
 
-        if ($reflectionParameter->isDefaultValueAvailable()) {
-            return $reflectionParameter->getDefaultValue();
-        }
-
-        if ($reflectionParameter->allowsNull()) {
-            return null;
-        }
-
-        throw new MissingControllerParameterValueException(
-            "No valid value for parameter {$reflectionParameter->getName()}"
+        // We could not resolve this parameter, so try doing it with default values
+        return $this->resolveScalarParameter(
+            fn (): bool => false,
+            fn (): null => null,
+            $reflectionParameter
         );
     }
 
@@ -126,34 +170,55 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     }
 
     /**
-     * Resolves a scalar parameter to the correct scalar value
+     * Resolves scalar parameters
      *
+     * @param Closure(): bool $issetClosure The closure that returns whether or not the value can be resolved from a source
+     * @param Closure(): mixed $getClosure The closure that returns the value from a source
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
-     * @param mixed $rawValue The raw value to convert
-     * @return mixed The raw value converted to the appropriate scalar type
+     * @return mixed The resolved parameter value
      * @throws FailedScalarParameterConversionException Thrown if the scalar parameter could not be converted
+     * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      */
-    private function resolveScalarParameter(ReflectionParameter $reflectionParameter, mixed $rawValue): mixed
-    {
-        $type = $reflectionParameter->getType();
-        $typeName = $type instanceof ReflectionNamedType ? $type->getName() : null;
+    private function resolveScalarParameter(
+        Closure $issetClosure,
+        Closure $getClosure,
+        ReflectionParameter $reflectionParameter
+    ): mixed {
+        if ($issetClosure()) {
+            $rawValue = $getClosure();
+            $typeName = $reflectionParameter->getType() instanceof ReflectionNamedType
+                ? $reflectionParameter->getType()->getName()
+                : null;
 
-        switch ($typeName) {
-            case 'int':
-                return (int)$rawValue;
-            case 'float':
-                return (float)$rawValue;
-            case 'string':
-                return (string)$rawValue;
-            case 'bool':
-                return (bool)$rawValue;
-            case null:
-                // Do not attempt to convert it
-                return $rawValue;
-            case 'array':
-                throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
-            default:
-                throw new FailedScalarParameterConversionException("Failed to convert value to $typeName");
+            switch ($typeName) {
+                case 'int':
+                    return (int)$rawValue;
+                case 'float':
+                    return (float)$rawValue;
+                case 'string':
+                    return (string)$rawValue;
+                case 'bool':
+                    return (bool)$rawValue;
+                case null:
+                    // Do not attempt to convert it
+                    return $rawValue;
+                case 'array':
+                    throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
+                default:
+                    throw new FailedScalarParameterConversionException("Failed to convert value to $typeName");
+            }
         }
+
+        if ($reflectionParameter->isDefaultValueAvailable()) {
+            return $reflectionParameter->getDefaultValue();
+        }
+
+        if ($reflectionParameter->allowsNull()) {
+            return null;
+        }
+
+        throw new MissingControllerParameterValueException(
+            "No valid value for parameter {$reflectionParameter->getName()}"
+        );
     }
 }
