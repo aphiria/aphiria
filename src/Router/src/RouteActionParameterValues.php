@@ -8,6 +8,8 @@
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
+declare(strict_types=1);
+
 namespace Aphiria\Routing;
 
 use Aphiria\Routing\Attributes\Header;
@@ -21,7 +23,7 @@ use ReflectionParameter;
 /**
  * Defines the collection for route action parameter values
  */
-class RouteActionParameterValues
+final class RouteActionParameterValues
 {
     /** @var array<string, mixed> The mapping of implicit parameter names to values */
     private array $implicitParameterNamesToValues = [];
@@ -76,8 +78,13 @@ class RouteActionParameterValues
                 continue;
             }
 
-            if (\count($parameter->getAttributes(Header::class)) > 0) {
-                // We specifically do not care about header values because they're not used to construct URIs
+            if (\count($headerAttributes = $parameter->getAttributes(Header::class)) === 1) {
+                $parameterName = $headerAttributes[0]->newInstance()->name ?? $parameterName;
+
+                if (isset($routeVariables[$parameterName])) {
+                    unset($routeVariables[$parameterName]);
+                }
+
                 continue;
             }
 
