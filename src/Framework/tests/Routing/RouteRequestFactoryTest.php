@@ -84,6 +84,18 @@ class RouteRequestFactoryTest extends TestCase
         $this->factory->createRouteUri('foo');
     }
 
+    public function testCreatingRequestForRouteWitSingleNonGetMethodCreatesRequestForThatMethod(): void
+    {
+        $controller = new class () {
+            public function foo(): void
+            {
+            }
+        };
+        $this->addRouteWithUriTemplate('foo', ['POST'], null, '/foo', $controller, 'foo');
+        $request = $this->factory->createRouteUri('foo');
+        $this->assertSame('POST', $request->method);
+    }
+
     public function testCreatingRequestWithHeaderParameterThatRequiresValueThrowsException(): void
     {
         $this->expectException(RouteRequestCreationException::class);
