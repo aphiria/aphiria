@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Aphiria
+ *
+ * @link      https://www.aphiria.com
+ * @copyright Copyright (C) 2024 David Young
+ * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
+ */
+
+declare(strict_types=1);
+
 namespace Aphiria\Routing\Tests;
 
 use Aphiria\Routing\Attributes\Header;
@@ -121,6 +131,19 @@ class RouteActionParameterValuesTest extends TestCase
             [$controller, 'routeVariableMultiple', ['foo', 'bar']],
             [$controller, 'routeVariableSingle', ['foo']],
         ];
+    }
+
+    public function testCreatingRouteParametersWithHeaderValueSpecifiedInRouteVariablesSimplyIgnoresIt(): void
+    {
+        $controller = new class() {
+            public function foo(#[Header] string $foo): void
+            {
+            }
+        };
+        $routeAction = new RouteAction($controller::class, 'foo');
+        new RouteActionParameterValues($routeAction, ['foo' => 'bar']);
+        // Dummy assertion
+        $this->assertTrue(true);
     }
 
     public function testUsingRemainingQueryStringAttributeParametersWithNamesReturnsThoseNames(): void
