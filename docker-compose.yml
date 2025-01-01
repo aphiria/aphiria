@@ -5,5 +5,3 @@ services:
     working_dir: /aphiria
     volumes:
       - ./:/aphiria
-    ports:
-      - "9003"
