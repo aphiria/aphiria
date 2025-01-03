@@ -96,7 +96,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                     $request->properties->add(self::PARSED_BODY_PROPERTY_NAME, $resolvedParameter);
                 }
             }
-        } catch (MissingControllerParameterValueException | FailedScalarParameterConversionException $ex) {
+        } catch (MissingControllerParameterValueException | FailedRequestParameterConversionException $ex) {
             throw new HttpException(
                 HttpStatusCode::BadRequest,
                 'Failed to invoke controller',

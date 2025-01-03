@@ -13,7 +13,9 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Api\Binders;
 
 use Aphiria\Api\Controllers\ControllerParameterResolver;
+use Aphiria\Api\Controllers\IRequestParameterDeserializer;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
+use Aphiria\Api\Controllers\RequestParameterDeserializer;
 use Aphiria\Api\Controllers\RouteActionInvoker;
 use Aphiria\Api\Validation\RequestBodyValidator;
 use Aphiria\ContentNegotiation\IBodyDeserializer;
@@ -46,5 +48,17 @@ final class ControllerBinder extends Binder
             $controllerParameterResolver
         );
         $container->bindInstance(IRouteActionInvoker::class, $routeActionInvoker);
+        $container->bindInstance(IRequestParameterDeserializer::class, $this->getRequestParameterDeserializer($container));
+    }
+
+    /**
+     * Gets the request parameter deserializer
+     *
+     * @param IContainer $container The DI container
+     * @return IRequestParameterDeserializer The request parameter deserializer
+     */
+    protected function getRequestParameterDeserializer(IContainer $container): IRequestParameterDeserializer
+    {
+        return new RequestParameterDeserializer();
     }
 }

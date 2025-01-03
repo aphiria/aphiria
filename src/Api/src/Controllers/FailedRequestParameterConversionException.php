@@ -15,9 +15,9 @@ namespace Aphiria\Api\Controllers;
 use Exception;
 
 /**
- * Defines the exception that's thrown when a scalar parameter fails to be converted
+ * Defines the exception that's thrown when a request parameter fails to be converted
  */
-final class FailedScalarParameterConversionException extends Exception
+final class FailedRequestParameterConversionException extends Exception
 {
     // Don't do anything
 }

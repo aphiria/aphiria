@@ -113,7 +113,7 @@ class RequestBodyValidatorTest extends TestCase
         }
     }
 
-    public function testValidatingScalarValueDoesNotThrowException(): void
+    public function testValidatingRequestParameterValueDoesNotThrowException(): void
     {
         $this->requestBodyValidator->validate($this->request, 1);
         // Dummy assertion

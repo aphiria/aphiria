@@ -15,7 +15,7 @@ namespace Aphiria\Api\Tests\Controllers;
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\ControllerParameterResolver;
 use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
-use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
+use Aphiria\Api\Controllers\FailedRequestParameterConversionException;
 use Aphiria\Api\Controllers\MissingControllerParameterValueException;
 use Aphiria\Api\Controllers\RequestBodyDeserializationException;
 use Aphiria\Api\Tests\Controllers\Mocks\User;
@@ -47,7 +47,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->resolver = new ControllerParameterResolver($this->bodyDeserializer);
     }
 
-    public static function scalarParameterWithQueryStringValuesDataProvider(): array
+    public static function requestParameterWithQueryStringValuesDataProvider(): array
     {
         $controller = new class () extends Controller {
             public function boolParameterWithName(#[QueryString('bar')] bool $foo): IResponse
@@ -132,7 +132,7 @@ class ControllerParameterResolverTest extends TestCase
         ];
     }
 
-    public static function scalarParameterWithHeaderValuesDataProvider(): array
+    public static function requestParameterWithHeaderValuesDataProvider(): array
     {
         $controller = new class () extends Controller {
             public function boolParameterWithName(#[Header('bar')] bool $foo): IResponse
@@ -217,7 +217,7 @@ class ControllerParameterResolverTest extends TestCase
         ];
     }
 
-    public static function scalarParameterWithRouteVariableValuesDataProvider(): array
+    public static function requestParameterWithRouteVariableValuesDataProvider(): array
     {
         $controller = new class () extends Controller {
             public function boolParameterWithName(#[RouteVariable('bar')] bool $foo): IResponse
@@ -379,7 +379,7 @@ class ControllerParameterResolverTest extends TestCase
 
     public function testResolvingArrayParameterWithMatchingQueryStringVariableThrowsException(): void
     {
-        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->expectException(FailedRequestParameterConversionException::class);
         $controller = new class () extends Controller
         {
             public function arrayParameter(array $foo): IResponse
@@ -396,7 +396,7 @@ class ControllerParameterResolverTest extends TestCase
 
     public function testResolvingArrayParameterWithMatchingRouteVariableThrowsException(): void
     {
-        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->expectException(FailedRequestParameterConversionException::class);
         $controller = new class () extends Controller
         {
             public function arrayParameter(array $foo): IResponse
@@ -523,17 +523,17 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertNull($resolvedParameter);
     }
 
-    public function testResolvingNullableScalarParameterWithNoMatchingValuePassesNull(): void
+    public function testResolvingNullableRequestParameterWithNoMatchingValuePassesNull(): void
     {
         $controller = new class () extends Controller
         {
-            public function nullableScalarParameter(?int $foo): IResponse
+            public function nullableRequestParameter(?int $foo): IResponse
             {
                 return new Response(body: new StringBody($foo === null ? 'null' : 'notnull'));
             }
         };
         $resolvedParameter = $this->resolver->resolveParameter(
-            new ReflectionParameter([$controller, 'nullableScalarParameter'], 'foo'),
+            new ReflectionParameter([$controller, 'nullableRequestParameter'], 'foo'),
             $this->createRequestWithoutBody('http://foo.com'),
             []
         );
@@ -587,17 +587,17 @@ class ControllerParameterResolverTest extends TestCase
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
      * @param string $rawValue The raw value
-     * @param mixed $scalarValue Ths scalar value
+     * @param mixed $requestParameterValue Ths request parameter value
      * @param string|null $parameterNameFromAttribute The parameter name used in the attribute
      */
-    #[DataProvider('scalarParameterWithQueryStringValuesDataProvider')]
-    public function testResolvingScalarParametersWithQueryStringAttributeUsesQueryString(
+    #[DataProvider('requestParameterWithQueryStringValuesDataProvider')]
+    public function testResolvingRequestParametersWithQueryStringAttributeUsesQueryString(
         Controller $controller,
-        string $methodName,
-        string $parameterName,
-        string $rawValue,
-        mixed $scalarValue,
-        ?string $parameterNameFromAttribute = null
+        string     $methodName,
+        string     $parameterName,
+        string     $rawValue,
+        mixed      $requestParameterValue,
+        ?string    $parameterNameFromAttribute = null
     ): void {
         $resolvedParameter = $this->resolver->resolveParameter(
             new ReflectionParameter([$controller, $methodName], $parameterName),
@@ -605,7 +605,7 @@ class ControllerParameterResolverTest extends TestCase
             // Add this parameter to the route variables just to ensure it's not being used
             [$parameterName => 'doNotUse']
         );
-        $this->assertSame($scalarValue, $resolvedParameter);
+        $this->assertSame($requestParameterValue, $resolvedParameter);
     }
 
     /**
@@ -613,17 +613,17 @@ class ControllerParameterResolverTest extends TestCase
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
      * @param string $rawValue The raw value
-     * @param mixed $scalarValue Ths scalar value
+     * @param mixed $requestParameterValue Ths request parameter value
      * @param string|null $parameterNameFromAttribute The parameter name used in the attribute
      */
-    #[DataProvider('scalarParameterWithRouteVariableValuesDataProvider')]
-    public function testResolvingScalarParametersWithRouteVariableAttributeUsesRouteVariable(
+    #[DataProvider('requestParameterWithRouteVariableValuesDataProvider')]
+    public function testResolvingRequestParametersWithRouteVariableAttributeUsesRouteVariable(
         Controller $controller,
-        string $methodName,
-        string $parameterName,
-        string $rawValue,
-        mixed $scalarValue,
-        ?string $parameterNameFromAttribute = null
+        string     $methodName,
+        string     $parameterName,
+        string     $rawValue,
+        mixed      $requestParameterValue,
+        ?string    $parameterNameFromAttribute = null
     ): void {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->headers->add($parameterNameFromAttribute ?? $parameterName, $rawValue);
@@ -634,7 +634,7 @@ class ControllerParameterResolverTest extends TestCase
             // Add this parameter to the route variables just to ensure it's not being used
             [$parameterNameFromAttribute ?? $parameterName => $rawValue]
         );
-        $this->assertSame($scalarValue, $resolvedParameter);
+        $this->assertSame($requestParameterValue, $resolvedParameter);
     }
 
     /**
@@ -642,17 +642,17 @@ class ControllerParameterResolverTest extends TestCase
      * @param string $methodName The method name
      * @param string $parameterName The parameter name
      * @param string $rawValue The raw value
-     * @param mixed $scalarValue Ths scalar value
+     * @param mixed $requestParameterValue Ths request parameter value
      * @param string|null $parameterNameFromAttribute The parameter name used in the attribute
      */
-    #[DataProvider('scalarParameterWithHeaderValuesDataProvider')]
-    public function testResolvingScalarParametersWithHeaderAttributeUsesHeader(
+    #[DataProvider('requestParameterWithHeaderValuesDataProvider')]
+    public function testResolvingRequestParametersWithHeaderAttributeUsesHeader(
         Controller $controller,
-        string $methodName,
-        string $parameterName,
-        string $rawValue,
-        mixed $scalarValue,
-        ?string $parameterNameFromAttribute = null
+        string     $methodName,
+        string     $parameterName,
+        string     $rawValue,
+        mixed      $requestParameterValue,
+        ?string    $parameterNameFromAttribute = null
     ): void {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $request->headers->add($parameterNameFromAttribute ?? $parameterName, $rawValue);
@@ -663,10 +663,10 @@ class ControllerParameterResolverTest extends TestCase
             // Add this parameter to the route variables just to ensure it's not being used
             [$parameterName => 'doNotUse']
         );
-        $this->assertSame($scalarValue, $resolvedParameter);
+        $this->assertSame($requestParameterValue, $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterWillPullValueFromQueryStringIfNotAvailableInRoute(): void
+    public function testResolvingRequestParameterWillPullValueFromQueryStringIfNotAvailableInRoute(): void
     {
         $controller = new class () extends Controller {
             public function foo(string $foo): IResponse
@@ -682,7 +682,7 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertSame('bar', $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterWillPullValueFromRouteIfItIsAvailableEvenIfItIsAlsoAvailableInQueryString(): void
+    public function testResolvingRequestParameterWillPullValueFromRouteIfItIsAvailableEvenIfItIsAlsoAvailableInQueryString(): void
     {
         $controller = new class () extends Controller {
             public function foo(string $foo): IResponse
@@ -698,9 +698,9 @@ class ControllerParameterResolverTest extends TestCase
         $this->assertSame('baz', $resolvedParameter);
     }
 
-    public function testResolvingScalarParameterWithUnsupportedTypeThrowsException(): void
+    public function testResolvingRequestParameterWithUnsupportedTypeThrowsException(): void
     {
-        $this->expectException(FailedScalarParameterConversionException::class);
+        $this->expectException(FailedRequestParameterConversionException::class);
         $this->expectExceptionMessage('Failed to convert value to ');
         $controller = new class () extends Controller
         {
