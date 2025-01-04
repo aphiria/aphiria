@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines an exception that occurs during lexing
  */
-final class LexingException extends Exception
-{
-    // Don't do anything
-}
+final class LexingException extends Exception {}

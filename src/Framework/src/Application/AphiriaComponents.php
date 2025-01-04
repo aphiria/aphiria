@@ -101,7 +101,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new AuthenticationComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(AuthenticationComponent::class)
+        $appBuilder
+            ->getComponent(AuthenticationComponent::class)
             ->withScheme($scheme, $isDefault);
 
         return $this;
@@ -130,7 +131,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new AuthorizationComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(AuthorizationComponent::class)
+        $appBuilder
+            ->getComponent(AuthorizationComponent::class)
             ->withPolicy($policy);
 
         return $this;
@@ -168,7 +170,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new AuthorizationComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(AuthorizationComponent::class)
+        $appBuilder
+            ->getComponent(AuthorizationComponent::class)
             ->withRequirementHandler($requirementType, $requirementHandler);
 
         return $this;
@@ -198,7 +201,8 @@ trait AphiriaComponents
             );
         }
 
-        $appBuilder->getComponent(BinderComponent::class)
+        $appBuilder
+            ->getComponent(BinderComponent::class)
             ->withBinderDispatcher($binderDispatcher);
 
         return $this;
@@ -228,7 +232,8 @@ trait AphiriaComponents
             );
         }
 
-        $appBuilder->getComponent(BinderComponent::class)
+        $appBuilder
+            ->getComponent(BinderComponent::class)
             ->withBinders($binders);
 
         return $this;
@@ -257,7 +262,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(CommandComponent::class)
+        $appBuilder
+            ->getComponent(CommandComponent::class)
             ->withAttributes();
 
         return $this;
@@ -287,7 +293,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(CommandComponent::class)
+        $appBuilder
+            ->getComponent(CommandComponent::class)
             ->withCommands($callback);
 
         return $this;
@@ -318,7 +325,8 @@ trait AphiriaComponents
         }
 
         /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
-        $appBuilder->getComponent(ExceptionHandlerComponent::class)
+        $appBuilder
+            ->getComponent(ExceptionHandlerComponent::class)
             ->withConsoleOutputWriter($exceptionType, $callback);
 
         return $this;
@@ -348,7 +356,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(CommandComponent::class)
+        $appBuilder
+            ->getComponent(CommandComponent::class)
             ->withCommands(static function (CommandRegistry $commands) use ($commandNamesToExclude) {
                 $commandBindings = [
                     new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class),
@@ -395,7 +404,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new MiddlewareComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(MiddlewareComponent::class)
+        $appBuilder
+            ->getComponent(MiddlewareComponent::class)
             ->withGlobalMiddleware($middlewareBindings, $priority);
 
         return $this;
@@ -426,7 +436,8 @@ trait AphiriaComponents
         }
 
         /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
-        $appBuilder->getComponent(ExceptionHandlerComponent::class)
+        $appBuilder
+            ->getComponent(ExceptionHandlerComponent::class)
             ->withLogLevelFactory($exceptionType, $logLevelFactory);
 
         return $this;
@@ -471,7 +482,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new ValidationComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(ValidationComponent::class)
+        $appBuilder
+            ->getComponent(ValidationComponent::class)
             ->withObjectConstraints($callback);
 
         return $this;
@@ -512,7 +524,8 @@ trait AphiriaComponents
         }
 
         /** @psalm-suppress InvalidArgument https://github.com/vimeo/psalm/issues/9747 - bug */
-        $appBuilder->getComponent(ExceptionHandlerComponent::class)
+        $appBuilder
+            ->getComponent(ExceptionHandlerComponent::class)
             ->withProblemDetails($exceptionType, $type, $title, $detail, $status, $instance, $extensions);
 
         return $this;
@@ -536,7 +549,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new RouterComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(RouterComponent::class)
+        $appBuilder
+            ->getComponent(RouterComponent::class)
             ->withAttributes();
 
         return $this;
@@ -561,7 +575,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new RouterComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(RouterComponent::class)
+        $appBuilder
+            ->getComponent(RouterComponent::class)
             ->withRoutes($callback);
 
         return $this;
@@ -585,7 +600,8 @@ trait AphiriaComponents
             $appBuilder->withComponent(new ValidationComponent(Container::$globalInstance));
         }
 
-        $appBuilder->getComponent(ValidationComponent::class)
+        $appBuilder
+            ->getComponent(ValidationComponent::class)
             ->withAttributes();
 
         return $this;

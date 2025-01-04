@@ -66,7 +66,8 @@ class RouteActionInvokerTest extends TestCase
     public function testFailedRequestContentNegotiationExceptionIsRethrownAsHttpException(): void
     {
         try {
-            $this->parameterResolver->expects($this->once())
+            $this->parameterResolver
+                ->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new FailedRequestContentNegotiationException());
@@ -84,7 +85,8 @@ class RouteActionInvokerTest extends TestCase
     public function testFailedRequestParameterConversionExceptionIsRethrownAsHttpException(): void
     {
         try {
-            $this->parameterResolver->expects($this->once())
+            $this->parameterResolver
+                ->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new FailedRequestParameterConversionException());
@@ -109,7 +111,8 @@ class RouteActionInvokerTest extends TestCase
         };
         /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
-        $this->parameterResolver->expects($this->once())
+        $this->parameterResolver
+            ->expects($this->once())
             ->method('resolveParameter')
             ->with($this->isInstanceOf(ReflectionParameter::class), $request)
             ->willReturn(123);
@@ -122,8 +125,9 @@ class RouteActionInvokerTest extends TestCase
         /** @var IRequest&MockObject $request */
         $request = $this->createMock(IRequest::class);
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->responseFactory->method('createResponse')
-            ->with($request, HttpStatusCode::Ok, null, $this->callback(fn (mixed $actionResult): bool => $actionResult instanceof User))
+        $this->responseFactory
+            ->method('createResponse')
+            ->with($request, HttpStatusCode::Ok, null, $this->callback(fn(mixed $actionResult): bool => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'popo']),
@@ -149,11 +153,13 @@ class RouteActionInvokerTest extends TestCase
         $this->expectException(InvalidRequestBodyException::class);
         $request = $this->createRequestWithoutBody('http://foo.com');
         $expectedUser = new User(123, 'foo@bar.com');
-        $this->parameterResolver->expects($this->once())
+        $this->parameterResolver
+            ->expects($this->once())
             ->method('resolveParameter')
             ->with($this->anything(), $this->anything())
             ->willReturn($expectedUser);
-        $this->requestBodyValidator->expects($this->once())
+        $this->requestBodyValidator
+            ->expects($this->once())
             ->method('validate')
             ->with($request, $expectedUser)
             ->willThrowException(new InvalidRequestBodyException(['error']));
@@ -179,11 +185,13 @@ class RouteActionInvokerTest extends TestCase
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $expectedUser = new User(123, 'foo@bar.com');
-        $this->parameterResolver->expects($this->once())
+        $this->parameterResolver
+            ->expects($this->once())
             ->method('resolveParameter')
             ->with($this->anything(), $this->anything())
             ->willReturn($expectedUser);
-        $this->requestBodyValidator->expects($this->once())
+        $this->requestBodyValidator
+            ->expects($this->once())
             ->method('validate')
             ->with($request, $expectedUser);
         $this->invoker->invokeRouteAction(
@@ -214,16 +222,14 @@ class RouteActionInvokerTest extends TestCase
                 throw new ReflectionException();
             }
         };
-        $routeActionInvoker->invokeRouteAction(fn () => null, $this->createRequestWithoutBody('http://example.com'), []);
+        $routeActionInvoker->invokeRouteAction(fn() => null, $this->createRequestWithoutBody('http://example.com'), []);
     }
 
     public function testInvokingRouteActionWithUnreflectableStaticRouteActionDelegateThrowsException(): void
     {
         $this->expectException(HttpException::class);
         $controller = new class () extends Controller {
-            public static function foo(): void
-            {
-            }
+            public static function foo(): void {}
         };
         $this->expectExceptionMessage('Failed to reflect controller');
         $routeActionInvoker = new class () extends RouteActionInvoker {
@@ -242,7 +248,8 @@ class RouteActionInvokerTest extends TestCase
     public function testMissingControllerParameterValueExceptionIsRethrownAsHttpException(): void
     {
         try {
-            $this->parameterResolver->expects($this->once())
+            $this->parameterResolver
+                ->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new MissingControllerParameterValueException());
@@ -261,7 +268,8 @@ class RouteActionInvokerTest extends TestCase
     {
         $request = $this->createRequestWithoutBody('http://foo.com');
         $expectedUser = new User(123, 'foo@bar.com');
-        $this->parameterResolver->expects($this->once())
+        $this->parameterResolver
+            ->expects($this->once())
             ->method('resolveParameter')
             ->with($this->anything(), $this->anything())
             ->willReturn($expectedUser);
@@ -276,7 +284,8 @@ class RouteActionInvokerTest extends TestCase
     public function testRequestBodyDeserializationExceptionIsRethrownAsHttpException(): void
     {
         try {
-            $this->parameterResolver->expects($this->once())
+            $this->parameterResolver
+                ->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
                 ->willThrowException(new RequestBodyDeserializationException());

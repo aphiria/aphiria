@@ -25,9 +25,7 @@ final class MiddlewareRequestHandler implements IRequestHandler
      * @param IMiddleware $middleware The middleware that will handle the request
      * @param IRequestHandler $next The next request handler
      */
-    public function __construct(private readonly IMiddleware $middleware, private readonly IRequestHandler $next)
-    {
-    }
+    public function __construct(private readonly IMiddleware $middleware, private readonly IRequestHandler $next) {}
 
     /**
      * @inheritdoc

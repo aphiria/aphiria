@@ -46,18 +46,18 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     {
         return [
             ['type', 'foo', 'foo'],
-            ['type', fn (Exception $ex): string => 'foo', 'foo'],
+            ['type', fn(Exception $ex): string => 'foo', 'foo'],
             ['title', 'foo', 'foo'],
-            ['title', fn (Exception $ex): string => 'foo', 'foo'],
+            ['title', fn(Exception $ex): string => 'foo', 'foo'],
             ['detail', 'foo', 'foo'],
-            ['detail', fn (Exception $ex): string => 'foo', 'foo'],
+            ['detail', fn(Exception $ex): string => 'foo', 'foo'],
             ['status', 404, 404],
-            ['status', fn (Exception $ex): int => 404, 404],
-            ['status', fn (Exception $ex): HttpStatusCode => HttpStatusCode::NotFound, 404],
+            ['status', fn(Exception $ex): int => 404, 404],
+            ['status', fn(Exception $ex): HttpStatusCode => HttpStatusCode::NotFound, 404],
             ['instance', 'foo', 'foo'],
-            ['instance', fn (Exception $ex): string => 'foo', 'foo'],
+            ['instance', fn(Exception $ex): string => 'foo', 'foo'],
             ['extensions', ['foo' => 'bar'], ['foo' => 'bar']],
-            ['extensions', fn (Exception $ex): array => ['foo' => 'bar'], ['foo' => 'bar']]
+            ['extensions', fn(Exception $ex): array => ['foo' => 'bar'], ['foo' => 'bar']]
         ];
     }
 
@@ -80,7 +80,8 @@ class ProblemDetailsExceptionRendererTest extends TestCase
                 throw new Exception();
             }
         );
-        $this->responseWriter->expects($this->once())
+        $this->responseWriter
+            ->expects($this->once())
             ->method('writeResponse')
             ->with($this->callback(function (IResponse $response) {
                 return $response->statusCode === HttpStatusCode::InternalServerError
@@ -94,11 +95,13 @@ class ProblemDetailsExceptionRendererTest extends TestCase
     {
         $exceptionRenderer = $this->createExceptionRenderer(true, true);
         $expectedResponse = new Response(HttpStatusCode::InternalServerError);
-        $this->responseFactory->expects($this->once())
+        $this->responseFactory
+            ->expects($this->once())
             ->method('createResponse')
             ->with($this->request, HttpStatusCode::InternalServerError->value, null, new ProblemDetails('https://tools.ietf.org/html/rfc7231#section-6.6.1', null, null, HttpStatusCode::InternalServerError))
             ->willReturn($expectedResponse);
-        $this->responseWriter->expects($this->once())
+        $this->responseWriter
+            ->expects($this->once())
             ->method('writeResponse')
             ->with($expectedResponse);
         $exceptionRenderer->render(new Exception());
@@ -117,7 +120,8 @@ class ProblemDetailsExceptionRendererTest extends TestCase
             ['foo' => 'bar']
         );
         $expectedResponse = new Response(404);
-        $this->responseFactory->expects($this->once())
+        $this->responseFactory
+            ->expects($this->once())
             ->method('createResponse')
             ->with($this->request, 404, null, new ProblemDetails('type', 'title', 'detail', 404, 'instance', ['foo' => 'bar']))
             ->willReturn($expectedResponse);

@@ -24,9 +24,7 @@ class LiteralTrieNodeTest extends TestCase
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $expectedHostTrie = $this->createMock(TrieNode::class);
@@ -39,9 +37,7 @@ class LiteralTrieNodeTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedChildren = [new LiteralTrieNode('bar', [])];
         $expectedRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];

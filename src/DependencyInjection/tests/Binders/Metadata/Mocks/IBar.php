@@ -15,7 +15,4 @@ namespace Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks;
 /**
  * Defines an example interface
  */
-interface IBar
-{
-    // Don't do anything
-}
+interface IBar {}

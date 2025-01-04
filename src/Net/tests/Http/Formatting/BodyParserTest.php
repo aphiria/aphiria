@@ -32,7 +32,8 @@ class BodyParserTest extends TestCase
 
     public function testGettingExistingFormInputReturnsThatInputsValue(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
@@ -40,7 +41,8 @@ class BodyParserTest extends TestCase
 
     public function testGettingMimeTypeForBodyThatAlreadyHasBeenCheckedReturnsSameMimeType(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
         $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
@@ -54,7 +56,8 @@ class BodyParserTest extends TestCase
 
     public function testGettingMimeTypeReturnsCorrectMimeType(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
         $this->assertSame('text/xml', $this->parser->getMimeType($this->body));
@@ -62,7 +65,8 @@ class BodyParserTest extends TestCase
 
     public function testParsingInputWithFormUrlEncodedBodyReturnsParsedFormData(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
@@ -70,7 +74,8 @@ class BodyParserTest extends TestCase
 
     public function testParsingInputWithFormUrlEncodedBodyThatAlreadyHasBeenCheckedReturnsSameInput(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn('foo=bar');
         $this->assertSame('bar', $this->parser->readAsFormInput($this->body)->get('foo'));
@@ -84,7 +89,8 @@ class BodyParserTest extends TestCase
 
     public function testParsingJsonForJsonRequestReturnsJsonDecodedBody(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn(\json_encode(['foo' => 'bar']));
         $this->assertEquals(['foo' => 'bar'], $this->parser->readAsJson($this->body));
@@ -94,7 +100,8 @@ class BodyParserTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Body could not be decoded as JSON');
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn("\x0");
         $this->parser->readAsJson($this->body);
@@ -107,7 +114,8 @@ class BodyParserTest extends TestCase
 
     public function testParsingMultipartRequestExtractsHeaders(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary');
@@ -120,7 +128,8 @@ class BodyParserTest extends TestCase
 
     public function testParsingMultipartRequestWithHeadersExtractsBody(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn("--boundary\r\nFoo: bar\r\nBaz: blah\r\n\r\nbody\r\n--boundary--");
         $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary');
@@ -159,7 +168,8 @@ class BodyParserTest extends TestCase
             '--boundary2--' .
             "\r\n" .
             '--boundary1--';
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn($bodyString);
         $multipartBody = $this->parser->readAsMultipart($this->body, 'boundary1');

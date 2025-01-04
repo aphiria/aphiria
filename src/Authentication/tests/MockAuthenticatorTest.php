@@ -52,7 +52,7 @@ class MockAuthenticatorTest extends TestCase
         $schemeHandler->shouldNotReceive('authenticate');
         $this->schemes->registerScheme($scheme, true);
 
-        $result = $this->mockAuthenticator->actingAs($user, fn (): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'foo'));
+        $result = $this->mockAuthenticator->actingAs($user, fn(): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'foo'));
 
         $this->assertTrue($result->passed);
         $this->assertSame($user, $result->user);
@@ -63,18 +63,20 @@ class MockAuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $user = new User([new Identity()]);
         [$fooScheme, $fooSchemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $fooSchemeHandler->shouldReceive('authenticate')
+        $fooSchemeHandler
+            ->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::fail('foo', 'foo'));
         [$barScheme, $barSchemeHandler] = $this->createSchemeAndSetUpResolver('bar');
         [$bazScheme, $bazSchemeHandler] = $this->createSchemeAndSetUpResolver('baz');
-        $bazSchemeHandler->shouldReceive('authenticate')
+        $bazSchemeHandler
+            ->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::fail('baz', 'baz'));
         $this->schemes->registerScheme($fooScheme, true);
         $this->schemes->registerScheme($barScheme);
         $this->schemes->registerScheme($bazScheme);
 
         $fooResult = $this->mockAuthenticator->authenticate($request, 'foo');
-        $barResult = $this->mockAuthenticator->actingAs($user, fn (): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'bar'));
+        $barResult = $this->mockAuthenticator->actingAs($user, fn(): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'bar'));
         $bazResult = $this->mockAuthenticator->authenticate($request, 'baz');
 
         $this->assertFalse($fooResult->passed);
@@ -88,7 +90,8 @@ class MockAuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $user = new User([new Identity()]);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('authenticate')
+        $schemeHandler
+            ->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::pass($user, 'foo'));
         $this->schemes->registerScheme($scheme, true);
 
@@ -102,7 +105,8 @@ class MockAuthenticatorTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('authenticate')
+        $schemeHandler
+            ->shouldReceive('authenticate')
             ->andReturn(AuthenticationResult::fail('foo', 'foo'));
         $this->schemes->registerScheme($scheme, true);
 
@@ -125,7 +129,8 @@ class MockAuthenticatorTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockInterface $schemeHandler */
         $schemeHandler = Mockery::namedMock($schemeHandlerClassName, IAuthenticationSchemeHandler::class);
         $scheme = new AuthenticationScheme($schemeName, $schemeHandler::class);
-        $this->authenticationHandlerResolver->shouldReceive('resolve')
+        $this->authenticationHandlerResolver
+            ->shouldReceive('resolve')
             ->with($schemeHandlerClassName)
             ->andReturn($schemeHandler);
         $this->schemes->registerScheme($scheme);

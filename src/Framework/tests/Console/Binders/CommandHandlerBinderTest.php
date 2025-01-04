@@ -32,7 +32,8 @@ class CommandHandlerBinderTest extends TestCase
 
     public function testApiGatewayIsBoundAsRequestHandler(): void
     {
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('bindClass')
             ->with(ICommandHandler::class, ConsoleGateway::class);
         $this->binder->bind($this->container);

@@ -45,28 +45,32 @@ class ConsoleApplicationTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook::get('driver'))
+        $this->output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $this->app = new ConsoleApplication($this->consoleGateway, $this->input, $this->output);
     }
 
     public function testRunReturnsOkStatusCodeValueIfGatewayReturnsVoid(): void
     {
-        $this->consoleGateway->method('handle')
+        $this->consoleGateway
+            ->method('handle')
             ->willReturn(null);
         $this->assertSame(StatusCode::Ok->value, $this->app->run());
     }
 
     public function testRunReturnsStatusCodeValueIfGatewayReturnsEnum(): void
     {
-        $this->consoleGateway->method('handle')
+        $this->consoleGateway
+            ->method('handle')
             ->willReturn(StatusCode::Fatal);
         $this->assertSame(StatusCode::Fatal->value, $this->app->run());
     }
 
     public function testRunReturnsStatusCodeValueIfGatewayReturnsInt(): void
     {
-        $this->consoleGateway->method('handle')
+        $this->consoleGateway
+            ->method('handle')
             ->willReturn(100);
         $this->assertSame(100, $this->app->run());
     }
@@ -75,7 +79,8 @@ class ConsoleApplicationTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to run the application');
-        $this->consoleGateway->method('handle')
+        $this->consoleGateway
+            ->method('handle')
             ->willThrowException(new Exception());
         $this->app->run();
     }

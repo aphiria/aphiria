@@ -15,7 +15,4 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
 /**
  * Mocks a base class
  */
-abstract class BaseClass implements IFoo
-{
-    // Don't do anything
-}
+abstract class BaseClass implements IFoo {}

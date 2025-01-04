@@ -25,9 +25,7 @@ class Prompt
     /***
      * @param PaddingFormatter $paddingFormatter The space padding formatter to use
      */
-    public function __construct(private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter())
-    {
-    }
+    public function __construct(private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()) {}
 
     /**
      * Prompts the user to answer a question
@@ -58,7 +56,7 @@ class Prompt
                 $choiceTexts[] = ["$key)", $choice];
             }
 
-            $output->writeln($this->paddingFormatter->format($choiceTexts, fn (array $row): string => "  {$row[0]} {$row[1]}"));
+            $output->writeln($this->paddingFormatter->format($choiceTexts, fn(array $row): string => "  {$row[0]} {$row[1]}"));
             $output->write($question->answerLineString);
         }
 

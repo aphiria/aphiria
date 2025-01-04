@@ -42,12 +42,10 @@ class RouteRequestFactoryTest extends TestCase
     public function testCreatingGetRequestUsesGetForRequestMethodDespiteAlsoSupportingHead(): void
     {
         $controller = new class () {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo');
+        $request = $this->factory->createRouteUri('foo');
         $this->assertSame('GET', $request->method);
     }
 
@@ -55,20 +53,18 @@ class RouteRequestFactoryTest extends TestCase
     {
         $this->expectException(RouteRequestCreationException::class);
         $controller = new class () {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->expectExceptionMessage('Failed to reflect ' . $controller::class . '::bar');
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'bar');
-        $this->factory->createRouteRequest('foo');
+        $this->factory->createRouteUri('foo');
     }
 
     public function testCreatingRequestForNonExistentRouteThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
         $this->expectExceptionMessage("Route \"foo\" does not exist");
-        $this->factory->createRouteRequest('foo');
+        $this->factory->createRouteUri('foo');
     }
 
     public function testCreatingRequestForRouteWithMultipleMethodsAndNotSpecifyingAMethodThrowsException(): void
@@ -76,23 +72,19 @@ class RouteRequestFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Method must be specified if there is more than one supported method - route "foo" supports methods GET, POST, HEAD');
         $controller = new class () {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->addRouteWithUriTemplate('foo', ['GET', 'POST'], null, '/foo', $controller, 'foo');
-        $this->factory->createRouteRequest('foo');
+        $this->factory->createRouteUri('foo');
     }
 
     public function testCreatingRequestForRouteWitSingleNonGetMethodCreatesRequestForThatMethod(): void
     {
         $controller = new class () {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->addRouteWithUriTemplate('foo', ['POST'], null, '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo');
+        $request = $this->factory->createRouteUri('foo');
         $this->assertSame('POST', $request->method);
     }
 
@@ -101,59 +93,49 @@ class RouteRequestFactoryTest extends TestCase
         $this->expectException(RouteRequestCreationException::class);
         $this->expectExceptionMessage('Failed to create route request because the parameter "foo" is required but not provided');
         $controller = new class () {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $this->factory->createRouteRequest('foo');
+        $this->factory->createRouteUri('foo');
     }
 
     public function testCreatingRequestWithDefaultValueHeaderParameterSetsHeaderValueToDefaultValue(): void
     {
         $controller = new class () {
-            public function foo(#[Header] string $foo = 'bar'): void
-            {
-            }
+            public function foo(#[Header] string $foo = 'bar'): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo');
+        $request = $this->factory->createRouteUri('foo');
         $this->assertSame('bar', $request->headers->getFirst('foo'));
     }
 
     public function testCreatingRequestWithHeaderValueInRouteVariablesUsesThatValue(): void
     {
         $controller = new class () {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo', ['foo' => 'bar']);
+        $request = $this->factory->createRouteUri('foo', ['foo' => 'bar']);
         $this->assertSame('bar', $request->headers->getFirst('foo'));
     }
 
     public function testCreatingRequestWithNamedHeaderValueInRouteVariablesUsesThatValue(): void
     {
         $controller = new class () {
-            public function foo(#[Header('bar')] string $foo): void
-            {
-            }
+            public function foo(#[Header('bar')] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo', ['bar' => 'baz']);
+        $request = $this->factory->createRouteUri('foo', ['bar' => 'baz']);
         $this->assertSame('baz', $request->headers->getFirst('bar'));
     }
 
     public function testCreatingRequestWithFullUriSetsMethodUriAndHeaders(): void
     {
         $controller = new class () {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', 'example.com', '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo', ['foo' => 'bar']);
+        $request = $this->factory->createRouteUri('foo', ['foo' => 'bar']);
         $this->assertSame('GET', $request->method);
         $this->assertSame('https://example.com/foo', (string)$request->uri);
         $this->assertSame('bar', $request->headers->getFirst('foo'));
@@ -162,12 +144,10 @@ class RouteRequestFactoryTest extends TestCase
     public function testCreatingRequestWithNonHeaderRouteVariablesPopulatesThemInUri(): void
     {
         $controller = new class () {
-            public function foo(#[Header] string $foo, #[RouteVariable] string $bar, #[QueryString] string $baz): void
-            {
-            }
+            public function foo(#[Header] string $foo, #[RouteVariable] string $bar, #[QueryString] string $baz): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/:bar', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo', ['foo' => '1', 'bar' => '2', 'baz' => '3']);
+        $request = $this->factory->createRouteUri('foo', ['foo' => '1', 'bar' => '2', 'baz' => '3']);
         $this->assertSame('GET', $request->method);
         $this->assertSame('/2?baz=3', (string)$request->uri);
         $this->assertSame('1', $request->headers->getFirst('foo'));
@@ -176,12 +156,10 @@ class RouteRequestFactoryTest extends TestCase
     public function testCreatingRequestWithRelativePathSetsMethodUriAndHeaders(): void
     {
         $controller = new class () {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteRequest('foo', ['foo' => 'bar']);
+        $request = $this->factory->createRouteUri('foo', ['foo' => 'bar']);
         $this->assertSame('GET', $request->method);
         $this->assertSame('/foo', (string)$request->uri);
         $this->assertSame('bar', $request->headers->getFirst('foo'));
@@ -192,17 +170,16 @@ class RouteRequestFactoryTest extends TestCase
         $this->expectException(RouteRequestCreationException::class);
         $this->expectExceptionMessage('Failed to create route request');
         $controller = new class () {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
         $uriFactory = $this->createMock(IRouteUriFactory::class);
-        $uriFactory->expects($this->once())
+        $uriFactory
+            ->expects($this->once())
             ->method('createRouteUri')
             ->willThrowException(new RouteUriCreationException('foo'));
         $factory = new RouteRequestFactory($this->routes, $uriFactory);
-        $factory->createRouteRequest('foo');
+        $factory->createRouteUri('foo');
     }
 
     /**

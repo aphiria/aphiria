@@ -21,7 +21,5 @@ final readonly class Element
      * @param string $name The name of the element
      * @param Style $style The style of the element
      */
-    public function __construct(public string $name, public Style $style)
-    {
-    }
+    public function __construct(public string $name, public Style $style) {}
 }

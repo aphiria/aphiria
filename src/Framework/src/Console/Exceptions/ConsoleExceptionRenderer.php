@@ -34,8 +34,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
     public function __construct(
         public IOutput $output = new ConsoleOutput(),
         protected readonly bool $shouldExit = true
-    ) {
-    }
+    ) {}
 
     /**
      * Registers many writers that can use exceptions to write output and return status codes

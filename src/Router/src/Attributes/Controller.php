@@ -31,6 +31,5 @@ final class Controller
         public ?string $host = null,
         public bool $isHttpsOnly = false,
         public array $parameters = []
-    ) {
-    }
+    ) {}
 }

@@ -45,14 +45,17 @@ class ExceptionHandlerTest extends TestCase
         $expectedResponse = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
         $expectedException = new Exception();
-        $next->expects($this->once())
+        $next
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willThrowException($expectedException);
-        $this->exceptionRenderer->method('createResponse')
+        $this->exceptionRenderer
+            ->method('createResponse')
             ->willReturn($expectedResponse);
-        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex): string => LogLevel::EMERGENCY);
-        $this->logger->expects($this->once())
+        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn(Exception $ex): string => LogLevel::EMERGENCY);
+        $this->logger
+            ->expects($this->once())
             ->method('emergency')
             ->with($expectedException);
         $this->assertSame($expectedResponse, $this->exceptionHandler->handle($request, $next));
@@ -63,7 +66,8 @@ class ExceptionHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $expectedResponse = $this->createMock(IResponse::class);
         $next = $this->createMock(IRequestHandler::class);
-        $next->expects($this->once())
+        $next
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($expectedResponse);

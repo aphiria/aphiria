@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the request body deserialization exception
  */
-class RequestBodyDeserializationException extends Exception
-{
-    // Don't do anything
-}
+class RequestBodyDeserializationException extends Exception {}

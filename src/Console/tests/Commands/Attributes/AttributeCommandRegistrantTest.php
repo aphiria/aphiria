@@ -46,11 +46,10 @@ class AttributeCommandRegistrantTest extends TestCase
              *
              * @return void
              */
-            public function handle(Input $input, IOutput $output)
-            {
-            }
+            public function handle(Input $input, IOutput $output) {}
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllSubTypesOfType')
             ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([$commandHandler::class]);
@@ -60,7 +59,8 @@ class AttributeCommandRegistrantTest extends TestCase
 
     public function testNonCommandAttributesAreIgnored(): void
     {
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllSubTypesOfType')
             ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([CommandHandlerWithNonCommandAttribute::class]);
@@ -70,7 +70,8 @@ class AttributeCommandRegistrantTest extends TestCase
 
     public function testRegisteringCommandWithAllPropertiesSetCreatesCommandWithAllPropertiesSet(): void
     {
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllSubTypesOfType')
             ->with(ICommandHandler::class, [__DIR__])
             ->willReturn([CommandHandlerWithAllPropertiesSet::class]);

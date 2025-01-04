@@ -47,9 +47,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(protected readonly IContainer $container)
-    {
-    }
+    public function __construct(protected readonly IContainer $container) {}
 
     /**
      * @inheritdoc
@@ -95,7 +93,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 $exceptionRenderer = new ProblemDetailsExceptionRenderer();
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     HttpException::class,
-                    status: fn (HttpException $ex): HttpStatusCode => $ex->response->statusCode
+                    status: fn(HttpException $ex): HttpStatusCode => $ex->response->statusCode
                 );
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     InvalidRequestBodyException::class,

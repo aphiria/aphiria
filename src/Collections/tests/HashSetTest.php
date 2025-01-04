@@ -144,7 +144,7 @@ class HashSetTest extends TestCase
 
     public function testSorting(): void
     {
-        $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
+        $comparer = fn(string $a, string $b): int => $a === 'foo' ? 1 : -1;
         $this->set->add('foo');
         $this->set->add('bar');
         $newSet = $this->set->sort($comparer);
@@ -153,7 +153,7 @@ class HashSetTest extends TestCase
 
     public function testSortingDoesNotChangeOriginalSet(): void
     {
-        $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
+        $comparer = fn(string $a, string $b): int => $a === 'foo' ? 1 : -1;
         $this->set->addRange(['foo', 'bar']);
         $this->set->sort($comparer);
         $this->assertEquals(['foo', 'bar'], $this->set->toArray());

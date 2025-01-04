@@ -55,7 +55,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         $this->addBoundInterface($interfaces);
         $this->container->for(
             $this->currentContext,
-            fn (IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton)
+            fn(IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton)
         );
     }
 
@@ -65,7 +65,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     public function bindFactory(string|array $interfaces, Closure $factory, bool $resolveAsSingleton = false): void
     {
         $this->addBoundInterface($interfaces);
-        $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
+        $this->container->for($this->currentContext, fn(IContainer $container) => $container->bindFactory($interfaces, $factory, $resolveAsSingleton));
     }
 
     /**
@@ -74,7 +74,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     public function bindInstance(string|array $interfaces, object $instance): void
     {
         $this->addBoundInterface($interfaces);
-        $this->container->for($this->currentContext, fn (IContainer $container) => $container->bindInstance($interfaces, $instance));
+        $this->container->for($this->currentContext, fn(IContainer $container) => $container->bindInstance($interfaces, $instance));
     }
 
     /**
@@ -139,7 +139,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function hasBinding(string $interface): bool
     {
-        return $this->container->for($this->currentContext, fn (IContainer $container): bool => $container->hasBinding($interface));
+        return $this->container->for($this->currentContext, fn(IContainer $container): bool => $container->hasBinding($interface));
     }
 
     /**
@@ -149,7 +149,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
     {
         $this->addResolvedInterface($interface);
 
-        return $this->container->for($this->currentContext, fn (IContainer $container): object => $container->resolve($interface));
+        return $this->container->for($this->currentContext, fn(IContainer $container): object => $container->resolve($interface));
     }
 
     /**
@@ -170,7 +170,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     public function unbind(string|array $interfaces): void
     {
-        $this->container->for($this->currentContext, fn (IContainer $container) => $container->unbind($interfaces));
+        $this->container->for($this->currentContext, fn(IContainer $container) => $container->unbind($interfaces));
     }
 
     /**

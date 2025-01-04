@@ -30,7 +30,8 @@ class ContainerAuthenticationSchemeHandlerResolverTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to resolve ' . $schemeHandler::class);
         $container = $this->createMock(IContainer::class);
-        $container->expects($this->once())
+        $container
+            ->expects($this->once())
             ->method('resolve')
             ->with($schemeHandler::class)
             ->willThrowException(new ResolutionException($schemeHandler::class, new UniversalContext()));
@@ -42,7 +43,8 @@ class ContainerAuthenticationSchemeHandlerResolverTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $container = $this->createMock(IContainer::class);
-        $container->expects($this->once())
+        $container
+            ->expects($this->once())
             ->method('resolve')
             ->with($schemeHandler::class)
             ->willReturn($schemeHandler);

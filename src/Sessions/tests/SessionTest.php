@@ -163,7 +163,8 @@ class SessionTest extends TestCase
     {
         $id = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
-        $idGenerator->method('idIsValid')
+        $idGenerator
+            ->method('idIsValid')
             ->with($id)
             ->willReturn(true);
         $session = new Session($id, $idGenerator);
@@ -226,7 +227,8 @@ class SessionTest extends TestCase
     {
         $generatedId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
-        $idGenerator->method('idIsValid')
+        $idGenerator
+            ->method('idIsValid')
             ->willReturnMap([
                 [null, false],
                 [$generatedId, true]
@@ -248,7 +250,8 @@ class SessionTest extends TestCase
     {
         $generatedId = \str_repeat('1', IIdGenerator::MIN_LENGTH);
         $idGenerator = $this->createMock(IIdGenerator::class);
-        $idGenerator->method('idIsValid')
+        $idGenerator
+            ->method('idIsValid')
             ->willReturnMap([
                 [1, false],
                 [2, false],

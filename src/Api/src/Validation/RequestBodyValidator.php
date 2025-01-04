@@ -35,8 +35,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
         private readonly IValidator $validator,
         private readonly ?IErrorMessageInterpolator $errorMessageInterpolator = null,
         private readonly ?ILanguageMatcher $languageMatcher = null
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

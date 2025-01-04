@@ -44,11 +44,14 @@ class RequestParserTest extends TestCase
         $this->body = $this->createMock(IBody::class);
         $this->properties = new HashTable();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method(PropertyHook::get('headers'))
+        $this->request
+            ->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
-        $this->request->method(PropertyHook::get('body'))
+        $this->request
+            ->method(PropertyHook::get('body'))
             ->willReturn($this->body);
-        $this->request->method(PropertyHook::get('properties'))
+        $this->request
+            ->method(PropertyHook::get('properties'))
             ->willReturn($this->properties);
     }
 
@@ -81,7 +84,8 @@ class RequestParserTest extends TestCase
 
     public function testGettingActualMimeTypeReturnsCorrectMimeType(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('readAsString')
             ->willReturn('<?xml version="1.0"?><foo />');
         $this->assertSame('text/xml', $this->parser->getActualMimeType($this->request));
@@ -204,7 +208,8 @@ class RequestParserTest extends TestCase
     public function testParsingQueryStringReturnsDictionaryOfValues(): void
     {
         $request = $this->createMock(IRequest::class);
-        $request->expects($this->once())
+        $request
+            ->expects($this->once())
             ->method(PropertyHook::get('uri'))
             ->willReturn(new Uri('http://host.com?foo=bar'));
         $this->assertSame('bar', $this->parser->parseQueryString($request)->get('foo'));
@@ -212,7 +217,8 @@ class RequestParserTest extends TestCase
 
     public function testReadAsFormInputReturnsInput(): void
     {
-        $this->body->method('readAsString')
+        $this->body
+            ->method('readAsString')
             ->willReturn('foo=bar');
         $value = $this->parser->readAsFormInput($this->request);
         $this->assertSame('bar', $value->get('foo'));
@@ -220,7 +226,8 @@ class RequestParserTest extends TestCase
 
     public function testReadAsJsonReturnsInput(): void
     {
-        $this->body->method('readAsString')
+        $this->body
+            ->method('readAsString')
             ->willReturn('{"foo":"bar"}');
         $value = $this->parser->readAsJson($this->request);
         $this->assertSame('bar', $value['foo']);

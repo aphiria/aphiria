@@ -69,13 +69,9 @@ class AuthenticatorTest extends TestCase
             public array $identities = [];
             public ?IIdentity $primaryIdentity = null;
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {
@@ -121,13 +117,9 @@ class AuthenticatorTest extends TestCase
                 };
             }
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {
@@ -157,7 +149,8 @@ class AuthenticatorTest extends TestCase
         $user = $this->createMock(IPrincipal::class);
         $expectedResult = AuthenticationResult::pass($user, 'scheme');
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('authenticate')
+        $schemeHandler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme)
             ->andReturn($expectedResult);
         $this->schemes->registerScheme($scheme, true);
@@ -183,14 +176,17 @@ class AuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $user1 = $this->createMock(IPrincipal::class);
         $user2 = $this->createMock(IPrincipal::class);
-        $user1->method('mergeIdentities')
+        $user1
+            ->method('mergeIdentities')
             ->with($user2);
         [$scheme1, $scheme1Handler] = $this->createSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createSchemeAndSetUpResolver('bar');
-        $scheme1Handler->shouldReceive('authenticate')
+        $scheme1Handler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme1)
             ->andReturn(AuthenticationResult::fail('failure 1', 'foo'));
-        $scheme2Handler->shouldReceive('authenticate')
+        $scheme2Handler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme2)
             ->andReturn(AuthenticationResult::fail('failure 2', 'bar'));
         $actualResult = $this->authenticator->authenticate($request, ['foo', 'bar']);
@@ -208,15 +204,18 @@ class AuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $user1 = $this->createMock(IPrincipal::class);
         $user2 = $this->createMock(IPrincipal::class);
-        $user1->method('mergeIdentities')
+        $user1
+            ->method('mergeIdentities')
             ->with($user2)
             ->willReturn($user1);
         [$scheme1, $scheme1Handler] = $this->createSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createSchemeAndSetUpResolver('bar');
-        $scheme1Handler->shouldReceive('authenticate')
+        $scheme1Handler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme1)
             ->andReturn(AuthenticationResult::pass($user1, 'foo'));
-        $scheme2Handler->shouldReceive('authenticate')
+        $scheme2Handler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme2)
             ->andReturn(AuthenticationResult::pass($user2, 'bar'));
         // Note: The authenticator will essentially clone the expected result set above, but with user 1 merged with user 2's identities
@@ -231,10 +230,12 @@ class AuthenticatorTest extends TestCase
         $user = $this->createMock(IPrincipal::class);
         [$scheme1, $scheme1Handler] = $this->createSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createSchemeAndSetUpResolver('bar');
-        $scheme1Handler->shouldReceive('authenticate')
+        $scheme1Handler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme1)
             ->andReturn(AuthenticationResult::fail('fail', 'foo'));
-        $scheme2Handler->shouldReceive('authenticate')
+        $scheme2Handler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme2)
             ->andReturn(AuthenticationResult::pass($user, 'bar'));
         $actualResult = $this->authenticator->authenticate($request, ['foo', 'bar']);
@@ -248,7 +249,8 @@ class AuthenticatorTest extends TestCase
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         // We're using a custom exception type to make sure that that's what is set in the auth result's failure
         $expectedFailure = new RuntimeException('fail');
-        $schemeHandler->shouldReceive('authenticate')
+        $schemeHandler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme)
             ->andReturn(AuthenticationResult::fail($expectedFailure, 'foo'));
         $actualResult = $this->authenticator->authenticate($request, 'foo');
@@ -261,7 +263,8 @@ class AuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $user = $this->createMock(IPrincipal::class);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('authenticate')
+        $schemeHandler
+            ->shouldReceive('authenticate')
             ->with($request, $scheme)
             ->andReturn(AuthenticationResult::pass($user, 'foo'));
         $actualResult = $this->authenticator->authenticate($request, 'foo');
@@ -282,9 +285,11 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme1, $scheme1Handler] = $this->createSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createSchemeAndSetUpResolver('bar');
-        $scheme1Handler->shouldReceive('challenge')
+        $scheme1Handler
+            ->shouldReceive('challenge')
             ->with($request, $response, $scheme1);
-        $scheme2Handler->shouldReceive('challenge')
+        $scheme2Handler
+            ->shouldReceive('challenge')
             ->with($request, $response, $scheme2);
         $this->authenticator->challenge($request, $response, ['foo', 'bar']);
         // Dummy assertion
@@ -296,7 +301,8 @@ class AuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('challenge')
+        $schemeHandler
+            ->shouldReceive('challenge')
             ->with($request, $response, $scheme);
         $this->authenticator->challenge($request, $response, 'foo');
         // Dummy assertion
@@ -316,9 +322,11 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme1, $scheme1Handler] = $this->createSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createSchemeAndSetUpResolver('bar');
-        $scheme1Handler->shouldReceive('forbid')
+        $scheme1Handler
+            ->shouldReceive('forbid')
             ->with($request, $response, $scheme1);
-        $scheme2Handler->shouldReceive('forbid')
+        $scheme2Handler
+            ->shouldReceive('forbid')
             ->with($request, $response, $scheme2);
         $this->authenticator->forbid($request, $response, ['foo', 'bar']);
         // Dummy assertion
@@ -330,7 +338,8 @@ class AuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('forbid')
+        $schemeHandler
+            ->shouldReceive('forbid')
             ->with($request, $response, $scheme);
         $this->authenticator->forbid($request, $response, 'foo');
         // Dummy assertion
@@ -351,14 +360,18 @@ class AuthenticatorTest extends TestCase
         [$scheme1, $scheme1Handler] = $this->createLoginSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createLoginSchemeAndSetUpResolver('bar');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook::get('isAuthenticated'))
+        $identity
+            ->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook::get('primaryIdentity'))
+        $user
+            ->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
-        $scheme1Handler->shouldReceive('logIn')
+        $scheme1Handler
+            ->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme1);
-        $scheme2Handler->shouldReceive('logIn')
+        $scheme2Handler
+            ->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme2);
         $this->authenticator->logIn($user, $request, $response, ['foo', 'bar']);
         // Dummy assertion
@@ -371,12 +384,15 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createLoginSchemeAndSetUpResolver('foo');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook::get('isAuthenticated'))
+        $identity
+            ->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook::get('primaryIdentity'))
+        $user
+            ->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
-        $schemeHandler->shouldReceive('logIn')
+        $schemeHandler
+            ->shouldReceive('logIn')
             ->with($user, $request, $response, $scheme);
         $this->authenticator->logIn($user, $request, $response, 'foo');
         // Dummy assertion
@@ -388,10 +404,12 @@ class AuthenticatorTest extends TestCase
         $this->expectException(AuthenticationSchemeNotFoundException::class);
         $this->expectExceptionMessage('No authentication scheme with name "foo" found');
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook::get('isAuthenticated'))
+        $identity
+            ->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook::get('primaryIdentity'))
+        $user
+            ->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $this->createMock(IRequest::class), $this->createMock(IResponse::class), 'foo');
     }
@@ -404,10 +422,12 @@ class AuthenticatorTest extends TestCase
         [, $schemeHandler] = $this->createSchemeAndSetUpResolver('foo');
         $this->expectExceptionMessage($schemeHandler::class . ' does not implement ' . ILoginAuthenticationSchemeHandler::class);
         $identity = $this->createMock(IIdentity::class);
-        $identity->method(PropertyHook::get('isAuthenticated'))
+        $identity
+            ->method(PropertyHook::get('isAuthenticated'))
             ->willReturn(true);
         $user = $this->createMock(IPrincipal::class);
-        $user->method(PropertyHook::get('primaryIdentity'))
+        $user
+            ->method(PropertyHook::get('primaryIdentity'))
             ->willReturn($identity);
         $this->authenticator->logIn($user, $request, $response, 'foo');
     }
@@ -432,9 +452,11 @@ class AuthenticatorTest extends TestCase
         $response = $this->createMock(IResponse::class);
         [$scheme1, $scheme1Handler] = $this->createLoginSchemeAndSetUpResolver('foo');
         [$scheme2, $scheme2Handler] = $this->createLoginSchemeAndSetUpResolver('bar');
-        $scheme1Handler->shouldReceive('logOut')
+        $scheme1Handler
+            ->shouldReceive('logOut')
             ->with($request, $response, $scheme1);
-        $scheme2Handler->shouldReceive('logOut')
+        $scheme2Handler
+            ->shouldReceive('logOut')
             ->with($request, $response, $scheme2);
         $this->authenticator->logOut($request, $response, ['foo', 'bar']);
         // Dummy assertion
@@ -446,7 +468,8 @@ class AuthenticatorTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
         [$scheme, $schemeHandler] = $this->createLoginSchemeAndSetUpResolver('foo');
-        $schemeHandler->shouldReceive('logOut')
+        $schemeHandler
+            ->shouldReceive('logOut')
             ->with($request, $response, $scheme);
         $this->authenticator->logOut($request, $response, 'foo');
         // Dummy assertion
@@ -484,7 +507,8 @@ class AuthenticatorTest extends TestCase
         /** @var ILoginAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockInterface $schemeHandler */
         $schemeHandler = Mockery::namedMock($schemeHandlerClassName, ILoginAuthenticationSchemeHandler::class);
         $scheme = new AuthenticationScheme($schemeName, $schemeHandler::class);
-        $this->authenticationHandlerResolver->shouldReceive('resolve')
+        $this->authenticationHandlerResolver
+            ->shouldReceive('resolve')
             ->with($schemeHandlerClassName)
             ->andReturn($schemeHandler);
         $this->schemes->registerScheme($scheme);
@@ -506,7 +530,8 @@ class AuthenticatorTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions>&MockInterface $schemeHandler */
         $schemeHandler = Mockery::namedMock($schemeHandlerClassName, IAuthenticationSchemeHandler::class);
         $scheme = new AuthenticationScheme($schemeName, $schemeHandler::class);
-        $this->authenticationHandlerResolver->shouldReceive('resolve')
+        $this->authenticationHandlerResolver
+            ->shouldReceive('resolve')
             ->with($schemeHandlerClassName)
             ->andReturn($schemeHandler);
         $this->schemes->registerScheme($scheme);

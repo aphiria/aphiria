@@ -43,12 +43,8 @@ class AstRouteUriFactoryTest extends TestCase
     public static function namedAttributeParameterProvider(): array
     {
         $controller = new class () {
-            public function queryString(#[QueryString('foo')] string $unused): void
-            {
-            }
-            public function routeVariable(#[RouteVariable('foo')] string $unused1, #[RouteVariable('bar')] string $unused2): void
-            {
-            }
+            public function queryString(#[QueryString('foo')] string $unused): void {}
+            public function routeVariable(#[RouteVariable('foo')] string $unused1, #[RouteVariable('bar')] string $unused2): void {}
         };
 
         return [
@@ -60,25 +56,15 @@ class AstRouteUriFactoryTest extends TestCase
     public static function invalidRouteVariableProvider(): array
     {
         $controller = new class () {
-            public function implicit(string $foo): void
-            {
-            }
+            public function implicit(string $foo): void {}
 
-            public function multipleParameters(string $foo, string $bar): void
-            {
-            }
+            public function multipleParameters(string $foo, string $bar): void {}
 
-            public function noParameters(): void
-            {
-            }
+            public function noParameters(): void {}
 
-            public function queryString(#[QueryString] string $foo): void
-            {
-            }
+            public function queryString(#[QueryString] string $foo): void {}
 
-            public function routeVariable(#[RouteVariable] string $foo): void
-            {
-            }
+            public function routeVariable(#[RouteVariable] string $foo): void {}
         };
 
         return [
@@ -202,7 +188,8 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectException(RouteUriCreationException::class);
         $this->expectExceptionMessage('Failed to lex URI template');
         $lexer = $this->createMock(IUriTemplateLexer::class);
-        $lexer->expects($this->once())
+        $lexer
+            ->expects($this->once())
             ->method('lex')
             ->with('example.com/')
             ->willThrowException(new LexingException());
@@ -216,7 +203,8 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectException(RouteUriCreationException::class);
         $this->expectExceptionMessage('Failed to parse URI template');
         $parser = $this->createMock(IUriTemplateParser::class);
-        $parser->expects($this->once())
+        $parser
+            ->expects($this->once())
             ->method('parse')
             ->with($this->anything())
             ->willThrowException(new UnexpectedTokenException());
@@ -240,9 +228,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithMultipleHostVarsPopulatesThemFromArgs(): void
     {
         $controller = new class () {
-            public function foo(string $foo, string $bar): void
-            {
-            }
+            public function foo(string $foo, string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', ':foo.:bar.example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
@@ -254,9 +240,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithMultiplePathVarsPopulatesThemFromArgs(): void
     {
         $controller = new class () {
-            public function foo(string $foo, string $bar): void
-            {
-            }
+            public function foo(string $foo, string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/:foo/:bar', controller: $controller, methodName: 'foo');
         $this->assertSame(
@@ -283,9 +267,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalHostVarSetsItIfValueExists(): void
     {
         $controller = new class () {
-            public function foo(string $foo): void
-            {
-            }
+            public function foo(string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', '[:foo.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
@@ -303,9 +285,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedHostsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
     {
         $controller = new class () {
-            public function foo(?string $foo, ?string $bar): void
-            {
-            }
+            public function foo(?string $foo, ?string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame('https://example.com', $this->uriFactory->createRouteUri('foo', ['foo' => '1']));
@@ -314,9 +294,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedHostsWithDefinedVarsIncludesThem(): void
     {
         $controller = new class () {
-            public function foo(?string $foo, ?string $bar): void
-            {
-            }
+            public function foo(?string $foo, ?string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
@@ -332,9 +310,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedPathsDoesNotIncludeOuterPartIfInnerPartIsSpecified(): void
     {
         $controller = new class () {
-            public function foo(?string $bar, ?string $baz): void
-            {
-            }
+            public function foo(?string $bar, ?string $baz): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar[/:baz]]', controller: $controller, methodName: 'foo');
         $this->assertSame('https://example.com/foo', $this->uriFactory->createRouteUri('foo', ['baz' => '1']));
@@ -343,9 +319,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalNestedPathsWithDefinedVarsIncludesThem(): void
     {
         $controller = new class () {
-            public function foo(?string $bar, ?string $baz): void
-            {
-            }
+            public function foo(?string $bar, ?string $baz): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'example.com', 'foo[/:bar[/:baz]]', controller: $controller, methodName: 'foo');
         $this->assertSame(
@@ -361,9 +335,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalPathVarDoesNotSetItIfValueDoesNotExist(): void
     {
         $controller = new class () {
-            public function foo(?string $bar): void
-            {
-            }
+            public function foo(?string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]', controller: $controller, methodName: 'foo');
         $this->assertSame('https://example.com/foo', $this->uriFactory->createRouteUri('foo'));
@@ -375,9 +347,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithOptionalPathVarIncludesItIfSet(): void
     {
         $controller = new class () {
-            public function foo(string $bar): void
-            {
-            }
+            public function foo(string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]', controller: $controller, methodName: 'foo');
         $this->assertSame(
@@ -417,9 +387,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithRouteVariableAttributeWillUseItsValueForHost(): void
     {
         $controller = new class () {
-            public function foo(#[RouteVariable] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', ':foo.example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame('https://bar.example.com', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
@@ -428,9 +396,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithRouteVariableAttributeWillUseItsValueForPath(): void
     {
         $controller = new class () {
-            public function foo(#[RouteVariable] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/:foo', controller: $controller, methodName: 'foo');
         $this->assertSame('/bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
@@ -439,9 +405,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithMultipleQueryStringAttributesWillUseValuesInQueryString(): void
     {
         $controller = new class () {
-            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void
-            {
-            }
+            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
         $this->assertSame('/foo?foo=1&bar=2', $this->uriFactory->createRouteUri('foo', ['foo' => '1', 'bar' => '2']));
@@ -450,9 +414,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithQueryStringAttributeWillUseItsValueInQueryString(): void
     {
         $controller = new class () {
-            public function foo(#[QueryString] string $foo): void
-            {
-            }
+            public function foo(#[QueryString] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
         $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
@@ -461,9 +423,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithNoAttributeWillUseItsValueInQueryString(): void
     {
         $controller = new class () {
-            public function foo(string $foo): void
-            {
-            }
+            public function foo(string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
         $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
@@ -472,9 +432,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithQueryStringAttributeWillUrlEncodeItsValueInQueryString(): void
     {
         $controller = new class () {
-            public function foo(#[QueryString] string $foo): void
-            {
-            }
+            public function foo(#[QueryString] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
         // We are specifically using spaces as the special characters here to ensure they're being encoded to "%20" (what's used in URLs), not "+" (what's used in form data)
@@ -484,9 +442,7 @@ class AstRouteUriFactoryTest extends TestCase
     public function testCreatingUriWithHeaderAttributeSimplyIgnoresIt(): void
     {
         $controller = new class () {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '', controller: $controller, methodName: 'foo');
         $this->assertSame('/', $this->uriFactory->createRouteUri('foo'));
@@ -497,9 +453,7 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectException(RouteUriCreationException::class);
         $this->expectExceptionMessage('No value set for foo in path');
         $controller = new class () {
-            public function foo(#[QueryString] $foo): void
-            {
-            }
+            public function foo(#[QueryString] $foo): void {}
         };
         $this->addRouteWithUriTemplate('foo', null, '/:foo', controller: $controller, methodName: 'foo');
         $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']);
@@ -525,9 +479,7 @@ class AstRouteUriFactoryTest extends TestCase
     ): void {
         if ($controller === null && $methodName === null) {
             $controller = new class () {
-                public function bar(): void
-                {
-                }
+                public function bar(): void {}
             };
             $methodName = 'bar';
         }

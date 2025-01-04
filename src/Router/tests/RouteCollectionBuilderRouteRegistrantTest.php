@@ -23,11 +23,10 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
     {
         $callback = function (RouteCollectionBuilder $routes): void {
             $controller = new class () {
-                public function bar(): void
-                {
-                }
+                public function bar(): void {}
             };
-            $routes->get('foo')
+            $routes
+                ->get('foo')
                 ->mapsToMethod($controller::class, 'bar');
         };
         $registrant = new RouteCollectionBuilderRouteRegistrant($callback);
@@ -41,11 +40,10 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
     {
         $callback = function (RouteCollectionBuilder $routes): void {
             $controller = new class () {
-                public function bar(): void
-                {
-                }
+                public function bar(): void {}
             };
-            $routes->get('foo')
+            $routes
+                ->get('foo')
                 ->mapsToMethod($controller::class, 'bar');
         };
         $registrant = new RouteCollectionBuilderRouteRegistrant([$callback]);

@@ -241,9 +241,10 @@ class IntegrationTestCaseTest extends TestCase
     public function testActingAsCallsMockAuthenticator(): void
     {
         $user = new User([new Identity()]);
-        $callback = fn (): bool => true;
+        $callback = fn(): bool => true;
         $this->authenticator = $this->createMock(IMockAuthenticator::class);
-        $this->authenticator->method('actingAs')
+        $this->authenticator
+            ->method('actingAs')
             ->with($user, $callback)
             ->willReturn($callback());
         $this->assertSame($callback(), $this->integrationTests->actingAs($user, $callback));
@@ -254,7 +255,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The bound authenticator does not implement ' . IMockAuthenticator::class . '.  You may have to customize ' . AuthenticationBinder::class . '::inTestingEnvironment().');
         $user = new User([new Identity()]);
-        $this->integrationTests->actingAs($user, fn () => null);
+        $this->integrationTests->actingAs($user, fn() => null);
     }
 
     public function testAssertCookieEqualsDoesNotThrowOnSuccess(): void
@@ -365,7 +366,8 @@ class IntegrationTestCaseTest extends TestCase
             new Headers([new KeyValuePair('Foo', 'bar')]),
             new StringBody('{"foo":"bar"}')
         );
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -380,7 +382,8 @@ class IntegrationTestCaseTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $response = new Response(200);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -414,7 +417,8 @@ class IntegrationTestCaseTest extends TestCase
         $expectedParsedBody = new class () {
             public string $foo = 'bar';
         };
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -422,7 +426,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             $expectedParsedBody::class,
-            fn (mixed $parsedBody): bool => true
+            fn(mixed $parsedBody): bool => true
         );
     }
 
@@ -430,7 +434,8 @@ class IntegrationTestCaseTest extends TestCase
     {
         $request = new Request('GET', new Uri('http://localhost'));
         $response = new Response(200);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -438,7 +443,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             self::class,
-            fn (mixed $parsedBody): bool => false
+            fn(mixed $parsedBody): bool => false
         );
         $this->assertSame(
             'Failed to assert that the response body passes the callback',
@@ -450,7 +455,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('A request must be sent before calling ' . IntegrationTestCase::class . '::assertParsedBodyPassesCallback');
-        $this->integrationTests->assertParsedBodyPassesCallback(new Response(), self::class, fn (mixed $body): bool => false);
+        $this->integrationTests->assertParsedBodyPassesCallback(new Response(), self::class, fn(mixed $body): bool => false);
     }
 
     public function testAssertStatusCodeEqualsDoesNotThrowOnSuccess(): void
@@ -472,7 +477,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testDeleteSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'DELETE'
@@ -492,7 +498,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testGetSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'GET'
@@ -518,7 +525,8 @@ class IntegrationTestCaseTest extends TestCase
     {
         $expectedNegotiatedBody = new DateTime();
         $this->integrationTests->get('http://localhost');
-        $this->bodyDeserializer->method('readRequestBodyAs')
+        $this->bodyDeserializer
+            ->method('readRequestBodyAs')
             ->with(DateTime::class, $this->integrationTests->getLastRequest())
             ->willReturn($expectedNegotiatedBody);
         $this->assertSame($expectedNegotiatedBody, $this->integrationTests->readRequestBodyAs(DateTime::class));
@@ -535,7 +543,8 @@ class IntegrationTestCaseTest extends TestCase
     {
         $expectedNegotiatedBody = new DateTime();
         $response = $this->integrationTests->get('http://localhost');
-        $this->bodyDeserializer->method('readResponseBodyAs')
+        $this->bodyDeserializer
+            ->method('readResponseBodyAs')
             ->with(DateTime::class, $this->integrationTests->getLastRequest(), $response)
             ->willReturn($expectedNegotiatedBody);
         $this->assertSame($expectedNegotiatedBody, $this->integrationTests->readResponseBodyAs(DateTime::class, $response));
@@ -544,7 +553,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testOptionsSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'OPTIONS'
@@ -564,7 +574,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testPatchSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'PATCH'
@@ -584,7 +595,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testPostSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'POST'
@@ -604,7 +616,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testPutSendsRequestToClient(): void
     {
         $expectedResponse = $this->createMock(IResponse::class);
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'PUT'
@@ -627,7 +640,8 @@ class IntegrationTestCaseTest extends TestCase
     #[DataProvider('getFullyQualifiedUris')]
     public function testSendingRequestWithFullyQualifiedUrisUseThoseUris(string $expectedUri): void
     {
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) use ($expectedUri) {
                 return (string)$request->uri === $expectedUri;
@@ -646,7 +660,8 @@ class IntegrationTestCaseTest extends TestCase
     public function testSendingRequestWithRelativeUriCreatesCorrectUri(string $appUrl, string $path): void
     {
         \putenv("APP_URL=$appUrl");
-        $this->apiGateway->expects($this->once())
+        $this->apiGateway
+            ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return (string)$request->uri === 'http://localhost/path';

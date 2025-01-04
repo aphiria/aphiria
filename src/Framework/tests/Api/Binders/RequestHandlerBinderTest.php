@@ -32,7 +32,8 @@ class RequestHandlerBinderTest extends TestCase
 
     public function testApiGatewayIsBoundAsRequestHandler(): void
     {
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('bindClass')
             ->with(IRequestHandler::class, ApiGateway::class);
         $this->binder->bind($this->container);

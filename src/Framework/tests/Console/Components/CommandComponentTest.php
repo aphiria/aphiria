@@ -49,11 +49,9 @@ class CommandComponentTest extends TestCase
     {
         $expectedCommand = new Command('foo');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
-        $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $commandHandler::class));
+        $this->commandComponent->withCommands(fn(CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $commandHandler::class));
         $this->commandComponent->build();
         $this->assertCount(1, $this->commands->commandBindings);
         $this->assertSame($expectedCommand, $this->commands->commandBindings[0]->command);

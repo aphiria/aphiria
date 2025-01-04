@@ -195,7 +195,8 @@ class ResponseAssertionsTest extends TestCase
         $body = new StringBody('{}');
         $response = new Response(200, body: $body);
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
-        $mediaTypeFormatterMatcher->expects($this->once())
+        $mediaTypeFormatterMatcher
+            ->expects($this->once())
             ->method('getBestResponseMediaTypeFormatterMatch')
             ->with(self::class, $request)
             ->willReturn(null);
@@ -267,13 +268,14 @@ class ResponseAssertionsTest extends TestCase
         $body = new StringBody('{}');
         $response = new Response(200, body: $body);
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
-        $mediaTypeFormatterMatcher->expects($this->once())
+        $mediaTypeFormatterMatcher
+            ->expects($this->once())
             ->method('getBestResponseMediaTypeFormatterMatch')
             ->with(self::class, $request)
             ->willReturn(null);
         $contentNegotiator = new ContentNegotiator(mediaTypeFormatterMatcher: $mediaTypeFormatterMatcher);
         $assertions = new ResponseAssertions(new NegotiatedBodyDeserializer($contentNegotiator));
-        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn (mixed $parsedBody): bool => true);
+        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn(mixed $parsedBody): bool => true);
     }
 
     public function testAssertParsedBodyPassesCallbackWithNonHttpBodyDoesNotThrowOnMatch(): void

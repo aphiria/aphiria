@@ -30,9 +30,7 @@ class ResponseFormatter
     /**
      * @param ResponseHeaderFormatter $headerFormatter The response header formatter to use
      */
-    public function __construct(private readonly ResponseHeaderFormatter $headerFormatter = new ResponseHeaderFormatter())
-    {
-    }
+    public function __construct(private readonly ResponseHeaderFormatter $headerFormatter = new ResponseHeaderFormatter()) {}
 
     /**
      * Deletes a cookie from headers

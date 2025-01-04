@@ -27,9 +27,7 @@ class ResponseParser
     /**
      * @param ResponseHeaderParser $headerParser The response header parser to use
      */
-    public function __construct(private readonly ResponseHeaderParser $headerParser = new ResponseHeaderParser())
-    {
-    }
+    public function __construct(private readonly ResponseHeaderParser $headerParser = new ResponseHeaderParser()) {}
 
     /**
      * Gets whether or not the response headers have a JSON content type

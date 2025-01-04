@@ -40,8 +40,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         private readonly RouteCollection $routes,
         private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
         private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

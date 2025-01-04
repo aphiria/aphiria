@@ -25,9 +25,7 @@ class CommandBindingTest extends TestCase
     {
         $expectedCommand = new Command('name', [], [], '', '');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $binding = new CommandBinding($expectedCommand, $commandHandler::class);
         $this->assertSame($expectedCommand, $binding->command);

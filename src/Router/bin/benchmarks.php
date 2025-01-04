@@ -94,7 +94,8 @@ $startMemory = \memory_get_usage();
 $routesBuilder = new RouteCollectionBuilder();
 
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
-    $routesBuilder->route('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
+    $routesBuilder
+        ->route('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
         ->mapsToMethod('Foo', (string)$routeIter);
 }
 

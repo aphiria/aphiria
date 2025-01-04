@@ -28,6 +28,5 @@ final readonly class BinderMetadata
         public Binder $binder,
         public array $boundInterfaces,
         public array $resolvedInterfaces
-    ) {
-    }
+    ) {}
 }

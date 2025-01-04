@@ -37,8 +37,7 @@ class RouteListCommandHandler implements ICommandHandler
         private readonly RouteCollection $routes,
         private readonly MiddlewareCollection $middleware,
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc
@@ -51,7 +50,7 @@ class RouteListCommandHandler implements ICommandHandler
         /** @var array $middlewareOptions */
         $middlewareOptions = $input->options['middleware'] ?? [];
         $sortedRoutes = $this->routes->values;
-        \usort($sortedRoutes, fn (Route $routeA, Route $routeB): int => $this->compareRoutes($routeA, $routeB));
+        \usort($sortedRoutes, fn(Route $routeA, Route $routeB): int => $this->compareRoutes($routeA, $routeB));
         $rows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>']];
 
         foreach ($sortedRoutes as $route) {
@@ -83,7 +82,7 @@ class RouteListCommandHandler implements ICommandHandler
         }
 
         /** @psalm-suppress MixedArgumentTypeCoercion The row parameter will be implode-able */
-        $output->writeln($this->paddingFormatter->format($rows, fn (array $row): string => \implode('    ', $row)));
+        $output->writeln($this->paddingFormatter->format($rows, fn(array $row): string => \implode('    ', $row)));
 
         return StatusCode::Ok;
     }

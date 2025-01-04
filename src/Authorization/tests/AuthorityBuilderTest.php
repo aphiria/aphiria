@@ -35,11 +35,13 @@ class AuthorityBuilderTest extends TestCase
 
     public function testWithContinueOnErrorSetsContinueOnError(): void
     {
-        $authority = $this->authorityBuilder->withContinueOnFailure(true)
+        $authority = $this->authorityBuilder
+            ->withContinueOnFailure(true)
             ->withRequirementHandler(RolesRequirement::class, new RolesRequirementHandler())
             ->build();
         $user = $this->createMock(IPrincipal::class);
-        $user->method('filterClaims')
+        $user
+            ->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'dev', 'example.com')]);
         // The first requirement will fail, but not the second one
@@ -62,7 +64,8 @@ class AuthorityBuilderTest extends TestCase
     public function testWithPolicyCreatesAuthorityWithPolicy(): void
     {
         $policy = new AuthorizationPolicy('policy', $this, []);
-        $authority = $this->authorityBuilder->withPolicy($policy)
+        $authority = $this->authorityBuilder
+            ->withPolicy($policy)
             ->build();
         $expectedPolicies = new AuthorizationPolicyRegistry();
         $expectedPolicies->registerPolicy($policy);
@@ -76,7 +79,8 @@ class AuthorityBuilderTest extends TestCase
     public function testWithRequirementHandlerCreatesAuthorityWithRequirementHandler(): void
     {
         $roleRequirementHandler = new RolesRequirementHandler();
-        $authority = $this->authorityBuilder->withRequirementHandler(RolesRequirement::class, $roleRequirementHandler)
+        $authority = $this->authorityBuilder
+            ->withRequirementHandler(RolesRequirement::class, $roleRequirementHandler)
             ->build();
         $expectedAuthorizationRequirementHandlers = new AuthorizationRequirementHandlerRegistry();
         $expectedAuthorizationRequirementHandlers->registerRequirementHandler(RolesRequirement::class, $roleRequirementHandler);

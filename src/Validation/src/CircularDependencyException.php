@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines an exception that's thrown when a circular dependency is detected
  */
-final class CircularDependencyException extends Exception
-{
-    // Don't do anything
-}
+final class CircularDependencyException extends Exception {}

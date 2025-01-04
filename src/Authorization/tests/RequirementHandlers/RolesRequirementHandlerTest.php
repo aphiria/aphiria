@@ -44,13 +44,9 @@ class RolesRequirementHandlerTest extends TestCase
                 $this->claims = [new Claim(ClaimType::Role, 'admin', 'example.com')];
             }
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {
@@ -80,13 +76,9 @@ class RolesRequirementHandlerTest extends TestCase
                 ];
             }
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {
@@ -120,13 +112,9 @@ class RolesRequirementHandlerTest extends TestCase
             public array $identities = [];
             public ?IIdentity $primaryIdentity = null;
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {
@@ -153,13 +141,9 @@ class RolesRequirementHandlerTest extends TestCase
                 $this->claims = [new Claim(ClaimType::Role, 'unused', 'example.com')];
             }
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {

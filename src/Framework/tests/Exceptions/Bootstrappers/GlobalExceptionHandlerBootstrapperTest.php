@@ -114,7 +114,8 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $config['aphiria']['exceptions']['apiExceptionRenderer'] = $customApiExceptionRendererType;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->addBootstrapAssertions($customApiExceptionRendererType);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->willReturnMap([
                 [$customApiExceptionRendererType, $customApiExceptionRenderer]
             ]);
@@ -148,7 +149,8 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         /** @psalm-suppress InvalidArgument Purposely testing an invalid argument */
         $this->addBootstrapAssertions(self::class);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with(self::class)
             ->willReturn($this);
         $this->bootstrapper->isRunningInConsole = false;
@@ -165,7 +167,8 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $request = $this->createMock(IRequest::class);
         $this->apiExceptionRenderer->request = $request;
         $responseFactory = $this->createMock(IResponseFactory::class);
-        $responseFactory->expects($this->once())
+        $responseFactory
+            ->expects($this->once())
             ->method('createResponse')
             ->with($request, HttpStatusCode::BadRequest->value, null, $this->isInstanceOf(ProblemDetails::class))
             ->willReturn(new Response(HttpStatusCode::BadRequest));
@@ -274,7 +277,8 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
          * Checking that a void method was called with certain parameters, and capturing those parameters, is weirdly
          * difficult in PHPUnit.  As a result, this mock isn't even doing anything with the type  parameter.
          */
-        $this->container->method('bindInstance')
+        $this->container
+            ->method('bindInstance')
             ->with($this->anything(), $this->callback(function (mixed $actualInstance) use ($expectedExceptionRendererType): bool {
                 // The problem details renderer is always bound, even in console contexts.  So, check whether or not the renderer is that or the expected one.
                 if ($actualInstance instanceof ProblemDetailsExceptionRenderer) {

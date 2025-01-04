@@ -38,8 +38,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
     public function __construct(
         protected readonly RequestParser $requestParser = new RequestParser(),
         protected readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

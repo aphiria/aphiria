@@ -24,9 +24,7 @@ final class ObjectConstraintsBuilderRegistrant implements IObjectConstraintsRegi
     /**
      * @param array<Closure(ObjectConstraintsRegistryBuilder): void> $closures The list of closures to execute (must take in an ObjectConstraintsRegistryBuilder parameter)
      */
-    public function __construct(private array $closures)
-    {
-    }
+    public function __construct(private array $closures) {}
 
     /**
      * @inheritdoc

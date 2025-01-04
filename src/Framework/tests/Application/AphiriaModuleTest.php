@@ -42,9 +42,7 @@ class AphiriaModuleTest extends TestCase
             }
         };
         $module = new class ($expectedBinder) extends AphiriaModule {
-            public function __construct(private Binder $expectedBinder)
-            {
-            }
+            public function __construct(private Binder $expectedBinder) {}
 
             public function configure(IApplicationBuilder $appBuilder): void
             {
@@ -52,10 +50,12 @@ class AphiriaModuleTest extends TestCase
             }
         };
         $appBuilder = $this->createMock(IApplicationBuilder::class);
-        $appBuilder->method('hasComponent')
+        $appBuilder
+            ->method('hasComponent')
             ->with(BinderComponent::class)
             ->willReturn(true);
-        $appBuilder->method('getComponent')
+        $appBuilder
+            ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($binderComponent);
         $module->configure($appBuilder);

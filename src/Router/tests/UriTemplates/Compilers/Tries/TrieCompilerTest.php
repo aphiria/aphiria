@@ -49,7 +49,8 @@ class TrieCompilerTest extends TestCase
         $this->parser = $this->createMock(IUriTemplateParser::class);
         $this->lexer = $this->createMock(IUriTemplateLexer::class);
         $this->ast = new AstNode(AstNodeType::Root, null);
-        $this->parser->method('parse')
+        $this->parser
+            ->method('parse')
             ->willReturn($this->ast);
         $this->compiler = new TrieCompiler($this->constraintFactory, $this->parser, $this->lexer);
         $this->expectedTrie = new RootTrieNode();
@@ -66,7 +67,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with('/')
             ->willReturn(new TokenStream([]));
@@ -115,7 +117,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedHostTrie
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($hostTemplate . $pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -164,7 +167,8 @@ class TrieCompilerTest extends TestCase
                 )
             ])
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($hostTemplate . $pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -189,7 +193,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -209,7 +214,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -229,7 +235,7 @@ class TrieCompilerTest extends TestCase
         // Set up constraint factory
         /** @var IRouteVariableConstraint&MockObject $constraint */
         $constraint = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn (): IRouteVariableConstraint => $constraint);
+        $this->constraintFactory->registerConstraintFactory('r1', fn(): IRouteVariableConstraint => $constraint);
 
         // Test compiling
         $pathTemplate = '/:foo(r1)';
@@ -239,7 +245,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -266,8 +273,8 @@ class TrieCompilerTest extends TestCase
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
         /** @var IRouteVariableConstraint&MockObject $constraint2 */
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $this->constraintFactory->registerConstraintFactory('r1', fn (string $p1, string $p2): IRouteVariableConstraint => $constraint1);
-        $this->constraintFactory->registerConstraintFactory('r2', fn (string $p1, string $p2): IRouteVariableConstraint => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r1', fn(string $p1, string $p2): IRouteVariableConstraint => $constraint1);
+        $this->constraintFactory->registerConstraintFactory('r2', fn(string $p1, string $p2): IRouteVariableConstraint => $constraint1);
 
         // Test compiling
         $pathTemplate = '/:foo(r1(p1,p2),r2(p3,p4))';
@@ -277,7 +284,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -294,7 +302,8 @@ class TrieCompilerTest extends TestCase
             ->addChild($constraintNode);
         $this->ast->addChild($pathAst);
         $pathTemplate = '/:foo';
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -324,7 +333,8 @@ class TrieCompilerTest extends TestCase
             ],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -344,7 +354,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -364,7 +375,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -389,7 +401,8 @@ class TrieCompilerTest extends TestCase
             [],
             $expectedRoute
         ));
-        $this->lexer->expects($this->once())
+        $this->lexer
+            ->expects($this->once())
             ->method('lex')
             ->with($pathTemplate)
             ->willReturn(new TokenStream([]));
@@ -401,7 +414,8 @@ class TrieCompilerTest extends TestCase
     {
         $this->expectException(InvalidUriTemplateException::class);
         $this->expectExceptionMessage('URI template could not be compiled');
-        $this->lexer->method('lex')
+        $this->lexer
+            ->method('lex')
             ->willThrowException(new LexingException());
         $this->compiler->compile($this->createRoute('/path'));
     }
@@ -411,9 +425,11 @@ class TrieCompilerTest extends TestCase
         $this->expectException(InvalidUriTemplateException::class);
         $this->expectExceptionMessage('URI template could not be compiled');
         $tokens = new TokenStream([]);
-        $this->lexer->method('lex')
+        $this->lexer
+            ->method('lex')
             ->willReturn($tokens);
-        $this->parser->method('parse')
+        $this->parser
+            ->method('parse')
             ->with($tokens)
             ->willThrowException(new UnexpectedTokenException());
         $this->compiler->compile($this->createRoute('/path'));
@@ -429,9 +445,7 @@ class TrieCompilerTest extends TestCase
     private function createRoute(string $pathTemplate, ?string $hostTemplate = null): Route
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
 
         return new Route(new UriTemplate($pathTemplate, $hostTemplate), new RouteAction($controller::class, 'bar'), []);

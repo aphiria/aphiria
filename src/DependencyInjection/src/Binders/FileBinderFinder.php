@@ -26,9 +26,7 @@ final class FileBinderFinder
     /**
      * @param ITypeFinder $classFinder The class finder
      */
-    public function __construct(private readonly ITypeFinder $classFinder = new TypeFinder())
-    {
-    }
+    public function __construct(private readonly ITypeFinder $classFinder = new TypeFinder()) {}
 
     /**
      * Recursively finds all binder classes in the paths

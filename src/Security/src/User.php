@@ -56,7 +56,7 @@ class User implements IPrincipal
          * @psalm-suppress MixedInferredReturnType The closure will always return an identity
          * @psalm-suppress MixedReturnStatement Ditto
          */
-        $this->primaryIdentitySelector = $primaryIdentitySelector ?? static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[0];
+        $this->primaryIdentitySelector = $primaryIdentitySelector ?? static fn(array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[0];
         $this->setPrimaryIdentity();
     }
 

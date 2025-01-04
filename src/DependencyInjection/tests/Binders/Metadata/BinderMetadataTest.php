@@ -42,10 +42,8 @@ class BinderMetadataTest extends TestCase
                 // Don't do anything
             }
         };
-        $boundInterface1 = new class () {
-        };
-        $boundInterface2 = new class () {
-        };
+        $boundInterface1 = new class () {};
+        $boundInterface2 = new class () {};
         $expectedBoundInterfaces = [
             new BoundInterface($boundInterface1::class, new UniversalContext()),
             new BoundInterface($boundInterface2::class, new UniversalContext())
@@ -62,10 +60,8 @@ class BinderMetadataTest extends TestCase
                 // Don't do anything
             }
         };
-        $resolvedInterface1 = new class () {
-        };
-        $resolvedInterface2 = new class () {
-        };
+        $resolvedInterface1 = new class () {};
+        $resolvedInterface2 = new class () {};
         $expectedResolvedInterfaces = [
             new ResolvedInterface($resolvedInterface1::class, new UniversalContext()),
             new ResolvedInterface($resolvedInterface2::class, new UniversalContext())

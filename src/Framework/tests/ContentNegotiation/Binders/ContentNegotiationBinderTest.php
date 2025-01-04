@@ -139,7 +139,8 @@ class ContentNegotiationBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['contentNegotiation']['mediaTypeFormatters'] = [self::class];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(self::class)
             ->andReturn($this);
         $this->binder->bind($this->container);
@@ -214,7 +215,8 @@ class ContentNegotiationBinderTest extends TestCase
     private function setUpContainerMockBindInstance(array $parameters): void
     {
         foreach ($parameters as $parameter) {
-            $this->container->shouldReceive('bindInstance')
+            $this->container
+                ->shouldReceive('bindInstance')
                 ->with($parameter[0], Mockery::type($parameter[1]));
         }
     }
@@ -235,7 +237,8 @@ class ContentNegotiationBinderTest extends TestCase
         }
 
         foreach ($parameters as $parameter) {
-            $this->container->shouldReceive('resolve')
+            $this->container
+                ->shouldReceive('resolve')
                 ->with($parameter[0])
                 ->andReturn($parameter[1]);
         }

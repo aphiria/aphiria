@@ -20,7 +20,5 @@ final readonly class ConstructorWithTypedPrimitives
     /**
      * @param string $foo A primitive to store in this class
      */
-    public function __construct(public string $foo)
-    {
-    }
+    public function __construct(public string $foo) {}
 }

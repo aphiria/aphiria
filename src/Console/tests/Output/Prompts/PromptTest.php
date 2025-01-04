@@ -39,10 +39,12 @@ class PromptTest extends TestCase
     public function testAnsweringWithSpacesWillTrimThem(): void
     {
         $question = new Question('Name of dev', 'unknown');
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn('   Dave   ');
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
@@ -60,9 +62,11 @@ class PromptTest extends TestCase
                 return 'foo';
             }
         };
-        $this->output->method(PropertyHook::get('driver'))
+        $this->output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('write')
             ->with('<question>Question</question>');
         $answer = $this->prompt->ask(new Question('Question', null, true), $this->output);
@@ -72,15 +76,18 @@ class PromptTest extends TestCase
     public function testAskingIndexedMultipleChoiceQuestion(): void
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn('2');
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->willReturnCallback(function (string|array $messages) use ($question): bool {
                 return $messages === "<question>{$question->text}</question>"
                     || $messages === '  > ';
             });
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->willReturnCallback(function (string|array $messages): bool {
                 return $messages === ''
                     || $messages === '  1) foo' . PHP_EOL . '  2) bar';
@@ -92,15 +99,18 @@ class PromptTest extends TestCase
     public function testAskingKeyedMultipleChoiceQuestion(): void
     {
         $question = new MultipleChoice('Pick', ['a' => 'b', 'c' => 'd']);
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn('c');
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->willReturnCallback(function (array|string $messages) use ($question): bool {
                 return $messages === "<question>{$question->text}</question>"
                     || $messages === '  > ';
             });
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->willReturnCallback(function (array|string $messages): bool {
                 return $messages === ''
                     || $messages === '  a) b' . PHP_EOL . '  c) d';
@@ -113,15 +123,18 @@ class PromptTest extends TestCase
     {
         $question = new MultipleChoice('Pick', ['foo', 'bar']);
         $question->answerLineString = '  : ';
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn('1');
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->willReturnCallback(function (array|string $messages) use ($question): bool {
                 return $messages === "<question>{$question->text}</question>"
                     || $messages === '  : ';
             });
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->willReturnCallback(function (array|string $messages): bool {
                 return $messages === ''
                     || $messages === '  1) foo' . PHP_EOL . '  2) bar';
@@ -133,10 +146,12 @@ class PromptTest extends TestCase
     public function testAskingQuestion(): void
     {
         $question = new Question('Name of dev', 'unknown');
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn('Dave');
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);
         $this->assertSame('Dave', $answer);
@@ -146,17 +161,20 @@ class PromptTest extends TestCase
     {
         $triggeredException = false;
         $question = new MultipleChoice('Dummy question', ['foo', 'bar']);
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->willReturnCallback(function (array|string $messages) use ($question): bool {
                 return $messages === "<question>{$question->text}</question>"
                     || $messages === '  > ';
             });
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->willReturnCallback(function (array|string $messages): bool {
                 return $messages === ''
                     || $messages === '  1) foo' . PHP_EOL . '  2) bar';
             });
-        $this->output->method('readLine')
+        $this->output
+            ->method('readLine')
             ->willReturn(' ');
 
         try {
@@ -172,18 +190,21 @@ class PromptTest extends TestCase
     {
         $triggeredException = false;
         $question = new MultipleChoice('Dummy question', ['foo' => 'bar', 'baz' => 'blah']);
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->willReturnCallback(function (array|string $messages) use ($question): bool {
                 return $messages === "<question>{$question->text}</question>"
                     || $messages === '  > ';
             });
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->willReturnCallback(function (array|string $messages) use ($question): bool {
                 return $messages === ''
                     || $messages === '  foo) bar ' . PHP_EOL . '  baz) blah'
                     || $messages === $question->answerLineString;
             });
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn(' ');
 
@@ -199,10 +220,12 @@ class PromptTest extends TestCase
     public function testNotReceivingAnswerUsesDefaultAnswer(): void
     {
         $question = new Question('Name of dev', 'unknown');
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('readLine')
             ->willReturn(' ');
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('write')
             ->with("<question>{$question->text}</question>");
         $answer = $this->prompt->ask($question, $this->output);

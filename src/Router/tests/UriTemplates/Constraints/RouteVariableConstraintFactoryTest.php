@@ -34,7 +34,7 @@ class RouteVariableConstraintFactoryTest extends TestCase
             'Factory for constraint "foo" does not return an instance of ' . IRouteVariableConstraint::class
         );
         /** @psalm-suppress InvalidArgument We're specifically testing the types at runtime */
-        $this->constraintFactory->registerConstraintFactory('foo', fn (): array => []);
+        $this->constraintFactory->registerConstraintFactory('foo', fn(): array => []);
         $this->constraintFactory->createConstraint('foo');
     }
 
@@ -48,7 +48,7 @@ class RouteVariableConstraintFactoryTest extends TestCase
     public function testFactoryThatDoesNotTakeParametersReturnsConstraintInstance(): void
     {
         $expectedConstraint = $this->createMock(IRouteVariableConstraint::class);
-        $factory = fn (): IRouteVariableConstraint => $expectedConstraint;
+        $factory = fn(): IRouteVariableConstraint => $expectedConstraint;
         $this->constraintFactory->registerConstraintFactory('foo', $factory);
         $this->assertSame($expectedConstraint, $this->constraintFactory->createConstraint('foo'));
     }

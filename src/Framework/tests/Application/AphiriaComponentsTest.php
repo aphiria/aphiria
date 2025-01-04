@@ -69,12 +69,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithAuthenticationSchemeRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(AuthenticationComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(AuthenticationComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(AuthenticationComponent::class)
             ->willReturn($this->createMock(AuthenticationComponent::class));
         $component = new class () {
@@ -99,13 +102,16 @@ class AphiriaComponentsTest extends TestCase
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
         $expectedComponent = $this->createMock(AuthenticationComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withScheme')
             ->with($scheme, true);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(AuthenticationComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(AuthenticationComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -140,12 +146,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithAuthorizationPolicyRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(AuthorizationComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn($this->createMock(AuthorizationComponent::class));
         $component = new class () {
@@ -165,13 +174,16 @@ class AphiriaComponentsTest extends TestCase
     {
         $policy = new AuthorizationPolicy('foo', $this);
         $expectedComponent = $this->createMock(AuthorizationComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withPolicy')
             ->with($policy);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -203,12 +215,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithAuthorizationRequirementHandlerRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(AuthorizationComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn($this->createMock(AuthorizationComponent::class));
         $component = new class () {
@@ -241,13 +256,16 @@ class AphiriaComponentsTest extends TestCase
         /** @var IAuthorizationRequirementHandler<RolesRequirement, null>&MockObject $requirementHandler */
         $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
         $expectedComponent = $this->createMock(AuthorizationComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withRequirementHandler')
             ->with(RolesRequirement::class, $requirementHandler);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(AuthorizationComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -303,13 +321,16 @@ class AphiriaComponentsTest extends TestCase
     {
         $binderDispatcher = $this->createMock(IBinderDispatcher::class);
         $expectedComponent = $this->createMock(BinderComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withBinderDispatcher')
             ->with($binderDispatcher);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(BinderComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -325,12 +346,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithBinderDispatcherRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(BinderComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(BinderComponent::class), 0);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($this->createMock(BinderComponent::class));
         $component = new class () {
@@ -371,13 +395,16 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $expectedComponent = $this->createMock(BinderComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withBinders')
             ->with($binder);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(BinderComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -393,12 +420,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithBindersRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(BinderComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(BinderComponent::class), 0);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($this->createMock(BinderComponent::class));
         $component = new class () {
@@ -433,12 +463,15 @@ class AphiriaComponentsTest extends TestCase
     public function testWithCommandAttributesConfiguresComponentToHaveAttributes(): void
     {
         $expectedComponent = $this->createMock(CommandComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withAttributes');
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -454,12 +487,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandAttributesRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(CommandComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($this->createMock(CommandComponent::class));
         $component = new class () {
@@ -493,15 +529,18 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandsConfiguresComponentToHaveCommands(): void
     {
-        $callback = fn (CommandRegistry $commands): mixed => null;
+        $callback = fn(CommandRegistry $commands): mixed => null;
         $expectedComponent = $this->createMock(CommandComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withCommands')
             ->with($callback);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -521,12 +560,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandsRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(CommandComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($this->createMock(CommandComponent::class));
         $component = new class () {
@@ -541,7 +583,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withCommands($appBuilder, $callback);
             }
         };
-        $callback = fn (CommandRegistry $commands): mixed => null;
+        $callback = fn(CommandRegistry $commands): mixed => null;
         $component->build($this->appBuilder, $callback);
         // Dummy assertion
         $this->assertTrue(true);
@@ -564,13 +606,14 @@ class AphiriaComponentsTest extends TestCase
                 $this->withCommands($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (CommandRegistry $commands): mixed => null);
+        $component->build($this->appBuilder, fn(CommandRegistry $commands): mixed => null);
     }
 
     public function testWithComponentAddsComponentToAppBuilder(): void
     {
         $component = $this->createMock(IComponent::class);
-        $this->appBuilder->expects($this->once())
+        $this->appBuilder
+            ->expects($this->once())
             ->method('withComponent')
             ->with($component);
         $module = new class () {
@@ -592,13 +635,16 @@ class AphiriaComponentsTest extends TestCase
             return 1;
         };
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withConsoleOutputWriter')
             ->with(Exception::class, $outputWriter);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -620,12 +666,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithConsoleExceptionOutputWriterRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(ExceptionHandlerComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($this->createMock(ExceptionHandlerComponent::class));
         $component = new class () {
@@ -636,7 +685,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
+                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn(Exception $ex, IOutput $output): mixed => null);
             }
         };
         $component->build($this->appBuilder);
@@ -657,7 +706,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
+                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn(Exception $ex, IOutput $output): mixed => null);
             }
         };
         $component->build($this->appBuilder);
@@ -666,7 +715,8 @@ class AphiriaComponentsTest extends TestCase
     public function testWithFrameworkCommandsConfiguresComponentToHaveCommands(): void
     {
         $expectedComponent = $this->createMock(CommandComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withCommands')
             ->with($this->callback(function (Closure $callback) {
                 $commands = new CommandRegistry();
@@ -676,10 +726,12 @@ class AphiriaComponentsTest extends TestCase
                     && $commands->tryGetCommand('app:serve', $serveCommandHandler)
                     && $commands->tryGetCommand('route:list', $routeCommandHandler);
             }));
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
@@ -699,7 +751,8 @@ class AphiriaComponentsTest extends TestCase
     public function testWithFrameworkCommandsExcludesSpecificOnes(): void
     {
         $expectedComponent = $this->createMock(CommandComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withCommands')
             ->with($this->callback(function (Closure $callback) {
                 $commands = new CommandRegistry();
@@ -708,10 +761,12 @@ class AphiriaComponentsTest extends TestCase
                 return $commands->tryGetCommand('framework:flushcaches', $flushCommandHandler)
                     && !$commands->tryGetCommand('app:serve', $serveCommandHandler);
             }));
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
@@ -730,12 +785,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithFrameworkCommandsRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(CommandComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(CommandComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(CommandComponent::class)
             ->willReturn($this->createMock(CommandComponent::class));
         $component = new class () {
@@ -769,17 +827,19 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
     {
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $middlewareBinding = new MiddlewareBinding($middleware::class);
         $expectedComponent = $this->createMock(MiddlewareComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withGlobalMiddleware')
             ->with($middlewareBinding, 1);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -798,12 +858,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithGlobalMiddlewareRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(MiddlewareComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($this->createMock(MiddlewareComponent::class));
         $component = new class () {
@@ -814,8 +877,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding);
             }
         };
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $component->build($this->appBuilder, new MiddlewareBinding($middleware::class));
         // Dummy assertion
         $this->assertTrue(true);
@@ -824,12 +886,15 @@ class AphiriaComponentsTest extends TestCase
     public function testWithGlobalMiddlewareRegistersComponentIfItIsNotRegisteredYetAndUsesBoundMiddlewareCollection(): void
     {
         Container::$globalInstance?->bindInstance(MiddlewareCollection::class, new MiddlewareCollection());
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(MiddlewareComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(MiddlewareComponent::class)
             ->willReturn($this->createMock(MiddlewareComponent::class));
         $component = new class () {
@@ -840,8 +905,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding);
             }
         };
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $component->build($this->appBuilder, new MiddlewareBinding($middleware::class));
         // Dummy assertion
         $this->assertTrue(true);
@@ -852,8 +916,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $component = new class () {
             use AphiriaComponents;
 
@@ -867,15 +930,18 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void
     {
-        $logLevelFactory = fn (Exception $ex): string => LogLevel::ALERT;
+        $logLevelFactory = fn(Exception $ex): string => LogLevel::ALERT;
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withLogLevelFactory')
             ->with(Exception::class, $logLevelFactory);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -900,12 +966,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithLogLevelFactoryRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(ExceptionHandlerComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($this->createMock(ExceptionHandlerComponent::class));
         $component = new class () {
@@ -916,7 +985,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withLogLevelFactory($appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
+                $this->withLogLevelFactory($appBuilder, Exception::class, fn(Exception $ex): string => LogLevel::ALERT);
             }
         };
         $component->build($this->appBuilder);
@@ -937,7 +1006,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withLogLevelFactory($appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
+                $this->withLogLevelFactory($appBuilder, Exception::class, fn(Exception $ex): string => LogLevel::ALERT);
             }
         };
         $component->build($this->appBuilder);
@@ -947,10 +1016,12 @@ class AphiriaComponentsTest extends TestCase
     {
         $modules = [$this->createMock(IModule::class), $this->createMock(IModule::class)];
         $appBuilder = Mockery::mock(IApplicationBuilder::class);
-        $appBuilder->shouldReceive('withModule')
+        $appBuilder
+            ->shouldReceive('withModule')
             ->with($modules[0])
             ->andReturnSelf();
-        $appBuilder->shouldReceive('withModule')
+        $appBuilder
+            ->shouldReceive('withModule')
             ->with($modules[1])
             ->andReturnSelf();
         $component = new class () {
@@ -973,7 +1044,8 @@ class AphiriaComponentsTest extends TestCase
     public function testWithModulesAddsSingleModuleToAppBuilder(): void
     {
         $module = $this->createMock(IModule::class);
-        $this->appBuilder->expects($this->once())
+        $this->appBuilder
+            ->expects($this->once())
             ->method('withModule')
             ->with($module);
         $component = new class () {
@@ -989,15 +1061,18 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
-        $callback = fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
+        $callback = fn(ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
         $expectedComponent = $this->createMock(ValidationComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withObjectConstraints')
             ->with($callback);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ValidationComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -1017,12 +1092,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithObjectConstraintsRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ValidationComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(ValidationComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($this->createMock(ValidationComponent::class));
         $component = new class () {
@@ -1037,7 +1115,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $factory = fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
+        $factory = fn(ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
         $component->build($this->appBuilder, $factory);
         // Dummy assertion
         $this->assertTrue(true);
@@ -1060,19 +1138,22 @@ class AphiriaComponentsTest extends TestCase
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null);
+        $component->build($this->appBuilder, fn(ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null);
     }
 
     public function testWithProblemDetailsConfiguresComponentToHaveProblemDetails(): void
     {
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withProblemDetails')
             ->with(Exception::class, 'type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -1107,12 +1188,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithProblemDetailsRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(ExceptionHandlerComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ExceptionHandlerComponent::class)
             ->willReturn($this->createMock(ExceptionHandlerComponent::class));
         $component = new class () {
@@ -1166,12 +1250,15 @@ class AphiriaComponentsTest extends TestCase
     public function testWithRouteAttributesConfiguresComponentToHaveAttributes(): void
     {
         $expectedComponent = $this->createMock(RouterComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withAttributes');
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(RouterComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -1187,12 +1274,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRouteAttributesRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(RouterComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(RouterComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($this->createMock(RouterComponent::class));
         $component = new class () {
@@ -1226,15 +1316,18 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
-        $callback = fn (RouteCollectionBuilder $routeBuilders): mixed => null;
+        $callback = fn(RouteCollectionBuilder $routeBuilders): mixed => null;
         $expectedComponent = $this->createMock(RouterComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withRoutes')
             ->with($callback);
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(RouterComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {
@@ -1254,12 +1347,15 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesRegistersComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(RouterComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(RouterComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(RouterComponent::class)
             ->willReturn($this->createMock(RouterComponent::class));
         $component = new class () {
@@ -1274,7 +1370,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withRoutes($appBuilder, $callback);
             }
         };
-        $callback = fn (RouteCollectionBuilder $routeBuilders): mixed => null;
+        $callback = fn(RouteCollectionBuilder $routeBuilders): mixed => null;
         $component->build($this->appBuilder, $callback);
         // Dummy assertion
         $this->assertTrue(true);
@@ -1297,17 +1393,20 @@ class AphiriaComponentsTest extends TestCase
                 $this->withRoutes($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (RouteCollectionBuilder $routeBuilders): mixed => null);
+        $component->build($this->appBuilder, fn(RouteCollectionBuilder $routeBuilders): mixed => null);
     }
 
     public function testWithValidatorAttributesComponentIfItIsNotRegisteredYet(): void
     {
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ValidationComponent::class)
             ->willReturn(false);
-        $this->appBuilder->method('withComponent')
+        $this->appBuilder
+            ->method('withComponent')
             ->with($this->isInstanceOf(ValidationComponent::class));
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($this->createMock(ValidationComponent::class));
         $component = new class () {
@@ -1326,12 +1425,15 @@ class AphiriaComponentsTest extends TestCase
     public function testWithValidatorAttributesConfiguresComponentToHaveAttributes(): void
     {
         $expectedComponent = $this->createMock(ValidationComponent::class);
-        $expectedComponent->expects($this->once())
+        $expectedComponent
+            ->expects($this->once())
             ->method('withAttributes');
-        $this->appBuilder->method('hasComponent')
+        $this->appBuilder
+            ->method('hasComponent')
             ->with(ValidationComponent::class)
             ->willReturn(true);
-        $this->appBuilder->method('getComponent')
+        $this->appBuilder
+            ->method('getComponent')
             ->with(ValidationComponent::class)
             ->willReturn($expectedComponent);
         $component = new class () {

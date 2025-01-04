@@ -51,7 +51,8 @@ class BinderComponentTest extends TestCase
             }
         };
         $binderDispatcher = $this->createMock(IBinderDispatcher::class);
-        $binderDispatcher->expects($this->once())
+        $binderDispatcher
+            ->expects($this->once())
             ->method('dispatch')
             ->with([$binder1, $binder2]);
         $this->binderComponent->withBinderDispatcher($binderDispatcher);
@@ -75,7 +76,8 @@ class BinderComponentTest extends TestCase
             }
         };
         $binderDispatcher = $this->createMock(IBinderDispatcher::class);
-        $binderDispatcher->expects($this->once())
+        $binderDispatcher
+            ->expects($this->once())
             ->method('dispatch')
             ->with([$binder1, $binder2]);
         $this->binderComponent->withBinderDispatcher($binderDispatcher);
@@ -92,7 +94,8 @@ class BinderComponentTest extends TestCase
             }
         };
         $binderDispatcher = $this->createMock(IBinderDispatcher::class);
-        $binderDispatcher->expects($this->once())
+        $binderDispatcher
+            ->expects($this->once())
             ->method('dispatch')
             ->with([$binder]);
         $this->binderComponent->withBinderDispatcher($binderDispatcher);

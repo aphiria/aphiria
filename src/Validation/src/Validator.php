@@ -52,8 +52,7 @@ final class Validator implements IValidator
     public function __construct(
         private readonly ObjectConstraintsRegistry $objectConstraints,
         private readonly IErrorMessageInterpolator $errorMessageInterpolator = new StringReplaceErrorMessageInterpolator()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

@@ -44,7 +44,8 @@ class AttributeConstraintsRegistrantTest extends TestCase
                 return true;
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$object::class]);
@@ -65,7 +66,8 @@ class AttributeConstraintsRegistrantTest extends TestCase
                 return true;
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$object::class]);
@@ -85,7 +87,8 @@ class AttributeConstraintsRegistrantTest extends TestCase
                 return true;
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$object::class]);
@@ -104,7 +107,8 @@ class AttributeConstraintsRegistrantTest extends TestCase
             #[Required, Email]
             public bool $prop = true;
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$object::class]);
@@ -123,7 +127,8 @@ class AttributeConstraintsRegistrantTest extends TestCase
             #[Required]
             public bool $prop = true;
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$object::class]);
@@ -141,7 +146,8 @@ class AttributeConstraintsRegistrantTest extends TestCase
             #[NonConstraintAttribute]
             public bool $prop = true;
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$object::class]);

@@ -33,6 +33,5 @@ class Command
         public readonly array $options = [],
         public readonly ?string $description = null,
         public readonly ?string $helpText = null
-    ) {
-    }
+    ) {}
 }

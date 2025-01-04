@@ -37,13 +37,15 @@ class ResponseFormatterTest extends TestCase
         $this->formatter = new ResponseFormatter();
         $this->headers = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method(PropertyHook::get('headers'))
+        $this->response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($this->headers);
     }
 
     public function testContentTypeHeaderAndBodyAreSetWhenWritingJson(): void
     {
-        $this->response->expects($this->once())
+        $this->response
+            ->expects($this->once())
             ->method(PropertyHook::set('body'))
             ->with($this->callback(function (mixed $body) {
                 return $body instanceof StringBody && $body->readAsString() === \json_encode(['foo' => 'bar']);
@@ -70,7 +72,8 @@ class ResponseFormatterTest extends TestCase
         HttpStatusCode $expectedStatusCode,
         HttpStatusCode|int $rawStatusCode
     ): void {
-        $this->response->expects($this->once())
+        $this->response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with($expectedStatusCode);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', $rawStatusCode);
@@ -78,7 +81,8 @@ class ResponseFormatterTest extends TestCase
 
     public function testRedirectingToUriConvertsUriInstanceToStringAndSetsLocationHeaderAndStatusCode(): void
     {
-        $this->response->expects($this->once())
+        $this->response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::MovedPermanently);
         $this->formatter->redirectToUri($this->response, new Uri('http://foo.com'), 301);
@@ -87,7 +91,8 @@ class ResponseFormatterTest extends TestCase
 
     public function testRedirectingToUriSetsLocationHeaderAndStatusCode(): void
     {
-        $this->response->expects($this->once())
+        $this->response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::MovedPermanently);
         $this->formatter->redirectToUri($this->response, 'http://foo.com', 301);

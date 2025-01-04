@@ -47,7 +47,8 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         ]);
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->willReturnCallback(function (string|array $messages): bool {
                 return $messages === 'foo'
                     || $messages === 'bar';
@@ -61,7 +62,8 @@ class ConsoleExceptionRendererTest extends TestCase
     public function testRenderingExceptionWithNoRegisteredOutputWriterUsesDefaultResultMessage(): void
     {
         $exception = new Exception();
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(["<fatal>{$exception->getMessage()}" . \PHP_EOL . "{$exception->getTraceAsString()}</fatal>"]);
         $this->exceptionRenderer->render($exception);
@@ -79,7 +81,8 @@ class ConsoleExceptionRendererTest extends TestCase
                 return 1;
             }
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with('foo');
         $this->exceptionRenderer->render(new Exception());
@@ -99,9 +102,11 @@ class ConsoleExceptionRendererTest extends TestCase
                 return null;
             }
         };
-        $newOutput->method(PropertyHook::get('driver'))
+        $newOutput
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
-        $newOutput->expects($this->once())
+        $newOutput
+            ->expects($this->once())
             ->method('writeln')
             ->with('foo');
         $this->exceptionRenderer->output = $newOutput;

@@ -62,9 +62,11 @@ class ExceptionHandlerComponentTest extends TestCase
                 return null;
             }
         };
-        $output->method(PropertyHook::get('driver'))
+        $output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
-        $output->expects($this->once())
+        $output
+            ->expects($this->once())
             ->method('writeln')
             ->with('foo');
         // Make sure the renderer doesn't cause the app to exit
@@ -86,7 +88,8 @@ class ExceptionHandlerComponentTest extends TestCase
         $apiExceptionRenderer = new ProblemDetailsExceptionRenderer();
         $request = $this->createMock(IRequest::class);
         $responseFactory = $this->createMock(IResponseFactory::class);
-        $responseFactory->expects($this->once())
+        $responseFactory
+            ->expects($this->once())
             ->method('createResponse')
             ->with($request, 400, null, new ProblemDetails('type', 'title', 'detail', 400, 'instance', ['foo' => 'bar']))
             ->willReturn(new Response(400));
@@ -109,7 +112,7 @@ class ExceptionHandlerComponentTest extends TestCase
     public function testBuildWithLogLevelFactoryRegistersFactory(): void
     {
         $expectedException = new Exception();
-        $factory = fn (Exception $ex): string => LogLevel::ALERT;
+        $factory = fn(Exception $ex): string => LogLevel::ALERT;
         $this->exceptionHandlerComponent->withLogLevelFactory(Exception::class, $factory);
         $this->exceptionHandlerComponent->build();
         $this->assertSame(LogLevel::ALERT, $this->logLevelFactory->createLogLevel($expectedException));

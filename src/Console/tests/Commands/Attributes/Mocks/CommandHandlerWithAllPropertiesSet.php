@@ -36,7 +36,5 @@ final class CommandHandlerWithAllPropertiesSet implements ICommandHandler
      *
      * @return void
      */
-    public function handle(Input $input, IOutput $output)
-    {
-    }
+    public function handle(Input $input, IOutput $output) {}
 }

@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when we come across an unexpected token
  */
-final class UnexpectedTokenException extends Exception
-{
-    // Don't do anything
-}
+final class UnexpectedTokenException extends Exception {}

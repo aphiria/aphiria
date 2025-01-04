@@ -33,9 +33,9 @@ class RequestParameterDeserializer implements IRequestParameterDeserializer
                     default => false,
                 };
             },
-            'float' => fn (mixed $value): float => (float)$value,
-            'int' => fn (mixed $value): int => (int)$value,
-            'string' => fn (mixed $value): string => (string)$value
+            'float' => fn(mixed $value): float => (float)$value,
+            'int' => fn(mixed $value): int => (int)$value,
+            'string' => fn(mixed $value): string => (string)$value
         ];
     }
 

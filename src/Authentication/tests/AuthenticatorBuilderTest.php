@@ -53,7 +53,8 @@ class AuthenticatorBuilderTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
-        $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
+        $authenticator = $this->authenticatorBuilder
+            ->withHandlerResolver($schemeHandlerResolver)
             ->withScheme($scheme)
             ->build();
         $expectedSchemes = new AuthenticationSchemeRegistry();
@@ -68,7 +69,8 @@ class AuthenticatorBuilderTest extends TestCase
         /** @var IAuthenticationSchemeHandler<AuthenticationSchemeOptions> $schemeHandler */
         $schemeHandler = $this->createMock(IAuthenticationSchemeHandler::class);
         $scheme = new AuthenticationScheme('foo', $schemeHandler::class);
-        $authenticator = $this->authenticatorBuilder->withHandlerResolver($schemeHandlerResolver)
+        $authenticator = $this->authenticatorBuilder
+            ->withHandlerResolver($schemeHandlerResolver)
             ->withScheme($scheme, true)
             ->build();
         $expectedSchemes = new AuthenticationSchemeRegistry();

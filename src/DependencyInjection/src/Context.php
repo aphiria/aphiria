@@ -26,6 +26,5 @@ abstract class Context
         public readonly ?string $targetClass,
         public readonly bool $isTargeted,
         public readonly bool $isUniversal
-    ) {
-    }
+    ) {}
 }

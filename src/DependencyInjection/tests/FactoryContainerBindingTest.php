@@ -19,7 +19,7 @@ class FactoryContainerBindingTest extends TestCase
 {
     public function testCheckingIfResolvedAsSingleton(): void
     {
-        $factory = fn (): object => $this;
+        $factory = fn(): object => $this;
         $singletonFactory = new FactoryContainerBinding($factory, true);
         $this->assertTrue($singletonFactory->resolveAsSingleton);
         $prototypeFactory = new FactoryContainerBinding($factory, false);
@@ -28,7 +28,7 @@ class FactoryContainerBindingTest extends TestCase
 
     public function testGettingFactory(): void
     {
-        $factory = fn (): object => $this;
+        $factory = fn(): object => $this;
         $binding = new FactoryContainerBinding($factory, true);
         $this->assertSame($factory, $binding->factory);
     }

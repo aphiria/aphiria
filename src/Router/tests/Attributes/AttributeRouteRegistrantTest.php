@@ -50,7 +50,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -71,7 +72,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -85,9 +87,9 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteForNonControllerRegistersNothing(): void
     {
-        $nonController = new class () {
-        };
-        $this->typeFinder->expects($this->once())
+        $nonController = new class () {};
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$nonController::class]);
@@ -111,7 +113,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -132,7 +135,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -153,7 +157,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -180,7 +185,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -201,7 +207,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -232,7 +239,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -257,7 +265,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -287,7 +296,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -313,7 +323,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -339,7 +350,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -363,7 +375,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);
@@ -392,7 +405,8 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
         };
-        $this->typeFinder->expects($this->once())
+        $this->typeFinder
+            ->expects($this->once())
             ->method('findAllClasses')
             ->with([self::PATH])
             ->willReturn([$controller::class]);

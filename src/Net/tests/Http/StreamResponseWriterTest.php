@@ -41,22 +41,28 @@ class StreamResponseWriterTest extends TestCase
 
         // Set up the response
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method(PropertyHook::get('headers'))
+        $this->response
+            ->method(PropertyHook::get('headers'))
             ->willReturn(new Headers([new KeyValuePair('Foo', 'bar')]));
-        $this->response->method(PropertyHook::get('body'))
+        $this->response
+            ->method(PropertyHook::get('body'))
             ->willReturn($this->body);
-        $this->response->method(PropertyHook::get('protocolVersion'))
+        $this->response
+            ->method(PropertyHook::get('protocolVersion'))
             ->willReturn('1.1');
-        $this->response->method(PropertyHook::get('statusCode'))
+        $this->response
+            ->method(PropertyHook::get('statusCode'))
             ->willReturn(HttpStatusCode::Ok);
-        $this->response->method(PropertyHook::get('reasonPhrase'))
+        $this->response
+            ->method(PropertyHook::get('reasonPhrase'))
             ->willReturn('OK');
     }
 
     #[RunInSeparateProcess]
     public function testBodyIsWrittenToOutputStream(): void
     {
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('writeToStream')
             ->with($this->outputStream);
         $this->writer->writeResponse($this->response);

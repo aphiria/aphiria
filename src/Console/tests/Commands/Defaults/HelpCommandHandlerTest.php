@@ -48,13 +48,15 @@ class HelpCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook::get('driver'))
+        $this->output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
     }
 
     public function testHandlingCommandNameThatIsNotRegisteredReturnsError(): void
     {
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with('<error>Command foo does not exist</error>');
         $this->assertSame(StatusCode::Error, $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output));
@@ -63,9 +65,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithHelpTextIncludesIt(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -77,7 +77,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options', 'The help text'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -86,9 +87,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithNoDescriptionStillHasDefaultDescription(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -99,7 +98,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -108,9 +108,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithNoHelpTextDoesNotIncludeHelpText(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -121,7 +119,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'No description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -130,9 +129,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithArgumentIncludesItInArgumentDescriptionAndParsedCommand(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -143,7 +140,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo arg1', 'The description', '  <info>arg1</info> - Arg1 description', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -152,9 +150,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -165,7 +161,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -174,9 +171,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithNoOptionsStillHasDefaultArgumentDescription(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -187,7 +182,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo', 'The description', '  No arguments', '  No options'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -196,9 +192,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithOptionsIncludesOptionDescriptionsAndOptionsInParsedCommand(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -209,7 +203,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1]', 'The description', '  No arguments', '  <info>--opt1</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -218,9 +213,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithOptionWithShortNameIncludesOptionShortNameInDescriptionsAndParsedCommand(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -231,7 +224,8 @@ class HelpCommandHandlerTest extends TestCase
             ),
             $commandHandler::class
         );
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with(self::compileOutput('foo', 'foo [--opt1|-o]', 'The description', '  No arguments', '  <info>--opt1|-o</info> - Opt1 description'));
         $this->handler->handle(new Input('help', ['command' => 'foo'], []), $this->output);
@@ -239,7 +233,8 @@ class HelpCommandHandlerTest extends TestCase
 
     public function testHandlingWithoutCommandNameWritesMessageAboutSpecifyingACommandName(): void
     {
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with("<comment>Pass in the name of the command you'd like help with</comment>");
         $this->assertSame(StatusCode::Ok, $this->handler->handle(new Input('help', [], []), $this->output));

@@ -52,7 +52,8 @@ class ControllerRequestHandlerTest extends TestCase
         $controller = $this->createMock(ControllerWithEndpoints::class);
         /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
-        $this->routeActionInvoker->expects($this->once())
+        $this->routeActionInvoker
+            ->expects($this->once())
             ->method('invokeRouteAction')
             ->with($controllerClosure, $request, [])
             ->willReturn($expectedResponse);
@@ -71,21 +72,27 @@ class ControllerRequestHandlerTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $controller = $this->createMock(ControllerWithEndpoints::class);
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method(PropertyHook::set('request'))
             ->with($request);
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method(PropertyHook::set('requestParser'));
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method(PropertyHook::set('bodyDeserializer'))
             ->with(new NegotiatedBodyDeserializer($this->contentNegotiator));
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method(PropertyHook::set('responseFactory'));
-        $controller->expects($this->once())
+        $controller
+            ->expects($this->once())
             ->method(PropertyHook::set('userAccessor'));
         /** @psalm-suppress UndefinedMethod This method clearly does exist - bug */
         $controllerClosure = Closure::fromCallable([$controller, 'noParameters']);
-        $this->routeActionInvoker->expects($this->once())
+        $this->routeActionInvoker
+            ->expects($this->once())
             ->method('invokeRouteAction')
             ->with($controllerClosure, $request, [])
             ->willReturn($this->createMock(IResponse::class));

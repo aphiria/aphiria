@@ -55,12 +55,12 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingArrayOfObjectsValidatesEachOne(): void
     {
-        $bodyParts = [new class () {
-        }, new class () {
-        }];
-        $this->validator->shouldReceive('validateObject')
+        $bodyParts = [new class () {}, new class () {}];
+        $this->validator
+            ->shouldReceive('validateObject')
             ->with($bodyParts[0]);
-        $this->validator->shouldReceive('validateObject')
+        $this->validator
+            ->shouldReceive('validateObject')
             ->with($bodyParts[1]);
         $this->requestBodyValidator->validate($this->request, $bodyParts);
         // Dummy assertion
@@ -70,11 +70,13 @@ class RequestBodyValidatorTest extends TestCase
     public function testValidatingDoesNotSetLocaleOnErrorMessageInterpolatorIfNoLanguageMatcherFound(): void
     {
         $this->validator->shouldReceive('validateObject');
-        $this->languageMatcher->expects($this->once())
+        $this->languageMatcher
+            ->expects($this->once())
             ->method('getBestLanguageMatch')
             ->with($this->request)
             ->willReturn(null);
-        $this->errorMessageInterpolator->expects($this->never())
+        $this->errorMessageInterpolator
+            ->expects($this->never())
             ->method(PropertyHook::set('defaultLocale'));
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion
@@ -98,7 +100,8 @@ class RequestBodyValidatorTest extends TestCase
             )
         ];
         $expectedException = new ValidationException($violations);
-        $this->validator->shouldReceive('validateObject')
+        $this->validator
+            ->shouldReceive('validateObject')
             ->with($this)
             ->andThrow($expectedException);
 
@@ -123,11 +126,13 @@ class RequestBodyValidatorTest extends TestCase
     public function testValidatingSetsLocaleOnErrorMessageInterpolatorIfLanguageMatcherFoundOne(): void
     {
         $this->validator->shouldReceive('validateObject');
-        $this->languageMatcher->expects($this->once())
+        $this->languageMatcher
+            ->expects($this->once())
             ->method('getBestLanguageMatch')
             ->with($this->request)
             ->willReturn('en-US');
-        $this->errorMessageInterpolator->expects($this->once())
+        $this->errorMessageInterpolator
+            ->expects($this->once())
             ->method(PropertyHook::set('defaultLocale'))
             ->with('en-US');
         $this->requestBodyValidator->validate($this->request, $this);
@@ -138,11 +143,13 @@ class RequestBodyValidatorTest extends TestCase
     public function testValidatingSetsLocaleOnErrorMessageInterpolatorOnlyOnce(): void
     {
         $this->validator->shouldReceive('validateObject');
-        $this->languageMatcher->expects($this->once())
+        $this->languageMatcher
+            ->expects($this->once())
             ->method('getBestLanguageMatch')
             ->with($this->request)
             ->willReturn('en-US');
-        $this->errorMessageInterpolator->expects($this->once())
+        $this->errorMessageInterpolator
+            ->expects($this->once())
             ->method(PropertyHook::set('defaultLocale'))
             ->with('en-US');
         // Double-validating this body should be sufficient to test this
@@ -154,7 +161,8 @@ class RequestBodyValidatorTest extends TestCase
 
     public function testValidatingValidBodyDoesNotThrowException(): void
     {
-        $this->validator->shouldReceive('validateObject')
+        $this->validator
+            ->shouldReceive('validateObject')
             ->with($this);
         $this->requestBodyValidator->validate($this->request, $this);
         // Dummy assertion

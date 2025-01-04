@@ -27,9 +27,7 @@ class ApplicationBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->appBuilder = new class ($this->createMock(IApplication::class)) extends ApplicationBuilder {
-            public function __construct(private readonly IApplication $application)
-            {
-            }
+            public function __construct(private readonly IApplication $application) {}
 
             public function build(): IApplication
             {
@@ -83,7 +81,8 @@ class ApplicationBuilderTest extends TestCase
     public function testComponentsAreInitializedOnBuild(): void
     {
         $component = $this->createMock(IComponent::class);
-        $component->expects($this->once())
+        $component
+            ->expects($this->once())
             ->method('build');
         $this->appBuilder->withComponent($component);
         $this->appBuilder->build();
@@ -100,9 +99,7 @@ class ApplicationBuilderTest extends TestCase
     {
         $this->expectException(OutOfBoundsException::class);
         $component = new class () implements IComponent {
-            public function build(): void
-            {
-            }
+            public function build(): void {}
         };
         $this->expectExceptionMessage('No component of type ' . $component::class . ' found');
         $this->appBuilder->getComponent($component::class);
@@ -119,7 +116,8 @@ class ApplicationBuilderTest extends TestCase
     public function testModulesAreConfiguredOnBuild(): void
     {
         $module = $this->createMock(IModule::class);
-        $module->expects($this->once())
+        $module
+            ->expects($this->once())
             ->method('configure')
             ->with($this->appBuilder);
         $this->appBuilder->withModule($module);
@@ -129,7 +127,8 @@ class ApplicationBuilderTest extends TestCase
     public function testModulesThatAreRegisteredInsideOfModulesAreConfigured(): void
     {
         $innerModule = $this->createMock(IModule::class);
-        $innerModule->expects($this->once())
+        $innerModule
+            ->expects($this->once())
             ->method('configure')
             ->with($this->appBuilder);
         $outerModule = new class ($innerModule) implements IModule {

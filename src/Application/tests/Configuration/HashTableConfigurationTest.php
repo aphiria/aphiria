@@ -80,14 +80,14 @@ class HashTableConfigurationTest extends TestCase
     public function testGetObjectForNestedValueReturnsObject(): void
     {
         $configuration = new HashTableConfiguration(['foo' => ['bar' => 'baz']]);
-        $object = $configuration->getObject('foo.bar', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $object = $configuration->getObject('foo.bar', fn(mixed $options): ConfigObject => new ConfigObject($options));
         $this->assertEquals(new ConfigObject('baz'), $object);
     }
 
     public function testGetObjectReturnsObject(): void
     {
         $configuration = new HashTableConfiguration(['foo' => 'bar']);
-        $object = $configuration->getObject('foo', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $object = $configuration->getObject('foo', fn(mixed $options): ConfigObject => new ConfigObject($options));
         $this->assertEquals(new ConfigObject('bar'), $object);
     }
 
@@ -97,7 +97,7 @@ class HashTableConfigurationTest extends TestCase
         $this->expectExceptionMessage('Factory must return an object');
         $configuration = new HashTableConfiguration(['foo' => 'bar']);
         /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
-        $configuration->getObject('foo', fn (mixed $options): bool => true);
+        $configuration->getObject('foo', fn(mixed $options): bool => true);
     }
 
     public function testGetStringForNestedValueReturnsString(): void
@@ -212,7 +212,7 @@ class HashTableConfigurationTest extends TestCase
         $this->assertTrue(
             $configuration->tryGetObject(
                 'foo',
-                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                fn(mixed $options): ConfigObject => new ConfigObject($options),
                 $object
             )
         );
@@ -226,7 +226,7 @@ class HashTableConfigurationTest extends TestCase
         $this->assertFalse(
             $configuration->tryGetObject(
                 'baz',
-                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                fn(mixed $options): ConfigObject => new ConfigObject($options),
                 $object
             )
         );
@@ -240,7 +240,7 @@ class HashTableConfigurationTest extends TestCase
         $configuration = new HashTableConfiguration(['foo' => 'bar']);
         $object = null;
         /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
-        $configuration->tryGetObject('foo', fn (mixed $options): bool => true, $object);
+        $configuration->tryGetObject('foo', fn(mixed $options): bool => true, $object);
     }
 
     public function testTryGetStringForExistentValueSetsItAndReturnsTrue(): void

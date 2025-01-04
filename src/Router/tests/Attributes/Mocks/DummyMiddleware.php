@@ -15,7 +15,4 @@ namespace Aphiria\Routing\Tests\Attributes\Mocks;
 /**
  * Mocks a middleware class
  */
-final class DummyMiddleware
-{
-    // Don't do anything
-}
+final class DummyMiddleware {}

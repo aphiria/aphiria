@@ -30,12 +30,14 @@ class EachConstraintTest extends TestCase
     public function testMultipleConstraintsAreAccepted(): void
     {
         $constraint1 = $this->createMock(IConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(true);
         $constraint2 = $this->createMock(IConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(true);
@@ -46,12 +48,14 @@ class EachConstraintTest extends TestCase
     public function testPassesOnAllPassedConstraintsReturnsTrue(): void
     {
         $constraint1 = $this->createMock(IConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(true);
         $constraint2 = $this->createMock(IConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(true);
@@ -62,7 +66,8 @@ class EachConstraintTest extends TestCase
     public function testPassesOnEmptyValueReturnsTrue(): void
     {
         $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->never())
+        $constraint
+            ->expects($this->never())
             ->method('passes');
         $eachConstraint = new EachConstraint($constraint, 'foo');
         $this->assertTrue($eachConstraint->passes([]));
@@ -71,12 +76,14 @@ class EachConstraintTest extends TestCase
     public function testPassesOnFailedConstraintDoesNotCallSecondConstraint(): void
     {
         $constraint1 = $this->createMock(IConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(false);
         $constraint2 = $this->createMock(IConstraint::class);
-        $constraint2->expects($this->never())
+        $constraint2
+            ->expects($this->never())
             ->method('passes');
         $eachConstraint = new EachConstraint([$constraint1, $constraint2], 'foo');
         $this->assertFalse($eachConstraint->passes(['foo']));
@@ -93,12 +100,14 @@ class EachConstraintTest extends TestCase
     public function testPassesOnPassedAndFailedConstraintsReturnsFalse(): void
     {
         $constraint1 = $this->createMock(IConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(true);
         $constraint2 = $this->createMock(IConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(false);
@@ -109,7 +118,8 @@ class EachConstraintTest extends TestCase
     public function testSingleConstraintIsAccepted(): void
     {
         $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(true);

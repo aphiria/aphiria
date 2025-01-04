@@ -28,9 +28,7 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @param list<T> $values The list of values
      */
-    final public function __construct(protected readonly array $values)
-    {
-    }
+    final public function __construct(protected readonly array $values) {}
 
     /**
      * @inheritdoc

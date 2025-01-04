@@ -18,7 +18,4 @@ use Aphiria\Routing\Attributes\Controller;
  * Defines a mock controller
  */
 #[Controller]
-final class ControllerC
-{
-    // Don't do anything
-}
+final class ControllerC {}

@@ -34,8 +34,7 @@ class SynchronousApiApplication implements IApplication
         private readonly IRequestHandler $apiGateway,
         private readonly IRequest $request,
         private readonly IResponseWriter $responseWriter = new StreamResponseWriter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

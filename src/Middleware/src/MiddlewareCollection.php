@@ -27,7 +27,7 @@ final class MiddlewareCollection
      */
     public array $values {
         get {
-            \usort($this->middlewareWithPriorities, static fn (array $a, array $b): int => $a['priority'] <=> $b['priority']);
+            \usort($this->middlewareWithPriorities, static fn(array $a, array $b): int => $a['priority'] <=> $b['priority']);
             $prioritizedMiddleware = [];
 
             foreach ($this->middlewareWithPriorities as $middlewareWithPriority) {

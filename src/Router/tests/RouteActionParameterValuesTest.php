@@ -28,34 +28,28 @@ class RouteActionParameterValuesTest extends TestCase
     public static function defaultValueParameterProvider(): array
     {
         $controller = new class() {
-            public function implicit(string $foo = 'bar'): void
-            {
-            }
-            public function queryString(#[QueryString] string $foo = 'bar'): void
-            {
-            }
-            public function routeVariable(#[RouteVariable] string $foo = 'bar'): void
-            {
-            }
+            public function implicit(string $foo = 'bar'): void {}
+            public function queryString(#[QueryString] string $foo = 'bar'): void {}
+            public function routeVariable(#[RouteVariable] string $foo = 'bar'): void {}
         };
 
         return [
             [
                 $controller,
                 'implicit',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value),
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value),
                 'bar'
             ],
             [
                 $controller,
                 'queryString',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value),
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value),
                 'bar'
             ],
             [
                 $controller,
                 'routeVariable',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value),
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value),
                 'bar'
             ]
         ];
@@ -65,32 +59,26 @@ class RouteActionParameterValuesTest extends TestCase
     public static function nullableParameterProvider(): array
     {
         $controller = new class() {
-            public function implicit(?string $foo): void
-            {
-            }
-            public function queryString(#[QueryString] ?string $foo): void
-            {
-            }
-            public function routeVariable(#[RouteVariable] ?string $foo): void
-            {
-            }
+            public function implicit(?string $foo): void {}
+            public function queryString(#[QueryString] ?string $foo): void {}
+            public function routeVariable(#[RouteVariable] ?string $foo): void {}
         };
 
         return [
             [
                 $controller,
                 'implicit',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value)
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value)
             ],
             [
                 $controller,
                 'queryString',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value)
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value)
             ],
             [
                 $controller,
                 'routeVariable',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value)
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value)
             ]
         ];
     }
@@ -98,29 +86,17 @@ class RouteActionParameterValuesTest extends TestCase
     public static function missingRouteVariableProvider(): array
     {
         $controller = new class() {
-            public function implicitMultiple(string $foo, string $bar): void
-            {
-            }
+            public function implicitMultiple(string $foo, string $bar): void {}
 
-            public function implicitSingle(string $foo): void
-            {
-            }
+            public function implicitSingle(string $foo): void {}
 
-            public function queryStringMultiple(#[QueryString] string $foo, #[QueryString] string $bar): void
-            {
-            }
+            public function queryStringMultiple(#[QueryString] string $foo, #[QueryString] string $bar): void {}
 
-            public function queryStringSingle(#[QueryString] string $foo): void
-            {
-            }
+            public function queryStringSingle(#[QueryString] string $foo): void {}
 
-            public function routeVariableMultiple(#[RouteVariable] string $foo, #[RouteVariable] string $bar): void
-            {
-            }
+            public function routeVariableMultiple(#[RouteVariable] string $foo, #[RouteVariable] string $bar): void {}
 
-            public function routeVariableSingle(#[RouteVariable] string $foo): void
-            {
-            }
+            public function routeVariableSingle(#[RouteVariable] string $foo): void {}
         };
 
         return [
@@ -136,9 +112,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testCreatingRouteParametersWithHeaderValueSpecifiedInRouteVariablesSimplyIgnoresIt(): void
     {
         $controller = new class() {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         new RouteActionParameterValues($routeAction, ['foo' => 'bar']);
@@ -149,9 +123,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testUsingRemainingQueryStringAttributeParametersWithNamesReturnsThoseNames(): void
     {
         $controller = new class() {
-            public function foo(#[QueryString('baz')] string $foo, #[QueryString('quz')] string $bar): void
-            {
-            }
+            public function foo(#[QueryString('baz')] string $foo, #[QueryString('quz')] string $bar): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['baz' => '1', 'quz' => '2']);
@@ -161,9 +133,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testUsingRemainingQueryStringAttributeParametersWithoutNamesReturnsNamesOfParameters(): void
     {
         $controller = new class() {
-            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void
-            {
-            }
+            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
@@ -173,9 +143,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testUsingRemainingImplicitParametersOnlyReturnsValuesThatAreUnused(): void
     {
         $controller = new class() {
-            public function foo(string $foo, string $bar): void
-            {
-            }
+            public function foo(string $foo, string $bar): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
@@ -186,9 +154,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testUsingRemainingQueryStringParametersOnlyReturnsValuesThatAreUnused(): void
     {
         $controller = new class() {
-            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void
-            {
-            }
+            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1', 'bar' => '2']);
@@ -199,9 +165,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testHeaderAttributeParametersAreNotIncludedInAnyCollection(): void
     {
         $controller = new class() {
-            public function foo(#[Header] string $foo): void
-            {
-            }
+            public function foo(#[Header] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, []);
@@ -216,9 +180,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseImplicitParametersOnlyReturnsValuesThatAreUnused(): void
     {
         $controller = new class() {
-            public function foo(string $foo): void
-            {
-            }
+            public function foo(string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1']);
@@ -233,9 +195,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseQueryStringParametersOnlyReturnsValuesThatAreUnused(): void
     {
         $controller = new class() {
-            public function foo(#[QueryString] string $foo): void
-            {
-            }
+            public function foo(#[QueryString] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1']);
@@ -250,9 +210,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseRouteVariableParametersOnlyReturnsValuesThatAreUnused(): void
     {
         $controller = new class() {
-            public function foo(#[RouteVariable] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => '1']);
@@ -267,9 +225,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseExistingRouteVariableAttributeParameterReturnsTrue(): void
     {
         $controller = new class() {
-            public function foo(#[RouteVariable] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => 'bar']);
@@ -280,9 +236,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseExistingRouteVariableAttributeParameterWithNameReturnsTrue(): void
     {
         $controller = new class() {
-            public function foo(#[RouteVariable('bar')] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable('bar')] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['bar' => 'baz']);
@@ -293,9 +247,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseNonExistentRouteVariableAttributeParameterReturnsFalseAndUnsetsValue(): void
     {
         $controller = new class() {
-            public function foo(#[RouteVariable] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => 'bar']);
@@ -308,9 +260,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseNonExistentRouteVariableAttributeParameterWithNameReturnsFalseAndUnsetsValue(): void
     {
         $controller = new class() {
-            public function foo(#[RouteVariable('bar')] string $foo): void
-            {
-            }
+            public function foo(#[RouteVariable('bar')] string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['bar' => 'baz']);
@@ -323,9 +273,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseExistingImplicitParameterReturnsTrue(): void
     {
         $controller = new class() {
-            public function foo(string $foo): void
-            {
-            }
+            public function foo(string $foo): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, ['foo' => 'bar']);
@@ -336,9 +284,7 @@ class RouteActionParameterValuesTest extends TestCase
     public function testTryingToUseNonExistentImplicitParameterReturnsFalseAndUnsetsValue(): void
     {
         $controller = new class() {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $routeAction = new RouteAction($controller::class, 'foo');
         $parameters = new RouteActionParameterValues($routeAction, []);
@@ -352,9 +298,7 @@ class RouteActionParameterValuesTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $controller = new class() {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->expectExceptionMessage('Following route variables have no matching route action parameter in ' . $controller::class . '::foo: "foo", "baz"');
         $routeAction = new RouteAction($controller::class, 'foo');
@@ -365,9 +309,7 @@ class RouteActionParameterValuesTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $controller = new class() {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
         };
         $this->expectExceptionMessage('Following route variables have no matching route action parameter in ' . $controller::class . '::foo: "foo"');
         $routeAction = new RouteAction($controller::class, 'foo');

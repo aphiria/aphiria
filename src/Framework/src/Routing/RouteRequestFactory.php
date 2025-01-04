@@ -44,7 +44,7 @@ final class RouteRequestFactory implements IRouteRequestFactory
     /**
      * @inheritdoc
      */
-    public function createRouteRequest(string $routeName, array $routeVariables = [], ?string $method = null): IRequest
+    public function createRouteUri(string $routeName, array $routeVariables = [], ?string $method = null): IRequest
     {
         if (($route = $this->routes->getNamedRoute($routeName)) === null) {
             throw new OutOfBoundsException("Route \"$routeName\" does not exist");

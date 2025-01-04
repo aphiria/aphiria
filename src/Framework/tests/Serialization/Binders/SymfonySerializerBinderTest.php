@@ -49,7 +49,8 @@ class SymfonySerializerBinderTest extends TestCase
         $this->container = $this->createMock(IContainer::class);
         GlobalConfiguration::resetConfigurationSources();
         // Set up some universal expectations
-        $this->container->method('bindInstance')
+        $this->container
+            ->method('bindInstance')
             ->with([SerializerInterface::class, Serializer::class], $this->isInstanceOf(Serializer::class));
     }
 
@@ -77,7 +78,8 @@ class SymfonySerializerBinderTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Encoder ' . $this::class . ' must implement ' . EncoderInterface::class . ' or ' . DecoderInterface::class);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with($this::class)
             ->willReturn($this);
         $config = self::getBaseConfig();
@@ -92,7 +94,8 @@ class SymfonySerializerBinderTest extends TestCase
         $config['aphiria']['serialization']['normalizers'][] = BackedEnumNormalizer::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         // Make sure the container wasn't used to resolve this normalizer
-        $this->container->expects($this->never())
+        $this->container
+            ->expects($this->never())
             ->method('resolve')
             ->with(BackedEnumNormalizer::class);
         $this->binder->bind($this->container);
@@ -114,7 +117,8 @@ class SymfonySerializerBinderTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Normalizer ' . $this::class . ' must implement ' . NormalizerInterface::class . ' or ' . DenormalizerInterface::class);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with($this::class)
             ->willReturn($this);
         $config = self::getBaseConfig();
@@ -171,7 +175,8 @@ class SymfonySerializerBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['serialization']['encoders'][] = $encoder::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with($encoder::class)
             ->willReturn($encoder);
         $this->binder->bind($this->container);
@@ -184,7 +189,8 @@ class SymfonySerializerBinderTest extends TestCase
         $expectedExceptionMessage = 'Foo';
         $this->expectException(ResolutionException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with($this::class)
             ->willThrowException(new ResolutionException($this::class, new UniversalContext(), $expectedExceptionMessage));
         $config = self::getBaseConfig();
@@ -199,7 +205,8 @@ class SymfonySerializerBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['serialization']['normalizers'][] = $normalizer::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with($normalizer::class)
             ->willReturn($normalizer);
         $this->binder->bind($this->container);
@@ -212,7 +219,8 @@ class SymfonySerializerBinderTest extends TestCase
         $expectedExceptionMessage = 'Foo';
         $this->expectException(ResolutionException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with($this::class)
             ->willThrowException(new ResolutionException($this::class, new UniversalContext(), $expectedExceptionMessage));
         $config = self::getBaseConfig();

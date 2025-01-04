@@ -54,7 +54,8 @@ class MiddlewareComponentTest extends TestCase
         };
         $expectedMiddleware->parameters = ['bar' => 'baz'];
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->method('resolve')
+        $this->dependencyResolver
+            ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
                 [$expectedMiddleware::class, $expectedMiddleware]
@@ -69,7 +70,8 @@ class MiddlewareComponentTest extends TestCase
         $invalidMiddleware = $this;
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($invalidMiddleware::class . ' does not implement ' . IMiddleware::class);
-        $this->dependencyResolver->method('resolve')
+        $this->dependencyResolver
+            ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, new MiddlewareCollection()],
                 [$invalidMiddleware::class, $invalidMiddleware]
@@ -83,7 +85,8 @@ class MiddlewareComponentTest extends TestCase
         $expectedMiddleware1 = $this->createMock(IMiddleware::class);
         $expectedMiddleware2 = $this->createMock(IMiddleware::class);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->method('resolve')
+        $this->dependencyResolver
+            ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
                 [$expectedMiddleware1::class, $expectedMiddleware1],
@@ -100,7 +103,8 @@ class MiddlewareComponentTest extends TestCase
         $expectedMiddleware1 = $this->createMock(IMiddleware::class);
         $expectedMiddleware2 = $this->createMock(IMiddleware::class);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->method('resolve')
+        $this->dependencyResolver
+            ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
                 [$expectedMiddleware1::class, $expectedMiddleware1],
@@ -117,7 +121,8 @@ class MiddlewareComponentTest extends TestCase
     {
         $expectedMiddleware = $this->createMock(IMiddleware::class);
         $middlewareCollection = new MiddlewareCollection();
-        $this->dependencyResolver->method('resolve')
+        $this->dependencyResolver
+            ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
                 [$expectedMiddleware::class, $expectedMiddleware]

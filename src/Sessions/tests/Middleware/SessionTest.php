@@ -44,14 +44,17 @@ class SessionTest extends TestCase
         $this->sessionHandler = $this->createMock(SessionHandlerInterface::class);
         $this->requestHeaders = new Headers();
         $this->request = $this->createMock(IRequest::class);
-        $this->request->method(PropertyHook::get('headers'))
+        $this->request
+            ->method(PropertyHook::get('headers'))
             ->willReturn($this->requestHeaders);
         $this->responseHeaders = new Headers();
         $this->response = $this->createMock(IResponse::class);
-        $this->response->method(PropertyHook::get('headers'))
+        $this->response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($this->responseHeaders);
         $this->next = $this->createMock(IRequestHandler::class);
-        $this->next->expects($this->once())
+        $this->next
+            ->expects($this->once())
             ->method('handle')
             ->with($this->request)
             ->willReturn($this->response);
@@ -59,13 +62,16 @@ class SessionTest extends TestCase
 
     public function testGcIsRunIfWeMeetChance(): void
     {
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('read')
             ->with('foo')
             ->willReturn('bar');
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('gc');
         $middleware = new Session(
             $this->session,
@@ -83,13 +89,16 @@ class SessionTest extends TestCase
 
     public function testSessionDataIsWrittenToResponseCookie(): void
     {
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('read')
             ->with('foo')
             ->willReturn('bar');
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method('ageFlashData');
         $middleware = new Session(
             $this->session,
@@ -111,13 +120,16 @@ class SessionTest extends TestCase
 
     public function testSessionFlashDataIsAged(): void
     {
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('read')
             ->with('foo')
             ->willReturn('bar');
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method('ageFlashData');
         $middleware = new Session(
             $this->session,
@@ -135,11 +147,14 @@ class SessionTest extends TestCase
 
     public function testSessionIdIsRegeneratedIfSessionCookieNotPresent(): void
     {
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method('regenerateId');
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('read')
             ->with('foo')
             ->willReturn('bar');
@@ -161,14 +176,18 @@ class SessionTest extends TestCase
     {
         $this->request->headers
             ->add('Cookie', 'session=foo');
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method(PropertyHook::set('id'))
             ->with('foo');
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method(PropertyHook::set('id'));
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('read')
             ->with('foo')
             ->willReturn('bar');
@@ -188,17 +207,23 @@ class SessionTest extends TestCase
 
     public function testSessionIsOpenedAndVarsAreSet(): void
     {
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method('regenerateId');
-        $this->session->expects($this->once())
+        $this->session
+            ->expects($this->once())
             ->method('ageFlashData');
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->session->method('addManyVariables')
+        $this->session
+            ->method('addManyVariables')
             ->with(['bar' => 'baz']);
-        $this->session->method(PropertyHook::get('variables'))
+        $this->session
+            ->method(PropertyHook::get('variables'))
             ->willReturn(['bar' => 'baz']);
-        $this->sessionHandler->method('read')
+        $this->sessionHandler
+            ->method('read')
             ->with('foo')
             ->willReturn(\serialize(['bar' => 'baz']));
         $middleware = new Session(
@@ -217,15 +242,19 @@ class SessionTest extends TestCase
 
     public function testSessionIsWritten(): void
     {
-        $this->session->method(PropertyHook::get('id'))
+        $this->session
+            ->method(PropertyHook::get('id'))
             ->willReturn('foo');
-        $this->session->method(PropertyHook::get('variables'))
+        $this->session
+            ->method(PropertyHook::get('variables'))
             ->willReturn(['bar' => 'baz']);
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('read')
             ->with('foo')
             ->willReturn('bar');
-        $this->sessionHandler->expects($this->once())
+        $this->sessionHandler
+            ->expects($this->once())
             ->method('write')
             ->with('foo', \serialize(['bar' => 'baz']));
         $middleware = new Session(

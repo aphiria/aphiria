@@ -30,8 +30,7 @@ final class TrieFactory
         private readonly RouteCollection $routes,
         private readonly ?ITrieCache $trieCache = null,
         private readonly ITrieCompiler $trieCompiler = new TrieCompiler()
-    ) {
-    }
+    ) {}
 
     /**
      * Creates a trie

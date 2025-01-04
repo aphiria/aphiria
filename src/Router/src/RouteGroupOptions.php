@@ -35,6 +35,5 @@ class RouteGroupOptions
         public array $constraints = [],
         public array $middlewareBindings = [],
         public readonly array $parameters = []
-    ) {
-    }
+    ) {}
 }

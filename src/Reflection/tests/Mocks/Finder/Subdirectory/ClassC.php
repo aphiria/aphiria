@@ -15,7 +15,4 @@ namespace Aphiria\Reflection\Tests\Mocks\Finder\Subdirectory;
 /**
  * Defines a mock class
  */
-class ClassC
-{
-    // Don't do anything
-}
+class ClassC {}

@@ -37,9 +37,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator to use
      */
-    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator())
-    {
-    }
+    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator()) {}
 
     /**
      * @inheritdoc

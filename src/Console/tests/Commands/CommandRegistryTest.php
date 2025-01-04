@@ -34,9 +34,7 @@ class CommandRegistryTest extends TestCase
         $registry1 = new CommandRegistry();
         $registry2 = new CommandRegistry();
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $expectedBinding = new CommandBinding(new Command('foo'), $commandHandler::class);
         $registry1->registerManyCommands([$expectedBinding]);
@@ -47,14 +45,10 @@ class CommandRegistryTest extends TestCase
     public function testGettingAllCommandBindingsReturnsExpectedBindings(): void
     {
         $commandHandler1 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commandHandler2 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $expectedBindings = [
             new CommandBinding(new Command('foo'), $commandHandler1::class),
@@ -72,14 +66,10 @@ class CommandRegistryTest extends TestCase
         $expectedCommand1 = new Command('command1', [], [], '');
         $expectedCommand2 = new Command('command2', [], [], '');
         $commandHandler1 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commandHandler2 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerManyCommands([
             new CommandBinding($expectedCommand1, $commandHandler1::class),
@@ -95,9 +85,7 @@ class CommandRegistryTest extends TestCase
     {
         $command = new Command('foo', [], [], '');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand($command, $commandHandler::class);
         $actualCommandHandlerClassName = null;
@@ -109,9 +97,7 @@ class CommandRegistryTest extends TestCase
     {
         $command = new Command('foo', [], [], '');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerManyCommands([
             new CommandBinding($command, $commandHandler::class)
@@ -133,9 +119,7 @@ class CommandRegistryTest extends TestCase
     {
         $expectedCommand = new Command('foo', [], [], '');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand($expectedCommand, $commandHandler::class);
         /** @var CommandBinding|null $actualBinding */
@@ -159,9 +143,7 @@ class CommandRegistryTest extends TestCase
     {
         $expectedCommand = new Command('foo', [], [], '');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand($expectedCommand, $commandHandler::class);
         $actualCommand = null;
@@ -181,9 +163,7 @@ class CommandRegistryTest extends TestCase
     {
         $expectedCommand = new Command('foo', [], [], '');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand($expectedCommand, $commandHandler::class);
         $actualCommandHandler = null;
@@ -195,9 +175,7 @@ class CommandRegistryTest extends TestCase
     {
         $command = new Command('foo');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand($command, $commandHandler::class);
         $actualCommandHandlerClassName = null;

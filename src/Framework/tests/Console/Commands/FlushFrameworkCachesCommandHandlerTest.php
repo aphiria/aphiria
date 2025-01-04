@@ -41,7 +41,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook::get('driver'))
+        $this->output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
     }
 
@@ -50,7 +51,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
         $correctOutputWritten = false;
         $this->setUpMockOutput('<info>Binder metadata cache flushed</info>', $correctOutputWritten);
         $binderMetadataCache = $this->createMock(IBinderMetadataCollectionCache::class);
-        $binderMetadataCache->expects($this->once())
+        $binderMetadataCache
+            ->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler($binderMetadataCache, null, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
@@ -71,7 +73,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
         $correctOutputWritten = false;
         $this->setUpMockOutput('<info>Console command cache flushed</info>', $correctOutputWritten);
         $consoleCommandCache = $this->createMock(ICommandRegistryCache::class);
-        $consoleCommandCache->expects($this->once())
+        $consoleCommandCache
+            ->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, $consoleCommandCache, null, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
@@ -92,7 +95,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
         $correctOutputWritten = false;
         $this->setUpMockOutput('<info>Constraints cache flushed</info>', $correctOutputWritten);
         $constraintsCache = $this->createMock(IObjectConstraintsRegistryCache::class);
-        $constraintsCache->expects($this->once())
+        $constraintsCache
+            ->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, null, $constraintsCache);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
@@ -113,7 +117,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
         $correctOutputWritten = false;
         $this->setUpMockOutput('<info>Route cache flushed</info>', $correctOutputWritten);
         $routeCache = $this->createMock(IRouteCache::class);
-        $routeCache->expects($this->once())
+        $routeCache
+            ->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, $routeCache, null, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
@@ -143,7 +148,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
         $correctOutputWritten = false;
         $this->setUpMockOutput('<info>Trie cache flushed</info>', $correctOutputWritten);
         $trieCache = $this->createMock(ITrieCache::class);
-        $trieCache->expects($this->once())
+        $trieCache
+            ->expects($this->once())
             ->method('flush');
         $commandHandler = new FlushFrameworkCachesCommandHandler(null, null, null, $trieCache, null);
         $commandHandler->handle(new Input('framework:flushcaches', [], []), $this->output);
@@ -168,7 +174,8 @@ class FlushFrameworkCachesCommandHandlerTest extends TestCase
     private function setUpMockOutput(string $expectedMessage, bool &$correctOutputWritten): void
     {
         $correctOutputWritten = false;
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->with($this->callback(function (string $message) use ($expectedMessage, &$correctOutputWritten) {
                 if ($message === $expectedMessage) {
                     $correctOutputWritten = true;

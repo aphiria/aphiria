@@ -21,7 +21,5 @@ final readonly class Token
      * @param TokenType $type The token type
      * @param mixed $value The token value
      */
-    public function __construct(public TokenType $type, public mixed $value)
-    {
-    }
+    public function __construct(public TokenType $type, public mixed $value) {}
 }

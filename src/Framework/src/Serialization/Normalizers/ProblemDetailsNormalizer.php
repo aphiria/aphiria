@@ -29,9 +29,7 @@ final class ProblemDetailsNormalizer implements NormalizerInterface, SerializerA
     /**
      * @param ObjectNormalizer $objectNormalizer The normalizer to use
      */
-    public function __construct(private readonly ObjectNormalizer $objectNormalizer = new ObjectNormalizer())
-    {
-    }
+    public function __construct(private readonly ObjectNormalizer $objectNormalizer = new ObjectNormalizer()) {}
 
     /**
      * @inheritdoc

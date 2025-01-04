@@ -17,7 +17,4 @@ use RuntimeException;
 /**
  * Defines a session encryption exception
  */
-class SessionEncryptionException extends RuntimeException
-{
-    // Don't do anything
-}
+class SessionEncryptionException extends RuntimeException {}

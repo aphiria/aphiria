@@ -29,9 +29,7 @@ class RouteMatchingResultTest extends TestCase
     public function testMethodAllowedOnlyIfRouteIsNullAndAllowedMethodsIsPopulated(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $route = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $resultWithPopulatedRoute = new RouteMatchingResult($route, []);
@@ -45,9 +43,7 @@ class RouteMatchingResultTest extends TestCase
     public function testPropertiesSetInConstructor(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedMatchedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];

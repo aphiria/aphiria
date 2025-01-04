@@ -23,9 +23,7 @@ final class FileRouteCache implements IRouteCache
     /**
      * @param string $path The path to the cache file
      */
-    public function __construct(private readonly string $path)
-    {
-    }
+    public function __construct(private readonly string $path) {}
 
     /**
      * @inheritdoc

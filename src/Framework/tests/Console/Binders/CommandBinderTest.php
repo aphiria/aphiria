@@ -108,7 +108,8 @@ class CommandBinderTest extends TestCase
         ];
 
         foreach ($parameters as $parameter) {
-            $this->container->shouldReceive('bindFactory')
+            $this->container
+                ->shouldReceive('bindFactory')
                 ->withArgs(function (string $interface, Closure $factory) use ($parameter) {
                     return $interface === $parameter[0]
                         && ($factory)() instanceof $parameter[1];
@@ -127,7 +128,8 @@ class CommandBinderTest extends TestCase
         ];
 
         foreach ($parameters as $parameter) {
-            $this->container->shouldReceive('bindInstance')
+            $this->container
+                ->shouldReceive('bindInstance')
                 ->with($parameter[0], Mockery::type($parameter[1]));
         }
     }
@@ -135,10 +137,12 @@ class CommandBinderTest extends TestCase
     private function setUpContainerResolutions(): void
     {
         $inputCompiler = Mockery::mock(IInputCompiler::class);
-        $inputCompiler->shouldReceive('compile')
+        $inputCompiler
+            ->shouldReceive('compile')
             ->with($_SERVER['argv'] ?? '')
             ->andReturn(new Input('foo'));
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(IInputCompiler::class)
             ->andReturn($inputCompiler);
     }

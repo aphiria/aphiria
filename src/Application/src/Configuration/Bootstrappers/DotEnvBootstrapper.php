@@ -23,9 +23,7 @@ final class DotEnvBootstrapper implements IBootstrapper
     /**
      * @param string $envPath The path to the .env file
      */
-    public function __construct(private readonly string $envPath)
-    {
-    }
+    public function __construct(private readonly string $envPath) {}
 
     /**
      * @inheritdoc
@@ -33,7 +31,8 @@ final class DotEnvBootstrapper implements IBootstrapper
     public function bootstrap(): void
     {
         $dotEnv = new Dotenv();
-        $dotEnv->usePutenv()
+        $dotEnv
+            ->usePutenv()
             ->loadEnv($this->envPath);
     }
 }

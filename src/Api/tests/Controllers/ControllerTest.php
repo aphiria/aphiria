@@ -122,7 +122,8 @@ class ControllerTest extends TestCase
         };
         $this->request = $this->createMock(IRequest::class);
         $this->responseFactory = $this->createMock(IResponseFactory::class);
-        $this->responseFactory->method('createResponse')
+        $this->responseFactory
+            ->method('createResponse')
             ->with($this->request)
             ->willReturnCallback(function (IRequest $request, HttpStatusCode|int $statusCode, Headers $headers, ?IBody $body): IResponse {
                 $this->assertSame($this->request, $request);
@@ -229,7 +230,8 @@ class ControllerTest extends TestCase
         $this->controller->request = $this->request;
         $user = $this->createMock(IPrincipal::class);
         $userAccessor = $this->createMock(IUserAccessor::class);
-        $userAccessor->expects($this->once())
+        $userAccessor
+            ->expects($this->once())
             ->method('getUser')
             ->with($this->request)
             ->willReturn($user);
@@ -258,19 +260,19 @@ class ControllerTest extends TestCase
     public function testHelperMethodsWithoutSetRequestThrowsException(): void
     {
         $helperCallbacks = [
-            fn (): IResponse => $this->controller->accepted(),
-            fn (): IResponse => $this->controller->badRequest(),
-            fn (): IResponse => $this->controller->conflict(),
-            fn (): IResponse => $this->controller->created('https://example.com'),
-            fn (): IResponse => $this->controller->forbidden(),
-            fn (): IResponse => $this->controller->found('https://example.com'),
-            fn (): IResponse => $this->controller->internalServerError(),
-            fn (): IResponse => $this->controller->movedPermanently('https://example.com'),
-            fn (): IResponse => $this->controller->noContent(),
-            fn (): IResponse => $this->controller->notFound(),
-            fn (): IResponse => $this->controller->ok(),
-            fn (): mixed => $this->controller->readRequestBodyAs('foo'),
-            fn (): IResponse => $this->controller->unauthorized()
+            fn(): IResponse => $this->controller->accepted(),
+            fn(): IResponse => $this->controller->badRequest(),
+            fn(): IResponse => $this->controller->conflict(),
+            fn(): IResponse => $this->controller->created('https://example.com'),
+            fn(): IResponse => $this->controller->forbidden(),
+            fn(): IResponse => $this->controller->found('https://example.com'),
+            fn(): IResponse => $this->controller->internalServerError(),
+            fn(): IResponse => $this->controller->movedPermanently('https://example.com'),
+            fn(): IResponse => $this->controller->noContent(),
+            fn(): IResponse => $this->controller->notFound(),
+            fn(): IResponse => $this->controller->ok(),
+            fn(): mixed => $this->controller->readRequestBodyAs('foo'),
+            fn(): IResponse => $this->controller->unauthorized()
         ];
 
         foreach ($helperCallbacks as $helperCallback) {
@@ -354,7 +356,8 @@ class ControllerTest extends TestCase
     public function testReadingRequestBodyReturnsDeserializedBody(): void
     {
         $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-        $bodyDeserializer->expects($this->once())
+        $bodyDeserializer
+            ->expects($this->once())
             ->method('readRequestBodyAs')
             ->with('foo', $this->request)
             ->willReturn('bar');
@@ -367,7 +370,8 @@ class ControllerTest extends TestCase
     {
         try {
             $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-            $bodyDeserializer->expects($this->once())
+            $bodyDeserializer
+                ->expects($this->once())
                 ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
                 ->willThrowException(new SerializationException());
@@ -385,7 +389,8 @@ class ControllerTest extends TestCase
     {
         try {
             $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-            $bodyDeserializer->expects($this->once())
+            $bodyDeserializer
+                ->expects($this->once())
                 ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
                 ->willThrowException(new FailedContentNegotiationException());

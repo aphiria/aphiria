@@ -30,6 +30,5 @@ final readonly class AuthenticationScheme
         public string $name,
         public string $handlerClassName,
         public AuthenticationSchemeOptions $options = new AuthenticationSchemeOptions()
-    ) {
-    }
+    ) {}
 }

@@ -24,9 +24,7 @@ class Question
      * @param mixed $defaultAnswer The default answer to the question
      * @param bool $isHidden Whether or not the answer should be hidden
      */
-    public function __construct(public string $text, public mixed $defaultAnswer = null, public bool $isHidden = false)
-    {
-    }
+    public function __construct(public string $text, public mixed $defaultAnswer = null, public bool $isHidden = false) {}
 
     /**
      * Formats an answer

@@ -15,7 +15,4 @@ namespace Aphiria\Collections\Tests\Mocks;
 /**
  * Mocks an unserializable object
  */
-class UnserializableObject
-{
-    // Don't do anything
-}
+class UnserializableObject {}

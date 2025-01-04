@@ -89,8 +89,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingTargetedBindingRegistersBindingsFromBinder(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $binder = new class () extends Binder {
             public object $target;
 
@@ -104,11 +103,11 @@ class LazyBinderDispatcherTest extends TestCase
         $binder->target = $target;
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
-        $lazyBinding = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
+        $lazyBinding = $this->container->for(new TargetedContext($target::class), fn(IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var InstanceContainerBinding $bindingFromBinder */
-        $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
+        $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn(IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
         $this->assertInstanceOf(Foo::class, $bindingFromBinder->instance);
     }
@@ -146,8 +145,7 @@ class LazyBinderDispatcherTest extends TestCase
          * We're testing that, when a lazy factory binding is invoked and the binder run, the binder's bindings occur
          * in the universal context, not in the targeted context that invoked the lazy factory binding.
          */
-        $target = new class () {
-        };
+        $target = new class () {};
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->resolve(IFoo::class);
         });
@@ -163,10 +161,12 @@ class LazyBinderDispatcherTest extends TestCase
             }
         };
         $cache = $this->createMock(IBinderMetadataCollectionCache::class);
-        $cache->expects($this->once())
+        $cache
+            ->expects($this->once())
             ->method('get')
             ->willReturn(null);
-        $cache->expects($this->once())
+        $cache
+            ->expects($this->once())
             ->method('set')
             ->with($this->callback(function (BinderMetadataCollection $collection) use ($binder): bool {
                 $expectedCollection = new BinderMetadataCollection([

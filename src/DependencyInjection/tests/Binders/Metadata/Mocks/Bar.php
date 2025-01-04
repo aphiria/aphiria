@@ -15,7 +15,4 @@ namespace Aphiria\DependencyInjection\Tests\Binders\Metadata\Mocks;
 /**
  * Defines a fake concrete class for use in testing
  */
-final class Bar implements IBar
-{
-    // Don't do anything
-}
+final class Bar implements IBar {}

@@ -38,7 +38,7 @@ class UserTest extends TestCase
          * @psalm-suppress MixedInferredReturnType The closure will always return an identity
          * @psalm-suppress MixedReturnStatement Ditto
          */
-        $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
+        $primaryIdentitySelector = static fn(array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');
@@ -68,7 +68,7 @@ class UserTest extends TestCase
          * @psalm-suppress MixedInferredReturnType The closure will always return an identity
          * @psalm-suppress MixedReturnStatement Ditto
          */
-        $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
+        $primaryIdentitySelector = static fn(array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');
@@ -200,7 +200,7 @@ class UserTest extends TestCase
          * @psalm-suppress MixedInferredReturnType The closure will always return an identity
          * @psalm-suppress MixedReturnStatement Ditto
          */
-        $primaryIdentitySelector = static fn (array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
+        $primaryIdentitySelector = static fn(array $identities): ?IIdentity => \count($identities) === 0 ? null : $identities[\count($identities) - 1];
         $user = new User([], $primaryIdentitySelector);
         $this->assertNull($user->primaryIdentity);
         $identity1 = new Identity([], 'http://example.com');

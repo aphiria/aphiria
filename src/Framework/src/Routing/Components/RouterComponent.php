@@ -41,9 +41,7 @@ class RouterComponent implements IComponent
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(private readonly IContainer $container)
-    {
-    }
+    public function __construct(private readonly IContainer $container) {}
 
     /**
      * @inheritdoc
@@ -68,7 +66,7 @@ class RouterComponent implements IComponent
         $routeRegistrants->registerRoutes($this->container->resolve(RouteCollection::class));
         $this->container->for(
             new TargetedContext(ApiGateway::class),
-            fn (IContainer $container) => $container->bindFactory(IRequestHandler::class, fn (): IRequestHandler => $this->container->resolve(Router::class))
+            fn(IContainer $container) => $container->bindFactory(IRequestHandler::class, fn(): IRequestHandler => $this->container->resolve(Router::class))
         );
     }
 

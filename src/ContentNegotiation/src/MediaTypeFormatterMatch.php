@@ -29,6 +29,5 @@ final readonly class MediaTypeFormatterMatch
         public IMediaTypeFormatter $formatter,
         public string $mediaType,
         public MediaTypeHeaderValue $mediaTypeHeaderValue
-    ) {
-    }
+    ) {}
 }

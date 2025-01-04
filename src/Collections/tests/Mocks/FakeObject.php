@@ -15,7 +15,4 @@ namespace Aphiria\Collections\Tests\Mocks;
 /**
  * Mocks an object
  */
-class FakeObject
-{
-    // Don't do anything
-}
+class FakeObject {}

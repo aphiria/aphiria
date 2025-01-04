@@ -34,6 +34,5 @@ class ProgressBarFormatterOptions
         public readonly string $completedProgressChar = '=',
         public readonly string $remainingProgressChar = '-',
         public readonly int $redrawFrequency = 1
-    ) {
-    }
+    ) {}
 }

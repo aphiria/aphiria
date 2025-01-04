@@ -17,7 +17,5 @@ namespace Aphiria\DependencyInjection\Tests\Mocks;
  */
 final readonly class ConstructorWithNullableObject
 {
-    public function __construct(public ?IFoo $foo)
-    {
-    }
+    public function __construct(public ?IFoo $foo) {}
 }

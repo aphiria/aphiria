@@ -33,9 +33,11 @@ class ServeCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $output->method(PropertyHook::get('driver'))
+        $output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
-        $output->expects($this->once())
+        $output
+            ->expects($this->once())
             ->method('writeln')
             ->with('<info>Running at http://localhost.app:443</info>');
         $input = new Input(

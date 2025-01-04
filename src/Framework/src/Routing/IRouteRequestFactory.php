@@ -32,5 +32,5 @@ interface IRouteRequestFactory
      * @throws RouteRequestCreationException Thrown if there was an error generating the request
      * @throws InvalidArgumentException Thrown if the the method is null and the route supports multiple methods
      */
-    public function createRouteRequest(string $routeName, array $routeVariables = [], ?string $method = null): IRequest;
+    public function createRouteUri(string $routeName, array $routeVariables = [], ?string $method = null): IRequest;
 }

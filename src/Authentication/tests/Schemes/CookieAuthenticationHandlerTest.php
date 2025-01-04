@@ -53,7 +53,8 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $request = $this->createMock(IRequest::class);
-        $request->method(PropertyHook::get('headers'))
+        $request
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         $result = $this->schemeHandler->authenticate($request, $scheme);
@@ -67,7 +68,8 @@ class CookieAuthenticationHandlerTest extends TestCase
         $headers = new Headers();
         $headers->add('Cookie', 'cookie=abc');
         $request = $this->createMock(IRequest::class);
-        $request->method(PropertyHook::get('headers'))
+        $request
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
@@ -82,10 +84,12 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->expects($this->once())
+        $response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::Found);
-        $response->method(PropertyHook::get('headers'))
+        $response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie', loginPagePath: '/login'));
         $this->schemeHandler->challenge($this->createMock(IRequest::class), $response, $scheme);
@@ -96,10 +100,12 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->expects($this->once())
+        $response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::Unauthorized);
-        $response->method(PropertyHook::get('headers'))
+        $response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         $this->schemeHandler->challenge($this->createMock(IRequest::class), $response, $scheme);
@@ -109,10 +115,12 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->expects($this->once())
+        $response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::Found);
-        $response->method(PropertyHook::get('headers'))
+        $response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie', forbiddenPagePath: '/forbidden'));
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);
@@ -123,10 +131,12 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->expects($this->once())
+        $response
+            ->expects($this->once())
             ->method(PropertyHook::set('statusCode'))
             ->with(HttpStatusCode::Forbidden);
-        $response->method(PropertyHook::get('headers'))
+        $response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, new CookieAuthenticationOptions('cookie'));
         $this->schemeHandler->forbid($this->createMock(IRequest::class), $response, $scheme);
@@ -136,7 +146,8 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->method(PropertyHook::get('headers'))
+        $response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $options = new CookieAuthenticationOptions(
             cookieName: 'cookie',
@@ -161,7 +172,8 @@ class CookieAuthenticationHandlerTest extends TestCase
     {
         $headers = new Headers();
         $response = $this->createMock(IResponse::class);
-        $response->method(PropertyHook::get('headers'))
+        $response
+            ->method(PropertyHook::get('headers'))
             ->willReturn($headers);
         $options = new CookieAuthenticationOptions(
             cookieName: 'cookie',

@@ -38,8 +38,7 @@ EOF;
     public function __construct(
         private readonly CommandRegistry $commands,
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

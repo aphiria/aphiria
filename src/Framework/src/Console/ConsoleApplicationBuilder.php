@@ -25,9 +25,7 @@ final class ConsoleApplicationBuilder extends ApplicationBuilder
     /**
      * @param IServiceResolver $serviceResolver The resolver to use
      */
-    public function __construct(private readonly IServiceResolver $serviceResolver)
-    {
-    }
+    public function __construct(private readonly IServiceResolver $serviceResolver) {}
 
     /**
      * @inheritdoc

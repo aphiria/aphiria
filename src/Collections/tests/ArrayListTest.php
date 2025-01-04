@@ -193,7 +193,7 @@ class ArrayListTest extends TestCase
 
     public function testSorting(): void
     {
-        $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
+        $comparer = fn(string $a, string $b): int => $a === 'foo' ? 1 : -1;
         $this->arrayList->add('foo');
         $this->arrayList->add('bar');
         $newList = $this->arrayList->sort($comparer);
@@ -202,7 +202,7 @@ class ArrayListTest extends TestCase
 
     public function testSortingDoesNotChangeOriginalList(): void
     {
-        $comparer = fn (string $a, string $b): int => $a === 'foo' ? 1 : -1;
+        $comparer = fn(string $a, string $b): int => $a === 'foo' ? 1 : -1;
         $this->arrayList->addRange(['foo', 'bar']);
         $this->arrayList->sort($comparer);
         $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());

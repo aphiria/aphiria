@@ -22,9 +22,7 @@ class PaddingFormatter
     /**
      * @param PaddingFormatterOptions $defaultOptions The default options to use
      */
-    public function __construct(private readonly PaddingFormatterOptions $defaultOptions = new PaddingFormatterOptions())
-    {
-    }
+    public function __construct(private readonly PaddingFormatterOptions $defaultOptions = new PaddingFormatterOptions()) {}
 
     /**
      * Formats rows of text so that each column is the same width

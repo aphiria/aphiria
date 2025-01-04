@@ -52,8 +52,7 @@ EOF;
         private readonly CommandRegistry $commands,
         private readonly CommandFormatter $commandFormatter = new CommandFormatter(),
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc
@@ -143,7 +142,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $argumentTexts,
-            fn (array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
+            fn(array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
         );
     }
 
@@ -167,7 +166,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $optionTexts,
-            fn (array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
+            fn(array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
         );
     }
 }

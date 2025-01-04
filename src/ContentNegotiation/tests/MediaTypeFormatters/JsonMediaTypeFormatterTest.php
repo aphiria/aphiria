@@ -98,7 +98,8 @@ class JsonMediaTypeFormatterTest extends TestCase
         $stream = $this->createMock(IStream::class);
         $user = new User(123, 'foo@bar.com');
         $expectedEncodedValue = \mb_convert_encoding('{"id":123,"email":"foo@bar.com"}', 'utf-8');
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
         $this->formatter->writeToStream($user, $stream, null);
@@ -113,7 +114,8 @@ class JsonMediaTypeFormatterTest extends TestCase
     private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('write')
             ->with($body);
 
@@ -129,7 +131,8 @@ class JsonMediaTypeFormatterTest extends TestCase
     private function createStreamWithStringBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('__toString')
             ->willReturn($body);
 

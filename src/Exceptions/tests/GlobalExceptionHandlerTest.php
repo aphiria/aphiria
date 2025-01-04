@@ -100,7 +100,8 @@ class GlobalExceptionHandlerTest extends TestCase
     public function testHandlingExceptionDefaultsToErrorLogLevelIfExceptionHasNoCustomLogLevel(): void
     {
         $exception = new Exception();
-        $this->logger->expects($this->once())
+        $this->logger
+            ->expects($this->once())
             ->method('error')
             ->with($exception);
         $this->globalExceptionHandler->handleException($exception);
@@ -109,7 +110,8 @@ class GlobalExceptionHandlerTest extends TestCase
     public function testHandlingExceptionRendersException(): void
     {
         $exception = new Exception();
-        $this->exceptionRenderer->expects($this->once())
+        $this->exceptionRenderer
+            ->expects($this->once())
             ->method('render')
             ->with($exception);
         $this->globalExceptionHandler->handleException($exception);
@@ -118,10 +120,11 @@ class GlobalExceptionHandlerTest extends TestCase
     public function testHandlingExceptionWithCustomErrorLogLevelUsesIt(): void
     {
         $exception = new Exception();
-        $this->logger->expects($this->once())
+        $this->logger
+            ->expects($this->once())
             ->method('emergency')
             ->with($exception);
-        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
+        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn(Exception $ex) => LogLevel::EMERGENCY);
         $this->globalExceptionHandler->handleException($exception);
     }
 }

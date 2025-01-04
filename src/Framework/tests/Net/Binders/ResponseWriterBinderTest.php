@@ -30,7 +30,8 @@ class ResponseWriterBinderTest extends TestCase
 
     public function testBindBindsInstanceOfStreamResponseWriter(): void
     {
-        $this->container->method('bindInstance')
+        $this->container
+            ->method('bindInstance')
             ->with(IResponseWriter::class, $this->callback(function (IResponseWriter $responseWriter): bool {
                 return $responseWriter instanceof StreamResponseWriter;
             }));

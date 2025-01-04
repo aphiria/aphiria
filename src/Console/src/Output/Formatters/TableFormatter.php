@@ -24,8 +24,7 @@ class TableFormatter
     public function __construct(
         private readonly TableFormatterOptions $defaultOptions = new TableFormatterOptions(),
         private readonly PaddingFormatter $padding = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * Formats the table into a string
@@ -57,11 +56,11 @@ class TableFormatter
             $options->eolChar,
             $this->padding->format(
                 $headersAndRows,
-                fn (array $row): string => \sprintf(
+                fn(array $row): string => \sprintf(
                     '%s%s%s%s%s',
                     $options->verticalBorderChar,
                     $options->cellPaddingString,
-                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn (mixed $value): string => (string)$value, $row)),
+                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn(mixed $value): string => (string)$value, $row)),
                     $options->cellPaddingString,
                     $options->verticalBorderChar
                 ),
