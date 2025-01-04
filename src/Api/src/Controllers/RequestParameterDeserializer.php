@@ -27,7 +27,12 @@ class RequestParameterDeserializer implements IRequestParameterDeserializer
     public function __construct(?array $typesToDeserializers = null)
     {
         $this->typesToDeserializers = $typesToDeserializers ?? [
-            'bool' => fn (mixed $value): bool => (bool)$value,
+            'bool' => function (mixed $value): bool {
+                return match ($value) {
+                    true, '1', 1, 'true', 'yes', 'y' => true,
+                    default => false,
+                };
+            },
             'float' => fn (mixed $value): float => (float)$value,
             'int' => fn (mixed $value): int => (int)$value,
             'string' => fn (mixed $value): string => (string)$value

@@ -79,7 +79,7 @@ final class SymfonySerializerBinder extends Binder
             switch ($normalizerName) {
                 case DateTimeNormalizer::class:
                     $normalizers[] = new DateTimeNormalizer([
-                        DateTimeNormalizer::FORMAT_KEY => GlobalConfiguration::getString('aphiria.serialization.dateFormat')
+                        DateTimeNormalizer::FORMAT_KEY => GlobalConfiguration::getString('aphiria.serialization.dateTimeFormat')
                     ]);
                     break;
                 case ObjectNormalizer::class:

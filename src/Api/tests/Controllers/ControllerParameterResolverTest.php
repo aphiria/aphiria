@@ -701,7 +701,7 @@ class ControllerParameterResolverTest extends TestCase
     public function testResolvingRequestParameterWithUnsupportedTypeThrowsException(): void
     {
         $this->expectException(FailedRequestParameterConversionException::class);
-        $this->expectExceptionMessage('Failed to convert value to ');
+        $this->expectExceptionMessage('No deserializer registered for type callable');
         $controller = new class () extends Controller
         {
             public function callableParameter(callable $foo): IResponse
