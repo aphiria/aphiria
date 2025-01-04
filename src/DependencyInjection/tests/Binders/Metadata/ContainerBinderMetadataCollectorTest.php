@@ -193,7 +193,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
         $closure = fn (int $foo): mixed => null;
         $primitives = [1];
         $container = $this->createMock(IContainer::class);
-        $container->expects($this->once())
+        $container
+            ->expects($this->once())
             ->method('callClosure')
             ->with($closure, $primitives)
             ->willReturn(true);
@@ -210,7 +211,8 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             }
         };
         $container = $this->createMock(IContainer::class);
-        $container->expects($this->once())
+        $container
+            ->expects($this->once())
             ->method('callMethod')
             ->with($class, 'foo', [1], false)
             ->willReturn(true);

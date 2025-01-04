@@ -120,7 +120,8 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     {
         $stream = $this->createMock(IStream::class);
         $expectedEncodedValue = \mb_convert_encoding('‡', 'utf-8');
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
         $this->formatter->writeToStream('‡', $stream, null);
@@ -135,7 +136,8 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('write')
             ->with($body);
 
@@ -151,7 +153,8 @@ class PlainTextMediaTypeFormatterTest extends TestCase
     private function createStreamWithStringBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('__toString')
             ->willReturn($body);
 

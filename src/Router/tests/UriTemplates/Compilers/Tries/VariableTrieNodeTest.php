@@ -63,12 +63,14 @@ class VariableTrieNodeTest extends TestCase
     public function testIsMatchWithMultiplePartsReturnsFalseIfAnyConstraintFails(): void
     {
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(false);
@@ -81,12 +83,14 @@ class VariableTrieNodeTest extends TestCase
     public function testIsMatchWithMultiplePartsReturnsTrueIfMatchesRegexAndAllConstraintsPass(): void
     {
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
@@ -115,12 +119,14 @@ class VariableTrieNodeTest extends TestCase
     public function testIsMatchWithSingleRouteVariableReturnsFalseIfAnyConstraintFails(): void
     {
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(false);
@@ -141,12 +147,14 @@ class VariableTrieNodeTest extends TestCase
     public function testIsMatchWithSingleRouteVariableReturnsTrueIfAllConstraintsPass(): void
     {
         $constraint1 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint1->expects($this->once())
+        $constraint1
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);
         $constraint2 = $this->createMock(IRouteVariableConstraint::class);
-        $constraint2->expects($this->once())
+        $constraint2
+            ->expects($this->once())
             ->method('passes')
             ->with('bar')
             ->willReturn(true);

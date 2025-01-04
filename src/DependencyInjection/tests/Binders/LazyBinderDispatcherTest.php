@@ -163,10 +163,12 @@ class LazyBinderDispatcherTest extends TestCase
             }
         };
         $cache = $this->createMock(IBinderMetadataCollectionCache::class);
-        $cache->expects($this->once())
+        $cache
+            ->expects($this->once())
             ->method('get')
             ->willReturn(null);
-        $cache->expects($this->once())
+        $cache
+            ->expects($this->once())
             ->method('set')
             ->with($this->callback(function (BinderMetadataCollection $collection) use ($binder): bool {
                 $expectedCollection = new BinderMetadataCollection([

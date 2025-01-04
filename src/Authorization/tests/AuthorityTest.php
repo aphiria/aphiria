@@ -49,7 +49,8 @@ class AuthorityTest extends TestCase
         $this->policies->registerPolicy($policy);
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, new RolesRequirementHandler());
         $user = $this->createMock(IPrincipal::class);
-        $user->method('filterClaims')
+        $user
+            ->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'admin', 'example.com')]);
         $result = $this->authority->authorize($user, 'foo');
@@ -62,7 +63,8 @@ class AuthorityTest extends TestCase
         $user = $this->createMock(IPrincipal::class);
         /** @var IAuthorizationRequirementHandler<RolesRequirement, AuthorityTest>&MockObject $requirementHandler */
         $requirementHandler = $this->createMock(IAuthorizationRequirementHandler::class);
-        $requirementHandler->expects($this->once())
+        $requirementHandler
+            ->expects($this->once())
             ->method('handle')
             ->with($user, $policy->requirements[0], $this->callback(fn (AuthorizationContext $context): bool => $context->resource === $this));
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, $requirementHandler);
@@ -92,7 +94,8 @@ class AuthorityTest extends TestCase
         );
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, new RolesRequirementHandler());
         $user = $this->createMock(IPrincipal::class);
-        $user->method('filterClaims')
+        $user
+            ->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([
                 new Claim(ClaimType::Role, 'admin', 'example.com'),
@@ -111,7 +114,8 @@ class AuthorityTest extends TestCase
         );
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, new RolesRequirementHandler());
         $user = $this->createMock(IPrincipal::class);
-        $user->method('filterClaims')
+        $user
+            ->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'dev', 'example.com')]);
         $result = $this->authority->authorize($user, $policy);
@@ -124,7 +128,8 @@ class AuthorityTest extends TestCase
         $authority = new Authority($this->policies, $this->requirementHandlers, true);
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, new RolesRequirementHandler());
         $user = $this->createMock(IPrincipal::class);
-        $user->method('filterClaims')
+        $user
+            ->method('filterClaims')
             ->with(ClaimType::Role)
             ->willReturn([new Claim(ClaimType::Role, 'dev', 'example.com')]);
         // The first requirement will fail, but not the second one

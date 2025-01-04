@@ -101,7 +101,8 @@ class XmlMediaTypeFormatterTest extends TestCase
         $user = new User(123, 'foo@bar.com');
         $xml = '<?xml version="1.0"?>' . \PHP_EOL . '<response><id>123</id><email>foo@bar.com</email></response>' . \PHP_EOL;
         $expectedEncodedValue = \mb_convert_encoding($xml, 'utf-8');
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('write')
             ->with($expectedEncodedValue);
         $this->formatter->writeToStream($user, $stream, null);
@@ -116,7 +117,8 @@ class XmlMediaTypeFormatterTest extends TestCase
     private function createStreamThatExpectsBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('write')
             ->with($body);
 
@@ -132,7 +134,8 @@ class XmlMediaTypeFormatterTest extends TestCase
     private function createStreamWithStringBody(string $body): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('__toString')
             ->willReturn($body);
 

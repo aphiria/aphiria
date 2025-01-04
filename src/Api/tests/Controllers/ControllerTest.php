@@ -122,7 +122,8 @@ class ControllerTest extends TestCase
         };
         $this->request = $this->createMock(IRequest::class);
         $this->responseFactory = $this->createMock(IResponseFactory::class);
-        $this->responseFactory->method('createResponse')
+        $this->responseFactory
+            ->method('createResponse')
             ->with($this->request)
             ->willReturnCallback(function (IRequest $request, HttpStatusCode|int $statusCode, Headers $headers, ?IBody $body): IResponse {
                 $this->assertSame($this->request, $request);
@@ -229,7 +230,8 @@ class ControllerTest extends TestCase
         $this->controller->request = $this->request;
         $user = $this->createMock(IPrincipal::class);
         $userAccessor = $this->createMock(IUserAccessor::class);
-        $userAccessor->expects($this->once())
+        $userAccessor
+            ->expects($this->once())
             ->method('getUser')
             ->with($this->request)
             ->willReturn($user);
@@ -354,7 +356,8 @@ class ControllerTest extends TestCase
     public function testReadingRequestBodyReturnsDeserializedBody(): void
     {
         $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-        $bodyDeserializer->expects($this->once())
+        $bodyDeserializer
+            ->expects($this->once())
             ->method('readRequestBodyAs')
             ->with('foo', $this->request)
             ->willReturn('bar');
@@ -367,7 +370,8 @@ class ControllerTest extends TestCase
     {
         try {
             $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-            $bodyDeserializer->expects($this->once())
+            $bodyDeserializer
+                ->expects($this->once())
                 ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
                 ->willThrowException(new SerializationException());
@@ -385,7 +389,8 @@ class ControllerTest extends TestCase
     {
         try {
             $bodyDeserializer = $this->createMock(IBodyDeserializer::class);
-            $bodyDeserializer->expects($this->once())
+            $bodyDeserializer
+                ->expects($this->once())
                 ->method('readRequestBodyAs')
                 ->with('foo', $this->request)
                 ->willThrowException(new FailedContentNegotiationException());

@@ -39,7 +39,8 @@ class RequestBinderTest extends TestCase
     public function testOverriddenRequestIsUsedIfSpecified(): void
     {
         $request = $this->createMock(IRequest::class);
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('bindFactory')
             ->with(IRequest::class, $this->callback(fn (Closure $factory): bool => $factory() === $request));
         RequestBinder::setOverridingRequest($request);
@@ -48,7 +49,8 @@ class RequestBinderTest extends TestCase
 
     public function testRequestDefaultsToLocalhostUriWhenRunningFromCli(): void
     {
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('bindFactory')
             ->with(IRequest::class, $this->callback(function (Closure $factory) {
                 /** @var IRequest $request */
@@ -61,7 +63,8 @@ class RequestBinderTest extends TestCase
 
     public function testRequestHasLocalhostUriWhenRunningFromCli(): void
     {
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('bindFactory')
             ->with(IRequest::class, $this->callback(function (Closure $factory) {
                 /** @var IRequest $request */
@@ -83,7 +86,8 @@ class RequestBinderTest extends TestCase
         $_SERVER['HTTP_HOST'] = 'example.com';
         // argv was causing issues in the test
         unset($_SERVER['argv']);
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('bindFactory')
             ->with(IRequest::class, $this->callback(function (Closure $factory) {
                 /** @var IRequest $request */

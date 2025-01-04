@@ -39,7 +39,8 @@ class ProgressBarFormatterTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook::get('driver'))
+        $this->output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
     }
 
@@ -87,10 +88,12 @@ class ProgressBarFormatterTest extends TestCase
             }
         };
         $output = $this->createMock(IOutput::class);
-        $output->method(PropertyHook::get('driver'))
+        $output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $calledWriteSuccessfullyAtLeastOnce = false;
-        $output->expects($this->atLeastOnce())
+        $output
+            ->expects($this->atLeastOnce())
             ->method('write')
             ->with($this->callback(function (array|string $messages) use (&$calledWriteSuccessfullyAtLeastOnce): bool {
                 $calledWriteSuccessfullyAtLeastOnce = $this->progressBarMatchesExpectedValue("\033[2K\033[0G\033[1A\033[2K[20%-------] 2/10" . \PHP_EOL . 'Time remaining:', $messages, true);
@@ -108,9 +111,11 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressThatReachesMaxStepsDrawsCompleteProgressBar(): void
     {
         $formatter = new ProgressBarFormatter($this->output);
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[==========] 10/10' . \PHP_EOL . 'Time remaining: Complete', $value, false)));
-        $this->output->method('writeln')
+        $this->output
+            ->method('writeln')
             ->with('');
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
         $formatter->onProgressChanged(0, 10, 10, $options);
@@ -121,7 +126,8 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressWithFormatThatIncludesPercentPopulatesPercent(): void
     {
         $formatter = new ProgressBarFormatter($this->output);
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with('50%');
         $options = new ProgressBarFormatterOptions(progressBarWidth: 10, outputFormat: '%percent%');
         $formatter->onProgressChanged(0, 5, 10, $options);
@@ -137,7 +143,8 @@ class ProgressBarFormatterTest extends TestCase
                 return -1;
             }
         };
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[10%-------] 1/10' . \PHP_EOL . 'Time remaining: Estimating...', $value, false)));
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
         $formatter->onProgressChanged(0, 1, 10, $options);
@@ -153,7 +160,8 @@ class ProgressBarFormatterTest extends TestCase
                 return 172800;
             }
         };
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[10%-------] 1/10' . \PHP_EOL . 'Time remaining: 2 days', $value, false)));
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
         $formatter->onProgressChanged(0, 1, 10, $options);
@@ -164,7 +172,8 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressWithZeroProgressIndicatesThatTheTimeRemainingIsStillBeingEstimated(): void
     {
         $formatter = new ProgressBarFormatter($this->output);
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue('[0%--------] 0/10' . \PHP_EOL . 'Time remaining: Estimating...', $value, false)));
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
         $formatter->onProgressChanged(null, 0, 10, $options);
@@ -181,7 +190,8 @@ class ProgressBarFormatterTest extends TestCase
     public function testOnProgressWritesCorrectStringsForBaseCases(int $percentComplete, string $expectedString): void
     {
         $formatter = new ProgressBarFormatter($this->output);
-        $this->output->method('write')
+        $this->output
+            ->method('write')
             ->with($this->callback(fn (mixed $value): bool => $this->progressBarMatchesExpectedValue($expectedString . " $percentComplete/100" . \PHP_EOL . 'Time remaining:', $value, true)));
         $options = new ProgressBarFormatterOptions(progressBarWidth: 12);
         $formatter->onProgressChanged(0, $percentComplete, 100, $options);

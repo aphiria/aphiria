@@ -54,7 +54,8 @@ class ConsoleApplicationBuilderTest extends TestCase
                 return null;
             }
         };
-        $output->method(PropertyHook::get('driver'))
+        $output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
         $this->container->bindInstance(IOutput::class, $output);
     }
@@ -109,7 +110,8 @@ class ConsoleApplicationBuilderTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to build the console application');
         $container = $this->createMock(IContainer::class);
-        $container->expects($this->once())
+        $container
+            ->expects($this->once())
             ->method('resolve')
             ->with(ConsoleApplication::class)
             ->willThrowException(new ResolutionException(ConsoleApplication::class, new UniversalContext()));

@@ -32,7 +32,8 @@ class RequestBuilderTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Method is not set');
-        $this->requestBuilder->withUri('http://localhost')
+        $this->requestBuilder
+            ->withUri('http://localhost')
             ->build();
     }
 
@@ -40,13 +41,15 @@ class RequestBuilderTest extends TestCase
     {
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('URI is not set');
-        $this->requestBuilder->withMethod('GET')
+        $this->requestBuilder
+            ->withMethod('GET')
             ->build();
     }
 
     public function testRequestDefaultsTo1Point1ProtocolVersion(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
         $this->assertSame('1.1', $request->protocolVersion);
@@ -54,7 +57,8 @@ class RequestBuilderTest extends TestCase
 
     public function testRequestDefaultsToOriginFormRequestTargetType(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost/path')
             ->build();
         $this->assertSame('GET /path HTTP/1.1', \explode("\r\n", (string)$request)[0]);
@@ -64,7 +68,8 @@ class RequestBuilderTest extends TestCase
     public function testWithBodyWithHttpBodyUsesThatBody(): void
     {
         $body = $this->createMock(IBody::class);
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withBody($body)
             ->build();
@@ -73,7 +78,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithBodyWithNullBodySetsBodyToNull(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withBody(null)
             ->build();
@@ -82,7 +88,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithHeaderCanAppendToHeader(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withHeader('Foo', 'bar')
             ->withHeader('Foo', 'baz', true)
@@ -92,7 +99,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithHeaderSetsHeader(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withHeader('Foo', 'bar')
             ->build();
@@ -101,7 +109,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithManyHeadersSetsHeaders(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withManyHeaders(['Foo' => 'bar', 'Baz' => ['blah', 'dave']])
             ->build();
@@ -111,7 +120,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithMethodSetsMethod(): void
     {
-        $request = $this->requestBuilder->withMethod('POST')
+        $request = $this->requestBuilder
+            ->withMethod('POST')
             ->withUri('http://localhost')
             ->build();
         $this->assertSame('POST', $request->method);
@@ -119,7 +129,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithPropertyAddsProperty(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withProperty('foo', 'bar')
             ->build();
@@ -128,7 +139,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithProtocolVersionSetsProtocolVersion(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withProtocolVersion('2.0')
             ->build();
@@ -137,7 +149,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithRequestTargetTypeSetsRequestTargetType(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->withRequestTargetType(RequestTargetType::AbsoluteForm)
             ->build();
@@ -146,7 +159,8 @@ class RequestBuilderTest extends TestCase
 
     public function testWithStringUriSetsRequestUri(): void
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
         $this->assertSame('http://localhost', (string)$request->uri);
@@ -155,7 +169,8 @@ class RequestBuilderTest extends TestCase
     public function testWithUriSetsRequestUri(): void
     {
         $uri = new Uri('http://localhost');
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri($uri)
             ->build();
         $this->assertSame($uri, $request->uri);

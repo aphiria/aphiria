@@ -62,7 +62,8 @@ class ConsoleGatewayTest extends TestCase
 
     public function testHandlingEmptyCommandReturnsOk(): void
     {
-        $this->commandHandlerResolver->expects($this->once())
+        $this->commandHandlerResolver
+            ->expects($this->once())
             ->method('resolve')
             ->with(AboutCommandHandler::class)
             ->willReturn(new AboutCommandHandler($this->commands));
@@ -92,7 +93,8 @@ class ConsoleGatewayTest extends TestCase
 
     public function testHandlingHelpCommand(): void
     {
-        $this->commandHandlerResolver->expects($this->exactly(2))
+        $this->commandHandlerResolver
+            ->expects($this->exactly(2))
             ->method('resolve')
             ->with(HelpCommandHandler::class)
             ->willReturn(new HelpCommandHandler($this->commands));
@@ -117,7 +119,8 @@ class ConsoleGatewayTest extends TestCase
 
     public function testHandlingHelpCommandWithNonExistentCommand(): void
     {
-        $this->commandHandlerResolver->expects($this->once())
+        $this->commandHandlerResolver
+            ->expects($this->once())
             ->method('resolve')
             ->with(HelpCommandHandler::class)
             ->willReturn(new HelpCommandHandler($this->commands));
@@ -146,7 +149,8 @@ class ConsoleGatewayTest extends TestCase
                 $output->write($message);
             }
         };
-        $this->commandHandlerResolver->expects($this->exactly(2))
+        $this->commandHandlerResolver
+            ->expects($this->exactly(2))
             ->method('resolve')
             ->with($commandHandler::class)
             ->willReturn($commandHandler);
@@ -194,7 +198,8 @@ class ConsoleGatewayTest extends TestCase
                 $output->write('foo');
             }
         };
-        $this->commandHandlerResolver->expects($this->once())
+        $this->commandHandlerResolver
+            ->expects($this->once())
             ->method('resolve')
             ->with($commandHandler::class)
             ->willReturn($commandHandler);
@@ -218,7 +223,8 @@ class ConsoleGatewayTest extends TestCase
                 // Don't do anything
             }
         };
-        $this->commandHandlerResolver->expects($this->once())
+        $this->commandHandlerResolver
+            ->expects($this->once())
             ->method('resolve')
             ->with($commandHandler::class)
             ->willReturn($commandHandler);

@@ -132,7 +132,8 @@ class ValidatorTest extends TestCase
             [],
             ['method' => $constraints]
         ));
-        $this->errorMessageInterpolator->expects($this->once())
+        $this->errorMessageInterpolator
+            ->expects($this->once())
             ->method('interpolate')
             ->with($constraints[0]->errorMessageId, $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
@@ -265,7 +266,8 @@ class ValidatorTest extends TestCase
             ['prop' => $constraints],
             []
         ));
-        $this->errorMessageInterpolator->expects($this->once())
+        $this->errorMessageInterpolator
+            ->expects($this->once())
             ->method('interpolate')
             ->with($constraints[0]->errorMessageId, $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
@@ -357,7 +359,8 @@ class ValidatorTest extends TestCase
             ['prop' => $constraints],
             []
         ));
-        $this->errorMessageInterpolator->expects($this->once())
+        $this->errorMessageInterpolator
+            ->expects($this->once())
             ->method('interpolate')
             ->with($constraints[0]->errorMessageId, $constraints[0]->getErrorMessagePlaceholders(1))
             ->willReturn('error');
@@ -422,7 +425,8 @@ class ValidatorTest extends TestCase
         };
         $this->expectException(ValidationException::class);
         $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(false);
@@ -491,7 +495,8 @@ class ValidatorTest extends TestCase
         };
         $this->expectException(ValidationException::class);
         $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(false);
@@ -522,7 +527,8 @@ class ValidatorTest extends TestCase
     {
         $this->expectException(ValidationException::class);
         $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with('foo')
             ->willReturn(false);
@@ -539,7 +545,8 @@ class ValidatorTest extends TestCase
     private function createMockConstraint(bool $shouldPass, mixed $value): IConstraint
     {
         $constraint = $this->createMock(IConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with($value)
             ->willReturn($shouldPass);

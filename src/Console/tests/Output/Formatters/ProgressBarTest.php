@@ -38,7 +38,8 @@ class ProgressBarTest extends TestCase
 
     public function testAdvancingBeyondMaxStepsDoesNotCallFormatter(): void
     {
-        $this->formatter->expects($this->once())
+        $this->formatter
+            ->expects($this->once())
             ->method('onProgressChanged')
             ->with(0, 100, 100);
         $this->progressBar->complete();
@@ -54,7 +55,8 @@ class ProgressBarTest extends TestCase
 
     public function testFinishingTwiceOnlyCallsFormatterOnce(): void
     {
-        $this->formatter->expects($this->once())
+        $this->formatter
+            ->expects($this->once())
             ->method('onProgressChanged')
             ->with(0, 100, 100);
         $this->progressBar->complete();
@@ -74,9 +76,11 @@ class ProgressBarTest extends TestCase
     {
         $formatter = Mockery::mock(IProgressBarObserver::class);
         $options = new ProgressBarFormatterOptions();
-        $formatter->shouldReceive('onProgressChanged')
+        $formatter
+            ->shouldReceive('onProgressChanged')
             ->with(0, 1, 100, $options);
-        $formatter->shouldReceive('onProgressChanged')
+        $formatter
+            ->shouldReceive('onProgressChanged')
             ->with(1, 0, 100, $options);
         $progressBar = new ProgressBar(100, $formatter, $options);
         // Note: We're advancing at least once so that the update is sent to the formatter
@@ -88,7 +92,8 @@ class ProgressBarTest extends TestCase
 
     public function testSettingProgressToValueOverMaxStepsBoundsItToMaxSteps(): void
     {
-        $this->formatter->expects($this->once())
+        $this->formatter
+            ->expects($this->once())
             ->method('onProgressChanged')
             ->with(0, 100, 100);
         $this->progressBar->progress = 500;
@@ -96,7 +101,8 @@ class ProgressBarTest extends TestCase
 
     public function testSettingProgressToZeroStillNotifiesObserversOfProgress(): void
     {
-        $this->formatter->method('onProgressChanged')
+        $this->formatter
+            ->method('onProgressChanged')
             ->with(0, 0, 100);
         $this->progressBar->progress = 0;
         // Dummy assertion

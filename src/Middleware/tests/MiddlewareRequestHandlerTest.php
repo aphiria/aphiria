@@ -32,7 +32,8 @@ class MiddlewareRequestHandlerTest extends TestCase
         $request = $this->createMock(IRequest::class);
         /** @var IResponse&MockObject $response */
         $response = $this->createMock(IResponse::class);
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method('handle')
             ->with($request, $next)
             ->willReturn($response);

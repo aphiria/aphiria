@@ -33,7 +33,8 @@ class ObjectConstraintsBuilderTest extends TestCase
     public function testHasMethodConstraintsWithMultipleConstraintsAddsThemToRegistry(): void
     {
         $expectedMethodConstraints = [$this->createMock(IConstraint::class), $this->createMock(IConstraint::class)];
-        $objectConstraints = $this->builder->hasMethodConstraints('method', $expectedMethodConstraints)
+        $objectConstraints = $this->builder
+            ->hasMethodConstraints('method', $expectedMethodConstraints)
             ->build();
         $this->assertSame($expectedMethodConstraints, $objectConstraints->getConstraintsForMethod('method'));
     }
@@ -41,7 +42,8 @@ class ObjectConstraintsBuilderTest extends TestCase
     public function testHasMethodConstraintsWithSingleConstraintAddsItToRegistry(): void
     {
         $expectedMethodConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = $this->builder->hasMethodConstraints('method', $expectedMethodConstraint)
+        $objectConstraints = $this->builder
+            ->hasMethodConstraints('method', $expectedMethodConstraint)
             ->build();
         $this->assertSame([$expectedMethodConstraint], $objectConstraints->getConstraintsForMethod('method'));
     }
@@ -49,7 +51,8 @@ class ObjectConstraintsBuilderTest extends TestCase
     public function testHasPropertyConstraintsWithMultipleConstraintsAddsThemToRegistry(): void
     {
         $expectedPropertyConstraints = [$this->createMock(IConstraint::class), $this->createMock(IConstraint::class)];
-        $objectConstraints = $this->builder->hasPropertyConstraints('prop', $expectedPropertyConstraints)
+        $objectConstraints = $this->builder
+            ->hasPropertyConstraints('prop', $expectedPropertyConstraints)
             ->build();
         $this->assertSame($expectedPropertyConstraints, $objectConstraints->getConstraintsForProperty('prop'));
     }
@@ -57,7 +60,8 @@ class ObjectConstraintsBuilderTest extends TestCase
     public function testHasPropertyConstraintsWithSingleConstraintAddsItToRegistry(): void
     {
         $expectedPropertyConstraint = $this->createMock(IConstraint::class);
-        $objectConstraints = $this->builder->hasPropertyConstraints('prop', $expectedPropertyConstraint)
+        $objectConstraints = $this->builder
+            ->hasPropertyConstraints('prop', $expectedPropertyConstraint)
             ->build();
         $this->assertSame([$expectedPropertyConstraint], $objectConstraints->getConstraintsForProperty('prop'));
     }

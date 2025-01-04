@@ -52,10 +52,12 @@ class AphiriaModuleTest extends TestCase
             }
         };
         $appBuilder = $this->createMock(IApplicationBuilder::class);
-        $appBuilder->method('hasComponent')
+        $appBuilder
+            ->method('hasComponent')
             ->with(BinderComponent::class)
             ->willReturn(true);
-        $appBuilder->method('getComponent')
+        $appBuilder
+            ->method('getComponent')
             ->with(BinderComponent::class)
             ->willReturn($binderComponent);
         $module->configure($appBuilder);

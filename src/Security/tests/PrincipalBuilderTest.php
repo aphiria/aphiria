@@ -180,7 +180,8 @@ class PrincipalBuilderTest extends TestCase
 
     public function testWithAuthenticationSchemeNameAddsItToPrimaryIdentity(): void
     {
-        $user = new PrincipalBuilder('example.com')->withAuthenticationSchemeName('foo')
+        $user = new PrincipalBuilder('example.com')
+            ->withAuthenticationSchemeName('foo')
             ->build();
         $this->assertSame('foo', $user->primaryIdentity?->authenticationSchemeName);
     }
@@ -191,7 +192,8 @@ class PrincipalBuilderTest extends TestCase
             new Claim(ClaimType::Name, 'Dave', 'example.com'),
             new Claim(ClaimType::Email, 'foo@bar.com', 'example.com')
         ];
-        $user = new PrincipalBuilder('example.com')->withClaims($expectedClaims)
+        $user = new PrincipalBuilder('example.com')
+            ->withClaims($expectedClaims)
             ->build();
         $this->assertSame($expectedClaims, $user->primaryIdentity?->claims);
     }
@@ -201,7 +203,8 @@ class PrincipalBuilderTest extends TestCase
         $expectedClaims = [
             new Claim(ClaimType::Name, 'Dave', 'example.com')
         ];
-        $user = new PrincipalBuilder('example.com')->withClaims($expectedClaims[0])
+        $user = new PrincipalBuilder('example.com')
+            ->withClaims($expectedClaims[0])
             ->build();
         $this->assertSame($expectedClaims, $user->primaryIdentity?->claims);
     }

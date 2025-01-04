@@ -41,7 +41,8 @@ class MiddlewarePipelineFactoryTest extends TestCase
         $controllerHandler = $this->createMock(IRequestHandler::class);
         /** @var IMiddleware&MockObject $middleware1 */
         $middleware1 = $this->createMock(IMiddleware::class);
-        $middleware1->expects($this->once())
+        $middleware1
+            ->expects($this->once())
             ->method('handle')
             ->with($request, $this->callback(function (IRequestHandler $handler) use ($controllerHandler): bool {
                 // Next handler will be the second middleware's handler, although there's no way to test that directly
@@ -74,7 +75,8 @@ class MiddlewarePipelineFactoryTest extends TestCase
         $controllerHandler = $this->createMock(IRequestHandler::class);
         /** @var IMiddleware&MockObject $middleware */
         $middleware = $this->createMock(IMiddleware::class);
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method('handle')
             ->with($request, $controllerHandler)
             ->willReturn($response);

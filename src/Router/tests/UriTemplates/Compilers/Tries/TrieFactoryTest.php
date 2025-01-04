@@ -42,7 +42,8 @@ class TrieFactoryTest extends TestCase
     public function testCreatingTrieWithCacheHitReturnsTrieFromCache(): void
     {
         $expectedTrie = new RootTrieNode();
-        $this->trieCache->expects($this->once())
+        $this->trieCache
+            ->expects($this->once())
             ->method('get')
             ->willReturn($expectedTrie);
         $this->assertSame($expectedTrie, $this->trieFactory->createTrie());
@@ -57,13 +58,16 @@ class TrieFactoryTest extends TestCase
         };
         $this->routes->add(new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), []));
         $expectedTrie = new RootTrieNode();
-        $this->trieCache->expects($this->once())
+        $this->trieCache
+            ->expects($this->once())
             ->method('get')
             ->willReturn(null);
-        $this->trieCompiler->expects($this->once())
+        $this->trieCompiler
+            ->expects($this->once())
             ->method('compile')
             ->willReturn($expectedTrie);
-        $this->trieCache->expects($this->once())
+        $this->trieCache
+            ->expects($this->once())
             ->method('set')
             ->with($expectedTrie);
         // Specifically not testing for same trie because createTrie() creates a brand new node on cache miss
@@ -82,7 +86,8 @@ class TrieFactoryTest extends TestCase
         $expectedTrie = new RootTrieNode();
         // Make sure child nodes get added, too
         $expectedTrie->addChild(new LiteralTrieNode('foo', []));
-        $this->trieCompiler->expects($this->once())
+        $this->trieCompiler
+            ->expects($this->once())
             ->method('compile')
             ->willReturn($expectedTrie);
         // Specifically not testing for same trie because createTrie() creates a brand new node when not using a cache

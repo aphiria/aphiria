@@ -45,7 +45,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '')
+            $registry
+                ->route('GET', '')
                 ->mapsToMethod($controller::class, 'bar')
                 ->withManyConstraints($routeConstraints);
         });
@@ -65,7 +66,8 @@ class RouteCollectionBuilderTest extends TestCase
                     {
                     }
                 };
-                $registry->route('GET', 'baz', 'bar')
+                $registry
+                    ->route('GET', 'baz', 'bar')
                     ->mapsToMethod($controller::class, 'bar');
             });
         });
@@ -83,7 +85,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '', 'foo')
+            $registry
+                ->route('GET', '', 'foo')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $registry->build()->values;
@@ -100,7 +103,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '', 'foo.')
+            $registry
+                ->route('GET', '', 'foo.')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $registry->build()->values;
@@ -117,7 +121,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '', 'bar')
+            $registry
+                ->route('GET', '', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $this->builder->build()->values;
@@ -134,7 +139,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', 'bar')
+            $registry
+                ->route('GET', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $this->builder->build()->values;
@@ -158,7 +164,8 @@ class RouteCollectionBuilderTest extends TestCase
                 }
             };
             // Use the bulk-with method so we can pass in an already-instantiated object to check against later
-            $registry->route('GET', '')
+            $registry
+                ->route('GET', '')
                 ->mapsToMethod($controller::class, 'bar')
                 ->withManyMiddleware([$routeMiddlewareBinding]);
         });
@@ -176,7 +183,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', 'rp1')
+            $registry
+                ->route('GET', 'rp1')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $controller = new class () {
@@ -184,7 +192,8 @@ class RouteCollectionBuilderTest extends TestCase
             {
             }
         };
-        $this->builder->route('POST', 'rp2')
+        $this->builder
+            ->route('POST', 'rp2')
             ->mapsToMethod($controller::class, 'bar');
         $routes = $this->builder->build()->values;
         $this->assertCount(2, $routes);
@@ -201,7 +210,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '')
+            $registry
+                ->route('GET', '')
                 ->mapsToMethod($controller::class, 'bar')
                 ->withParameter('H2', 'val2');
         });
@@ -219,7 +229,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '')
+            $registry
+                ->route('GET', '')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $registry->build()->values;
@@ -236,7 +247,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '/bar')
+            $registry
+                ->route('GET', '/bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $registry->build()->values;
@@ -253,7 +265,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', 'bar')
+            $registry
+                ->route('GET', 'bar')
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $registry->build()->values;
@@ -269,7 +282,8 @@ class RouteCollectionBuilderTest extends TestCase
                 {
                 }
             };
-            $registry->route('GET', '', null, false)
+            $registry
+                ->route('GET', '', null, false)
                 ->mapsToMethod($controller::class, 'bar');
         });
         $routes = $this->builder->build()->values;
@@ -320,7 +334,8 @@ class RouteCollectionBuilderTest extends TestCase
                             }
                         };
                         // Use the bulk-with method so we can pass in an already-instantiated object to check against later
-                        $registry->route('GET', 'rp')
+                        $registry
+                            ->route('GET', 'rp')
                             ->mapsToMethod($controller::class, 'bar')
                             ->withManyMiddleware([$routeMiddlewareBinding]);
                     }
@@ -347,7 +362,8 @@ class RouteCollectionBuilderTest extends TestCase
             {
             }
         };
-        $this->builder->route('GET', 'foo')
+        $this->builder
+            ->route('GET', 'foo')
             ->mapsToMethod($controller::class, 'bar');
         $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
@@ -362,7 +378,8 @@ class RouteCollectionBuilderTest extends TestCase
             }
         };
         $constraints = [$this->createMock(IRouteConstraint::class)];
-        $routeBuilder = $this->builder->route('GET', '')
+        $routeBuilder = $this->builder
+            ->route('GET', '')
             ->mapsToMethod($controller::class, 'bar')
             ->withManyConstraints($constraints);
         $route = $routeBuilder->build();
@@ -376,7 +393,8 @@ class RouteCollectionBuilderTest extends TestCase
             {
             }
         };
-        $routeBuilder = $this->builder->route(['GET', 'DELETE'], '')
+        $routeBuilder = $this->builder
+            ->route(['GET', 'DELETE'], '')
             ->mapsToMethod($controller::class, 'bar');
         $route = $routeBuilder->build();
         $this->assertCount(1, $route->constraints);
@@ -393,7 +411,8 @@ class RouteCollectionBuilderTest extends TestCase
             {
             }
         };
-        $routeBuilder = $this->builder->route('GET', '')
+        $routeBuilder = $this->builder
+            ->route('GET', '')
             ->mapsToMethod($controller::class, 'bar')
             ->withParameter('FOO', 'BAR');
         $route = $routeBuilder->build();

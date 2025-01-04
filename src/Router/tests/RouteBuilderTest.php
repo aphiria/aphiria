@@ -171,7 +171,8 @@ class RouteBuilderTest extends TestCase
             {
             }
         };
-        $route = $this->routeBuilder->mapsToMethod($controller::class, 'bar')
+        $route = $this->routeBuilder
+            ->mapsToMethod($controller::class, 'bar')
             ->withName('foo')
             ->build();
         $this->assertSame('foo', $route->name);

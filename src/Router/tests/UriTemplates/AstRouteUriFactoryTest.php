@@ -202,7 +202,8 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectException(RouteUriCreationException::class);
         $this->expectExceptionMessage('Failed to lex URI template');
         $lexer = $this->createMock(IUriTemplateLexer::class);
-        $lexer->expects($this->once())
+        $lexer
+            ->expects($this->once())
             ->method('lex')
             ->with('example.com/')
             ->willThrowException(new LexingException());
@@ -216,7 +217,8 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectException(RouteUriCreationException::class);
         $this->expectExceptionMessage('Failed to parse URI template');
         $parser = $this->createMock(IUriTemplateParser::class);
-        $parser->expects($this->once())
+        $parser
+            ->expects($this->once())
             ->method('parse')
             ->with($this->anything())
             ->willThrowException(new UnexpectedTokenException());

@@ -23,7 +23,8 @@ class RequiredConstraintTest extends TestCase
         $constraint = new RequiredConstraint('foo');
         $this->assertFalse($constraint->passes([]));
         $countable = $this->createMock(Countable::class);
-        $countable->expects($this->once())
+        $countable
+            ->expects($this->once())
             ->method('count')
             ->willReturn(0);
         $this->assertFalse($constraint->passes($countable));

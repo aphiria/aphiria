@@ -27,7 +27,8 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
                 {
                 }
             };
-            $routes->get('foo')
+            $routes
+                ->get('foo')
                 ->mapsToMethod($controller::class, 'bar');
         };
         $registrant = new RouteCollectionBuilderRouteRegistrant($callback);
@@ -45,7 +46,8 @@ class RouteCollectionBuilderRouteRegistrantTest extends TestCase
                 {
                 }
             };
-            $routes->get('foo')
+            $routes
+                ->get('foo')
                 ->mapsToMethod($controller::class, 'bar');
         };
         $registrant = new RouteCollectionBuilderRouteRegistrant([$callback]);

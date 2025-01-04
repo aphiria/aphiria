@@ -59,7 +59,8 @@ class RouteListCommandHandlerTest extends TestCase
                 return null;
             }
         };
-        $this->output->method(PropertyHook::get('driver'))
+        $this->output
+            ->method(PropertyHook::get('driver'))
             ->willReturn($driver);
     }
 
@@ -237,7 +238,8 @@ class RouteListCommandHandlerTest extends TestCase
         $expectedRows = [['<b>Method</b>', '<b>Path</b>', '<b>Action</b>'], ...$expectedRows];
 
         /** @psalm-suppress MixedArgumentTypeCoercion The row will always be implode-able */
-        $this->output->expects($this->once())
+        $this->output
+            ->expects($this->once())
             ->method('writeln')
             ->with($this->paddingFormatter->format($expectedRows, fn (array $row): string => \implode('    ', $row)));
     }

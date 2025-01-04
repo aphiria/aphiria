@@ -81,7 +81,8 @@ class RoutingBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->shouldReceive('bindFactory')
+        $this->container
+            ->shouldReceive('bindFactory')
             ->with([IRouteMatcher::class, TrieRouteMatcher::class], Mockery::type(Closure::class), true);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -94,7 +95,8 @@ class RoutingBinderTest extends TestCase
         \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->shouldReceive('bindFactory')
+        $this->container
+            ->shouldReceive('bindFactory')
             ->with(
                 [IRouteMatcher::class, TrieRouteMatcher::class],
                 Mockery::on(function (Closure $factory) {
@@ -111,7 +113,8 @@ class RoutingBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->shouldReceive('bindFactory')
+        $this->container
+            ->shouldReceive('bindFactory')
             ->with(
                 [IRouteMatcher::class, TrieRouteMatcher::class],
                 Mockery::on(function (Closure $factory) {
@@ -128,7 +131,8 @@ class RoutingBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->shouldReceive('bindFactory')
+        $this->container
+            ->shouldReceive('bindFactory')
             ->with(
                 [IRouteMatcher::class, TrieRouteMatcher::class],
                 Mockery::on(function (Closure $factory) {
@@ -145,7 +149,8 @@ class RoutingBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock();
-        $this->container->shouldReceive('bindFactory')
+        $this->container
+            ->shouldReceive('bindFactory')
             ->with(
                 [IRouteMatcher::class, TrieRouteMatcher::class],
                 Mockery::on(function (Closure $factory) {
@@ -189,7 +194,8 @@ class RoutingBinderTest extends TestCase
         ];
 
         foreach ($parameters as $parameter) {
-            $this->container->shouldReceive('bindInstance')
+            $this->container
+                ->shouldReceive('bindInstance')
                 ->with($parameter[0], Mockery::type($parameter[1]));
         }
     }

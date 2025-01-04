@@ -83,7 +83,8 @@ class ApplicationBuilderTest extends TestCase
     public function testComponentsAreInitializedOnBuild(): void
     {
         $component = $this->createMock(IComponent::class);
-        $component->expects($this->once())
+        $component
+            ->expects($this->once())
             ->method('build');
         $this->appBuilder->withComponent($component);
         $this->appBuilder->build();
@@ -119,7 +120,8 @@ class ApplicationBuilderTest extends TestCase
     public function testModulesAreConfiguredOnBuild(): void
     {
         $module = $this->createMock(IModule::class);
-        $module->expects($this->once())
+        $module
+            ->expects($this->once())
             ->method('configure')
             ->with($this->appBuilder);
         $this->appBuilder->withModule($module);
@@ -129,7 +131,8 @@ class ApplicationBuilderTest extends TestCase
     public function testModulesThatAreRegisteredInsideOfModulesAreConfigured(): void
     {
         $innerModule = $this->createMock(IModule::class);
-        $innerModule->expects($this->once())
+        $innerModule
+            ->expects($this->once())
             ->method('configure')
             ->with($this->appBuilder);
         $outerModule = new class ($innerModule) implements IModule {

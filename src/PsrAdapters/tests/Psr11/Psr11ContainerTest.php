@@ -34,7 +34,8 @@ class Psr11ContainerTest extends TestCase
 
     public function testGetReturnsResolvedInterface(): void
     {
-        $this->aphiriaContainer->expects($this->once())
+        $this->aphiriaContainer
+            ->expects($this->once())
             ->method('resolve')
             ->with(self::class)
             ->willReturn($this);
@@ -45,10 +46,12 @@ class Psr11ContainerTest extends TestCase
     {
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('Failed to resolve ' . self::class);
-        $this->aphiriaContainer->method('resolve')
+        $this->aphiriaContainer
+            ->method('resolve')
             ->with(self::class)
             ->willThrowException(new ResolutionException(self::class, new UniversalContext()));
-        $this->aphiriaContainer->method('hasBinding')
+        $this->aphiriaContainer
+            ->method('hasBinding')
             ->with(self::class)
             ->willReturn(false);
         $this->psr11Container->get(self::class);
@@ -58,10 +61,12 @@ class Psr11ContainerTest extends TestCase
     {
         $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage('No binding found for ' . self::class);
-        $this->aphiriaContainer->method('resolve')
+        $this->aphiriaContainer
+            ->method('resolve')
             ->with(self::class)
             ->willThrowException(new ResolutionException(self::class, new UniversalContext()));
-        $this->aphiriaContainer->method('hasBinding')
+        $this->aphiriaContainer
+            ->method('hasBinding')
             ->with(self::class)
             ->willReturn(true);
         $this->psr11Container->get(self::class);
@@ -69,10 +74,12 @@ class Psr11ContainerTest extends TestCase
 
     public function testHasReturnsFalseWhenContainerCannotResolveSomethingWithABinding(): void
     {
-        $this->aphiriaContainer->method('resolve')
+        $this->aphiriaContainer
+            ->method('resolve')
             ->with(self::class)
             ->willThrowException(new ResolutionException(self::class, new UniversalContext()));
-        $this->aphiriaContainer->method('hasBinding')
+        $this->aphiriaContainer
+            ->method('hasBinding')
             ->with(self::class)
             ->willReturn(false);
         $this->assertFalse($this->psr11Container->has(self::class));
@@ -80,10 +87,12 @@ class Psr11ContainerTest extends TestCase
 
     public function testHasReturnsFalseWhenContainerCannotResolveSomethingWithoutABinding(): void
     {
-        $this->aphiriaContainer->method('resolve')
+        $this->aphiriaContainer
+            ->method('resolve')
             ->with(self::class)
             ->willThrowException(new ResolutionException(self::class, new UniversalContext()));
-        $this->aphiriaContainer->method('hasBinding')
+        $this->aphiriaContainer
+            ->method('hasBinding')
             ->with(self::class)
             ->willReturn(true);
         $this->assertFalse($this->psr11Container->has(self::class));
@@ -91,7 +100,8 @@ class Psr11ContainerTest extends TestCase
 
     public function testHasReturnsTrueWhenTheContainerCanResolveSomething(): void
     {
-        $this->aphiriaContainer->method('resolve')
+        $this->aphiriaContainer
+            ->method('resolve')
             ->with(self::class)
             ->willReturn($this);
         $this->assertTrue($this->psr11Container->has(self::class));

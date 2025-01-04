@@ -222,7 +222,8 @@ class TrieRouteMatcherTest extends TestCase
             }
         };
         $constraint = $this->createMock(IRouteConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with($this->anything(), 'GET', '', 'foo', [])
             ->willReturn(true);
@@ -245,7 +246,8 @@ class TrieRouteMatcherTest extends TestCase
             }
         };
         $constraint = $this->createMock(IRouteConstraint::class);
-        $constraint->expects($this->once())
+        $constraint
+            ->expects($this->once())
             ->method('passes')
             ->with($this->anything(), 'GET', '', 'foo', [])
             ->willReturn(false);
@@ -392,7 +394,8 @@ class TrieRouteMatcherTest extends TestCase
         };
         // Note: Purposely registering two separate variable nodes rather than two routes under one node
         $failingConstraint = $this->createMock(IRouteConstraint::class);
-        $failingConstraint->expects($this->once())
+        $failingConstraint
+            ->expects($this->once())
             ->method('passes')
             ->willReturn(false);
         $this->rootNode->addChild(new VariableTrieNode(
@@ -401,7 +404,8 @@ class TrieRouteMatcherTest extends TestCase
             new Route(new UriTemplate(':var1'), new RouteAction($controller::class, 'bar'), [$failingConstraint])
         ));
         $passingConstraint = $this->createMock(IRouteConstraint::class);
-        $passingConstraint->expects($this->once())
+        $passingConstraint
+            ->expects($this->once())
             ->method('passes')
             ->willReturn(true);
         $expectedRoute = new Route(new UriTemplate(':var2'), new RouteAction($controller::class, 'bar'), [$passingConstraint]);

@@ -29,9 +29,11 @@ class BootstrapperCollectionTest extends TestCase
     {
         $bootstrapper1 = $this->createMock(IBootstrapper::class);
         $bootstrapper2 = $this->createMock(IBootstrapper::class);
-        $bootstrapper1->expects($this->once())
+        $bootstrapper1
+            ->expects($this->once())
             ->method('bootstrap');
-        $bootstrapper2->expects($this->once())
+        $bootstrapper2
+            ->expects($this->once())
             ->method('bootstrap');
         $this->bootstrappers->addMany([$bootstrapper1, $bootstrapper2]);
         $this->bootstrappers->bootstrapAll();
@@ -41,9 +43,11 @@ class BootstrapperCollectionTest extends TestCase
     {
         $bootstrapper1 = $this->createMock(IBootstrapper::class);
         $bootstrapper2 = $this->createMock(IBootstrapper::class);
-        $bootstrapper1->expects($this->once())
+        $bootstrapper1
+            ->expects($this->once())
             ->method('bootstrap');
-        $bootstrapper2->expects($this->once())
+        $bootstrapper2
+            ->expects($this->once())
             ->method('bootstrap');
         $this->bootstrappers->add($bootstrapper1);
         $this->bootstrappers->add($bootstrapper2);

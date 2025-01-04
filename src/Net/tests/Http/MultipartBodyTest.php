@@ -39,21 +39,27 @@ class MultipartBodyTest extends TestCase
     public function testGettingLengthWithABodyPartWithNullLengthReturnsNull(): void
     {
         $streamMock1 = $this->createMock(IStream::class);
-        $streamMock1->method(PropertyHook::get('isReadable'))
+        $streamMock1
+            ->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock1->method(PropertyHook::get('length'))
+        $streamMock1
+            ->method(PropertyHook::get('length'))
             ->willReturn(1);
         $body1 = $this->createMock(IBody::class);
-        $body1->expects($this->once())
+        $body1
+            ->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock1);
         $body2 = $this->createMock(IBody::class);
         $streamMock2 = $this->createMock(IStream::class);
-        $streamMock2->method(PropertyHook::get('isReadable'))
+        $streamMock2
+            ->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock2->method(PropertyHook::get('length'))
+        $streamMock2
+            ->method(PropertyHook::get('length'))
             ->willReturn(null);
-        $body2->expects($this->once())
+        $body2
+            ->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock2);
         $parts = [
@@ -67,21 +73,27 @@ class MultipartBodyTest extends TestCase
     public function testGettingLengthWithBodyPartsWithLengthsReturnsSumOfLengths(): void
     {
         $streamMock1 = $this->createMock(IStream::class);
-        $streamMock1->method(PropertyHook::get('isReadable'))
+        $streamMock1
+            ->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock1->method(PropertyHook::get('length'))
+        $streamMock1
+            ->method(PropertyHook::get('length'))
             ->willReturn(1);
         $body1 = $this->createMock(IBody::class);
-        $body1->expects($this->once())
+        $body1
+            ->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock1);
         $body2 = $this->createMock(IBody::class);
         $streamMock2 = $this->createMock(IStream::class);
-        $streamMock2->method(PropertyHook::get('isReadable'))
+        $streamMock2
+            ->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
-        $streamMock2->method(PropertyHook::get('length'))
+        $streamMock2
+            ->method(PropertyHook::get('length'))
             ->willReturn(2);
-        $body2->expects($this->once())
+        $body2
+            ->expects($this->once())
             ->method('readAsStream')
             ->willReturn($streamMock2);
         $parts = [

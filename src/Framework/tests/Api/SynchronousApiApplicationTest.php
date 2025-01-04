@@ -45,10 +45,12 @@ class SynchronousApiApplicationTest extends TestCase
         $apiGateway = $this->createMock(IRequestHandler::class);
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
-        $apiGateway->method('handle')
+        $apiGateway
+            ->method('handle')
             ->with($request)
             ->willReturn($response);
-        $this->responseWriter->expects($this->once())
+        $this->responseWriter
+            ->expects($this->once())
             ->method('writeResponse')
             ->with($response);
         $app = new SynchronousApiApplication($apiGateway, $request, $this->responseWriter);
@@ -59,7 +61,8 @@ class SynchronousApiApplicationTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to run the application');
-        $this->apiGateway->method('handle')
+        $this->apiGateway
+            ->method('handle')
             ->willThrowException(new Exception());
         $this->app->run();
     }

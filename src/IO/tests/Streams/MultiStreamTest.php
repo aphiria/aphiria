@@ -34,7 +34,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $unreadableStream = $this->createMock(IStream::class);
-        $unreadableStream->method(PropertyHook::get('isReadable'))
+        $unreadableStream
+            ->method(PropertyHook::get('isReadable'))
             ->willReturn(false);
         $this->multiStream->addStream($unreadableStream);
     }
@@ -42,7 +43,8 @@ class MultiStreamTest extends TestCase
     public function testClosingStreamMakesItSeekableAgainAndResetsThePosition(): void
     {
         $unseekableStream = $this->createReadableStream();
-        $unseekableStream->method(PropertyHook::get('isSeekable'))
+        $unseekableStream
+            ->method(PropertyHook::get('isSeekable'))
             ->willReturn(false);
         $this->multiStream->addStream($unseekableStream);
         $this->multiStream->close();
@@ -146,9 +148,11 @@ class MultiStreamTest extends TestCase
     {
         $streamWithLength = $this->createReadableStream();
         $streamWithoutLength = $this->createReadableStream();
-        $streamWithLength->method(PropertyHook::get('length'))
+        $streamWithLength
+            ->method(PropertyHook::get('length'))
             ->willReturn(10);
-        $streamWithoutLength->method(PropertyHook::get('length'))
+        $streamWithoutLength
+            ->method(PropertyHook::get('length'))
             ->willReturn(null);
         $this->multiStream->addStream($streamWithLength);
         $this->multiStream->addStream($streamWithoutLength);
@@ -159,9 +163,11 @@ class MultiStreamTest extends TestCase
     {
         $stream1 = $this->createReadableStream();
         $stream2 = $this->createReadableStream();
-        $stream1->method(PropertyHook::get('length'))
+        $stream1
+            ->method(PropertyHook::get('length'))
             ->willReturn(10);
-        $stream2->method(PropertyHook::get('length'))
+        $stream2
+            ->method(PropertyHook::get('length'))
             ->willReturn(20);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
@@ -197,11 +203,13 @@ class MultiStreamTest extends TestCase
     {
         $stream1 = $this->createReadableStream();
         $stream2 = $this->createReadableStream();
-        $stream1->expects($this->once())
+        $stream1
+            ->expects($this->once())
             ->method('read')
             ->with(3)
             ->willReturn('fo');
-        $stream2->expects($this->once())
+        $stream2
+            ->expects($this->once())
             ->method('read')
             ->with(1)
             ->willReturn('o');
@@ -214,7 +222,8 @@ class MultiStreamTest extends TestCase
     public function testReadingFromSingleStreamReadsThatStream(): void
     {
         $stream = $this->createReadableStream();
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('read')
             ->with(3)
             ->willReturn('foo');
@@ -257,7 +266,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createReadableStream();
-        $stream->method(PropertyHook::get('length'))
+        $stream
+            ->method(PropertyHook::get('length'))
             ->willReturn(null);
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(-1, SEEK_END);
@@ -267,7 +277,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $stream = $this->createReadableStream();
-        $stream->method(PropertyHook::get('length'))
+        $stream
+            ->method(PropertyHook::get('length'))
             ->willReturn(null);
         $this->multiStream->addStream($stream);
         $this->multiStream->seek(1);
@@ -277,7 +288,8 @@ class MultiStreamTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $unseekableStream = $this->createReadableStream();
-        $unseekableStream->method(PropertyHook::get('isSeekable'))
+        $unseekableStream
+            ->method(PropertyHook::get('isSeekable'))
             ->willReturn(false);
         $this->multiStream->addStream($unseekableStream);
         $this->multiStream->seek(0);
@@ -366,9 +378,11 @@ class MultiStreamTest extends TestCase
     public function testToStringWithUnseekableStreamReturnsEmptyString(): void
     {
         $unseekableStream = $this->createReadableStream();
-        $unseekableStream->method(PropertyHook::get('isSeekable'))
+        $unseekableStream
+            ->method(PropertyHook::get('isSeekable'))
             ->willReturn(false);
-        $unseekableStream->expects($this->never())
+        $unseekableStream
+            ->expects($this->never())
             ->method('readToEnd');
         $multiStream = new MultiStream([$unseekableStream]);
         $this->assertEmpty((string)$multiStream);
@@ -388,7 +402,8 @@ class MultiStreamTest extends TestCase
     private function createReadableStream(): IStream&MockObject
     {
         $stream = $this->createMock(IStream::class);
-        $stream->method(PropertyHook::get('isReadable'))
+        $stream
+            ->method(PropertyHook::get('isReadable'))
             ->willReturn(true);
 
         return $stream;

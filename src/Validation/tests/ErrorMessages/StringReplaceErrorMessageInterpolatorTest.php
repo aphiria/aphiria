@@ -27,7 +27,8 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
     public function testInterpolatingGetsErrorMessageTemplateFromRegistry(): void
     {
         $errorMessageTemplates = $this->createMock(IErrorMessageTemplateRegistry::class);
-        $errorMessageTemplates->expects($this->once())
+        $errorMessageTemplates
+            ->expects($this->once())
             ->method('getErrorMessageTemplate')
             ->with('foo', 'en-US')
             ->willReturn('bar');

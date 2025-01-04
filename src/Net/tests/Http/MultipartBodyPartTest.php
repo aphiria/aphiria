@@ -44,7 +44,8 @@ class MultipartBodyPartTest extends TestCase
     public function testSerializingSeparatesHeadersAndBodyWithTwoEmptyLines(): void
     {
         $this->headers->add('Foo', 'bar');
-        $this->body->expects($this->once())
+        $this->body
+            ->expects($this->once())
             ->method('__toString')
             ->willReturn('baz');
         $this->assertSame("Foo: bar\r\n\r\nbaz", (string)$this->bodyPart);

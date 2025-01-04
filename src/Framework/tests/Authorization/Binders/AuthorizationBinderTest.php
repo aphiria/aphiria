@@ -80,7 +80,8 @@ class AuthorizationBinderTest extends TestCase
         ];
 
         foreach ($parameters as $parameter) {
-            $this->container->shouldReceive('bindInstance')
+            $this->container
+                ->shouldReceive('bindInstance')
                 ->with($parameter[0], Mockery::type($parameter[1]));
         }
     }

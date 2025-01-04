@@ -38,7 +38,8 @@ class ApiGatewayTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $middleware = $this->createMock(IMiddleware::class);
-        $middleware->expects($this->once())
+        $middleware
+            ->expects($this->once())
             ->method('handle')
             ->with($request, $this->router);
         $this->middleware->add($middleware);
@@ -49,7 +50,8 @@ class ApiGatewayTest extends TestCase
     {
         $request = $this->createMock(IRequest::class);
         $response = $this->createMock(IResponse::class);
-        $this->router->expects($this->once())
+        $this->router
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);

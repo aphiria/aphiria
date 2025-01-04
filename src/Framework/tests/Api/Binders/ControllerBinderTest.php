@@ -44,19 +44,24 @@ class ControllerBinderTest extends TestCase
         $this->binder = new ControllerBinder();
 
         // Set up some universal mocks
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(IValidator::class)
             ->andReturn($this->createMock(IValidator::class));
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(IErrorMessageInterpolator::class)
             ->andReturn($this->createMock(IErrorMessageInterpolator::class));
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(IContentNegotiator::class)
             ->andReturn($this->createMock(IContentNegotiator::class));
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(IBodyDeserializer::class)
             ->andReturn($this->createMock(IBodyDeserializer::class));
-        $this->container->shouldReceive('resolve')
+        $this->container
+            ->shouldReceive('resolve')
             ->with(IResponseFactory::class)
             ->andReturn($this->createMock(IResponseFactory::class));
 
@@ -73,7 +78,8 @@ class ControllerBinderTest extends TestCase
 
     public function testDateTimeCanBeDeserializedUsingDateTimeFormat(): void
     {
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
@@ -90,7 +96,8 @@ class ControllerBinderTest extends TestCase
 
     public function testDateTimeCanBeDeserializedUsingDateFormat(): void
     {
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
@@ -111,7 +118,8 @@ class ControllerBinderTest extends TestCase
     {
         $this->expectException(FailedRequestParameterConversionException::class);
         $this->expectExceptionMessage('Could not convert "foo" to ' . DateTime::class);
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
@@ -124,7 +132,8 @@ class ControllerBinderTest extends TestCase
 
     public function testDateTimeImmutableCanBeDeserializedUsingDateTimeFormat(): void
     {
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
@@ -141,7 +150,8 @@ class ControllerBinderTest extends TestCase
 
     public function testDateTimeImmutableCanBeDeserializedUsingDateFormat(): void
     {
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
@@ -162,7 +172,8 @@ class ControllerBinderTest extends TestCase
     {
         $this->expectException(FailedRequestParameterConversionException::class);
         $this->expectExceptionMessage('Could not convert "foo" to ' . DateTimeImmutable::class);
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
@@ -175,7 +186,8 @@ class ControllerBinderTest extends TestCase
 
     public function testRouteActionInvokerIsBound(): void
     {
-        $this->container->shouldReceive('bindInstance')
+        $this->container
+            ->shouldReceive('bindInstance')
             ->with(IRouteActionInvoker::class, $this->isInstanceOf(RouteActionInvoker::class));
         $this->binder->bind($this->container);
         // Dummy assertion

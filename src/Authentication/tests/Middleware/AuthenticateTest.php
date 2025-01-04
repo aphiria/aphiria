@@ -66,17 +66,20 @@ class AuthenticateTest extends TestCase
         $next = $this->createMock(IRequestHandler::class);
         // Authenticator will resolve null scheme names to the default scheme.  So, we'll create a dummy list of resolved scheme names that do not contain null.
         $resolvedSchemeNames = \array_fill(0, \count($schemeNames), 'scheme');
-        $this->authenticator->shouldReceive('authenticate')
+        $this->authenticator
+            ->shouldReceive('authenticate')
             ->with($request, $schemeNames)
             ->andReturn(AuthenticationResult::fail('foo', $resolvedSchemeNames));
-        $this->authenticator->shouldReceive('challenge')
+        $this->authenticator
+            ->shouldReceive('challenge')
             ->withArgs(function (IRequest $actualRequest, IResponse $actualResponse, array|string $actualSchemeNames) use ($request, $resolvedSchemeNames): bool {
                 // Similar to the above note, the real auth result will contain a non-null scheme name
                 return $actualRequest === $request
                     && $actualResponse->statusCode === HttpStatusCode::Unauthorized
                     && $actualSchemeNames === $resolvedSchemeNames;
             });
-        $next->expects($this->never())
+        $next
+            ->expects($this->never())
             ->method('handle')
             ->willReturn($response);
         $this->assertSame(HttpStatusCode::Unauthorized, $this->middleware->handle($request, $next)->statusCode);
@@ -94,10 +97,12 @@ class AuthenticateTest extends TestCase
         $next = $this->createMock(IRequestHandler::class);
         // Authenticator will resolve null scheme names to the default scheme.  So, we'll create a dummy list of resolved scheme names that do not contain null.
         $resolvedSchemeNames = \array_fill(0, \count($schemeNames), 'scheme');
-        $this->authenticator->shouldReceive('authenticate')
+        $this->authenticator
+            ->shouldReceive('authenticate')
             ->with($request, $schemeNames)
             ->andReturn(AuthenticationResult::pass($this->createMock(IPrincipal::class), $resolvedSchemeNames));
-        $next->expects($this->once())
+        $next
+            ->expects($this->once())
             ->method('handle')
             ->willReturn($response);
         $this->assertSame($response, $this->middleware->handle($request, $next));

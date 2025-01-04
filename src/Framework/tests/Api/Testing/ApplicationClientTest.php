@@ -39,11 +39,13 @@ class ApplicationClientTest extends TestCase
     {
         $response = $this->createMock(IResponse::class);
         $request = $this->createMock(IRequest::class);
-        $this->container->expects($this->once())
+        $this->container
+            ->expects($this->once())
             ->method('resolve')
             ->with(IRequest::class)
             ->willReturn($request);
-        $this->app->expects($this->once())
+        $this->app
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);
@@ -56,12 +58,15 @@ class ApplicationClientTest extends TestCase
     {
         $response = $this->createMock(IResponse::class);
         $request = $this->createMock(IRequest::class);
-        $this->container->method('resolve')
+        $this->container
+            ->method('resolve')
             ->with(IRequest::class)
             ->willReturn($this->createMock(IRequest::class));
-        $this->container->method('bindInstance')
+        $this->container
+            ->method('bindInstance')
             ->with(IRequest::class, $request);
-        $this->app->expects($this->once())
+        $this->app
+            ->expects($this->once())
             ->method('handle')
             ->with($request)
             ->willReturn($response);

@@ -32,7 +32,8 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         $configurationSource1 = new HashTableConfiguration(['foo' => 'bar']);
         $configurationSource2 = new HashTableConfiguration(['baz' => 'blah']);
-        $this->builder->withConfigurationSource($configurationSource1)
+        $this->builder
+            ->withConfigurationSource($configurationSource1)
             ->withConfigurationSource($configurationSource2)
             ->build();
         $this->assertSame('bar', GlobalConfiguration::getString('foo'));
@@ -43,7 +44,8 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         $newConfigurationSource = new HashTableConfiguration(['baz' => 'blah']);
-        $this->builder->withConfigurationSource($newConfigurationSource)
+        $this->builder
+            ->withConfigurationSource($newConfigurationSource)
             ->build();
         $value = null;
         $this->assertFalse(GlobalConfiguration::tryGetString('foo', $value));
@@ -55,7 +57,8 @@ class GlobalConfigurationBuilderTest extends TestCase
         $varName = '__aphiria_test_' . __METHOD__;
         // Need to ensure a unique var name so that environment variables don't persist between tests
         $_ENV[$varName] = 'foo';
-        $this->builder->withEnvironmentVariables()
+        $this->builder
+            ->withEnvironmentVariables()
             ->build();
         $this->assertSame('foo', GlobalConfiguration::getString($varName));
     }

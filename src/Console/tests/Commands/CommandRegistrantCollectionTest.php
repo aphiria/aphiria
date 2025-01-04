@@ -54,7 +54,8 @@ class CommandRegistrantCollectionTest extends TestCase
         };
         $cachedCommands->registerCommand(new Command('foo'), $commandHandler::class);
         $cache = $this->createMock(ICommandRegistryCache::class);
-        $cache->method('get')
+        $cache
+            ->method('get')
             ->willReturn($cachedCommands);
         $collection = new CommandRegistrantCollection($cache);
         $paramCommands = new CommandRegistry();
@@ -66,9 +67,11 @@ class CommandRegistrantCollectionTest extends TestCase
     {
         $expectedCommands = new CommandRegistry();
         $cache = $this->createMock(ICommandRegistryCache::class);
-        $cache->method('get')
+        $cache
+            ->method('get')
             ->willReturn(null);
-        $cache->method('set')
+        $cache
+            ->method('set')
             ->with($expectedCommands);
         $collection = new CommandRegistrantCollection($cache);
         $collection->registerCommands($expectedCommands);

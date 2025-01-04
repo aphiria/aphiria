@@ -71,7 +71,8 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(ParameterizedMiddleware::class, ['foo' => 'bar']);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->serviceResolver->method('resolve')
+        $this->serviceResolver
+            ->method('resolve')
             ->willReturnMap([[ControllerMock::class, $controller], [ParameterizedMiddleware::class, $middleware]]);
         $matchingResult = new RouteMatchingResult(
             new Route(
@@ -83,7 +84,8 @@ class RouterTest extends TestCase
             [],
             []
         );
-        $this->routeMatcher->expects($this->once())
+        $this->routeMatcher
+            ->expects($this->once())
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
@@ -100,7 +102,8 @@ class RouterTest extends TestCase
         $middlewareBinding = new MiddlewareBinding(__CLASS__);
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $controller = new ControllerMock();
-        $this->serviceResolver->method('resolve')
+        $this->serviceResolver
+            ->method('resolve')
             ->willReturnMap([[ControllerMock::class, $controller], [__CLASS__, $middleware]]);
         $matchingResult = new RouteMatchingResult(
             new Route(
@@ -112,7 +115,8 @@ class RouterTest extends TestCase
             [],
             []
         );
-        $this->routeMatcher->expects($this->once())
+        $this->routeMatcher
+            ->expects($this->once())
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
@@ -125,7 +129,8 @@ class RouterTest extends TestCase
 
         try {
             $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-            $this->routeMatcher->expects($this->once())
+            $this->routeMatcher
+                ->expects($this->once())
                 ->method('matchRoute')
                 ->with('GET', 'foo.com', '/bar')
                 ->willReturn(new RouteMatchingResult(null, [], ['GET']));
@@ -143,7 +148,8 @@ class RouterTest extends TestCase
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedHeaders = new Headers();
         $expectedResponse = $this->createMock(IResponse::class);
-        $expectedResponse->method(PropertyHook::get('headers'))
+        $expectedResponse
+            ->method(PropertyHook::get('headers'))
             ->willReturn($expectedHeaders);
         // We want different middleware class names to be able to test multiple middleware, hence the anon classes
         $middleware1 = new class () extends MiddlewareThatIncrementsHeader {
@@ -151,7 +157,8 @@ class RouterTest extends TestCase
         $middleware2 = new class () extends MiddlewareThatIncrementsHeader {
         };
         $controller = new ControllerMock();
-        $this->serviceResolver->method('resolve')
+        $this->serviceResolver
+            ->method('resolve')
             ->willReturnMap([
                 [ControllerMock::class, $controller],
                 [$middleware1::class, $middleware1],
@@ -170,11 +177,13 @@ class RouterTest extends TestCase
             [],
             []
         );
-        $this->routeMatcher->expects($this->once())
+        $this->routeMatcher
+            ->expects($this->once())
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
-        $this->routeActionInvoker->expects($this->once())
+        $this->routeActionInvoker
+            ->expects($this->once())
             ->method('invokeRouteAction')
             ->with(Closure::fromCallable([$controller, 'noParameters']))
             ->willReturn($expectedResponse);
@@ -187,7 +196,8 @@ class RouterTest extends TestCase
     {
         try {
             $request = $this->createRequestMock('GET', 'http://foo.com/bar');
-            $this->routeMatcher->expects($this->once())
+            $this->routeMatcher
+                ->expects($this->once())
                 ->method('matchRoute')
                 ->with('GET', 'foo.com', '/bar')
                 ->willReturn(new RouteMatchingResult(null, [], []));
@@ -203,7 +213,8 @@ class RouterTest extends TestCase
         $request = $this->createRequestMock('GET', 'http://foo.com/bar');
         $expectedResponse = $this->createMock(IResponse::class);
         $controller = new ControllerMock();
-        $this->serviceResolver->expects($this->once())
+        $this->serviceResolver
+            ->expects($this->once())
             ->method('resolve')
             ->with(ControllerMock::class)
             ->willReturn($controller);
@@ -217,11 +228,13 @@ class RouterTest extends TestCase
             [],
             []
         );
-        $this->routeMatcher->expects($this->once())
+        $this->routeMatcher
+            ->expects($this->once())
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
-        $this->routeActionInvoker->expects($this->once())
+        $this->routeActionInvoker
+            ->expects($this->once())
             ->method('invokeRouteAction')
             ->with(Closure::fromCallable([$controller, 'noParameters']))
             ->willReturn($expectedResponse);
@@ -246,11 +259,13 @@ class RouterTest extends TestCase
             [],
             []
         );
-        $this->serviceResolver->expects($this->once())
+        $this->serviceResolver
+            ->expects($this->once())
             ->method('resolve')
             ->with(__CLASS__)
             ->willReturn($this);
-        $this->routeMatcher->expects($this->once())
+        $this->routeMatcher
+            ->expects($this->once())
             ->method('matchRoute')
             ->with('GET', 'foo.com', '/bar')
             ->willReturn($matchingResult);
@@ -267,9 +282,11 @@ class RouterTest extends TestCase
     private function createRequestMock(string $method, string $uri): IRequest&MockObject
     {
         $request = $this->createMock(IRequest::class);
-        $request->method(PropertyHook::get('method'))
+        $request
+            ->method(PropertyHook::get('method'))
             ->willReturn($method);
-        $request->method(PropertyHook::get('uri'))
+        $request
+            ->method(PropertyHook::get('uri'))
             ->willReturn(new Uri($uri));
 
         return $request;

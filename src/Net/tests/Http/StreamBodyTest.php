@@ -22,7 +22,8 @@ class StreamBodyTest extends TestCase
     public function testCastingToStringConvertsUnderlyingStreamToString(): void
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('__toString')
             ->willReturn('foo');
         $body = new StreamBody($stream);
@@ -32,12 +33,14 @@ class StreamBodyTest extends TestCase
     public function testGettingLengthReturnsUnderlyingStreamLength(): void
     {
         $nullLengthStream = $this->createMock(IStream::class);
-        $nullLengthStream->method(PropertyHook::get('length'))
+        $nullLengthStream
+            ->method(PropertyHook::get('length'))
             ->willReturn(null);
         $nullLengthBody = new StreamBody($nullLengthStream);
         $this->assertNull($nullLengthBody->length);
         $definedLengthStream = $this->createMock(IStream::class);
-        $definedLengthStream->method(PropertyHook::get('length'))
+        $definedLengthStream
+            ->method(PropertyHook::get('length'))
             ->willReturn(1);
         $definedLengthBody = new StreamBody($definedLengthStream);
         $this->assertSame(1, $definedLengthBody->length);
@@ -56,7 +59,8 @@ class StreamBodyTest extends TestCase
     public function testReadingAsStringConvertsUnderlyingStreamToString(): void
     {
         $stream = $this->createMock(IStream::class);
-        $stream->expects($this->once())
+        $stream
+            ->expects($this->once())
             ->method('__toString')
             ->willReturn('foo');
         $body = new StreamBody($stream);
@@ -70,12 +74,15 @@ class StreamBodyTest extends TestCase
     {
         $outputStream = $this->createMock(IStream::class);
         $underlyingStream = $this->createMock(IStream::class);
-        $underlyingStream->expects($this->once())
+        $underlyingStream
+            ->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
-        $underlyingStream->method(PropertyHook::get('isSeekable'))
+        $underlyingStream
+            ->method(PropertyHook::get('isSeekable'))
             ->willReturn(false);
-        $underlyingStream->expects($this->never())
+        $underlyingStream
+            ->expects($this->never())
             ->method('rewind');
         $body = new StreamBody($underlyingStream);
         $body->writeToStream($outputStream);
@@ -88,12 +95,15 @@ class StreamBodyTest extends TestCase
     {
         $outputStream = $this->createMock(IStream::class);
         $underlyingStream = $this->createMock(IStream::class);
-        $underlyingStream->expects($this->once())
+        $underlyingStream
+            ->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
-        $underlyingStream->method(PropertyHook::get('isSeekable'))
+        $underlyingStream
+            ->method(PropertyHook::get('isSeekable'))
             ->willReturn(true);
-        $underlyingStream->expects($this->once())
+        $underlyingStream
+            ->expects($this->once())
             ->method('rewind');
         $body = new StreamBody($underlyingStream);
         $body->writeToStream($outputStream);
@@ -106,7 +116,8 @@ class StreamBodyTest extends TestCase
     {
         $outputStream = $this->createMock(IStream::class);
         $underlyingStream = $this->createMock(IStream::class);
-        $underlyingStream->expects($this->once())
+        $underlyingStream
+            ->expects($this->once())
             ->method('copyToStream')
             ->with($outputStream);
         $body = new StreamBody($underlyingStream);

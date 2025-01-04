@@ -195,7 +195,8 @@ class ResponseAssertionsTest extends TestCase
         $body = new StringBody('{}');
         $response = new Response(200, body: $body);
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
-        $mediaTypeFormatterMatcher->expects($this->once())
+        $mediaTypeFormatterMatcher
+            ->expects($this->once())
             ->method('getBestResponseMediaTypeFormatterMatch')
             ->with(self::class, $request)
             ->willReturn(null);
@@ -267,7 +268,8 @@ class ResponseAssertionsTest extends TestCase
         $body = new StringBody('{}');
         $response = new Response(200, body: $body);
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
-        $mediaTypeFormatterMatcher->expects($this->once())
+        $mediaTypeFormatterMatcher
+            ->expects($this->once())
             ->method('getBestResponseMediaTypeFormatterMatch')
             ->with(self::class, $request)
             ->willReturn(null);

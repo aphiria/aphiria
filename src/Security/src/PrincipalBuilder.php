@@ -57,7 +57,8 @@ class PrincipalBuilder
      */
     public function withActor(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withActor($value, $issuer);
 
         return $this;
@@ -71,7 +72,8 @@ class PrincipalBuilder
      */
     public function withAuthenticationSchemeName(string $authenticationSchemeName): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withAuthenticationSchemeName($authenticationSchemeName);
 
         return $this;
@@ -85,7 +87,8 @@ class PrincipalBuilder
      */
     public function withClaims(Claim|array $claims): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withClaims($claims);
 
         return $this;
@@ -100,7 +103,8 @@ class PrincipalBuilder
      */
     public function withCountry(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withCountry($value, $issuer);
 
         return $this;
@@ -115,7 +119,8 @@ class PrincipalBuilder
      */
     public function withDateOfBirth(DateTimeInterface $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withDateOfBirth($value, $issuer);
 
         return $this;
@@ -130,7 +135,8 @@ class PrincipalBuilder
      */
     public function withDns(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withDns($value, $issuer);
 
         return $this;
@@ -145,7 +151,8 @@ class PrincipalBuilder
      */
     public function withEmail(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withEmail($value, $issuer);
 
         return $this;
@@ -160,7 +167,8 @@ class PrincipalBuilder
      */
     public function withGender(mixed $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withGender($value, $issuer);
 
         return $this;
@@ -175,7 +183,8 @@ class PrincipalBuilder
      */
     public function withGivenName(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withGivenName($value, $issuer);
 
         return $this;
@@ -190,7 +199,8 @@ class PrincipalBuilder
      */
     public function withHomePhone(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withHomePhone($value, $issuer);
 
         return $this;
@@ -224,7 +234,8 @@ class PrincipalBuilder
      */
     public function withLocality(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withLocality($value, $issuer);
 
         return $this;
@@ -239,7 +250,8 @@ class PrincipalBuilder
      */
     public function withMobilePhone(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withMobilePhone($value, $issuer);
 
         return $this;
@@ -254,7 +266,8 @@ class PrincipalBuilder
      */
     public function withName(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withName($value, $issuer);
 
         return $this;
@@ -269,7 +282,8 @@ class PrincipalBuilder
      */
     public function withNameIdentifier(mixed $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withNameIdentifier($value, $issuer);
 
         return $this;
@@ -284,7 +298,8 @@ class PrincipalBuilder
      */
     public function withOtherPhone(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withOtherPhone($value, $issuer);
 
         return $this;
@@ -299,7 +314,8 @@ class PrincipalBuilder
      */
     public function withPostalCode(string|int $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withPostalCode($value, $issuer);
 
         return $this;
@@ -327,7 +343,8 @@ class PrincipalBuilder
      */
     public function withRoles(string|array $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withRoles($value, $issuer);
 
         return $this;
@@ -342,7 +359,8 @@ class PrincipalBuilder
      */
     public function withRsa(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withRsa($value, $issuer);
 
         return $this;
@@ -357,7 +375,8 @@ class PrincipalBuilder
      */
     public function withSid(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withSid($value, $issuer);
 
         return $this;
@@ -372,7 +391,8 @@ class PrincipalBuilder
      */
     public function withStateOrProvince(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withStateOrProvince($value, $issuer);
 
         return $this;
@@ -387,7 +407,8 @@ class PrincipalBuilder
      */
     public function withStreetAddress(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withStreetAddress($value, $issuer);
 
         return $this;
@@ -402,7 +423,8 @@ class PrincipalBuilder
      */
     public function withSurname(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withSurname($value, $issuer);
 
         return $this;
@@ -417,7 +439,8 @@ class PrincipalBuilder
      */
     public function withThumbprint(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withThumbprint($value, $issuer);
 
         return $this;
@@ -432,7 +455,8 @@ class PrincipalBuilder
      */
     public function withUpn(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withUpn($value, $issuer);
 
         return $this;
@@ -447,7 +471,8 @@ class PrincipalBuilder
      */
     public function withUri(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withUri($value, $issuer);
 
         return $this;
@@ -462,7 +487,8 @@ class PrincipalBuilder
      */
     public function withX500DistinguishedName(string $value, ?string $issuer = null): static
     {
-        $this->createPrimaryIdentityBuilder()
+        $this
+            ->createPrimaryIdentityBuilder()
             ->withX500DistinguishedName($value, $issuer);
 
         return $this;

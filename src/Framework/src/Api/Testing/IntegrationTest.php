@@ -222,7 +222,8 @@ trait IntegrationTest
     protected function delete(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
         /** @psalm-suppress MixedArgument Due to bug https://github.com/vimeo/psalm/issues/5521 */
-        $request = $this->requestBuilder->withMethod('DELETE')
+        $request = $this->requestBuilder
+            ->withMethod('DELETE')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
@@ -241,7 +242,8 @@ trait IntegrationTest
      */
     protected function get(string|Uri $uri, array $headers = []): IResponse
     {
-        $request = $this->requestBuilder->withMethod('GET')
+        $request = $this->requestBuilder
+            ->withMethod('GET')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->build();
@@ -262,7 +264,8 @@ trait IntegrationTest
     protected function options(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
         /** @psalm-suppress MixedArgument Due to bug https://github.com/vimeo/psalm/issues/5521 */
-        $request = $this->requestBuilder->withMethod('OPTIONS')
+        $request = $this->requestBuilder
+            ->withMethod('OPTIONS')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
@@ -284,7 +287,8 @@ trait IntegrationTest
     protected function patch(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
         /** @psalm-suppress MixedArgument Due to bug https://github.com/vimeo/psalm/issues/5521 */
-        $request = $this->requestBuilder->withMethod('PATCH')
+        $request = $this->requestBuilder
+            ->withMethod('PATCH')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
@@ -306,7 +310,8 @@ trait IntegrationTest
     protected function post(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
         /** @psalm-suppress MixedArgument Due to bug https://github.com/vimeo/psalm/issues/5521 */
-        $request = $this->requestBuilder->withMethod('POST')
+        $request = $this->requestBuilder
+            ->withMethod('POST')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)
@@ -328,7 +333,8 @@ trait IntegrationTest
     protected function put(string|Uri $uri, array $headers = [], mixed $body = null): IResponse
     {
         /** @psalm-suppress MixedArgument Due to bug https://github.com/vimeo/psalm/issues/5521 */
-        $request = $this->requestBuilder->withMethod('PUT')
+        $request = $this->requestBuilder
+            ->withMethod('PUT')
             ->withUri($this->createUri($uri))
             ->withManyHeaders($headers)
             ->withBody($body)

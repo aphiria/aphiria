@@ -37,7 +37,8 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testDestroyDeletesUnderlyingSession(): void
     {
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('delete')
             ->with('foo');
         $this->sessionHandler->destroy('foo');
@@ -45,7 +46,8 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testGcCallsGcOnDriverAndReturnsNumberOfDeletedSessions(): void
     {
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('gc')
             ->with(123)
             ->willReturn(1);
@@ -62,11 +64,13 @@ class DriverSessionHandlerTest extends TestCase
         /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('get')
             ->with('foo')
             ->willReturn('bar');
-        $encrypter->method('decrypt')
+        $encrypter
+            ->method('decrypt')
             ->with('bar')
             ->willReturn('baz');
         $this->assertSame('baz', $sessionHandlerWithEncrypter->read('foo'));
@@ -77,11 +81,13 @@ class DriverSessionHandlerTest extends TestCase
         /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('get')
             ->with('foo')
             ->willReturn('bar');
-        $encrypter->method('decrypt')
+        $encrypter
+            ->method('decrypt')
             ->with('bar')
             ->willThrowException(new SessionEncryptionException());
         $this->assertSame('', $sessionHandlerWithEncrypter->read('foo'));
@@ -89,7 +95,8 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testReadingWithoutEncrypterPassesThroughDriverValue(): void
     {
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('get')
             ->with('foo')
             ->willReturn('bar');
@@ -101,10 +108,12 @@ class DriverSessionHandlerTest extends TestCase
         /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('set')
             ->with('foo', 'baz');
-        $encrypter->method('encrypt')
+        $encrypter
+            ->method('encrypt')
             ->with('bar')
             ->willReturn('baz');
         $this->assertTrue($sessionHandlerWithEncrypter->write('foo', 'bar'));
@@ -115,9 +124,11 @@ class DriverSessionHandlerTest extends TestCase
         /** @var ISessionEncrypter&MockObject $encrypter */
         $encrypter = $this->createMock(ISessionEncrypter::class);
         $sessionHandlerWithEncrypter = new DriverSessionHandler($this->driver, $encrypter);
-        $this->driver->expects($this->never())
+        $this->driver
+            ->expects($this->never())
             ->method('set');
-        $encrypter->method('encrypt')
+        $encrypter
+            ->method('encrypt')
             ->with('bar')
             ->willThrowException(new SessionEncryptionException());
         $this->assertFalse($sessionHandlerWithEncrypter->write('foo', 'bar'));
@@ -125,7 +136,8 @@ class DriverSessionHandlerTest extends TestCase
 
     public function testWritingWithoutEncrypterPassesValueThroughToDriver(): void
     {
-        $this->driver->expects($this->once())
+        $this->driver
+            ->expects($this->once())
             ->method('set')
             ->with('foo', 'bar');
         $this->assertTrue($this->sessionHandler->write('foo', 'bar'));

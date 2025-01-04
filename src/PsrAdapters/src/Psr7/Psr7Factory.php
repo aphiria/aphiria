@@ -196,7 +196,8 @@ class Psr7Factory implements IPsr7Factory
             $psr7QueryParams[$key] = $value;
         }
 
-        $psr7Request = $psr7Request->withCookieParams($psr7CookieParams)
+        $psr7Request = $psr7Request
+            ->withCookieParams($psr7CookieParams)
             ->withQueryParams($psr7QueryParams);
 
         $parsedBody = null;
