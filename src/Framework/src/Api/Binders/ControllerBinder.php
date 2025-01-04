@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Api\Binders;
 
 use Aphiria\Api\Controllers\ControllerParameterResolver;
+use Aphiria\Api\Controllers\FailedRequestParameterConversionException;
 use Aphiria\Api\Controllers\IRequestParameterDeserializer;
 use Aphiria\Api\Controllers\IRouteActionInvoker;
 use Aphiria\Api\Controllers\RequestParameterDeserializer;
@@ -68,13 +69,34 @@ final class ControllerBinder extends Binder
     {
         $deserializer = new RequestParameterDeserializer();
         $dateFormat = GlobalConfiguration::getString('aphiria.serialization.dateFormat');
+        $dateTimeFormat = GlobalConfiguration::getString('aphiria.serialization.dateTimeFormat');
         $deserializer->registerDeserializer(
             DateTime::class,
-            fn (mixed $value): DateTime => DateTime::createFromFormat($dateFormat, (string)$value),
+            function (mixed $value) use ($dateTimeFormat, $dateFormat): DateTime {
+                if (($dateTime = DateTime::createFromFormat($dateTimeFormat, $value)) instanceof DateTime) {
+                    return $dateTime;
+                }
+
+                if (($date = DateTime::createFromFormat($dateFormat, $value)) instanceof DateTime) {
+                    return $date;
+                }
+
+                throw new FailedRequestParameterConversionException("Could not convert \"$value\" to " . DateTime::class);
+            }
         );
         $deserializer->registerDeserializer(
             DateTimeImmutable::class,
-            fn (mixed $value): DateTimeImmutable => DateTimeImmutable::createFromFormat($dateFormat, (string)$value),
+            function (mixed $value) use ($dateTimeFormat, $dateFormat): DateTimeImmutable {
+                if (($dateTime = DateTimeImmutable::createFromFormat($dateTimeFormat, $value)) instanceof DateTimeImmutable) {
+                    return $dateTime;
+                }
+
+                if (($date = DateTimeImmutable::createFromFormat($dateFormat, $value)) instanceof DateTimeImmutable) {
+                    return $date;
+                }
+
+                throw new FailedRequestParameterConversionException("Could not convert \"$value\" to " . DateTimeImmutable::class);
+            }
         );
 
         return $deserializer;
