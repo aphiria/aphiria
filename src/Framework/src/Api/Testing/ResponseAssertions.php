@@ -37,8 +37,7 @@ class ResponseAssertions
     public function __construct(
         private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
         private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser()
-    ) {
-    }
+    ) {}
 
     /**
      * Asserts that a cookie value matches an expected value

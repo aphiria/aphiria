@@ -52,9 +52,7 @@ class TrieFactoryTest extends TestCase
     public function testCreatingTrieWithCacheMissSetsItInCache(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routes->add(new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), []));
         $expectedTrie = new RootTrieNode();
@@ -77,9 +75,7 @@ class TrieFactoryTest extends TestCase
     public function testCreatingTrieWithNoCacheSetCreatesTrieFromCompiler(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routes->add(new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), []));
         $trieFactory = new TrieFactory($this->routes, null, $this->trieCompiler);

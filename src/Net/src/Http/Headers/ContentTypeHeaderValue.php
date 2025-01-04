@@ -15,7 +15,4 @@ namespace Aphiria\Net\Http\Headers;
 /**
  * Defines the Content-Type header value
  */
-final class ContentTypeHeaderValue extends MediaTypeHeaderValue
-{
-    // Don't do anything
-}
+final class ContentTypeHeaderValue extends MediaTypeHeaderValue {}

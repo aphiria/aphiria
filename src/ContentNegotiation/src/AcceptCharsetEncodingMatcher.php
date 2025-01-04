@@ -26,9 +26,7 @@ final class AcceptCharsetEncodingMatcher implements IEncodingMatcher
     /**
      * @param RequestHeaderParser $headerParser The header parser to use to get charset headers
      */
-    public function __construct(private readonly RequestHeaderParser $headerParser = new RequestHeaderParser())
-    {
-    }
+    public function __construct(private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()) {}
 
     /**
      * @inheritdoc

@@ -69,13 +69,9 @@ class AuthenticatorTest extends TestCase
             public array $identities = [];
             public ?IIdentity $primaryIdentity = null;
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {
@@ -121,13 +117,9 @@ class AuthenticatorTest extends TestCase
                 };
             }
 
-            public function addIdentity(IIdentity $identity): void
-            {
-            }
+            public function addIdentity(IIdentity $identity): void {}
 
-            public function addManyIdentities(array $identities): void
-            {
-            }
+            public function addManyIdentities(array $identities): void {}
 
             public function filterClaims(ClaimType|string $type): array
             {

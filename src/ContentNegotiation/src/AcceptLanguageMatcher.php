@@ -29,8 +29,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
     public function __construct(
         private readonly array $supportedLanguages,
         private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

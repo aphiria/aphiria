@@ -60,8 +60,7 @@ class ConstraintTest extends TestCase
 
     public function testGettingErrorMessagePlaceholderForUnserializableObjectsUsesClassName(): void
     {
-        $value = new class () {
-        };
+        $value = new class () {};
         $this->assertEquals(
             ['value' => $value::class . ' object'],
             $this->constraint->getErrorMessagePlaceholders($value)

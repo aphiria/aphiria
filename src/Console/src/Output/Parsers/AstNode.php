@@ -35,9 +35,7 @@ abstract class AstNode
     /**
      * @param mixed $value The value of the node
      */
-    public function __construct(public mixed $value = null)
-    {
-    }
+    public function __construct(public mixed $value = null) {}
 
     /**
      * Adds a child to this node

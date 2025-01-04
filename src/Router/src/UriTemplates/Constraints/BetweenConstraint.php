@@ -30,8 +30,7 @@ final class BetweenConstraint implements IRouteVariableConstraint
         private readonly int|float $max,
         private readonly bool $minIsInclusive = true,
         private readonly bool $maxIsInclusive = true
-    ) {
-    }
+    ) {}
 
     /**
      * Gets the slug that will be used to actually add a constraint in a URI template

@@ -29,6 +29,5 @@ final readonly class Command
         public string $name,
         public ?string $description = null,
         public ?string $helpText = null
-    ) {
-    }
+    ) {}
 }

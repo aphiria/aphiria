@@ -31,8 +31,7 @@ class MiddlewareTest extends TestCase
 
     public function testPropertiesAreSetInConstructor(): void
     {
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $middlewareAttribute = new Middleware($middleware::class, ['foo' => 'bar']);
         $this->assertSame($middleware::class, $middlewareAttribute->className);
         $this->assertSame(['foo' => 'bar'], $middlewareAttribute->parameters);

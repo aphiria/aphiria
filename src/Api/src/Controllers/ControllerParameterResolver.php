@@ -38,8 +38,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
         private readonly IRequestParameterDeserializer $routeActionParameterDeserializer = new RequestParameterDeserializer(),
         private readonly UriParser $uriParser = new UriParser()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

@@ -18,7 +18,4 @@ use Psr\Container\NotFoundExceptionInterface;
 /**
  * Defines the exception that's thrown when a container entry is not found
  */
-final class NotFoundException extends Exception implements NotFoundExceptionInterface
-{
-    // Don't do anything
-}
+final class NotFoundException extends Exception implements NotFoundExceptionInterface {}

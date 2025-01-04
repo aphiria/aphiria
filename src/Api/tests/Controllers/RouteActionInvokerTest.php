@@ -229,9 +229,7 @@ class RouteActionInvokerTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $controller = new class () extends Controller {
-            public static function foo(): void
-            {
-            }
+            public static function foo(): void {}
         };
         $this->expectExceptionMessage('Failed to reflect controller');
         $routeActionInvoker = new class () extends RouteActionInvoker {

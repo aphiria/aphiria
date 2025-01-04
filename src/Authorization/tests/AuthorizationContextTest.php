@@ -21,10 +21,8 @@ class AuthorizationContextTest extends TestCase
     public function testAllRequirementsPassedReturnsWhetherOrNotAllRequirementsHavePassed(): void
     {
         $requirements = [
-            new class () {
-            },
-            new class () {
-            }
+            new class () {},
+            new class () {}
         ];
         $context = $this->createMockContext($requirements);
         $this->assertFalse($context->allRequirementsPassed);
@@ -40,10 +38,8 @@ class AuthorizationContextTest extends TestCase
     public function testAnyRequirementsFailedReturnsFalseIfAllRequirementsHavePassedSoFarButThereAreStillPendingRequirements(): void
     {
         $requirements = [
-            new class () {
-            },
-            new class () {
-            }
+            new class () {},
+            new class () {}
         ];
         $context = $this->createMockContext($requirements);
         $this->assertFalse($context->anyRequirementsFailed);
@@ -55,10 +51,8 @@ class AuthorizationContextTest extends TestCase
     public function testAnyRequirementsFailedReturnsTrueIfAnyRequirementsExplicitlyFailed(): void
     {
         $requirements = [
-            new class () {
-            },
-            new class () {
-            }
+            new class () {},
+            new class () {}
         ];
         $context = $this->createMockContext($requirements);
         $context->fail();

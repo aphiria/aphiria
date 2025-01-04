@@ -65,9 +65,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithHelpTextIncludesIt(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -89,9 +87,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithNoDescriptionStillHasDefaultDescription(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -112,9 +108,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingCommandWithNoHelpTextDoesNotIncludeHelpText(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -135,9 +129,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithArgumentIncludesItInArgumentDescriptionAndParsedCommand(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -158,9 +150,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithNoArgumentsStillHasDefaultArgumentDescription(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -181,9 +171,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithNoOptionsStillHasDefaultArgumentDescription(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -204,9 +192,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithOptionsIncludesOptionDescriptionsAndOptionsInParsedCommand(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(
@@ -227,9 +213,7 @@ class HelpCommandHandlerTest extends TestCase
     public function testHandlingWithOptionWithShortNameIncludesOptionShortNameInDescriptionsAndParsedCommand(): void
     {
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(
             new Command(

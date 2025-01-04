@@ -29,9 +29,7 @@ class KeyValuePairIterator implements Iterator
     /**
      * @param list<KeyValuePair<TKey, TValue>> $kvps The list of key-value pairs to iterate over
      */
-    public function __construct(private readonly array $kvps)
-    {
-    }
+    public function __construct(private readonly array $kvps) {}
 
     /**
      * @inheritdoc

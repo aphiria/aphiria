@@ -36,8 +36,7 @@ class NegotiatedRequestBuilderTest extends TestCase
 
     public static function getRawBodies(): array
     {
-        $object = new class () {
-        };
+        $object = new class () {};
 
         return [
             ['string[]', ['foo', 'bar']],

@@ -46,9 +46,7 @@ class AttributeCommandRegistrantTest extends TestCase
              *
              * @return void
              */
-            public function handle(Input $input, IOutput $output)
-            {
-            }
+            public function handle(Input $input, IOutput $output) {}
         };
         $this->typeFinder
             ->expects($this->once())

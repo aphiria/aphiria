@@ -26,6 +26,5 @@ final readonly class Input
         public string $commandName,
         public array $arguments = [],
         public array $options = []
-    ) {
-    }
+    ) {}
 }

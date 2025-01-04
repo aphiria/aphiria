@@ -30,8 +30,7 @@ class GlobalConfigurationBuilder
     public function __construct(
         private readonly IConfigurationFileReader $phpConfigurationFileReader = new PhpConfigurationFileReader(),
         private readonly IConfigurationFileReader $jsonConfigurationFileReader = new JsonConfigurationFileReader()
-    ) {
-    }
+    ) {}
 
     /**
      * Builds the global configuration

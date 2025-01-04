@@ -27,9 +27,7 @@ class ApplicationBuilderTest extends TestCase
     protected function setUp(): void
     {
         $this->appBuilder = new class ($this->createMock(IApplication::class)) extends ApplicationBuilder {
-            public function __construct(private readonly IApplication $application)
-            {
-            }
+            public function __construct(private readonly IApplication $application) {}
 
             public function build(): IApplication
             {
@@ -101,9 +99,7 @@ class ApplicationBuilderTest extends TestCase
     {
         $this->expectException(OutOfBoundsException::class);
         $component = new class () implements IComponent {
-            public function build(): void
-            {
-            }
+            public function build(): void {}
         };
         $this->expectExceptionMessage('No component of type ' . $component::class . ' found');
         $this->appBuilder->getComponent($component::class);

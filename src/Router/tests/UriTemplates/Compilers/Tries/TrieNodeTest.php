@@ -39,9 +39,7 @@ class TrieNodeTest extends TestCase
     public function testAddingChildrenWithSameTwoLevelsOfChildrenMergesRoutesOnThirdLevel(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $fooARoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $fooBRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
@@ -108,9 +106,7 @@ class TrieNodeTest extends TestCase
     public function testAddingChildThatHasLessLevelsStillItsChildren(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $fooRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $barRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
@@ -155,9 +151,7 @@ class TrieNodeTest extends TestCase
     public function testAddingChildWithMoreLevelsAddsThemAll(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $fooRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $this->node->addChild(
@@ -204,9 +198,7 @@ class TrieNodeTest extends TestCase
     public function testAddingChildWithSameLiteralValueMergesRoutes(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $fooRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $barRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
@@ -233,17 +225,11 @@ class TrieNodeTest extends TestCase
     public function testAddingChildWithSameVariablePartsMergesRoutes(): void
     {
         $controller = new class () {
-            public function foo(): void
-            {
-            }
+            public function foo(): void {}
 
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
 
-            public function baz(): void
-            {
-            }
+            public function baz(): void {}
         };
         $fooRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'foo'), []);
         $barRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
@@ -296,9 +282,7 @@ class TrieNodeTest extends TestCase
     public function testAddingLiteralChildWithDifferentValueAddsItAsSeparateChild(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $fooRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $barRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
@@ -330,9 +314,7 @@ class TrieNodeTest extends TestCase
     public function testAddingVariableChildDifferingVariablePartsAddsItAsSeparateChild(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $fooRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $barRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];

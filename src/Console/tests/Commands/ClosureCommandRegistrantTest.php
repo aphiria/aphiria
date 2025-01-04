@@ -27,9 +27,7 @@ class ClosureCommandRegistrantTest extends TestCase
     {
         $expectedCommand = new Command('foo');
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $closures = [function (CommandRegistry $commands) use ($expectedCommand, $commandHandler): void {
             $commands->registerCommand($expectedCommand, $commandHandler::class);

@@ -17,7 +17,4 @@ use Aphiria\Api\Controllers\Controller;
 /**
  * Defines a mock controller
  */
-class ControllerD extends Controller
-{
-    // Don't do anything
-}
+class ControllerD extends Controller {}

@@ -30,8 +30,7 @@ class HeadersTest extends TestCase
 
     public static function getInvalidHeaderValues(): array
     {
-        $object = new class () {
-        };
+        $object = new class () {};
 
         return [
             ['foo', $object],

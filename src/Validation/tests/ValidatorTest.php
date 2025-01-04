@@ -408,8 +408,7 @@ class ValidatorTest extends TestCase
 
     public function testValidateMethodThatDoesNotExistThrowsException(): void
     {
-        $class = new class () {
-        };
+        $class = new class () {};
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($class::class . '::foo() does not exist');
         $this->validator->validateMethod($class, 'foo');
@@ -481,8 +480,7 @@ class ValidatorTest extends TestCase
 
     public function testValidatePropertyThatDoesNotExistThrowsException(): void
     {
-        $class = new class () {
-        };
+        $class = new class () {};
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($class::class . '::foo does not exist');
         $this->validator->validateProperty($class, 'foo');

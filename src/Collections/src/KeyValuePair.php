@@ -24,7 +24,5 @@ readonly class KeyValuePair
      * @param TKey $key The key
      * @param TValue $value The value
      */
-    public function __construct(public mixed $key, public mixed $value)
-    {
-    }
+    public function __construct(public mixed $key, public mixed $value) {}
 }

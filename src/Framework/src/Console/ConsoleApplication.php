@@ -35,8 +35,7 @@ class ConsoleApplication implements IApplication
         private readonly ICommandHandler $consoleGateway,
         private readonly Input $input,
         private readonly IOutput $output = new ConsoleOutput()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

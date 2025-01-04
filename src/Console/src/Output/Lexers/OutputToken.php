@@ -26,6 +26,5 @@ final readonly class OutputToken
         public OutputTokenType $type,
         public mixed $value,
         public int $position
-    ) {
-    }
+    ) {}
 }

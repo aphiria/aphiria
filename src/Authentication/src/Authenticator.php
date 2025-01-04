@@ -33,8 +33,7 @@ class Authenticator implements IAuthenticator
     public function __construct(
         private readonly AuthenticationSchemeRegistry $schemes,
         private readonly IAuthenticationSchemeHandlerResolver $handlerResolver
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

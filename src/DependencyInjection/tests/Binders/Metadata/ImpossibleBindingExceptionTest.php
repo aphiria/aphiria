@@ -32,10 +32,8 @@ class ImpossibleBindingExceptionTest extends TestCase
 
     public function testMultipleFailedBindingsAreFormattedCorrectly(): void
     {
-        $interface1 = new class () {
-        };
-        $interface2 = new class () {
-        };
+        $interface1 = new class () {};
+        $interface2 = new class () {};
         $binder1 = $this->createBinder();
         $binder2 = $this->createBinder();
         $exception = new ImpossibleBindingException([$interface1::class => [$binder1], $interface2::class => [$binder2]]);

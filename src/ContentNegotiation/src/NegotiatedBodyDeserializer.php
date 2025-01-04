@@ -23,9 +23,7 @@ final class NegotiatedBodyDeserializer implements IBodyDeserializer
     /**
      * @param IContentNegotiator $contentNegotiator The content negotiator to use when deserializing message bodies
      */
-    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator())
-    {
-    }
+    public function __construct(private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator()) {}
 
     /**
      * @inheritdoc

@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when a configuration file is invalid
  */
-class InvalidConfigurationFileException extends Exception
-{
-    // Don't do anything
-}
+class InvalidConfigurationFileException extends Exception {}

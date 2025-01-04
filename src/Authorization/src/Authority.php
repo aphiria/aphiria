@@ -29,8 +29,7 @@ class Authority implements IAuthority
         private readonly AuthorizationPolicyRegistry $policies,
         private readonly AuthorizationRequirementHandlerRegistry $requirementHandlers,
         private readonly bool $continueOnFailure = true
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

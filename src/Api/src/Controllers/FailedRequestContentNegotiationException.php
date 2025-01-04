@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the failed request content negotiation exception
  */
-class FailedRequestContentNegotiationException extends Exception
-{
-    // Don't do anything
-}
+class FailedRequestContentNegotiationException extends Exception {}

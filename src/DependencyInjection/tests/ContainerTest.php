@@ -418,8 +418,7 @@ class ContainerTest extends TestCase
 
     public function testForWithStringContextCreatesTargetedBinding(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $this->container->for($target::class, fn(IContainer $container) => $container->bindInstance(IFoo::class, new Bar()));
         $this->container->for($target::class, function (IContainer $container) {
             $this->assertInstanceOf(Bar::class, $container->resolve(IFoo::class));
@@ -477,8 +476,7 @@ class ContainerTest extends TestCase
 
     public function testMultipleTargetedBindings(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->bindClass([IFoo::class, Bar::class], Bar::class);
         });
@@ -574,8 +572,7 @@ class ContainerTest extends TestCase
 
     public function testResolvingSingletonForTarget(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Bar::class, [], true);
         });
@@ -665,10 +662,8 @@ class ContainerTest extends TestCase
 
     public function testTargetedFactoryBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class () {
-        };
-        $target2 = new class () {
-        };
+        $target1 = new class () {};
+        $target2 = new class () {};
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindFactory(IFoo::class, function () {
                 return new Bar();
@@ -689,10 +684,8 @@ class ContainerTest extends TestCase
 
     public function testTargetedInstanceBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class () {
-        };
-        $target2 = new class () {
-        };
+        $target1 = new class () {};
+        $target2 = new class () {};
         $fooInstance = new Bar();
         $personInstance = new Dave();
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) use ($fooInstance) {
@@ -711,10 +704,8 @@ class ContainerTest extends TestCase
 
     public function testTargetedPrototypeBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class () {
-        };
-        $target2 = new class () {
-        };
+        $target1 = new class () {};
+        $target2 = new class () {};
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Foo::class);
         });
@@ -731,10 +722,8 @@ class ContainerTest extends TestCase
 
     public function testTargetedSingletonBindingsOnlyApplyToNextCall(): void
     {
-        $target1 = new class () {
-        };
-        $target2 = new class () {
-        };
+        $target1 = new class () {};
+        $target2 = new class () {};
         $this->container->for(new TargetedContext($target1::class), function (IContainer $container) {
             $container->bindClass(IFoo::class, Foo::class, [], true);
         });
@@ -783,10 +772,8 @@ class ContainerTest extends TestCase
 
     public function testUnbindingMultipleInterfaces(): void
     {
-        $object1 = new class () {
-        };
-        $object2 = new class () {
-        };
+        $object1 = new class () {};
+        $object2 = new class () {};
         $this->container->bindClass($object1::class, $object1::class);
         $this->container->bindClass($object2::class, $object2::class);
         $this->container->unbind([$object1::class, $object2::class]);

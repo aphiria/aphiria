@@ -30,9 +30,7 @@ class PrincipalBuilder
     /**
      * @param string|null $defaultClaimsIssuer The default claims issuer to use if no issuer is specified for a claim in any of the identities
      */
-    public function __construct(private readonly ?string $defaultClaimsIssuer = null)
-    {
-    }
+    public function __construct(private readonly ?string $defaultClaimsIssuer = null) {}
 
     /**
      * Builds the principal

@@ -20,7 +20,5 @@ readonly class ConstructorWithInterface
     /**
      * @param IFoo $foo The object to use
      */
-    public function __construct(public IFoo $foo)
-    {
-    }
+    public function __construct(public IFoo $foo) {}
 }

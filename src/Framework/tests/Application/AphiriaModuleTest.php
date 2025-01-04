@@ -42,9 +42,7 @@ class AphiriaModuleTest extends TestCase
             }
         };
         $module = new class ($expectedBinder) extends AphiriaModule {
-            public function __construct(private Binder $expectedBinder)
-            {
-            }
+            public function __construct(private Binder $expectedBinder) {}
 
             public function configure(IApplicationBuilder $appBuilder): void
             {

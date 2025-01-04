@@ -31,9 +31,7 @@ class BinderComponent implements IComponent
     /**
      * @param IContainer $container The container to dispatch binders with
      */
-    public function __construct(private readonly IContainer $container)
-    {
-    }
+    public function __construct(private readonly IContainer $container) {}
 
     /**
      * @inheritdoc

@@ -15,7 +15,4 @@ namespace Aphiria\Reflection\Tests\Mocks\Finder;
 /**
  * Defines a mock interface
  */
-interface IInterface
-{
-    // Don't do anything
-}
+interface IInterface {}

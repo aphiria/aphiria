@@ -24,8 +24,7 @@ class TableFormatter
     public function __construct(
         private readonly TableFormatterOptions $defaultOptions = new TableFormatterOptions(),
         private readonly PaddingFormatter $padding = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * Formats the table into a string

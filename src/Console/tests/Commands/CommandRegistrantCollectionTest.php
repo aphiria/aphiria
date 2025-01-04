@@ -48,9 +48,7 @@ class CommandRegistrantCollectionTest extends TestCase
     {
         $cachedCommands = new CommandRegistry();
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $cachedCommands->registerCommand(new Command('foo'), $commandHandler::class);
         $cache = $this->createMock(ICommandRegistryCache::class);

@@ -17,7 +17,4 @@ use RuntimeException;
 /**
  * Defines an exception that's thrown when trying to create a route URI
  */
-final class RouteUriCreationException extends RuntimeException
-{
-    // Don't do anything
-}
+final class RouteUriCreationException extends RuntimeException {}

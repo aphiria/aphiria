@@ -37,8 +37,7 @@ class RouteListCommandHandler implements ICommandHandler
         private readonly RouteCollection $routes,
         private readonly MiddlewareCollection $middleware,
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

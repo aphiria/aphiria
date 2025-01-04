@@ -21,7 +21,5 @@ final readonly class CommandBinding
      * @param Command $command The command handler
      * @param class-string<ICommandHandler> $commandHandlerClassName The name of the command handler class
      */
-    public function __construct(public Command $command, public string $commandHandlerClassName)
-    {
-    }
+    public function __construct(public Command $command, public string $commandHandlerClassName) {}
 }

@@ -23,9 +23,7 @@ class MatchedRouteCandidateTest extends TestCase
     public function testPropertiesSetCorrectlyInConstructor(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $expectedRouteVariables = ['foo' => 'bar'];

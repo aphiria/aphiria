@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when the URI template is invalid
  */
-final class InvalidUriTemplateException extends Exception
-{
-    // Don't do anything
-}
+final class InvalidUriTemplateException extends Exception {}

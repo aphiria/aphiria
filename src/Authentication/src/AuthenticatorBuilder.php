@@ -27,8 +27,7 @@ class AuthenticatorBuilder
      */
     public function __construct(
         private readonly AuthenticationSchemeRegistry $schemes = new AuthenticationSchemeRegistry()
-    ) {
-    }
+    ) {}
 
     /**
      * Builds the authenticator

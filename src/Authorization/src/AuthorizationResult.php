@@ -28,8 +28,7 @@ readonly class AuthorizationResult
         public bool $passed,
         public string $policyName,
         public array $failedRequirements = []
-    ) {
-    }
+    ) {}
 
     /**
      * Creates a failed authorization result

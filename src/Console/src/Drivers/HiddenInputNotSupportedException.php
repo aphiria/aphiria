@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when hidden input is not supported
  */
-final class HiddenInputNotSupportedException extends Exception
-{
-    // Don't do anything
-}
+final class HiddenInputNotSupportedException extends Exception {}

@@ -46,9 +46,7 @@ class RouteRegistrantCollectionTest extends TestCase
     public function testCacheHitCopiesCachedConstraintsIntoParameterConstraints(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $cachedRoutes = new RouteCollection();
         $cachedRoutes->add(new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), []));

@@ -24,9 +24,7 @@ final class AuthorizationRequirementHandlerRegistry
      * @template TResource of ?object
      * @param array<class-string<TRequirement>, IAuthorizationRequirementHandler<TRequirement, TResource>> $requirementTypesToHandlers The requirement types to handlers
      */
-    public function __construct(private array $requirementTypesToHandlers = [])
-    {
-    }
+    public function __construct(private array $requirementTypesToHandlers = []) {}
 
     /**
      * Gets a handler for a requirement

@@ -36,8 +36,7 @@ final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterp
      */
     public function __construct(
         private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

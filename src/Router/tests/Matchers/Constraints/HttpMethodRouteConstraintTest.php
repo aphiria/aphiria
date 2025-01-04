@@ -46,9 +46,7 @@ class HttpMethodRouteConstraintTest extends TestCase
     public function testPassesOnlyReturnsTrueOnAllowedMethods(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $constraint = new HttpMethodRouteConstraint(['GET']);
         $matchedRoute = new MatchedRouteCandidate(
@@ -63,9 +61,7 @@ class HttpMethodRouteConstraintTest extends TestCase
     public function testPassesWorksOnLowercaseMethods(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $constraint = new HttpMethodRouteConstraint(['POST']);
         $matchedRoute = new MatchedRouteCandidate(

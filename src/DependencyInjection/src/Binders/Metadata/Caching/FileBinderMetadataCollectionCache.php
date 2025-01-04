@@ -23,9 +23,7 @@ final class FileBinderMetadataCollectionCache implements IBinderMetadataCollecti
     /**
      * @param string $filePath The cache file path
      */
-    public function __construct(private readonly string $filePath)
-    {
-    }
+    public function __construct(private readonly string $filePath) {}
 
     /**
      * @inheritdoc

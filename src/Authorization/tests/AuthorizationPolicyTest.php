@@ -31,8 +31,7 @@ class AuthorizationPolicyTest extends TestCase
 
     public static function getRequirements(): array
     {
-        $object = new class () {
-        };
+        $object = new class () {};
 
         return [
             [$object, [$object]],

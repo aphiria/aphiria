@@ -47,9 +47,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
     /**
      * @param IContainer $container The DI container
      */
-    public function __construct(protected readonly IContainer $container)
-    {
-    }
+    public function __construct(protected readonly IContainer $container) {}
 
     /**
      * @inheritdoc

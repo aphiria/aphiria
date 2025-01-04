@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines an exception that occurs if an error message could not be interpolated
  */
-final class ErrorMessageInterpolationException extends Exception
-{
-    // Don't do anything
-}
+final class ErrorMessageInterpolationException extends Exception {}

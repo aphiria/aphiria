@@ -29,9 +29,7 @@ class ApplicationClient implements IHttpClient
      * @param IRequestHandler $apiGateway The API gateway that will handle requests
      * @param IContainer $container The DI container
      */
-    public function __construct(protected readonly IRequestHandler $apiGateway, private readonly IContainer $container)
-    {
-    }
+    public function __construct(protected readonly IRequestHandler $apiGateway, private readonly IContainer $container) {}
 
     /**
      * @inheritdoc

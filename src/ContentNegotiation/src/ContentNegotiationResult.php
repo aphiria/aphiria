@@ -30,6 +30,5 @@ final readonly class ContentNegotiationResult
         public ?string $mediaType,
         public ?string $encoding,
         public ?string $language
-    ) {
-    }
+    ) {}
 }

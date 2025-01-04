@@ -22,9 +22,7 @@ final class ClosureCommandRegistrant implements ICommandRegistrant
     /**
      * @param list<Closure(CommandRegistry): void> $closures The list of closures to execute
      */
-    public function __construct(private array $closures)
-    {
-    }
+    public function __construct(private array $closures) {}
 
     /**
      * @inheritdoc

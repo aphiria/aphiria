@@ -20,7 +20,5 @@ class AuthenticationSchemeOptions
     /**
      * @param string|null $claimsIssuer The claims issuer for this scheme
      */
-    public function __construct(public ?string $claimsIssuer = null)
-    {
-    }
+    public function __construct(public ?string $claimsIssuer = null) {}
 }

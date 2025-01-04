@@ -82,8 +82,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionThatNeedsTargetedBindingWorksWhenOneHasUniversalBinding(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $binderA = new class () extends Binder {
             public object $target;
 
@@ -113,8 +112,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
     public function testCreatingCollectionThatNeedsUniversalBindingThrowsExceptionWhenAnotherOneHasTargetedBinding(): void
     {
         $this->expectException(ImpossibleBindingException::class);
-        $target = new class () {
-        };
+        $target = new class () {};
         $binderA = new class () extends Binder {
             public function bind(IContainer $container): void
             {
@@ -193,8 +191,7 @@ class BinderMetadataCollectionFactoryTest extends TestCase
 
     public function testCreatingCollectionThatReliesOnTargetedBindingSetInAnotherStillWorks(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $binderA = new class () extends Binder {
             public object $target;
 

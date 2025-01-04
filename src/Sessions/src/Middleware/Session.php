@@ -52,8 +52,7 @@ final class Session implements IMiddleware
         private readonly float $gcChance = 0.01,
         private readonly RequestParser $requestParser = new RequestParser(),
         private readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

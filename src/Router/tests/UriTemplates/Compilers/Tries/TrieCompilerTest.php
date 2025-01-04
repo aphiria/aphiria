@@ -445,9 +445,7 @@ class TrieCompilerTest extends TestCase
     private function createRoute(string $pathTemplate, ?string $hostTemplate = null): Route
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
 
         return new Route(new UriTemplate($pathTemplate, $hostTemplate), new RouteAction($controller::class, 'bar'), []);

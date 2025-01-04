@@ -50,9 +50,7 @@ class FileCommandRegistryCacheTest extends TestCase
     {
         $commands = new CommandRegistry();
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commands->registerCommand(new Command('foo'), $commandHandler::class);
         $this->cache->set($commands);

@@ -35,6 +35,5 @@ class Route
         public readonly ?string $name = null,
         public readonly bool $isHttpsOnly = false,
         public readonly array $parameters = []
-    ) {
-    }
+    ) {}
 }

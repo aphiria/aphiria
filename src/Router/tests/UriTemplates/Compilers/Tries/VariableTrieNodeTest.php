@@ -43,9 +43,7 @@ class VariableTrieNodeTest extends TestCase
     public function testCreatingWithSingleRouteConvertsItToArrayOfRoutes(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedRoute = new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []);
         $node = new VariableTrieNode(new RouteVariable('foo'), [], $expectedRoute);
@@ -174,9 +172,7 @@ class VariableTrieNodeTest extends TestCase
     public function testPropertiesAreSetInConstructor(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedParts = [new RouteVariable('foo')];
         $expectedChildren = [new LiteralTrieNode('bar', [])];

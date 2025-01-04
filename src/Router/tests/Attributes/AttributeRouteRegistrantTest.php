@@ -87,8 +87,7 @@ class AttributeRouteRegistrantTest extends TestCase
 
     public function testRegisteringRouteForNonControllerRegistersNothing(): void
     {
-        $nonController = new class () {
-        };
+        $nonController = new class () {};
         $this->typeFinder
             ->expects($this->once())
             ->method('findAllClasses')

@@ -42,8 +42,7 @@ class RequestParser
         private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),
         private readonly BodyParser $bodyParser = new BodyParser(),
         private readonly UriParser $uriParser = new UriParser()
-    ) {
-    }
+    ) {}
 
     /**
      * Gets the MIME type of the body

@@ -86,8 +86,7 @@ class ValidationContextTest extends TestCase
 
     public function testCircularDependencyDetectedIfObjectAppearsInChildContext(): void
     {
-        $object = new class () {
-        };
+        $object = new class () {};
         $this->expectException(CircularDependencyException::class);
         $this->expectExceptionMessage('Circular dependency on ' . $object::class . ' detected');
         $parentContext = new ValidationContext($object);
@@ -187,8 +186,7 @@ class ValidationContextTest extends TestCase
     public function testGettingRootValueReturnsParentValueIfParentContextExists(): void
     {
         $parentContext = new ValidationContext($this);
-        $childContext = new ValidationContext(new class () {
-        }, null, null, $parentContext);
+        $childContext = new ValidationContext(new class () {}, null, null, $parentContext);
         $this->assertSame($this, $childContext->rootValue);
         $this->assertSame($this, $parentContext->rootValue);
     }

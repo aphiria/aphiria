@@ -52,8 +52,7 @@ EOF;
         private readonly CommandRegistry $commands,
         private readonly CommandFormatter $commandFormatter = new CommandFormatter(),
         private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

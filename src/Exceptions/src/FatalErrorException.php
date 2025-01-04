@@ -17,7 +17,4 @@ use ErrorException;
 /**
  * Defines a wrapper for a fatal error exception
  */
-class FatalErrorException extends ErrorException
-{
-    // Don't do anything
-}
+class FatalErrorException extends ErrorException {}

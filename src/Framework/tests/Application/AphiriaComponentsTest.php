@@ -827,8 +827,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithGlobalMiddlewareConfiguresComponentToHaveMiddleware(): void
     {
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $middlewareBinding = new MiddlewareBinding($middleware::class);
         $expectedComponent = $this->createMock(MiddlewareComponent::class);
         $expectedComponent
@@ -878,8 +877,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding);
             }
         };
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $component->build($this->appBuilder, new MiddlewareBinding($middleware::class));
         // Dummy assertion
         $this->assertTrue(true);
@@ -907,8 +905,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding);
             }
         };
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $component->build($this->appBuilder, new MiddlewareBinding($middleware::class));
         // Dummy assertion
         $this->assertTrue(true);
@@ -919,8 +916,7 @@ class AphiriaComponentsTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Global container instance not set');
         Container::$globalInstance = null;
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $component = new class () {
             use AphiriaComponents;
 

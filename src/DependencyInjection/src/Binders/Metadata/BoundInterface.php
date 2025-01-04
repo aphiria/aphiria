@@ -23,7 +23,5 @@ final readonly class BoundInterface
      * @param class-string $interface The interface that was bound
      * @param Context $context The context that the binding occurred in
      */
-    public function __construct(public string $interface, public Context $context)
-    {
-    }
+    public function __construct(public string $interface, public Context $context) {}
 }

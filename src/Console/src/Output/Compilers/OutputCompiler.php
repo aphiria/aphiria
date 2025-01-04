@@ -35,8 +35,7 @@ final class OutputCompiler implements IOutputCompiler
         private readonly ElementRegistry $elements = new ElementRegistry(),
         private readonly IOutputLexer $lexer = new OutputLexer(),
         private readonly IOutputParser $parser = new OutputParser()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

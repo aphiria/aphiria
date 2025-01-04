@@ -27,9 +27,7 @@ class StreamBody implements IBody
     /**
      * @param IStream $stream The body content
      */
-    public function __construct(protected readonly IStream $stream)
-    {
-    }
+    public function __construct(protected readonly IStream $stream) {}
 
     /**
      * @inheritdoc

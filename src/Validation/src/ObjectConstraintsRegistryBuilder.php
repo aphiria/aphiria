@@ -27,8 +27,7 @@ final class ObjectConstraintsRegistryBuilder
      */
     public function __construct(
         private readonly ObjectConstraintsRegistry $objectConstraints = new ObjectConstraintsRegistry()
-    ) {
-    }
+    ) {}
 
     /**
      * Builds the object constraints

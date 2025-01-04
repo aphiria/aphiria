@@ -45,8 +45,7 @@ class ValidationComponentTest extends TestCase
 
     public function testBuildRegistersObjectConstraintsRegisteredInCallbacks(): void
     {
-        $class = new class () {
-        };
+        $class = new class () {};
         $this->validationComponent->withObjectConstraints(
             fn(ObjectConstraintsRegistryBuilder $objectConstraintsBuilders): ObjectConstraintsBuilder => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())
         );

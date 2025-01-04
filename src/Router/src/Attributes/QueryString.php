@@ -13,7 +13,5 @@ class QueryString
     /**
      * @param string|null $name The optional name of the query string parameter to resolve the value from
      */
-    public function __construct(public readonly ?string $name = null)
-    {
-    }
+    public function __construct(public readonly ?string $name = null) {}
 }

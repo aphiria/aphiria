@@ -20,7 +20,5 @@ readonly class ConstructorWithConcreteClass
     /**
      * @param Bar $foo The object to use
      */
-    public function __construct(public Bar $foo)
-    {
-    }
+    public function __construct(public Bar $foo) {}
 }

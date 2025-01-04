@@ -51,14 +51,10 @@ class AboutCommandHandlerTest extends TestCase
     public function testCommandsAreAlphabeticallySortedByCategories(): void
     {
         $commandHandler1 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commandHandler2 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(new Command('cat:foo', [], [], ''), $commandHandler1::class);
         $this->commands->registerCommand(new Command('ant:bar', [], [], ''), $commandHandler2::class);
@@ -76,14 +72,10 @@ class AboutCommandHandlerTest extends TestCase
     public function testCommandsAreAlphabeticallySortedWithinCategories(): void
     {
         $commandHandler1 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commandHandler2 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(new Command('cat:foo', [], [], ''), $commandHandler1::class);
         $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $commandHandler2::class);
@@ -110,19 +102,13 @@ class AboutCommandHandlerTest extends TestCase
     public function testUncategorizedCommandsAreListedBeforeCategorizedCommands(): void
     {
         $commandHandler1 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commandHandler2 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $commandHandler3 = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(new Command('foo', [], [], ''), $commandHandler1::class);
         $this->commands->registerCommand(new Command('cat:bar', [], [], ''), $commandHandler2::class);

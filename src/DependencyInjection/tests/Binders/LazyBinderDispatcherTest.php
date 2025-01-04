@@ -89,8 +89,7 @@ class LazyBinderDispatcherTest extends TestCase
 
     public function testDispatchingTargetedBindingRegistersBindingsFromBinder(): void
     {
-        $target = new class () {
-        };
+        $target = new class () {};
         $binder = new class () extends Binder {
             public object $target;
 
@@ -146,8 +145,7 @@ class LazyBinderDispatcherTest extends TestCase
          * We're testing that, when a lazy factory binding is invoked and the binder run, the binder's bindings occur
          * in the universal context, not in the targeted context that invoked the lazy factory binding.
          */
-        $target = new class () {
-        };
+        $target = new class () {};
         $this->container->for(new TargetedContext($target::class), function (IContainer $container) {
             $container->resolve(IFoo::class);
         });

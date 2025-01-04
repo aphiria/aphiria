@@ -18,7 +18,4 @@ use Psr\Container\ContainerExceptionInterface;
 /**
  * Defines the exception that's thrown when the container could not resolve an interface
  */
-final class ContainerException extends Exception implements ContainerExceptionInterface
-{
-    // Don't do anything
-}
+final class ContainerException extends Exception implements ContainerExceptionInterface {}

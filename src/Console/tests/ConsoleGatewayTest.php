@@ -100,9 +100,7 @@ class ConsoleGatewayTest extends TestCase
             ->willReturn(new HelpCommandHandler($this->commands));
         // Try with command name
         $commandHandler = new class () implements ICommandHandler {
-            public function handle(Input $input, IOutput $output): void
-            {
-            }
+            public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerCommand(new Command('holiday', [], [], ''), $commandHandler::class);
         \ob_start();

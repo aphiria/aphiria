@@ -15,7 +15,4 @@ namespace Aphiria\Reflection\Tests\Mocks\Finder;
 /**
  * Defines a mock class
  */
-class ClassB extends ClassA
-{
-    // Don't do anything
-}
+class ClassB extends ClassA {}

@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines an exception that's thrown with serialization errors
  */
-class SerializationException extends Exception
-{
-    // Don't do anything
-}
+class SerializationException extends Exception {}

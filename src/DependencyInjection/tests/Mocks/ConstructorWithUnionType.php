@@ -20,7 +20,5 @@ final readonly class ConstructorWithUnionType
     /**
      * @param string|IFoo $foo The union type parameter
      */
-    public function __construct(public string|IFoo $foo)
-    {
-    }
+    public function __construct(public string|IFoo $foo) {}
 }

@@ -40,12 +40,9 @@ class RouteBuilderTest extends TestCase
     public function testChainingOnFluentMethodsReturnsCorrectInstance(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $this->assertSame($this->routeBuilder, $this->routeBuilder->mapsToMethod($controller::class, 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withParameter('foo', 'bar'));
         $this->assertSame($this->routeBuilder, $this->routeBuilder->withManyParameters(['foo' => 'bar']));
@@ -60,9 +57,7 @@ class RouteBuilderTest extends TestCase
         $constraint = $this->createMock(IRouteConstraint::class);
         $this->routeBuilder->withConstraint($constraint);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -84,9 +79,7 @@ class RouteBuilderTest extends TestCase
         $constraints = [$this->createMock(IRouteConstraint::class)];
         $this->routeBuilder->withManyConstraints($constraints);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -95,18 +88,14 @@ class RouteBuilderTest extends TestCase
 
     public function testManyMiddlewareBindingsAreSetWhenPassingThemInAsObjects(): void
     {
-        $middleware1 = new class () {
-        };
-        $middleware2 = new class () {
-        };
+        $middleware1 = new class () {};
+        $middleware2 = new class () {};
         $this->routeBuilder->withManyMiddleware([
             new MiddlewareBinding($middleware1::class, ['bar' => 'baz']),
             new MiddlewareBinding($middleware2::class, ['young' => 'cool']),
         ]);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -121,9 +110,7 @@ class RouteBuilderTest extends TestCase
     {
         $this->routeBuilder->withManyMiddleware(['foo', 'bar']);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -137,9 +124,7 @@ class RouteBuilderTest extends TestCase
     public function testMethodIsSetWhenUsingMethodAction(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -149,13 +134,10 @@ class RouteBuilderTest extends TestCase
 
     public function testMiddlewareBindingIsSet(): void
     {
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         $this->routeBuilder->withMiddleware($middleware::class, ['bar' => 'baz']);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -167,9 +149,7 @@ class RouteBuilderTest extends TestCase
     public function testNameIsSet(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $route = $this->routeBuilder
             ->mapsToMethod($controller::class, 'bar')
@@ -182,9 +162,7 @@ class RouteBuilderTest extends TestCase
     {
         $this->routeBuilder->withParameter('foo', 'bar');
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -195,9 +173,7 @@ class RouteBuilderTest extends TestCase
     {
         $this->routeBuilder->withManyParameters(['foo' => 'bar']);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $this->routeBuilder->mapsToMethod($controller::class, 'bar');
         $route = $this->routeBuilder->build();
@@ -208,9 +184,7 @@ class RouteBuilderTest extends TestCase
     {
         $expectedUriTemplate = new UriTemplate('foo', 'example.com', true);
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $routeBuilder = new RouteBuilder(['GET'], $expectedUriTemplate);
         $routeBuilder->mapsToMethod($controller::class, 'bar');

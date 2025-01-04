@@ -34,8 +34,7 @@ class ExceptionHandler implements IMiddleware
         private readonly IApiExceptionRenderer $exceptionRenderer,
         private readonly LoggerInterface $logger,
         private readonly LogLevelFactory $logLevelFactory = new LogLevelFactory()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc

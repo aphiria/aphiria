@@ -52,7 +52,8 @@ $container->bindInstance(IUserService::class, new UserService());
 // Run an integration test
 $postResponse = $this->post('/users', new User('Dave'));
 $user = $this->readResponseBodyAs(User::class, $postResponse);
-$admin = new PrincipalBuilder('example.com')->withRoles('admin')
+$admin = new PrincipalBuilder('example.com')
+    ->withRoles('admin')
     ->build();
 $getResponse = $this->actingAs($admin, fn () => $this->get("/users/$user->id"));
 $this->assertParsedBodyEquals($user, $getResponse);

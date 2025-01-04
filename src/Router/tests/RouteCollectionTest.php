@@ -30,9 +30,7 @@ class RouteCollectionTest extends TestCase
     public function testCopyEffectivelyDuplicatesAnotherCollection(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $routes1 = new RouteCollection();
         $routes2 = new RouteCollection();
@@ -46,9 +44,7 @@ class RouteCollectionTest extends TestCase
     public function testCreatingWithRoutesAddsRoutesToCollection(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedRoutes = [
             new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), [])
@@ -60,13 +56,9 @@ class RouteCollectionTest extends TestCase
     public function testGettingAllRoutesReturnsAllRegisteredRoutes(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
 
-            public function baz(): void
-            {
-            }
+            public function baz(): void {}
         };
         $expectedRoutes = [
             new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), []),
@@ -84,9 +76,7 @@ class RouteCollectionTest extends TestCase
     public function testGettingNamedRouteThatWasAddedInBulk(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedRoute = new Route(
             new UriTemplate('abc'),
@@ -102,9 +92,7 @@ class RouteCollectionTest extends TestCase
     public function testGettingNamedRouteThatWasAddedIt(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
         $expectedRoute = new Route(
             new UriTemplate('abc'),

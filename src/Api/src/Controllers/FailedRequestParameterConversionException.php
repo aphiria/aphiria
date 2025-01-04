@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when a request parameter fails to be converted
  */
-final class FailedRequestParameterConversionException extends Exception
-{
-    // Don't do anything
-}
+final class FailedRequestParameterConversionException extends Exception {}

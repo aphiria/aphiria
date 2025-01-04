@@ -23,9 +23,7 @@ final class DummyConstraint implements IRouteConstraint
     /**
      * @param string $constructorParam A dummy parameter to test that constraints' constructor params are passed in
      */
-    public function __construct(private string $constructorParam)
-    {
-    }
+    public function __construct(private string $constructorParam) {}
 
     /**
      * @inheritdoc

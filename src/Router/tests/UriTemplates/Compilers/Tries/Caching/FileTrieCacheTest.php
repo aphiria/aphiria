@@ -52,12 +52,9 @@ class FileTrieCacheTest extends TestCase
     public function testGetOnHitReturnsTrieAndIncludesRoutesWithAllPropertiesSet(): void
     {
         $controller = new class () {
-            public function bar(): void
-            {
-            }
+            public function bar(): void {}
         };
-        $middleware = new class () {
-        };
+        $middleware = new class () {};
         // We are purposely testing setting every type of property inside the route to test that they're all unserializable
         $route = new Route(
             new UriTemplate('foo'),

@@ -17,7 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when a method or closure could not be called by the container
  */
-final class CallException extends Exception
-{
-    // Don't do anything
-}
+final class CallException extends Exception {}

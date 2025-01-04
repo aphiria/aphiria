@@ -25,9 +25,7 @@ class Prompt
     /***
      * @param PaddingFormatter $paddingFormatter The space padding formatter to use
      */
-    public function __construct(private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter())
-    {
-    }
+    public function __construct(private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()) {}
 
     /**
      * Prompts the user to answer a question

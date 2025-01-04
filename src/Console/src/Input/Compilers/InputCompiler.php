@@ -38,8 +38,7 @@ final class InputCompiler implements IInputCompiler
         private readonly IInputTokenizer $argvTokenizer = new ArgvInputTokenizer(),
         private readonly IInputTokenizer $stringTokenizer = new StringInputTokenizer(),
         private readonly IInputTokenizer $arrayListTokenizer = new ArrayListInputTokenizer()
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritdoc
