@@ -11,6 +11,7 @@
 - Added the ability to use `#[Header]`, `#[QueryString]`, and `#[RouteVariable]` to route action parameters to clarify where they should be resolved from ([#320](https://github.com/aphiria/aphiria/pull/320))
 - Added the ability to use `#[Header]`, `#[QueryString]`, and `#[RouteVariable]` to define where to get values from when generating route URIs ([#320](https://github.com/aphiria/aphiria/pull/320))
 - Added the ability to generate HTTP requests for routes with `RouteRequestFactory` ([#322](https://github.com/aphiria/aphiria/pull/322))
+- Added the ability to customize deserialization of request parameters ([#323](https://github.com/aphiria/aphiria/pull/323))
 
 ### Fixed
 

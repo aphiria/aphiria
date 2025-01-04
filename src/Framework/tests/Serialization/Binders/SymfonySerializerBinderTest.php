@@ -241,7 +241,7 @@ class SymfonySerializerBinderTest extends TestCase
         return [
             'aphiria' => [
                 'serialization' => [
-                    'dateFormat' => 'Ymd',
+                    'dateTimeFormat' => 'Ymd',
                     'encoders' => [],
                     'nameConverter' => null,
                     'normalizers' => [],

@@ -14,7 +14,7 @@ namespace Aphiria\Api\Tests\Controllers;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Api\Controllers\FailedRequestContentNegotiationException;
-use Aphiria\Api\Controllers\FailedScalarParameterConversionException;
+use Aphiria\Api\Controllers\FailedRequestParameterConversionException;
 use Aphiria\Api\Controllers\IControllerParameterResolver;
 use Aphiria\Api\Controllers\MissingControllerParameterValueException;
 use Aphiria\Api\Controllers\RequestBodyDeserializationException;
@@ -81,13 +81,13 @@ class RouteActionInvokerTest extends TestCase
         }
     }
 
-    public function testFailedScalarParameterConversionExceptionIsRethrownAsHttpException(): void
+    public function testFailedRequestParameterConversionExceptionIsRethrownAsHttpException(): void
     {
         try {
             $this->parameterResolver->expects($this->once())
                 ->method('resolveParameter')
                 ->with($this->anything(), $this->anything())
-                ->willThrowException(new FailedScalarParameterConversionException());
+                ->willThrowException(new FailedRequestParameterConversionException());
             $this->invoker->invokeRouteAction(
                 Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),

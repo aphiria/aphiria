@@ -35,8 +35,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @param UriParser $uriParser The URI parser to use
      */
     public function __construct(
-        private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
-        private readonly UriParser $uriParser = new UriParser()
+        private readonly IBodyDeserializer             $bodyDeserializer = new NegotiatedBodyDeserializer(),
+        private readonly IRequestParameterDeserializer $routeActionParameterDeserializer = new RequestParameterDeserializer(),
+        private readonly UriParser                     $uriParser = new UriParser()
     ) {
     }
 
@@ -53,7 +54,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
 
         // Try to resolve an object parameter
         if ($reflectionParameterType instanceof ReflectionNamedType && !$reflectionParameterType->isBuiltin()) {
-            return $this->resolveObjectParameter(
+            return $this->resolveRequestBody(
                 $reflectionParameter,
                 $reflectionParameterType,
                 $request
@@ -64,7 +65,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         if (\count($routeVariableAttributes = $reflectionParameter->getAttributes(RouteVariable::class)) === 1) {
             $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
-            return $this->resolveScalarParameter(
+            return $this->resolveRequestParameters(
                 fn (): bool => isset($routeVariables[$parameterName]),
                 fn (): mixed => $routeVariables[$parameterName],
                 $reflectionParameter
@@ -75,7 +76,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         if (\count($queryStringAttributes = $reflectionParameter->getAttributes(QueryString::class)) === 1) {
             $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
-            return $this->resolveScalarParameter(
+            return $this->resolveRequestParameters(
                 fn (): bool => isset($queryStringVars[$parameterName]),
                 fn (): mixed => $queryStringVars[$parameterName],
                 $reflectionParameter
@@ -86,7 +87,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         if (\count($headerAttributes = $reflectionParameter->getAttributes(Header::class)) === 1) {
             $parameterName = $headerAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
-            return $this->resolveScalarParameter(
+            return $this->resolveRequestParameters(
                 fn (): bool => isset($request->headers[$parameterName]),
                 fn (): mixed => $request->headers->getFirst($parameterName),
                 $reflectionParameter
@@ -95,7 +96,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
 
         // No attributes for where to resolve the value from, so check the route
         if (isset($routeVariables[$reflectionParameter->getName()])) {
-            return $this->resolveScalarParameter(
+            return $this->resolveRequestParameters(
                 fn (): bool => isset($routeVariables[$reflectionParameter->getName()]),
                 fn (): mixed => $routeVariables[$reflectionParameter->getName()],
                 $reflectionParameter
@@ -104,7 +105,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
 
         // No attributes for where to resolve the value from, so now check the query string
         if (isset($queryStringVars[$reflectionParameter->getName()])) {
-            return $this->resolveScalarParameter(
+            return $this->resolveRequestParameters(
                 fn (): bool => isset($queryStringVars[$reflectionParameter->getName()]),
                 fn (): mixed => $queryStringVars[$reflectionParameter->getName()],
                 $reflectionParameter
@@ -112,7 +113,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         }
 
         // We could not resolve this parameter, so try doing it with default values
-        return $this->resolveScalarParameter(
+        return $this->resolveRequestParameters(
             fn (): bool => false,
             fn (): null => null,
             $reflectionParameter
@@ -120,19 +121,19 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     }
 
     /**
-     * Resolves an object parameter using content negotiator
+     * Resolves the request body using content negotiator
      *
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
      * @param ReflectionNamedType $type The type to resolve to
      * @param IRequest $request The current request
-     * @return object|null The resolved parameter
+     * @return object|null The resolved request body
      * @throws FailedRequestContentNegotiationException Thrown if the request content negotiation failed
      * @throws RequestBodyDeserializationException Thrown if there was an error deserializing the request body
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      * @psalm-suppress InvalidReturnType The media type formatter will resolve to the parameter type, which will be an object
      * @psalm-suppress InvalidReturnStatement Ditto
      */
-    private function resolveObjectParameter(
+    private function resolveRequestBody(
         ReflectionParameter $reflectionParameter,
         ReflectionNamedType $type,
         IRequest $request
@@ -169,43 +170,35 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     }
 
     /**
-     * Resolves scalar parameters
+     * Resolves request parameters
      *
      * @param Closure(): bool $issetClosure The closure that returns whether or not the value can be resolved from a source
      * @param Closure(): mixed $getClosure The closure that returns the value from a source
      * @param ReflectionParameter $reflectionParameter The parameter to resolve
-     * @return mixed The resolved parameter value
-     * @throws FailedScalarParameterConversionException Thrown if the scalar parameter could not be converted
+     * @return mixed The resolved request parameter value
+     * @throws FailedRequestParameterConversionException Thrown if the request parameter could not be converted
      * @throws MissingControllerParameterValueException Thrown if there was no valid value for the parameter
      */
-    private function resolveScalarParameter(
+    private function resolveRequestParameters(
         Closure $issetClosure,
         Closure $getClosure,
         ReflectionParameter $reflectionParameter
     ): mixed {
         if ($issetClosure()) {
             $rawValue = $getClosure();
-            $typeName = $reflectionParameter->getType() instanceof ReflectionNamedType
+            $type = $reflectionParameter->getType() instanceof ReflectionNamedType
                 ? $reflectionParameter->getType()->getName()
                 : null;
 
-            switch ($typeName) {
-                case 'int':
-                    return (int)$rawValue;
-                case 'float':
-                    return (float)$rawValue;
-                case 'string':
-                    return (string)$rawValue;
-                case 'bool':
-                    return (bool)$rawValue;
-                case null:
-                    // Do not attempt to convert it
-                    return $rawValue;
-                case 'array':
-                    throw new FailedScalarParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
-                default:
-                    throw new FailedScalarParameterConversionException("Failed to convert value to $typeName");
+            if ($type === 'array') {
+                throw new FailedRequestParameterConversionException('Cannot automatically resolve array types - you must either read the body or the query string inside the controller method');
             }
+
+            if ($type === null) {
+                return $rawValue;
+            }
+
+            return $this->routeActionParameterDeserializer->deserializeRouteActionParameter($type, $rawValue);
         }
 
         if ($reflectionParameter->isDefaultValueAvailable()) {
