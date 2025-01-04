@@ -275,7 +275,7 @@ class ResponseAssertionsTest extends TestCase
             ->willReturn(null);
         $contentNegotiator = new ContentNegotiator(mediaTypeFormatterMatcher: $mediaTypeFormatterMatcher);
         $assertions = new ResponseAssertions(new NegotiatedBodyDeserializer($contentNegotiator));
-        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn (mixed $parsedBody): bool => true);
+        $assertions->assertParsedBodyPassesCallback($request, $response, self::class, fn(mixed $parsedBody): bool => true);
     }
 
     public function testAssertParsedBodyPassesCallbackWithNonHttpBodyDoesNotThrowOnMatch(): void

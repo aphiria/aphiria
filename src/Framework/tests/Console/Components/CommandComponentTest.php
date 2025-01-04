@@ -53,7 +53,7 @@ class CommandComponentTest extends TestCase
             {
             }
         };
-        $this->commandComponent->withCommands(fn (CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $commandHandler::class));
+        $this->commandComponent->withCommands(fn(CommandRegistry $commands) => $commands->registerCommand($expectedCommand, $commandHandler::class));
         $this->commandComponent->build();
         $this->assertCount(1, $this->commands->commandBindings);
         $this->assertSame($expectedCommand, $this->commands->commandBindings[0]->command);

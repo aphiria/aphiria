@@ -241,7 +241,7 @@ class IntegrationTestCaseTest extends TestCase
     public function testActingAsCallsMockAuthenticator(): void
     {
         $user = new User([new Identity()]);
-        $callback = fn (): bool => true;
+        $callback = fn(): bool => true;
         $this->authenticator = $this->createMock(IMockAuthenticator::class);
         $this->authenticator
             ->method('actingAs')
@@ -255,7 +255,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('The bound authenticator does not implement ' . IMockAuthenticator::class . '.  You may have to customize ' . AuthenticationBinder::class . '::inTestingEnvironment().');
         $user = new User([new Identity()]);
-        $this->integrationTests->actingAs($user, fn () => null);
+        $this->integrationTests->actingAs($user, fn() => null);
     }
 
     public function testAssertCookieEqualsDoesNotThrowOnSuccess(): void
@@ -426,7 +426,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             $expectedParsedBody::class,
-            fn (mixed $parsedBody): bool => true
+            fn(mixed $parsedBody): bool => true
         );
     }
 
@@ -443,7 +443,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             self::class,
-            fn (mixed $parsedBody): bool => false
+            fn(mixed $parsedBody): bool => false
         );
         $this->assertSame(
             'Failed to assert that the response body passes the callback',
@@ -455,7 +455,7 @@ class IntegrationTestCaseTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('A request must be sent before calling ' . IntegrationTestCase::class . '::assertParsedBodyPassesCallback');
-        $this->integrationTests->assertParsedBodyPassesCallback(new Response(), self::class, fn (mixed $body): bool => false);
+        $this->integrationTests->assertParsedBodyPassesCallback(new Response(), self::class, fn(mixed $body): bool => false);
     }
 
     public function testAssertStatusCodeEqualsDoesNotThrowOnSuccess(): void

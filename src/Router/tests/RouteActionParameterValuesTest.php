@@ -43,19 +43,19 @@ class RouteActionParameterValuesTest extends TestCase
             [
                 $controller,
                 'implicit',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value),
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value),
                 'bar'
             ],
             [
                 $controller,
                 'queryString',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value),
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value),
                 'bar'
             ],
             [
                 $controller,
                 'routeVariable',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value),
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value),
                 'bar'
             ]
         ];
@@ -80,17 +80,17 @@ class RouteActionParameterValuesTest extends TestCase
             [
                 $controller,
                 'implicit',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value)
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseImplicitParameterValue('foo', $value)
             ],
             [
                 $controller,
                 'queryString',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value)
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseQueryStringParameterValue('foo', $value)
             ],
             [
                 $controller,
                 'routeVariable',
-                fn (RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value)
+                fn(RouteActionParameterValues $parameters, mixed &$value) => $parameters->tryUseRouteVariableParameterValue('foo', $value)
             ]
         ];
     }

@@ -86,14 +86,14 @@ class GlobalConfigurationTest extends TestCase
     public function testGetObjectForNestedValueReturnsObject(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => ['bar' => 'baz']]));
-        $object = GlobalConfiguration::getObject('foo.bar', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $object = GlobalConfiguration::getObject('foo.bar', fn(mixed $options): ConfigObject => new ConfigObject($options));
         $this->assertEquals(new ConfigObject('baz'), $object);
     }
 
     public function testGetObjectReturnsObject(): void
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
-        $object = GlobalConfiguration::getObject('foo', fn (mixed $options): ConfigObject => new ConfigObject($options));
+        $object = GlobalConfiguration::getObject('foo', fn(mixed $options): ConfigObject => new ConfigObject($options));
         $this->assertEquals(new ConfigObject('bar'), $object);
     }
 
@@ -103,7 +103,7 @@ class GlobalConfigurationTest extends TestCase
         $this->expectExceptionMessage('Factory must return an object');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
-        GlobalConfiguration::getObject('foo', fn (mixed $options): bool => true);
+        GlobalConfiguration::getObject('foo', fn(mixed $options): bool => true);
     }
 
     public function testGetStringForNestedValueReturnsString(): void
@@ -226,7 +226,7 @@ class GlobalConfigurationTest extends TestCase
         $this->assertTrue(
             GlobalConfiguration::tryGetObject(
                 'foo',
-                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                fn(mixed $options): ConfigObject => new ConfigObject($options),
                 $object
             )
         );
@@ -241,7 +241,7 @@ class GlobalConfigurationTest extends TestCase
         $this->assertFalse(
             GlobalConfiguration::tryGetObject(
                 'baz',
-                fn (mixed $options): ConfigObject => new ConfigObject($options),
+                fn(mixed $options): ConfigObject => new ConfigObject($options),
                 $object
             )
         );
@@ -256,7 +256,7 @@ class GlobalConfigurationTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(['foo' => 'bar']));
         $object = null;
         /** @psalm-suppress InvalidArgument Purposely testing an invalid parameter */
-        GlobalConfiguration::tryGetObject('foo', fn (mixed $options): bool => true, $object);
+        GlobalConfiguration::tryGetObject('foo', fn(mixed $options): bool => true, $object);
     }
 
     public function testTryGetStringForExistentValueSetsItAndReturnsTrue(): void

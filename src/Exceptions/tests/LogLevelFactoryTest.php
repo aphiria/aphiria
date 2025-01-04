@@ -36,7 +36,7 @@ class LogLevelFactoryTest extends TestCase
     {
         $exception = new Exception();
         $this->factory->registerManyLogLevelFactories([
-            Exception::class => fn (Exception $ex) => LogLevel::EMERGENCY
+            Exception::class => fn(Exception $ex) => LogLevel::EMERGENCY
         ]);
         $this->assertSame(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
     }
@@ -44,7 +44,7 @@ class LogLevelFactoryTest extends TestCase
     public function testCreatingLogLevelWithSingleCustomErrorLogLevelUsesIt(): void
     {
         $exception = new Exception();
-        $this->factory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
+        $this->factory->registerLogLevelFactory(Exception::class, fn(Exception $ex) => LogLevel::EMERGENCY);
         $this->assertSame(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
     }
 }

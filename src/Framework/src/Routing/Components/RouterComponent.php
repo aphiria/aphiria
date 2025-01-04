@@ -68,7 +68,7 @@ class RouterComponent implements IComponent
         $routeRegistrants->registerRoutes($this->container->resolve(RouteCollection::class));
         $this->container->for(
             new TargetedContext(ApiGateway::class),
-            fn (IContainer $container) => $container->bindFactory(IRequestHandler::class, fn (): IRequestHandler => $this->container->resolve(Router::class))
+            fn(IContainer $container) => $container->bindFactory(IRequestHandler::class, fn(): IRequestHandler => $this->container->resolve(Router::class))
         );
     }
 

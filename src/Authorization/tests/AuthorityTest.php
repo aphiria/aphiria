@@ -66,7 +66,7 @@ class AuthorityTest extends TestCase
         $requirementHandler
             ->expects($this->once())
             ->method('handle')
-            ->with($user, $policy->requirements[0], $this->callback(fn (AuthorizationContext $context): bool => $context->resource === $this));
+            ->with($user, $policy->requirements[0], $this->callback(fn(AuthorizationContext $context): bool => $context->resource === $this));
         $this->requirementHandlers->registerRequirementHandler(RolesRequirement::class, $requirementHandler);
         $this->authority->authorize($user, $policy, $this);
     }

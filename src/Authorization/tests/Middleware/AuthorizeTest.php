@@ -213,7 +213,7 @@ class AuthorizeTest extends TestCase
         $this->authenticator
             ->expects($this->once())
             ->method('challenge')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->statusCode === HttpStatusCode::Unauthorized), ['scheme']);
+            ->with($request, $this->callback(fn(IResponse $response): bool => $response->statusCode === HttpStatusCode::Unauthorized), ['scheme']);
         $this->middleware->parameters = ['policy' => $policy];
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Unauthorized, $response->statusCode);
@@ -273,7 +273,7 @@ class AuthorizeTest extends TestCase
         $this->authenticator
             ->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->statusCode === HttpStatusCode::Forbidden), ['scheme']);
+            ->with($request, $this->callback(fn(IResponse $response): bool => $response->statusCode === HttpStatusCode::Forbidden), ['scheme']);
         $this->middleware->parameters = ['policyName' => $policy->name];
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Forbidden, $response->statusCode);
@@ -296,7 +296,7 @@ class AuthorizeTest extends TestCase
         $this->authenticator
             ->expects($this->once())
             ->method('forbid')
-            ->with($request, $this->callback(fn (IResponse $response): bool => $response->statusCode === HttpStatusCode::Forbidden), ['scheme']);
+            ->with($request, $this->callback(fn(IResponse $response): bool => $response->statusCode === HttpStatusCode::Forbidden), ['scheme']);
         $this->middleware->parameters = ['policy' => $policy];
         $response = $this->middleware->handle($request, $this->createMock(IRequestHandler::class));
         $this->assertSame(HttpStatusCode::Forbidden, $response->statusCode);

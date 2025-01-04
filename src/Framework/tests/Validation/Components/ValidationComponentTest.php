@@ -48,7 +48,7 @@ class ValidationComponentTest extends TestCase
         $class = new class () {
         };
         $this->validationComponent->withObjectConstraints(
-            fn (ObjectConstraintsRegistryBuilder $objectConstraintsBuilders): ObjectConstraintsBuilder => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())
+            fn(ObjectConstraintsRegistryBuilder $objectConstraintsBuilders): ObjectConstraintsBuilder => $objectConstraintsBuilders->class($class::class)->hasMethodConstraints('bar', new RequiredConstraint())
         );
         $this->validationComponent->build();
         $classConstraints = $this->objectConstraints->getConstraintsForClass($class::class);

@@ -42,7 +42,7 @@ class RequestBinderTest extends TestCase
         $this->container
             ->expects($this->once())
             ->method('bindFactory')
-            ->with(IRequest::class, $this->callback(fn (Closure $factory): bool => $factory() === $request));
+            ->with(IRequest::class, $this->callback(fn(Closure $factory): bool => $factory() === $request));
         RequestBinder::setOverridingRequest($request);
         new RequestBinder()->bind($this->container);
     }

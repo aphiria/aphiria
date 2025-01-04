@@ -241,6 +241,6 @@ class RouteListCommandHandlerTest extends TestCase
         $this->output
             ->expects($this->once())
             ->method('writeln')
-            ->with($this->paddingFormatter->format($expectedRows, fn (array $row): string => \implode('    ', $row)));
+            ->with($this->paddingFormatter->format($expectedRows, fn(array $row): string => \implode('    ', $row)));
     }
 }

@@ -81,7 +81,7 @@ class GlobalConfigurationBuilder
          *
          * @var array<string, mixed> $_ENV
          */
-        $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn (): HashTableConfiguration => new HashTableConfiguration($_ENV)];
+        $this->configurationSourceStructs[] = ['type' => 'factory', 'value' => fn(): HashTableConfiguration => new HashTableConfiguration($_ENV)];
 
         return $this;
     }
@@ -98,7 +98,7 @@ class GlobalConfigurationBuilder
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
-            'value' => fn (): IConfiguration => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+            'value' => fn(): IConfiguration => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter)
         ];
 
         return $this;
@@ -116,7 +116,7 @@ class GlobalConfigurationBuilder
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
-            'value' => fn (): IConfiguration => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+            'value' => fn(): IConfiguration => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter)
         ];
 
         return $this;

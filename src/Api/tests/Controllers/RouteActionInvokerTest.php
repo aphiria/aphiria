@@ -127,7 +127,7 @@ class RouteActionInvokerTest extends TestCase
         $expectedResponse = $this->createMock(IResponse::class);
         $this->responseFactory
             ->method('createResponse')
-            ->with($request, HttpStatusCode::Ok, null, $this->callback(fn (mixed $actionResult): bool => $actionResult instanceof User))
+            ->with($request, HttpStatusCode::Ok, null, $this->callback(fn(mixed $actionResult): bool => $actionResult instanceof User))
             ->willReturn($expectedResponse);
         $actualResponse = $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'popo']),
@@ -222,7 +222,7 @@ class RouteActionInvokerTest extends TestCase
                 throw new ReflectionException();
             }
         };
-        $routeActionInvoker->invokeRouteAction(fn () => null, $this->createRequestWithoutBody('http://example.com'), []);
+        $routeActionInvoker->invokeRouteAction(fn() => null, $this->createRequestWithoutBody('http://example.com'), []);
     }
 
     public function testInvokingRouteActionWithUnreflectableStaticRouteActionDelegateThrowsException(): void

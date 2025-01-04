@@ -34,30 +34,30 @@ class PrincipalBuilderTest extends TestCase
         $dateOfBirth = new DateTimeImmutable();
 
         return [
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withActor('foo'), ClaimType::Actor, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withCountry('foo'), ClaimType::Country, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withDateOfBirth($dateOfBirth), ClaimType::DateOfBirth, $dateOfBirth],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withDns('foo'), ClaimType::Dns, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withEmail('foo@bar.com'), ClaimType::Email, 'foo@bar.com'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withGender('male'), ClaimType::Gender, 'male'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withGivenName('Dave'), ClaimType::GivenName, 'Dave'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withHomePhone('5555555555'), ClaimType::HomePhone, '5555555555'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withLocality('en'), ClaimType::Locality, 'en'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withMobilePhone('5555555555'), ClaimType::MobilePhone, '5555555555'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withName('Dave'), ClaimType::Name, 'Dave'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withNameIdentifier(123), ClaimType::NameIdentifier, 123],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withOtherPhone('5555555555'), ClaimType::OtherPhone, '5555555555'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withPostalCode(90210), ClaimType::PostalCode, 90210],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withRoles('admin'), ClaimType::Role, 'admin'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withRsa('foo'), ClaimType::Rsa, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withSid('foo'), ClaimType::Sid, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withStateOrProvince('IL'), ClaimType::StateOrProvince, 'IL'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withStreetAddress('123 Fake St'), ClaimType::StreetAddress, '123 Fake St'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withSurname('Young'), ClaimType::Surname, 'Young'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withThumbprint('foo'), ClaimType::Thumbprint, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withUpn('foo'), ClaimType::Upn, 'foo'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withUri('https://example.com'), ClaimType::Uri, 'https://example.com'],
-            [fn (PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withX500DistinguishedName('foo'), ClaimType::X500DistinguishedName, 'foo']
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withActor('foo'), ClaimType::Actor, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withCountry('foo'), ClaimType::Country, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withDateOfBirth($dateOfBirth), ClaimType::DateOfBirth, $dateOfBirth],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withDns('foo'), ClaimType::Dns, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withEmail('foo@bar.com'), ClaimType::Email, 'foo@bar.com'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withGender('male'), ClaimType::Gender, 'male'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withGivenName('Dave'), ClaimType::GivenName, 'Dave'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withHomePhone('5555555555'), ClaimType::HomePhone, '5555555555'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withLocality('en'), ClaimType::Locality, 'en'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withMobilePhone('5555555555'), ClaimType::MobilePhone, '5555555555'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withName('Dave'), ClaimType::Name, 'Dave'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withNameIdentifier(123), ClaimType::NameIdentifier, 123],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withOtherPhone('5555555555'), ClaimType::OtherPhone, '5555555555'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withPostalCode(90210), ClaimType::PostalCode, 90210],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withRoles('admin'), ClaimType::Role, 'admin'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withRsa('foo'), ClaimType::Rsa, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withSid('foo'), ClaimType::Sid, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withStateOrProvince('IL'), ClaimType::StateOrProvince, 'IL'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withStreetAddress('123 Fake St'), ClaimType::StreetAddress, '123 Fake St'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withSurname('Young'), ClaimType::Surname, 'Young'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withThumbprint('foo'), ClaimType::Thumbprint, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withUpn('foo'), ClaimType::Upn, 'foo'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withUri('https://example.com'), ClaimType::Uri, 'https://example.com'],
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withX500DistinguishedName('foo'), ClaimType::X500DistinguishedName, 'foo']
         ];
     }
 
@@ -77,7 +77,7 @@ class PrincipalBuilderTest extends TestCase
     public function testAddingDefaultClaimsIssuerPassesItToIdentities(): void
     {
         $user = new PrincipalBuilder('example.com')
-            ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Dave'))
+            ->withIdentity(fn(IdentityBuilder $identity) => $identity->withName('Dave'))
             ->build();
         $this->assertSame('example.com', $user->filterClaims(ClaimType::Name)[0]->issuer);
     }
@@ -85,7 +85,7 @@ class PrincipalBuilderTest extends TestCase
     public function testAddingIdentityBuilderAddsBuiltIdentityToPrincipal(): void
     {
         $user = new PrincipalBuilder()
-            ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Dave', 'example.com'))
+            ->withIdentity(fn(IdentityBuilder $identity) => $identity->withName('Dave', 'example.com'))
             ->build();
         $this->assertCount(1, $user->identities);
         $this->assertSame('Dave', $user->identities[0]->filterClaims(ClaimType::Name)[0]->value);
@@ -96,7 +96,7 @@ class PrincipalBuilderTest extends TestCase
     {
         $user = new PrincipalBuilder()
             ->withIdentity(
-                fn (IdentityBuilder $identity) => $identity->withName('Dave', 'example.com')
+                fn(IdentityBuilder $identity) => $identity->withName('Dave', 'example.com')
                 ->build()
             )->build();
         $this->assertCount(1, $user->identities);
@@ -117,7 +117,7 @@ class PrincipalBuilderTest extends TestCase
     {
         $user = new PrincipalBuilder()
             ->withIdentity(new Identity([new Claim(ClaimType::Name, 'Dave', 'example.com')]))
-            ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Lindsey', 'example.com'))
+            ->withIdentity(fn(IdentityBuilder $identity) => $identity->withName('Lindsey', 'example.com'))
             ->build();
         $this->assertCount(2, $user->identities);
         $this->assertSame('Dave', $user->identities[0]->filterClaims(ClaimType::Name)[0]->value);
@@ -129,8 +129,8 @@ class PrincipalBuilderTest extends TestCase
     public function testAddingMultipleIdentityBuildersAddsThemToPrincipal(): void
     {
         $user = new PrincipalBuilder()
-            ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Dave', 'example.com'))
-            ->withIdentity(fn (IdentityBuilder $identity) => $identity->withName('Lindsey', 'example.com'))
+            ->withIdentity(fn(IdentityBuilder $identity) => $identity->withName('Dave', 'example.com'))
+            ->withIdentity(fn(IdentityBuilder $identity) => $identity->withName('Lindsey', 'example.com'))
             ->build();
         $this->assertCount(2, $user->identities);
         $this->assertSame('Dave', $user->identities[0]->filterClaims(ClaimType::Name)[0]->value);
@@ -162,7 +162,7 @@ class PrincipalBuilderTest extends TestCase
         $user = new PrincipalBuilder('foo')
             ->withIdentity($identities[0])
             ->withIdentity($identities[1])
-            ->withPrimaryIdentitySelector(fn (array $identities) => $identities[1])
+            ->withPrimaryIdentitySelector(fn(array $identities) => $identities[1])
             ->build();
         $this->assertSame($identities[1], $user->primaryIdentity);
     }

@@ -66,8 +66,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             $parameterName = $routeVariableAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
             return $this->resolveRequestParameters(
-                fn (): bool => isset($routeVariables[$parameterName]),
-                fn (): mixed => $routeVariables[$parameterName],
+                fn(): bool => isset($routeVariables[$parameterName]),
+                fn(): mixed => $routeVariables[$parameterName],
                 $reflectionParameter
             );
         }
@@ -77,8 +77,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             $parameterName = $queryStringAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
             return $this->resolveRequestParameters(
-                fn (): bool => isset($queryStringVars[$parameterName]),
-                fn (): mixed => $queryStringVars[$parameterName],
+                fn(): bool => isset($queryStringVars[$parameterName]),
+                fn(): mixed => $queryStringVars[$parameterName],
                 $reflectionParameter
             );
         }
@@ -88,8 +88,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             $parameterName = $headerAttributes[0]->newInstance()->name ?? $reflectionParameter->getName();
 
             return $this->resolveRequestParameters(
-                fn (): bool => isset($request->headers[$parameterName]),
-                fn (): mixed => $request->headers->getFirst($parameterName),
+                fn(): bool => isset($request->headers[$parameterName]),
+                fn(): mixed => $request->headers->getFirst($parameterName),
                 $reflectionParameter
             );
         }
@@ -97,8 +97,8 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         // No attributes for where to resolve the value from, so check the route
         if (isset($routeVariables[$reflectionParameter->getName()])) {
             return $this->resolveRequestParameters(
-                fn (): bool => isset($routeVariables[$reflectionParameter->getName()]),
-                fn (): mixed => $routeVariables[$reflectionParameter->getName()],
+                fn(): bool => isset($routeVariables[$reflectionParameter->getName()]),
+                fn(): mixed => $routeVariables[$reflectionParameter->getName()],
                 $reflectionParameter
             );
         }
@@ -106,16 +106,16 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         // No attributes for where to resolve the value from, so now check the query string
         if (isset($queryStringVars[$reflectionParameter->getName()])) {
             return $this->resolveRequestParameters(
-                fn (): bool => isset($queryStringVars[$reflectionParameter->getName()]),
-                fn (): mixed => $queryStringVars[$reflectionParameter->getName()],
+                fn(): bool => isset($queryStringVars[$reflectionParameter->getName()]),
+                fn(): mixed => $queryStringVars[$reflectionParameter->getName()],
                 $reflectionParameter
             );
         }
 
         // We could not resolve this parameter, so try doing it with default values
         return $this->resolveRequestParameters(
-            fn (): bool => false,
-            fn (): null => null,
+            fn(): bool => false,
+            fn(): null => null,
             $reflectionParameter
         );
     }

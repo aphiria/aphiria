@@ -529,7 +529,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithCommandsConfiguresComponentToHaveCommands(): void
     {
-        $callback = fn (CommandRegistry $commands): mixed => null;
+        $callback = fn(CommandRegistry $commands): mixed => null;
         $expectedComponent = $this->createMock(CommandComponent::class);
         $expectedComponent
             ->expects($this->once())
@@ -583,7 +583,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withCommands($appBuilder, $callback);
             }
         };
-        $callback = fn (CommandRegistry $commands): mixed => null;
+        $callback = fn(CommandRegistry $commands): mixed => null;
         $component->build($this->appBuilder, $callback);
         // Dummy assertion
         $this->assertTrue(true);
@@ -606,7 +606,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withCommands($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (CommandRegistry $commands): mixed => null);
+        $component->build($this->appBuilder, fn(CommandRegistry $commands): mixed => null);
     }
 
     public function testWithComponentAddsComponentToAppBuilder(): void
@@ -685,7 +685,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
+                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn(Exception $ex, IOutput $output): mixed => null);
             }
         };
         $component->build($this->appBuilder);
@@ -706,7 +706,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn (Exception $ex, IOutput $output): mixed => null);
+                $this->withConsoleExceptionOutputWriter($appBuilder, Exception::class, fn(Exception $ex, IOutput $output): mixed => null);
             }
         };
         $component->build($this->appBuilder);
@@ -934,7 +934,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithLogLevelFactoryConfiguresComponentToHaveFactory(): void
     {
-        $logLevelFactory = fn (Exception $ex): string => LogLevel::ALERT;
+        $logLevelFactory = fn(Exception $ex): string => LogLevel::ALERT;
         $expectedComponent = $this->createMock(ExceptionHandlerComponent::class);
         $expectedComponent
             ->expects($this->once())
@@ -989,7 +989,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withLogLevelFactory($appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
+                $this->withLogLevelFactory($appBuilder, Exception::class, fn(Exception $ex): string => LogLevel::ALERT);
             }
         };
         $component->build($this->appBuilder);
@@ -1010,7 +1010,7 @@ class AphiriaComponentsTest extends TestCase
              */
             public function build(IApplicationBuilder $appBuilder): void
             {
-                $this->withLogLevelFactory($appBuilder, Exception::class, fn (Exception $ex): string => LogLevel::ALERT);
+                $this->withLogLevelFactory($appBuilder, Exception::class, fn(Exception $ex): string => LogLevel::ALERT);
             }
         };
         $component->build($this->appBuilder);
@@ -1065,7 +1065,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithObjectConstraintsConfiguresComponentToHaveObjectConstraints(): void
     {
-        $callback = fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
+        $callback = fn(ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
         $expectedComponent = $this->createMock(ValidationComponent::class);
         $expectedComponent
             ->expects($this->once())
@@ -1119,7 +1119,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $factory = fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
+        $factory = fn(ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null;
         $component->build($this->appBuilder, $factory);
         // Dummy assertion
         $this->assertTrue(true);
@@ -1142,7 +1142,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withObjectConstraints($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null);
+        $component->build($this->appBuilder, fn(ObjectConstraintsRegistryBuilder $objectConstraints): mixed => null);
     }
 
     public function testWithProblemDetailsConfiguresComponentToHaveProblemDetails(): void
@@ -1320,7 +1320,7 @@ class AphiriaComponentsTest extends TestCase
 
     public function testWithRoutesConfiguresComponentToHaveRoutes(): void
     {
-        $callback = fn (RouteCollectionBuilder $routeBuilders): mixed => null;
+        $callback = fn(RouteCollectionBuilder $routeBuilders): mixed => null;
         $expectedComponent = $this->createMock(RouterComponent::class);
         $expectedComponent
             ->expects($this->once())
@@ -1374,7 +1374,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withRoutes($appBuilder, $callback);
             }
         };
-        $callback = fn (RouteCollectionBuilder $routeBuilders): mixed => null;
+        $callback = fn(RouteCollectionBuilder $routeBuilders): mixed => null;
         $component->build($this->appBuilder, $callback);
         // Dummy assertion
         $this->assertTrue(true);
@@ -1397,7 +1397,7 @@ class AphiriaComponentsTest extends TestCase
                 $this->withRoutes($appBuilder, $callback);
             }
         };
-        $component->build($this->appBuilder, fn (RouteCollectionBuilder $routeBuilders): mixed => null);
+        $component->build($this->appBuilder, fn(RouteCollectionBuilder $routeBuilders): mixed => null);
     }
 
     public function testWithValidatorAttributesComponentIfItIsNotRegisteredYet(): void

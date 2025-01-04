@@ -65,14 +65,14 @@ class RequestParameterDeserializerTest extends TestCase
     public function testRegisteringDeserializerForTypeWithBuiltInDeserializerOverwritesIt(): void
     {
         $deserializer = new RequestParameterDeserializer();
-        $deserializer->registerDeserializer('int', fn (mixed $value): int => (int)$value + 1);
+        $deserializer->registerDeserializer('int', fn(mixed $value): int => (int)$value + 1);
         $this->assertSame(2, $deserializer->deserializeRouteActionParameter('int', 1));
     }
 
     public function testRegisteringDeserializerForTypeWithoutBuiltInDeserializerCanDeserializeValues(): void
     {
         $deserializer = new RequestParameterDeserializer();
-        $deserializer->registerDeserializer(DateTime::class, fn (mixed $value): DateTime => DateTime::createFromFormat('Y-m-d', $value));
+        $deserializer->registerDeserializer(DateTime::class, fn(mixed $value): DateTime => DateTime::createFromFormat('Y-m-d', $value));
         $deserializedDateTime = $deserializer->deserializeRouteActionParameter(DateTime::class, '2025-01-03');
         $this->assertSame('2025', $deserializedDateTime->format('Y'));
         $this->assertSame('01', $deserializedDateTime->format('m'));

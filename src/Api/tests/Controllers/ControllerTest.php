@@ -260,19 +260,19 @@ class ControllerTest extends TestCase
     public function testHelperMethodsWithoutSetRequestThrowsException(): void
     {
         $helperCallbacks = [
-            fn (): IResponse => $this->controller->accepted(),
-            fn (): IResponse => $this->controller->badRequest(),
-            fn (): IResponse => $this->controller->conflict(),
-            fn (): IResponse => $this->controller->created('https://example.com'),
-            fn (): IResponse => $this->controller->forbidden(),
-            fn (): IResponse => $this->controller->found('https://example.com'),
-            fn (): IResponse => $this->controller->internalServerError(),
-            fn (): IResponse => $this->controller->movedPermanently('https://example.com'),
-            fn (): IResponse => $this->controller->noContent(),
-            fn (): IResponse => $this->controller->notFound(),
-            fn (): IResponse => $this->controller->ok(),
-            fn (): mixed => $this->controller->readRequestBodyAs('foo'),
-            fn (): IResponse => $this->controller->unauthorized()
+            fn(): IResponse => $this->controller->accepted(),
+            fn(): IResponse => $this->controller->badRequest(),
+            fn(): IResponse => $this->controller->conflict(),
+            fn(): IResponse => $this->controller->created('https://example.com'),
+            fn(): IResponse => $this->controller->forbidden(),
+            fn(): IResponse => $this->controller->found('https://example.com'),
+            fn(): IResponse => $this->controller->internalServerError(),
+            fn(): IResponse => $this->controller->movedPermanently('https://example.com'),
+            fn(): IResponse => $this->controller->noContent(),
+            fn(): IResponse => $this->controller->notFound(),
+            fn(): IResponse => $this->controller->ok(),
+            fn(): mixed => $this->controller->readRequestBodyAs('foo'),
+            fn(): IResponse => $this->controller->unauthorized()
         ];
 
         foreach ($helperCallbacks as $helperCallback) {

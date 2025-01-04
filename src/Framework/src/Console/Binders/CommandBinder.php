@@ -45,8 +45,8 @@ final class CommandBinder extends Binder
         $container->bindInstance(ICommandRegistryCache::class, $commandCache);
         $inputCompiler = new InputCompiler($commands);
         $container->bindInstance(IInputCompiler::class, $inputCompiler);
-        $container->bindFactory(Input::class, fn (): Input => $this->getInput($container));
-        $container->bindFactory(IOutput::class, fn (): IOutput => $this->getOutput($container));
+        $container->bindFactory(Input::class, fn(): Input => $this->getInput($container));
+        $container->bindFactory(IOutput::class, fn(): IOutput => $this->getOutput($container));
 
         if (\getenv('APP_ENV') === 'production') {
             $commandRegistrants = new CommandRegistrantCollection($commandCache);

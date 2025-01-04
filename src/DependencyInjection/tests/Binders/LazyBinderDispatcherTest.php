@@ -104,11 +104,11 @@ class LazyBinderDispatcherTest extends TestCase
         $binder->target = $target;
         $this->createDispatcher()->dispatch([$binder], $this->container);
         /** @var FactoryContainerBinding $lazyBinding */
-        $lazyBinding = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
+        $lazyBinding = $this->container->for(new TargetedContext($target::class), fn(IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(FactoryContainerBinding::class, $lazyBinding);
         $this->assertInstanceOf(Foo::class, ($lazyBinding->factory)());
         /** @var InstanceContainerBinding $bindingFromBinder */
-        $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn (IContainer $container): mixed => $container->getBinding(IFoo::class));
+        $bindingFromBinder = $this->container->for(new TargetedContext($target::class), fn(IContainer $container): mixed => $container->getBinding(IFoo::class));
         $this->assertInstanceOf(InstanceContainerBinding::class, $bindingFromBinder);
         $this->assertInstanceOf(Foo::class, $bindingFromBinder->instance);
     }

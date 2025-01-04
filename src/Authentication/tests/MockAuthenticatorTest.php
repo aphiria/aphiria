@@ -52,7 +52,7 @@ class MockAuthenticatorTest extends TestCase
         $schemeHandler->shouldNotReceive('authenticate');
         $this->schemes->registerScheme($scheme, true);
 
-        $result = $this->mockAuthenticator->actingAs($user, fn (): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'foo'));
+        $result = $this->mockAuthenticator->actingAs($user, fn(): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'foo'));
 
         $this->assertTrue($result->passed);
         $this->assertSame($user, $result->user);
@@ -76,7 +76,7 @@ class MockAuthenticatorTest extends TestCase
         $this->schemes->registerScheme($bazScheme);
 
         $fooResult = $this->mockAuthenticator->authenticate($request, 'foo');
-        $barResult = $this->mockAuthenticator->actingAs($user, fn (): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'bar'));
+        $barResult = $this->mockAuthenticator->actingAs($user, fn(): AuthenticationResult => $this->mockAuthenticator->authenticate($request, 'bar'));
         $bazResult = $this->mockAuthenticator->authenticate($request, 'baz');
 
         $this->assertFalse($fooResult->passed);

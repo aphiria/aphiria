@@ -124,7 +124,7 @@ class GlobalExceptionHandlerTest extends TestCase
             ->expects($this->once())
             ->method('emergency')
             ->with($exception);
-        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn (Exception $ex) => LogLevel::EMERGENCY);
+        $this->logLevelFactory->registerLogLevelFactory(Exception::class, fn(Exception $ex) => LogLevel::EMERGENCY);
         $this->globalExceptionHandler->handleException($exception);
     }
 }
