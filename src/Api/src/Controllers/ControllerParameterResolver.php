@@ -35,9 +35,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
      * @param UriParser $uriParser The URI parser to use
      */
     public function __construct(
-        private readonly IBodyDeserializer             $bodyDeserializer = new NegotiatedBodyDeserializer(),
+        private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
         private readonly IRequestParameterDeserializer $routeActionParameterDeserializer = new RequestParameterDeserializer(),
-        private readonly UriParser                     $uriParser = new UriParser()
+        private readonly UriParser $uriParser = new UriParser()
     ) {
     }
 
@@ -154,7 +154,9 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             }
 
             throw new FailedRequestContentNegotiationException(
-                "Failed to negotiate request content with type $type"
+                "Failed to negotiate request content with type $type",
+                0,
+                $ex
             );
         } catch (SerializationException $ex) {
             if ($reflectionParameter->allowsNull()) {
