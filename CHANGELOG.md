@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Nothing
+- Updated to use PER CS 2.0 coding standards ([#327](https://github.com/aphiria/aphiria/pull/327))
 
 ### Added
 
