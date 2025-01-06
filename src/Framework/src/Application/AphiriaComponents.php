@@ -24,6 +24,7 @@ use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthorizationRequirementHandler;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Output\Compilers\Elements\Element;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -296,6 +297,36 @@ trait AphiriaComponents
         $appBuilder
             ->getComponent(CommandComponent::class)
             ->withCommands($callback);
+
+        return $this;
+    }
+
+    /**
+     * Registers console elements to the command component
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param Element|list<Element> $elements The element or list of elements to register
+     * @return static For chaining
+     */
+    protected function withConsoleElement(IApplicationBuilder $appBuilder, Element|array $elements): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(CommandComponent::class)) {
+            if (!isset(Container::$globalInstance)) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            // Bind the command registry here so that it can be used in the component
+            if (!Container::$globalInstance->hasBinding(CommandRegistry::class)) {
+                Container::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
+            }
+
+            $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
+        }
+
+        $appBuilder
+            ->getComponent(CommandComponent::class)
+            ->withElement($elements);
 
         return $this;
     }

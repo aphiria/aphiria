@@ -22,6 +22,9 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
 use Aphiria\Console\Input\Compilers\InputCompiler;
 use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
+use Aphiria\Console\Output\Compilers\IOutputCompiler;
+use Aphiria\Console\Output\Compilers\OutputCompiler;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\IContainer;
@@ -124,7 +127,9 @@ class CommandBinderTest extends TestCase
             [ICommandRegistryCache::class, FileCommandRegistryCache::class],
             [IInputCompiler::class, InputCompiler::class],
             [CommandRegistrantCollection::class, CommandRegistrantCollection::class],
-            [AttributeCommandRegistrant::class, AttributeCommandRegistrant::class]
+            [AttributeCommandRegistrant::class, AttributeCommandRegistrant::class],
+            [ElementRegistry::class, ElementRegistry::class],
+            [IOutputCompiler::class, OutputCompiler::class]
         ];
 
         foreach ($parameters as $parameter) {

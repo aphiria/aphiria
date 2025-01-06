@@ -62,12 +62,7 @@ final class RoutingBinder extends Binder
             [IRouteMatcher::class, TrieRouteMatcher::class],
             static function () use ($routes, $routeRegistrants, $trieCache) {
                 $routeRegistrants->registerRoutes($routes);
-
-                if (\getenv('APP_ENV') === 'production') {
-                    $trieFactory = new TrieFactory($routes, $trieCache);
-                } else {
-                    $trieFactory = new TrieFactory($routes);
-                }
+                $trieFactory = new TrieFactory($routes, \getenv('APP_ENV') === 'production' ? $trieCache : null);
 
                 return new TrieRouteMatcher(($trieFactory)->createTrie());
             },

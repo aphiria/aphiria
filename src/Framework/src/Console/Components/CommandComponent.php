@@ -17,6 +17,9 @@ use Aphiria\Console\Commands\Attributes\AttributeCommandRegistrant;
 use Aphiria\Console\Commands\ClosureCommandRegistrant;
 use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Output\Compilers\Elements\Element;
+use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
+use Aphiria\Console\Output\Compilers\IOutputCompiler;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Closure;
@@ -31,6 +34,8 @@ class CommandComponent implements IComponent
     private bool $attributesEnabled = false;
     /** @var list<Closure(CommandRegistry): void> The list of callbacks that can register commands */
     private array $callbacks = [];
+    /** @var list<Element> The list of elements to register */
+    private array $elements = [];
 
     /**
      * @param IServiceResolver $serviceResolver The service resolver
@@ -53,11 +58,16 @@ class CommandComponent implements IComponent
                 throw new RuntimeException(AttributeCommandRegistrant::class . ' cannot be null if using attributes');
             }
 
+            /** @var AttributeCommandRegistrant $attributeCommandRegistrant */
             $commandRegistrants->add($attributeCommandRegistrant);
         }
 
         $commandRegistrants->add(new ClosureCommandRegistrant($this->callbacks));
         $commandRegistrants->registerCommands($commands);
+
+        foreach ($this->elements as $element) {
+            $this->serviceResolver->resolve(ElementRegistry::class)->registerElement($element);
+        }
     }
 
     /**
@@ -81,6 +91,21 @@ class CommandComponent implements IComponent
     public function withCommands(Closure $callback): static
     {
         $this->callbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Registers console elements
+     *
+     * @param Element|list<Element> $elements The element or list of elements to register
+     * @return static For chaining
+     */
+    public function withElement(Element|array $elements): static
+    {
+        foreach (\is_array($elements) ? $elements : [$elements] as $element) {
+            $this->elements[] = $element;
+        }
 
         return $this;
     }

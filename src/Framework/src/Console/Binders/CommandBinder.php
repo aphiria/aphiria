@@ -22,6 +22,9 @@ use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Input\Compilers\IInputCompiler;
 use Aphiria\Console\Input\Compilers\InputCompiler;
 use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
+use Aphiria\Console\Output\Compilers\IOutputCompiler;
+use Aphiria\Console\Output\Compilers\OutputCompiler;
 use Aphiria\Console\Output\ConsoleOutput;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -84,6 +87,11 @@ final class CommandBinder extends Binder
      */
     protected function getOutput(IContainer $container): IOutput
     {
-        return new ConsoleOutput();
+        $elements = new Elementregistry();
+        $container->bindInstance(ElementRegistry::class, $elements);
+        $outputCompiler = new OutputCompiler($elements);
+        $container->bindInstance(IOutputCompiler::class, $outputCompiler);
+
+        return new ConsoleOutput($outputCompiler);
     }
 }
