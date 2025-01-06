@@ -24,6 +24,7 @@ use Aphiria\Authorization\AuthorizationRequirementHandlerRegistry;
 use Aphiria\Authorization\IAuthorizationRequirementHandler;
 use Aphiria\Console\Commands\CommandBinding;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Output\Compilers\Elements\Element;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\Console\StatusCode;
 use Aphiria\DependencyInjection\Binders\Binder;
@@ -48,6 +49,7 @@ use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Routing\RouteCollectionBuilder;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
@@ -296,6 +298,36 @@ trait AphiriaComponents
         $appBuilder
             ->getComponent(CommandComponent::class)
             ->withCommands($callback);
+
+        return $this;
+    }
+
+    /**
+     * Registers console elements to the command component
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param Element|list<Element> $elements The element or list of elements to register
+     * @return static For chaining
+     */
+    protected function withConsoleElement(IApplicationBuilder $appBuilder, Element|array $elements): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(CommandComponent::class)) {
+            if (!isset(Container::$globalInstance)) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            // Bind the command registry here so that it can be used in the component
+            if (!Container::$globalInstance->hasBinding(CommandRegistry::class)) {
+                Container::$globalInstance->bindInstance(CommandRegistry::class, new CommandRegistry());
+            }
+
+            $appBuilder->withComponent(new CommandComponent(Container::$globalInstance));
+        }
+
+        $appBuilder
+            ->getComponent(CommandComponent::class)
+            ->withElement($elements);
 
         return $this;
     }
@@ -578,6 +610,32 @@ trait AphiriaComponents
         $appBuilder
             ->getComponent(RouterComponent::class)
             ->withRoutes($callback);
+
+        return $this;
+    }
+
+    /**
+     * Registers a custom route variable constraint
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param string $slug The slug to register for the route variable constraint
+     * @param Closure(mixed...): IRouteVariableConstraint $factory The factory that can optionally take in parameters and create a route constraint from
+     * @return static For chaining
+     */
+    protected function withRouteVariableConstraint(IApplicationBuilder $appBuilder, string $slug, Closure $factory): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(RouterComponent::class)) {
+            if (!isset(Container::$globalInstance)) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            $appBuilder->withComponent(new RouterComponent(Container::$globalInstance));
+        }
+
+        $appBuilder
+            ->getComponent(RouterComponent::class)
+            ->withRouteVariableConstraint($slug, $factory);
 
         return $this;
     }

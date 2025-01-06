@@ -28,6 +28,7 @@ use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
 use Closure;
 use Mockery;
@@ -190,7 +191,8 @@ class RoutingBinderTest extends TestCase
             [RouteRegistrantCollection::class, RouteRegistrantCollection::class],
             [IRouteUriFactory::class, AstRouteUriFactory::class],
             [IRouteRequestFactory::class, RouteRequestFactory::class],
-            [AttributeRouteRegistrant::class, AttributeRouteRegistrant::class]
+            [AttributeRouteRegistrant::class, AttributeRouteRegistrant::class],
+            [RouteVariableConstraintFactory::class, RouteVariableConstraintFactory::class]
         ];
 
         foreach ($parameters as $parameter) {

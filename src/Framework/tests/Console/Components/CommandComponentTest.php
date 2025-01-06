@@ -18,6 +18,9 @@ use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\Input\Input;
+use Aphiria\Console\Output\Compilers\Elements\Element;
+use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
+use Aphiria\Console\Output\Compilers\Elements\Style;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Console\Components\CommandComponent;
@@ -76,5 +79,27 @@ class CommandComponentTest extends TestCase
         $this->expectExceptionMessage(AttributeCommandRegistrant::class . ' cannot be null if using attributes');
         $this->commandComponent->withAttributes();
         $this->commandComponent->build();
+    }
+
+    public function testBuildWithMultipleElementRegistersItToElementRegistry(): void
+    {
+        $elements = new ElementRegistry();
+        $this->container->bindInstance(ElementRegistry::class, $elements);
+        $element1 = new Element('foo', new Style());
+        $element2 = new Element('bar', new Style());
+        $this->commandComponent->withElement([$element1, $element2]);
+        $this->commandComponent->build();
+        $this->assertSame($element1, $elements->getElement('foo'));
+        $this->assertSame($element2, $elements->getElement('bar'));
+    }
+
+    public function testBuildWithSingleElementRegistersItToElementRegistry(): void
+    {
+        $elements = new ElementRegistry();
+        $this->container->bindInstance(ElementRegistry::class, $elements);
+        $element = new Element('foo', new Style());
+        $this->commandComponent->withElement($element);
+        $this->commandComponent->build();
+        $this->assertSame($element, $elements->getElement('foo'));
     }
 }

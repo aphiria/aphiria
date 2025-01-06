@@ -19,6 +19,8 @@ use Aphiria\Routing\RouteBuilder;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteCollectionBuilder;
 use Aphiria\Routing\RouteRegistrantCollection;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -72,5 +74,16 @@ class RouterComponentTest extends TestCase
         $this->expectExceptionMessage(AttributeRouteRegistrant::class . ' cannot be null if using attributes');
         $this->routerComponent->withAttributes();
         $this->routerComponent->build();
+    }
+
+    public function testBuildWithRouteVariableConstraintRegistersItToFactory(): void
+    {
+        $routeVariableConstraintFactory = new RouteVariableConstraintFactory();
+        $this->container->bindInstance(RouteVariableConstraintFactory::class, $routeVariableConstraintFactory);
+        $customRouteVariableConstraint = $this->createMock(IRouteVariableConstraint::class);
+        $factory = fn(): IRouteVariableConstraint => $customRouteVariableConstraint;
+        $this->routerComponent->withRouteVariableConstraint('foo', $factory);
+        $this->routerComponent->build();
+        $this->assertSame($customRouteVariableConstraint, $routeVariableConstraintFactory->createConstraint('foo'));
     }
 }

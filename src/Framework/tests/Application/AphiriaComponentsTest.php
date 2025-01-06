@@ -24,6 +24,8 @@ use Aphiria\Authorization\AuthorizationPolicy;
 use Aphiria\Authorization\IAuthorizationRequirementHandler;
 use Aphiria\Authorization\RequirementHandlers\RolesRequirement;
 use Aphiria\Console\Commands\CommandRegistry;
+use Aphiria\Console\Output\Compilers\Elements\Element;
+use Aphiria\Console\Output\Compilers\Elements\Style;
 use Aphiria\Console\Output\IOutput;
 use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
@@ -42,6 +44,7 @@ use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Routing\RouteCollectionBuilder;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
@@ -607,6 +610,120 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, fn(CommandRegistry $commands): mixed => null);
+    }
+
+    public function testWithConsoleElementConfiguresComponentToHaveMultipleElements(): void
+    {
+        $element1 = new Element('foo', new Style());
+        $element2 = new Element('bar', new Style());
+        $expectedComponent = $this->createMock(CommandComponent::class);
+        $expectedComponent
+            ->expects($this->once())
+            ->method('withElement')
+            ->with([$element1, $element2]);
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(CommandComponent::class)
+            ->willReturn(true);
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(CommandComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Element|list<Element> $elements
+             */
+            public function build(IApplicationBuilder $appBuilder, Element|array $elements): void
+            {
+                $this->withConsoleElement($appBuilder, $elements);
+            }
+        };
+        $component->build($this->appBuilder, [$element1, $element2]);
+    }
+
+    public function testWithConsoleElementConfiguresComponentToHaveSingleElement(): void
+    {
+        $element = new Element('foo', new Style());
+        $expectedComponent = $this->createMock(CommandComponent::class);
+        $expectedComponent
+            ->expects($this->once())
+            ->method('withElement')
+            ->with($element);
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(CommandComponent::class)
+            ->willReturn(true);
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(CommandComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Element|list<Element> $elements
+             */
+            public function build(IApplicationBuilder $appBuilder, Element|array $elements): void
+            {
+                $this->withConsoleElement($appBuilder, $elements);
+            }
+        };
+        $component->build($this->appBuilder, $element);
+    }
+
+    public function testWithConsoleElementRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(CommandComponent::class)
+            ->willReturn(false);
+        $this->appBuilder
+            ->method('withComponent')
+            ->with($this->isInstanceOf(CommandComponent::class));
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(CommandComponent::class)
+            ->willReturn($this->createMock(CommandComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Element|list<Element> $elements
+             */
+            public function build(IApplicationBuilder $appBuilder, Element|array $elements): void
+            {
+                $this->withConsoleElement($appBuilder, $elements);
+            }
+        };
+        $element = new Element('foo', new Style());
+        $component->build($this->appBuilder, $element);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithConsoleElementWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param Element|list<Element> $elements
+             */
+            public function build(IApplicationBuilder $appBuilder, Element|array $elements): void
+            {
+                $this->withConsoleElement($appBuilder, $elements);
+            }
+        };
+        $component->build($this->appBuilder, new Element('foo', new Style()));
     }
 
     public function testWithComponentAddsComponentToAppBuilder(): void
@@ -1394,6 +1511,92 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, fn(RouteCollectionBuilder $routeBuilders): mixed => null);
+    }
+
+    public function testWithRouteVariableConstraintConfiguresComponentToHaveConstraint(): void
+    {
+        $constraint = $this->createMock(IRouteVariableConstraint::class);
+        $factory = fn(): IRouteVariableConstraint => $constraint;
+        $expectedComponent = $this->createMock(RouterComponent::class);
+        $expectedComponent
+            ->expects($this->once())
+            ->method('withRouteVariableConstraint')
+            ->with('foo', $factory);
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(RouterComponent::class)
+            ->willReturn(true);
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(RouterComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param string $slug
+             * @param Closure(mixed...): IRouteVariableConstraint $factory
+             */
+            public function build(IApplicationBuilder $appBuilder, string $slug, Closure $factory): void
+            {
+                $this->withRouteVariableConstraint($appBuilder, $slug, $factory);
+            }
+        };
+        $component->build($this->appBuilder, 'foo', $factory);
+    }
+
+    public function testWithRouteVariableConstraintRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(RouterComponent::class)
+            ->willReturn(false);
+        $this->appBuilder
+            ->method('withComponent')
+            ->with($this->isInstanceOf(RouterComponent::class));
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(RouterComponent::class)
+            ->willReturn($this->createMock(RouterComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param string $slug
+             * @param Closure(mixed...): IRouteVariableConstraint $factory
+             */
+            public function build(IApplicationBuilder $appBuilder, string $slug, Closure $factory): void
+            {
+                $this->withRouteVariableConstraint($appBuilder, $slug, $factory);
+            }
+        };
+        $factory = fn(): IRouteVariableConstraint => $this->createMock(IRouteVariableConstraint::class);
+        $component->build($this->appBuilder, 'foo', $factory);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithRouteVariableConstraintWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param string $slug
+             * @param Closure(mixed...): IRouteVariableConstraint $factory
+             */
+            public function build(IApplicationBuilder $appBuilder, string $slug, Closure $factory): void
+            {
+                $this->withRouteVariableConstraint($appBuilder, $slug, $factory);
+            }
+        };
+        $component->build($this->appBuilder, 'foo', fn(): IRouteVariableConstraint => $this->createMock(IRouteVariableConstraint::class));
     }
 
     public function testWithValidatorAttributesComponentIfItIsNotRegisteredYet(): void

@@ -28,7 +28,9 @@ use Aphiria\Routing\RouteRegistrantCollection;
 use Aphiria\Routing\UriTemplates\AstRouteUriFactory;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\FileTrieCache;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\Caching\ITrieCache;
+use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieCompiler;
 use Aphiria\Routing\UriTemplates\Compilers\Tries\TrieFactory;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Aphiria\Routing\UriTemplates\IRouteUriFactory;
 
 /**
@@ -57,17 +59,19 @@ final class RoutingBinder extends Binder
 
         $container->bindInstance(RouteRegistrantCollection::class, $routeRegistrants);
 
+        $routeVariableConstraintFactory = new RouteVariableConstraintFactory();
+        $container->bindInstance(RouteVariableConstraintFactory::class, $routeVariableConstraintFactory);
+
         // Bind as a factory so that our app builders can register all routes prior to the routes being built
         $container->bindFactory(
             [IRouteMatcher::class, TrieRouteMatcher::class],
-            static function () use ($routes, $routeRegistrants, $trieCache) {
+            static function () use ($routes, $routeRegistrants, $trieCache, $routeVariableConstraintFactory) {
                 $routeRegistrants->registerRoutes($routes);
-
-                if (\getenv('APP_ENV') === 'production') {
-                    $trieFactory = new TrieFactory($routes, $trieCache);
-                } else {
-                    $trieFactory = new TrieFactory($routes);
-                }
+                $trieFactory = new TrieFactory(
+                    $routes,
+                    \getenv('APP_ENV') === 'production' ? $trieCache : null,
+                    new TrieCompiler($routeVariableConstraintFactory)
+                );
 
                 return new TrieRouteMatcher(($trieFactory)->createTrie());
             },
