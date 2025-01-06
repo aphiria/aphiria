@@ -44,6 +44,7 @@ use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Routing\RouteCollectionBuilder;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
@@ -1510,6 +1511,92 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder, fn(RouteCollectionBuilder $routeBuilders): mixed => null);
+    }
+
+    public function testWithRouteVariableConstraintConfiguresComponentToHaveConstraint(): void
+    {
+        $constraint = $this->createMock(IRouteVariableConstraint::class);
+        $factory = fn(): IRouteVariableConstraint => $constraint;
+        $expectedComponent = $this->createMock(RouterComponent::class);
+        $expectedComponent
+            ->expects($this->once())
+            ->method('withRouteVariableConstraint')
+            ->with('foo', $factory);
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(RouterComponent::class)
+            ->willReturn(true);
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(RouterComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param string $slug
+             * @param Closure(mixed...): IRouteVariableConstraint $factory
+             */
+            public function build(IApplicationBuilder $appBuilder, string $slug, Closure $factory): void
+            {
+                $this->withRouteVariableConstraint($appBuilder, $slug, $factory);
+            }
+        };
+        $component->build($this->appBuilder, 'foo', $factory);
+    }
+
+    public function testWithRouteVariableConstraintRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(RouterComponent::class)
+            ->willReturn(false);
+        $this->appBuilder
+            ->method('withComponent')
+            ->with($this->isInstanceOf(RouterComponent::class));
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(RouterComponent::class)
+            ->willReturn($this->createMock(RouterComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param string $slug
+             * @param Closure(mixed...): IRouteVariableConstraint $factory
+             */
+            public function build(IApplicationBuilder $appBuilder, string $slug, Closure $factory): void
+            {
+                $this->withRouteVariableConstraint($appBuilder, $slug, $factory);
+            }
+        };
+        $factory = fn(): IRouteVariableConstraint => $this->createMock(IRouteVariableConstraint::class);
+        $component->build($this->appBuilder, 'foo', $factory);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithRouteVariableConstraintWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            /**
+             * @param IApplicationBuilder $appBuilder
+             * @param string $slug
+             * @param Closure(mixed...): IRouteVariableConstraint $factory
+             */
+            public function build(IApplicationBuilder $appBuilder, string $slug, Closure $factory): void
+            {
+                $this->withRouteVariableConstraint($appBuilder, $slug, $factory);
+            }
+        };
+        $component->build($this->appBuilder, 'foo', fn(): IRouteVariableConstraint => $this->createMock(IRouteVariableConstraint::class));
     }
 
     public function testWithValidatorAttributesComponentIfItIsNotRegisteredYet(): void

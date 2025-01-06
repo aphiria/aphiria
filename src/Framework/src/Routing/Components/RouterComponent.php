@@ -25,6 +25,8 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteCollectionBuilder;
 use Aphiria\Routing\RouteCollectionBuilderRouteRegistrant;
 use Aphiria\Routing\RouteRegistrantCollection;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
+use Aphiria\Routing\UriTemplates\Constraints\RouteVariableConstraintFactory;
 use Closure;
 use RuntimeException;
 
@@ -37,6 +39,8 @@ class RouterComponent implements IComponent
     private bool $attributesEnabled = false;
     /** @var list<Closure(RouteCollectionBuilder): void> The list of callbacks that can register route builders */
     private array $callbacks = [];
+    /** @var array<string, Closure(mixed...): IRouteVariableConstraint> The mapping of route variable constraint slugs to factories */
+    private array $routeVariableConstraintSlugsToFactories = [];
 
     /**
      * @param IContainer $container The DI container
@@ -68,6 +72,12 @@ class RouterComponent implements IComponent
             new TargetedContext(ApiGateway::class),
             fn(IContainer $container) => $container->bindFactory(IRequestHandler::class, fn(): IRequestHandler => $this->container->resolve(Router::class))
         );
+
+        $routeVariableConstraintFactory = $this->container->resolve(RouteVariableConstraintFactory::class);
+
+        foreach ($this->routeVariableConstraintSlugsToFactories as $slug => $factory) {
+            $routeVariableConstraintFactory->registerConstraintFactory($slug, $factory);
+        }
     }
 
     /**
@@ -91,6 +101,20 @@ class RouterComponent implements IComponent
     public function withRoutes(Closure $callback): static
     {
         $this->callbacks[] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Registers a custom route variable constraint
+     *
+     * @param string $slug The slug to register for the route variable constraint
+     * @param Closure(mixed...): IRouteVariableConstraint $factory The factory that can optionally take in parameters and create a route constraint from
+     * @return static For chaining
+     */
+    public function withRouteVariableConstraint(string $slug, Closure $factory): static
+    {
+        $this->routeVariableConstraintSlugsToFactories[$slug] = $factory;
 
         return $this;
     }

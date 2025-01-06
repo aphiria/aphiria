@@ -49,6 +49,7 @@ use Aphiria\Middleware\MiddlewareBinding;
 use Aphiria\Middleware\MiddlewareCollection;
 use Aphiria\Net\Http\HttpStatusCode;
 use Aphiria\Routing\RouteCollectionBuilder;
+use Aphiria\Routing\UriTemplates\Constraints\IRouteVariableConstraint;
 use Aphiria\Validation\ObjectConstraintsRegistryBuilder;
 use Closure;
 use Exception;
@@ -609,6 +610,32 @@ trait AphiriaComponents
         $appBuilder
             ->getComponent(RouterComponent::class)
             ->withRoutes($callback);
+
+        return $this;
+    }
+
+    /**
+     * Registers a custom route variable constraint
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param string $slug The slug to register for the route variable constraint
+     * @param Closure(mixed...): IRouteVariableConstraint $factory The factory that can optionally take in parameters and create a route constraint from
+     * @return static For chaining
+     */
+    protected function withRouteVariableConstraint(IApplicationBuilder $appBuilder, string $slug, Closure $factory): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(RouterComponent::class)) {
+            if (!isset(Container::$globalInstance)) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            $appBuilder->withComponent(new RouterComponent(Container::$globalInstance));
+        }
+
+        $appBuilder
+            ->getComponent(RouterComponent::class)
+            ->withRouteVariableConstraint($slug, $factory);
 
         return $this;
     }
