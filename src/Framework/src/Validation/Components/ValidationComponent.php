@@ -53,6 +53,7 @@ class ValidationComponent implements IComponent
                 throw new RuntimeException(AttributeObjectConstraintsRegistrant::class . ' cannot be null if using attributes');
             }
 
+            /** @var AttributeObjectConstraintsRegistrant $attributeConstraintsRegistrants */
             $objectConstraintsRegistrants->add($attributeConstraintsRegistrants);
         }
 
