@@ -55,7 +55,7 @@ $user = $this->readResponseBodyAs(User::class, $postResponse);
 $admin = new PrincipalBuilder('example.com')
     ->withRoles('admin')
     ->build();
-$getResponse = $this->actingAs($admin, fn () => $this->get("/users/$user->id"));
+$getResponse = $this->actingAs($admin, fn() => $this->get("/users/$user->id"));
 $this->assertParsedBodyEquals($user, $getResponse);
 ```
 
