@@ -52,8 +52,6 @@ class ObjectConstraintsRegistrantCollection implements IObjectConstraintsRegistr
             $registrant->registerConstraints($objectConstraints);
         }
 
-        if ($this->objectConstraintsCache !== null) {
-            $this->objectConstraintsCache->set($objectConstraints);
-        }
+        $this->objectConstraintsCache?->set($objectConstraints);
     }
 }

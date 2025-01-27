@@ -52,8 +52,6 @@ class RouteRegistrantCollection implements IRouteRegistrant
             $routeRegistrant->registerRoutes($routes);
         }
 
-        if ($this->routeCache !== null) {
-            $this->routeCache->set($routes);
-        }
+        $this->routeCache?->set($routes);
     }
 }

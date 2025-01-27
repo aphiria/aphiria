@@ -54,9 +54,7 @@ final class TrieFactory
         }
 
         // Save this to cache for next time
-        if ($this->trieCache !== null) {
-            $this->trieCache->set($trie);
-        }
+        $this->trieCache?->set($trie);
 
         return $trie;
     }

@@ -52,8 +52,6 @@ class CommandRegistrantCollection implements ICommandRegistrant
             $commandRegistrant->registerCommands($commands);
         }
 
-        if ($this->commandCache !== null) {
-            $this->commandCache->set($commands);
-        }
+        $this->commandCache?->set($commands);
     }
 }

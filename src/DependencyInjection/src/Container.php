@@ -353,7 +353,7 @@ class Container implements IContainer
                 }
 
                 $constructor = $reflectionClass->getConstructor();
-                $parameters = $constructor !== null ? $constructor->getParameters() : null;
+                $parameters = $constructor?->getParameters();
                 $this->constructorReflectionCache[$className] = [$constructor, $parameters];
             }
 
