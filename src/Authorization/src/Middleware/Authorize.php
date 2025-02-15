@@ -41,10 +41,10 @@ class Authorize extends ParameterizedMiddleware
      * @param IUserAccessor $userAccessor The user accessor
      */
     public function __construct(
-        private readonly IAuthority $authority,
-        private readonly IAuthenticator $authenticator,
-        private readonly AuthorizationPolicyRegistry $policies,
-        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        protected readonly IAuthority $authority,
+        protected readonly IAuthenticator $authenticator,
+        protected readonly AuthorizationPolicyRegistry $policies,
+        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
     ) {}
 
     /**
