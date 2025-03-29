@@ -24,7 +24,7 @@ use LogicException;
  */
 class RouteBuilder
 {
-    /** @var RouteAction|null ?RouteAction The action the route takes */
+    /** @var RouteAction|null The action the route takes */
     private ?RouteAction $action = null;
     /** @var list<IRouteConstraint> The list of constraints */
     private array $constraints = [];
