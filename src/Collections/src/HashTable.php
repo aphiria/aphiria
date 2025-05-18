@@ -128,7 +128,7 @@ class HashTable implements IDictionary
     }
 
     /**
-     * @inheridoc
+     * @inheritdoc
      */
     public function filter(Closure $callback): static
     {
@@ -159,7 +159,7 @@ class HashTable implements IDictionary
     }
 
     /**
-     * @inheridoc
+     * @inheritdoc
      */
     public function map(Closure $callback): static
     {

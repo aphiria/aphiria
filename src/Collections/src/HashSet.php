@@ -83,7 +83,7 @@ class HashSet implements ISet
     }
 
     /**
-     * @inheridoc
+     * @inheritdoc
      */
     public function filter(Closure $callback): static
     {
@@ -116,7 +116,7 @@ class HashSet implements ISet
     }
 
     /**
-     * @inheridoc
+     * @inheritdoc
      */
     public function map(Closure $callback): static
     {

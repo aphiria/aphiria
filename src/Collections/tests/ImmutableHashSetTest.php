@@ -80,7 +80,7 @@ class ImmutableHashSetTest extends TestCase
         $set = new ImmutableHashSet(['foo', 'bar']);
         $newSet = $set->filter(fn(string $value): bool => $value === 'foo');
         $this->assertEquals(['foo'], $newSet->toArray());
-        $this->assertNotSame($set, $newSet);;
+        $this->assertNotSame($set, $newSet);
     }
 
     /**

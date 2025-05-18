@@ -80,7 +80,7 @@ class ArrayList implements IList
     }
 
     /**
-     * @inheridoc
+     * @inheritdoc
      */
     public function filter(Closure $callback): static
     {
@@ -136,7 +136,7 @@ class ArrayList implements IList
     }
 
     /**
-     * @inheridoc
+     * @inheritdoc
      */
     public function map(Closure $callback): static
     {

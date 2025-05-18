@@ -105,7 +105,7 @@ class HashSetTest extends TestCase
         $this->set->add('bar');
         $newSet = $this->set->filter(fn(string $value): bool => $value === 'foo');
         $this->assertEquals(['foo'], $newSet->toArray());
-        $this->assertNotSame($this->set, $newSet);;
+        $this->assertNotSame($this->set, $newSet);
     }
 
     public function testIntersectingDoesNotChangeOriginalSet(): void
