@@ -56,6 +56,14 @@ class ImmutableHashTableTest extends TestCase
         $this->assertSame(2, $hashTable->count());
     }
 
+    public function testFilterReturnsNewFilteredInstance(): void
+    {
+        $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar'), new KeyValuePair('baz', 'blah')]);
+        $newHashTable = $hashTable->filter(fn(KeyValuePair $kvp): bool => $kvp->value === 'bar');
+        $this->assertEquals([new KeyValuePair('foo', 'bar')], $newHashTable->toArray());
+        $this->assertNotSame($hashTable, $newHashTable);
+    }
+
     public function testGetting(): void
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
@@ -109,6 +117,14 @@ class ImmutableHashTableTest extends TestCase
             $this->assertSame($expectedValues[$expectedValuesIndex][1], $value);
             $expectedValuesIndex++;
         }
+    }
+
+    public function testMapReturnsNewMappedInstance(): void
+    {
+        $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
+        $newHashTable = $hashTable->map(fn(KeyValuePair $kvp): KeyValuePair => new KeyValuePair($kvp->key, $kvp->value . 'baz'));
+        $this->assertEquals([new KeyValuePair('foo', 'barbaz')], $newHashTable->toArray());
+        $this->assertNotSame($hashTable, $newHashTable);
     }
 
     public function testNonKeyValuePairInConstructorThrowsException(): void

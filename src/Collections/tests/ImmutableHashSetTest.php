@@ -75,6 +75,14 @@ class ImmutableHashSetTest extends TestCase
         $this->assertSame(2, $setWithTwoalues->count());
     }
 
+    public function testFilterReturnsNewFilteredInstance(): void
+    {
+        $set = new ImmutableHashSet(['foo', 'bar']);
+        $newSet = $set->filter(fn(string $value): bool => $value === 'foo');
+        $this->assertEquals(['foo'], $newSet->toArray());
+        $this->assertNotSame($set, $newSet);;
+    }
+
     /**
      * Tests iterating over the values returns the values - not the hash keys
      */
@@ -94,5 +102,13 @@ class ImmutableHashSetTest extends TestCase
         }
 
         $this->assertEquals($expectedValues, $actualValues);
+    }
+
+    public function testMapReturnsNewMappedInstance(): void
+    {
+        $set = new ImmutableHashSet(['foo']);
+        $newSet = $set->map(fn(string $value): string => $value . 'baz');
+        $this->assertEquals(['foobaz'], $newSet->toArray());
+        $this->assertNotSame($set, $newSet);
     }
 }

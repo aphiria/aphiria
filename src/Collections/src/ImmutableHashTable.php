@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections;
 
+use Closure;
 use InvalidArgumentException;
 use OutOfBoundsException;
 use RuntimeException;
@@ -106,6 +107,14 @@ class ImmutableHashTable implements IImmutableDictionary
 
     /**
      * @inheritdoc
+     */
+    public function filter(Closure $callback): static
+    {
+        return new static(\array_filter(\array_values($this->hashKeysToKvps), $callback));
+    }
+
+    /**
+     * @inheritdoc
      * @param TKey $key
      * @return TValue
      */
@@ -126,6 +135,14 @@ class ImmutableHashTable implements IImmutableDictionary
     public function getIterator(): Traversable
     {
         return new KeyValuePairIterator(\array_values($this->hashKeysToKvps));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function map(Closure $callback): static
+    {
+        return new static(\array_map($callback, \array_values($this->hashKeysToKvps)));
     }
 
     /**

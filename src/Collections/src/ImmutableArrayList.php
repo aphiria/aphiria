@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayIterator;
+use Closure;
 use OutOfRangeException;
 use RuntimeException;
 use Traversable;
@@ -49,6 +50,14 @@ class ImmutableArrayList implements IImmutableList
     /**
      * @inheritdoc
      */
+    public function filter(Closure $callback): static
+    {
+        return new static(\array_filter($this->values, $callback));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function get(int $index): mixed
     {
         if ($index < 0 || $index >= \count($this)) {
@@ -76,6 +85,14 @@ class ImmutableArrayList implements IImmutableList
         }
 
         return (int)$index;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function map(Closure $callback): static
+    {
+        return new static(\array_map($callback, $this->values));
     }
 
     /**

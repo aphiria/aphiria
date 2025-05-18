@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayIterator;
+use Closure;
 use RuntimeException;
 use Traversable;
 
@@ -61,9 +62,25 @@ class ImmutableHashSet implements IImmutableSet
     /**
      * @inheritdoc
      */
+    public function filter(Closure $callback): static
+    {
+        return new static(\array_filter(\array_values($this->values), $callback));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getIterator(): Traversable
     {
         return new ArrayIterator(\array_values($this->values));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function map(Closure $callback): static
+    {
+        return new static(\array_map($callback, \array_values($this->values)));
     }
 
     /**

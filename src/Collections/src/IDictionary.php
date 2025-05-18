@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayAccess;
+use Closure;
 use Countable;
 use IteratorAggregate;
 use OutOfBoundsException;
@@ -73,6 +74,14 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
     public function containsValue(mixed $value): bool;
 
     /**
+     * Applies a filter to the values in the dictionary
+     *
+     * @param Closure $callback The filter callback that takes in a key and optionally a value
+     * @return static A filtered instance of the dictionary
+     */
+    public function filter(Closure $callback): static;
+
+    /**
      * Gets the value of the key
      *
      * @param TKey $key The key to get
@@ -81,6 +90,14 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
      * @throws RuntimeException Thrown if the value's key could not be calculated
      */
     public function get(mixed $key): mixed;
+
+    /**
+     * Applies a mapping to each key-value pair in the dictionary
+     *
+     * @param Closure(KeyValuePair<TKey, TValue>): KeyValuePair<TKey, TValue> $callback The map callback
+     * @return static A dictionary with the map applied to each key-value pair
+     */
+    public function map(Closure $callback): static;
 
     /**
      * Removes a key

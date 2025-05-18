@@ -25,12 +25,6 @@ class ArrayListTest extends TestCase
         $this->arrayList = new ArrayList();
     }
 
-    public function tesContainsValueReturnsTrueEvenIfValuesIsNull(): void
-    {
-        $this->arrayList->add(null);
-        $this->assertTrue($this->arrayList->containsValue(null));
-    }
-
     public function testAdding(): void
     {
         $this->arrayList->add('foo');
@@ -64,12 +58,28 @@ class ArrayListTest extends TestCase
         $this->assertTrue($this->arrayList->containsValue('foo'));
     }
 
+    public function testContainsValueReturnsTrueEvenIfValuesIsNull(): void
+    {
+        $this->arrayList->add(null);
+        $this->assertTrue($this->arrayList->containsValue(null));
+    }
+
     public function testCount(): void
     {
         $this->arrayList->add('foo');
         $this->assertSame(1, $this->arrayList->count());
         $this->arrayList->add('bar');
         $this->assertSame(2, $this->arrayList->count());
+    }
+
+    public function testFilterReturnsNewFilteredInstance(): void
+    {
+        $this->arrayList->add('foo');
+        $this->arrayList->add('bar');
+        $newList = $this->arrayList->filter(fn(string $value): bool => $value === 'foo');
+        $this->assertEquals(['foo'], $newList->toArray());
+        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
+        $this->assertNotSame($this->arrayList, $newList);
     }
 
     public function testGetting(): void
@@ -140,6 +150,16 @@ class ArrayListTest extends TestCase
         }
 
         $this->assertEquals(['foo', 'bar'], $actualValues);
+    }
+
+    public function testMapReturnsNewMappedInstance(): void
+    {
+        $this->arrayList->add('foo');
+        $this->arrayList->add('bar');
+        $newList = $this->arrayList->map(fn(string $value): string => $value . 'baz');
+        $this->assertEquals(['foobaz', 'barbaz'], $newList->toArray());
+        $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
+        $this->assertNotSame($this->arrayList, $newList);
     }
 
     public function testPassingParametersInConstructor(): void

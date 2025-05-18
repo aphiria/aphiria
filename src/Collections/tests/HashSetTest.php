@@ -99,6 +99,15 @@ class HashSetTest extends TestCase
         $this->assertEquals([], $newSet->toArray());
     }
 
+    public function testFilterReturnsNewFilteredInstance(): void
+    {
+        $this->set->add('foo');
+        $this->set->add('bar');
+        $newSet = $this->set->filter(fn(string $value): bool => $value === 'foo');
+        $this->assertEquals(['foo'], $newSet->toArray());
+        $this->assertNotSame($this->set, $newSet);;
+    }
+
     public function testIntersectingDoesNotChangeOriginalSet(): void
     {
         $this->set->addRange(['foo', 'bar']);
@@ -132,6 +141,14 @@ class HashSetTest extends TestCase
         }
 
         $this->assertEquals($expectedValues, $actualValues);
+    }
+
+    public function testMapReturnsNewMappedInstance(): void
+    {
+        $this->set->add('foo');
+        $newSet = $this->set->map(fn(string $value): string => $value . 'baz');
+        $this->assertEquals(['foobaz'], $newSet->toArray());
+        $this->assertNotSame($this->set, $newSet);
     }
 
     public function testRemovingValue(): void

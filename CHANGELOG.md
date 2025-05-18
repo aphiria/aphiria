@@ -14,6 +14,7 @@
 - Added the ability to customize deserialization of request parameters ([#323](https://github.com/aphiria/aphiria/pull/323))
 - Added the ability to register custom route variable constraints with the `RouterComponent` ([#330](https://github.com/aphiria/aphiria/pull/330))
 - Added the ability to register custom console elements with the `CommandComponent` ([#330](https://github.com/aphiria/aphiria/pull/330))
+- Added `filter()` and `map()` methods to most collections ([#338](https://github.com/aphiria/aphiria/pull/338))
 
 ### Fixed
 
