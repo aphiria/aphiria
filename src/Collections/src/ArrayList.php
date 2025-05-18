@@ -82,6 +82,14 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
+    public function filter(Closure $callback): static
+    {
+        return new static(\array_filter($this->values, $callback));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function get(int $index): mixed
     {
         if ($index < 0 || $index >= \count($this)) {
@@ -125,6 +133,14 @@ class ArrayList implements IList
     public function intersect(array $values): static
     {
         return new static(\array_values(\array_intersect($this->values, $values)));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function map(Closure $callback): static
+    {
+        return new static(\array_map($callback, $this->values));
     }
 
     /**

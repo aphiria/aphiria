@@ -82,6 +82,15 @@ class HashTableTest extends TestCase
         $this->assertSame(2, $this->hashTable->count());
     }
 
+    public function testFilterReturnsNewFilteredInstance(): void
+    {
+        $this->hashTable->add('foo', 'bar');
+        $this->hashTable->add('baz', 'blah');
+        $newHashTable = $this->hashTable->filter(fn(KeyValuePair $kvp): bool => $kvp->value === 'bar');
+        $this->assertEquals([new KeyValuePair('foo', 'bar')], $newHashTable->toArray());
+        $this->assertNotSame($this->hashTable, $newHashTable);
+    }
+
     public function testGetting(): void
     {
         $this->hashTable->add('foo', 'bar');
@@ -132,6 +141,15 @@ class HashTableTest extends TestCase
             $this->assertSame($expectedValues[$expectedValuesIndex][1], $value);
             $expectedValuesIndex++;
         }
+    }
+
+    public function testMapReturnsNewMappedInstance(): void
+    {
+        $this->hashTable->add('foo', 'bar');
+        $this->hashTable->add('baz', 'blah');
+        $newHashTable = $this->hashTable->map(fn(KeyValuePair $kvp): KeyValuePair => new KeyValuePair($kvp->key, $kvp->value . 'baz'));
+        $this->assertEquals([new KeyValuePair('foo', 'barbaz'), new KeyValuePair('baz', 'blahbaz')], $newHashTable->toArray());
+        $this->assertNotSame($this->hashTable, $newHashTable);
     }
 
     /**

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Collections;
 
 use ArrayAccess;
+use Closure;
 use Countable;
 use IteratorAggregate;
 use OutOfRangeException;
@@ -35,6 +36,14 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
     public function containsValue(mixed $value): bool;
 
     /**
+     * Applies a filter to the values in the list
+     *
+     * @param Closure(T): bool $callback The filter callback that takes in a value and returns whether to include it in the filtered list
+     * @return static A filtered instance of the list
+     */
+    public function filter(Closure $callback): static;
+
+    /**
      * Gets the value at an index
      *
      * @param int $index The index to get
@@ -50,6 +59,14 @@ interface IImmutableList extends ArrayAccess, Countable, IteratorAggregate
      * @return int|null The index of the value if it was found, otherwise null
      */
     public function indexOf(mixed $value): ?int;
+
+    /**
+     * Applies a mapping to each key-value pair in the list
+     *
+     * @param Closure(T): T $callback The map callback
+     * @return static A list with the map applied to each value
+     */
+    public function map(Closure $callback): static;
 
     /**
      * Gets all of the values as an array

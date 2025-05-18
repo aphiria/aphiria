@@ -55,6 +55,14 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     public function containsValue(mixed $value): bool;
 
     /**
+     * Applies a filter to the values in the list
+     *
+     * @param Closure(T): bool $callback The filter callback that takes in a value and returns whether to include it in the filtered list
+     * @return static A filtered instance of the list
+     */
+    public function filter(Closure $callback): static;
+
+    /**
      * Gets the value at an index
      *
      * @param int $index The index to get
@@ -86,6 +94,14 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
      * @return static The intersected list
      */
     public function intersect(array $values): static;
+
+    /**
+     * Applies a mapping to each value in the list
+     *
+     * @param Closure(T): T $callback The map callback
+     * @return static A list with the map applied to each value
+     */
+    public function map(Closure $callback): static;
 
     /**
      * Removes the value at an index

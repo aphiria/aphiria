@@ -56,6 +56,14 @@ interface ISet extends Countable, IteratorAggregate
     public function containsValue(mixed $value): bool;
 
     /**
+     * Applies a filter to the values in the set
+     *
+     * @param Closure(T): bool $callback The filter callback that takes in a value and returns whether to include it in the filtered set
+     * @return static A filtered instance of the set
+     */
+    public function filter(Closure $callback): static;
+
+    /**
      * Intersects the values of the input array with the values already in the set
      *
      * @param list<T> $values The values to intersect with
@@ -63,6 +71,14 @@ interface ISet extends Countable, IteratorAggregate
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
     public function intersect(array $values): static;
+
+    /**
+     * Applies a mapping to each value in the set
+     *
+     * @param Closure(T): T $callback The map callback
+     * @return static A set with the map applied to each value
+     */
+    public function map(Closure $callback): static;
 
     /**
      * Removes a value from the set

@@ -19,11 +19,6 @@ use RuntimeException;
 
 class ImmutableArrayListTest extends TestCase
 {
-    public function tesContainsValueReturnsTrueEvenIfValuesIsNull(): void
-    {
-        $arrayList = new ImmutableArrayList([null]);
-        $this->assertTrue($arrayList->containsValue(null));
-    }
     public function testCheckingOffsetExists(): void
     {
         $arrayList = new ImmutableArrayList(['foo']);
@@ -38,12 +33,27 @@ class ImmutableArrayListTest extends TestCase
         $this->assertFalse($arrayList->containsValue('bar'));
     }
 
+    public function testContainsValueReturnsTrueEvenIfValuesIsNull(): void
+    {
+        $arrayList = new ImmutableArrayList([null]);
+        $this->assertTrue($arrayList->containsValue(null));
+    }
+
     public function testCount(): void
     {
         $arrayList = new ImmutableArrayList(['foo']);
         $this->assertSame(1, $arrayList->count());
         $arrayList = new ImmutableArrayList(['foo', 'bar']);
         $this->assertSame(2, $arrayList->count());
+    }
+
+    public function testFilterReturnsNewFilteredInstance(): void
+    {
+        $arrayList = new ImmutableArrayList(['foo', 'bar']);
+        $newList = $arrayList->filter(fn(string $value): bool => $value === 'foo');
+        $this->assertEquals(['foo'], $newList->toArray());
+        $this->assertEquals(['foo', 'bar'], $arrayList->toArray());
+        $this->assertNotSame($arrayList, $newList);
     }
 
     public function testGetting(): void
@@ -82,6 +92,15 @@ class ImmutableArrayListTest extends TestCase
         }
 
         $this->assertEquals(['foo', 'bar'], $actualValues);
+    }
+
+    public function testMapReturnsNewMappedInstance(): void
+    {
+        $arrayList = new ImmutableArrayList(['foo', 'bar']);
+        $newList = $arrayList->map(fn(string $value): string => $value . 'baz');
+        $this->assertEquals(['foobaz', 'barbaz'], $newList->toArray());
+        $this->assertEquals(['foo', 'bar'], $arrayList->toArray());
+        $this->assertNotSame($arrayList, $newList);
     }
 
     public function testSettingValueThrowsException(): void

@@ -85,6 +85,14 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
+    public function filter(Closure $callback): static
+    {
+        return new static(\array_filter($this->values, $callback));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getIterator(): Traversable
     {
         return new ArrayIterator(\array_values($this->values));
@@ -105,6 +113,14 @@ class HashSet implements ISet
         }
 
         return new static($intersectedValues);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function map(Closure $callback): static
+    {
+        return new static(\array_map($callback, $this->values));
     }
 
     /**
