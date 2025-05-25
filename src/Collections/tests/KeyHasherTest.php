@@ -34,7 +34,7 @@ class KeyHasherTest extends TestCase
 
     public function testNullCanBeHashed(): void
     {
-        $this->assertSame('__aphiria:u', $this->keyHasher->getHashKey(null));
+        $this->assertSame('__aphiria:u:', $this->keyHasher->getHashKey(null));
     }
 
     public function testResourceIsHashedUsingItsStringValue(): void
