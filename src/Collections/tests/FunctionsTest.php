@@ -1,12 +1,12 @@
 <?php
 
-namespace Aphiria\Collections\Tests\Functions;
+namespace Aphiria\Collections\Tests;
 
 use Aphiria\Collections\ArrayList;
 use PHPUnit\Framework\TestCase;
 use function Aphiria\Collections\Functions\array_list;
 
-class ArrayListFunctionTest extends TestCase
+class FunctionsTest extends TestCase
 {
     public function testArrayListFunctionCreatesArrayListWithValues(): void
     {
@@ -44,6 +44,10 @@ class ArrayListFunctionTest extends TestCase
         $list2 = array_list(['bar']);
         $this->assertEquals(['foo'], $list1->toArray());
         $this->assertEquals(['bar'], $list2->toArray());
-        $this->assertNotSame($list1, $list2);
+
+        // Creating new collections so we can have 100% that are not the same
+        $newInstance1 = array_list(['foo']);
+        $newInstance2 = array_list(['foo']);
+        $this->assertNotSame($newInstance1, $newInstance2);
     }
 }

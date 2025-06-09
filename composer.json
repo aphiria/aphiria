@@ -56,7 +56,7 @@
             "Aphiria\\Validation\\": "src/Validation/src"
         },
         "files": [
-            "src/Collections/src/Functions/array_list.php"
+            "src/Collections/src/functions.php"
         ]
     },
     "autoload-dev": {
