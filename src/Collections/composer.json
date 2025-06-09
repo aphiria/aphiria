@@ -34,7 +34,10 @@
     "autoload": {
         "psr-4": {
             "Aphiria\\Collections\\": "src"
-        }
+        },
+        "files": [
+            "src/Functions/array_list.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -54,7 +54,10 @@
             "Aphiria\\Security\\": "src/Security/src",
             "Aphiria\\Sessions\\": "src/Sessions/src",
             "Aphiria\\Validation\\": "src/Validation/src"
-        }
+        },
+        "files": [
+            "src/Collections/src/Functions/array_list.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
