@@ -162,6 +162,16 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 }
             }
 
+            // Search if a method has ExcludeMiddleware attr, we want to exclude the first argument class name of the bindings
+            $excludeMiddlewareAttributes = $method->getAttributes(ExcludeMiddleware::class, ReflectionAttribute::IS_INSTANCEOF);
+            foreach ($excludeMiddlewareAttributes as $excludeMiddlewareAttribute) {
+                $instance = $excludeMiddlewareAttribute->newInstance();
+                $middlewareBindings = array_filter(
+                    $middlewareBindings,
+                    static fn($b) => $b->className !== $instance->className
+                );
+            }
+
             foreach ($method->getAttributes(RouteConstraint::class) as $routeConstraintAttribute) {
                 $routeConstraintAttributeInstance = $routeConstraintAttribute->newInstance();
                 $routeConstraintClassName = $routeConstraintAttributeInstance->className;
