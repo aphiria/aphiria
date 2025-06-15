@@ -15,6 +15,7 @@
 - Added the ability to register custom route variable constraints with the `RouterComponent` ([#330](https://github.com/aphiria/aphiria/pull/330))
 - Added the ability to register custom console elements with the `CommandComponent` ([#330](https://github.com/aphiria/aphiria/pull/330))
 - Added `filter()` and `map()` methods to most collections ([#338](https://github.com/aphiria/aphiria/pull/338))
+- Added `array_list()`, `hash_set()`, `hash_table()`, `immutable_array_list()`, `immutable_hash_set()`, `immutable_hash_table()`, `queue()`, and `stack()` functions in the `Aphiria\Collections\Functions` namespace ([#341](https://github.com/aphiria/aphiria/pull/341), ([#343](https://github.com/aphiria/aphiria/pull/343))
 
 ### Fixed
 
