@@ -59,6 +59,13 @@ class HeadersTest extends TestCase
         $this->headers->addRange([new KeyValuePair('foo', $this)]);
     }
 
+    public function testAddingRangeWithAssociativeArrayWorks(): void
+    {
+        $this->headers->addRange(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $this->headers->getFirst('foo'));
+        $this->assertSame('blah', $this->headers->getFirst('baz'));
+    }
+
     public function testAddingStringValue(): void
     {
         $this->headers->add('foo', 'bar');
