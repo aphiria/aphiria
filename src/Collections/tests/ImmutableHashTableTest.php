@@ -28,6 +28,13 @@ class ImmutableHashTableTest extends TestCase
         $this->assertSame('bar', $hashTable['foo']);
     }
 
+    public function testConstructingWithAssociativeArrayWorks(): void
+    {
+        $hashTable = new ImmutableHashTable(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
+    }
+
     public function testContainsKey(): void
     {
         /** @var ImmutableHashTable<string, string> $hashTable */
@@ -131,7 +138,7 @@ class ImmutableHashTableTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
-        new ImmutableHashTable(['foo' => 'bar']);
+        new ImmutableHashTable(['foo']);
     }
 
     public function testSettingValueThrowsException(): void

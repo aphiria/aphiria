@@ -57,7 +57,7 @@ class ImmutableHashTable implements IImmutableDictionary
     private readonly KeyHasher $keyHasher;
 
     /**
-     * @param list<KeyValuePair<TKey, TValue>> $kvps The list of values to add
+     * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The list of values to add
      * @throws InvalidArgumentException Thrown if the array contains a non-key-value pair
      * @throws RuntimeException Thrown if a hash key could not be calculated
      */
@@ -65,13 +65,20 @@ class ImmutableHashTable implements IImmutableDictionary
     {
         $this->keyHasher = new KeyHasher();
 
-        foreach ($kvps as $kvp) {
-            /** @psalm-suppress DocblockTypeContradiction We want to check the types at runtime */
-            if (!$kvp instanceof KeyValuePair) {
-                throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
-            }
+        if (\array_is_list($kvps)) {
+            foreach ($kvps as $kvp) {
+                /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
+                if (!$kvp instanceof KeyValuePair) {
+                    throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
+                }
 
-            $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
+                $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
+            }
+        } else {
+            foreach ($kvps as $key => $value) {
+                $kvp = new KeyValuePair($key, $value);
+                $this->hashKeysToKvps[$this->getHashKey($key)] = $kvp;
+            }
         }
     }
 

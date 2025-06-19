@@ -54,6 +54,13 @@ class FunctionsTest extends TestCase
         $this->assertCount(0, hash_set());
     }
 
+    public function testHashTableFunctionWithAssociativeArrayWorks(): void
+    {
+        $hashTable = hash_table(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
+    }
+
     public function testHashSetFunctionReturnsNewInstanceEachCall(): void
     {
         $this->assertNotSame(hash_set(['foo']), hash_set(['foo']));
@@ -109,6 +116,13 @@ class FunctionsTest extends TestCase
     public function testImmutableHashSetFunctionReturnsNewInstanceEachCall(): void
     {
         $this->assertNotSame(immutable_hash_set(['foo']), immutable_hash_set(['foo']));
+    }
+
+    public function testImmutableHashTableFunctionWithAssociativeArrayWorks(): void
+    {
+        $hashTable = immutable_hash_table(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
     }
 
     public function testImmutableHashTableFunctionCreatesHashTableWithValues(): void

@@ -68,15 +68,21 @@ final class Headers extends HashTable
      * @inheritdoc
      * @throws InvalidArgumentException Thrown if the header value is not a valid type
      */
-    public function addRange(array $values): void
+    public function addRange(array $kvps): void
     {
-        foreach ($values as $kvp) {
-            /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
-            if (!$kvp instanceof KeyValuePair) {
-                throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
-            }
+        if (\array_is_list($kvps)) {
+            foreach ($kvps as $kvp) {
+                /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
+                if (!$kvp instanceof KeyValuePair) {
+                    throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
+                }
 
-            $this->add($kvp->key, $kvp->value);
+                $this->add($kvp->key, $kvp->value);
+            }
+        } else {
+            foreach ($kvps as $key => $value) {
+                $this->add($key, $value);
+            }
         }
     }
 

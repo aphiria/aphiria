@@ -35,6 +35,13 @@ class HashTableTest extends TestCase
         $this->assertSame('blah', $this->hashTable->get('baz'));
     }
 
+    public function testAddingRangeOfAssociativeArrayWorks(): void
+    {
+        $this->hashTable->addRange(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $this->hashTable->get('foo'));
+        $this->assertSame('blah', $this->hashTable->get('baz'));
+    }
+
     public function testAddingValueMakesItRetrievable(): void
     {
         $this->hashTable->add('foo', 'bar');
@@ -52,6 +59,13 @@ class HashTableTest extends TestCase
         $this->hashTable->add('foo', 'bar');
         $this->hashTable->clear();
         $this->assertEquals([], $this->hashTable->toArray());
+    }
+
+    public function testConstructingWithAssociativeArrayWorks(): void
+    {
+        $hashTable = new HashTable(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
     }
 
     public function testContainsKey(): void
@@ -159,7 +173,7 @@ class HashTableTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
-        $this->hashTable->addRange(['foo' => 'bar']);
+        $this->hashTable->addRange(['foo']);
     }
 
     /**
@@ -169,7 +183,7 @@ class HashTableTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
-        new HashTable(['foo' => 'bar']);
+        new HashTable(['foo']);
     }
 
     public function testPassingParametersInConstructor(): void
