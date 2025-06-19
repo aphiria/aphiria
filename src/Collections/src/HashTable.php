@@ -57,7 +57,7 @@ class HashTable implements IDictionary
     private readonly KeyHasher $keyHasher;
 
     /**
-     * @param list<KeyValuePair<TKey, TValue>> $kvps The list of key-value pairs to add
+     * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The list of key-value pairs to add
      * @throws InvalidArgumentException Thrown if the array contains a non-key-value pair
      */
     final public function __construct(array $kvps = [])
@@ -77,15 +77,22 @@ class HashTable implements IDictionary
     /**
      * @inheritdoc
      */
-    public function addRange(array $values): void
+    public function addRange(array $kvps): void
     {
-        foreach ($values as $kvp) {
-            /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
-            if (!$kvp instanceof KeyValuePair) {
-                throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
-            }
+        if (\array_is_list($kvps)) {
+            foreach ($kvps as $kvp) {
+                /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
+                if (!$kvp instanceof KeyValuePair) {
+                    throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
+                }
 
-            $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
+                $this->hashKeysToKvps[$this->getHashKey($kvp->key)] = $kvp;
+            }
+        } else {
+            foreach ($kvps as $key => $value) {
+                $kvp = new KeyValuePair($key, $value);
+                $this->hashKeysToKvps[$this->getHashKey($key)] = $kvp;
+            }
         }
     }
 

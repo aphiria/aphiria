@@ -49,7 +49,7 @@ function hash_set(array $values = []): HashSet {
  *
  * @template TKey
  * @template TValue
- * @param list<KeyValuePair<TKey, TValue>> $kvps The values to add to the hash table
+ * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The values to add to the hash table
  * @return HashTable<TKey, TValue> The created hash table
  */
 function hash_table(array $kvps = []): HashTable {
@@ -83,7 +83,7 @@ function immutable_hash_set(array $values = []): ImmutableHashSet {
  *
  * @template TKey
  * @template TValue
- * @param list<KeyValuePair<TKey, TValue>> $kvps The values to add to the hash table
+ * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The key-value pairs to add to the hash table
  * @return ImmutableHashTable<TKey, TValue> The created hash table
  */
 function immutable_hash_table(array $kvps = []): ImmutableHashTable {
