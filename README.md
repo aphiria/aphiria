@@ -35,7 +35,7 @@ class UserController extends Controller
     {
         $this->users->create($user);
         
-        return $this->created("/users/{$user->id}", $user);
+        return $this->created("/users/$user->id", $user);
     }
 
     #[Get('/users/:id')]
