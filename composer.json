@@ -122,11 +122,6 @@
             "@psalm"
         ]
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
-    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
