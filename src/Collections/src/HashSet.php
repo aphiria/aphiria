@@ -101,13 +101,14 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function intersect(array $values): static
+    public function intersect(iterable $values): static
     {
         $intersectedValues = [];
+        $valuesArray = \is_array($values) ? $values : iterator_to_array($values);
 
         // We don't use array_intersect because that does string comparisons, which requires __toString()
         foreach ($this->values as $value) {
-            if (\in_array($value, $values, true)) {
+            if (\in_array($value, $valuesArray, true)) {
                 $intersectedValues[] = $value;
             }
         }
@@ -154,7 +155,7 @@ class HashSet implements ISet
     /**
      * @inheritdoc
      */
-    public function union(array $values): static
+    public function union(iterable $values): static
     {
         return new static([...\array_values($this->values), ...$values]);
     }

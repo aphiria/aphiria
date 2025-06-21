@@ -130,9 +130,9 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function intersect(array $values): static
+    public function intersect(iterable $values): static
     {
-        return new static(\array_values(\array_intersect($this->values, $values)));
+        return new static(\array_values(\array_intersect($this->values, \is_array($values) ? $values : \iterator_to_array($values))));
     }
 
     /**
@@ -226,7 +226,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function union(array $values): static
+    public function union(iterable $values): static
     {
         $unionedValues = [...$this->values, ...$values];
 
