@@ -88,12 +88,12 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     public function insert(int $index, mixed $value): void;
 
     /**
-     * Intersects the values of the input array with the values already in the list
+     * Intersects the values of the input iterable with the values already in the list
      *
-     * @param list<T> $values The values to intersect with
+     * @param iterable<T> $values The values to intersect with
      * @return static The intersected list
      */
-    public function intersect(array $values): static;
+    public function intersect(iterable $values): static;
 
     /**
      * Applies a mapping to each value in the list
@@ -140,10 +140,10 @@ interface IList extends ArrayAccess, Countable, IteratorAggregate
     public function toArray(): array;
 
     /**
-     * Unions the values of the input array with the values already in the list
+     * Unions the values of the input iterable with the values already in the list
      *
-     * @param list<T> $values The values to union with
+     * @param iterable<T> $values The values to union with
      * @return static The unioned list
      */
-    public function union(array $values): static;
+    public function union(iterable $values): static;
 }
