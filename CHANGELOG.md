@@ -18,7 +18,7 @@
 - Added `filter()` and `map()` methods to most collections ([#338](https://github.com/aphiria/aphiria/pull/338))
 - Added `array_list()`, `hash_set()`, `hash_table()`, `immutable_array_list()`, `immutable_hash_set()`, `immutable_hash_table()`, `queue()`, and `stack()` functions in the `Aphiria\Collections\Functions` namespace ([#341](https://github.com/aphiria/aphiria/pull/341), [#343](https://github.com/aphiria/aphiria/pull/343))
 - Added support for associative arrays in `HashTable` and `ImmutableHashTable` ([#345](https://github.com/aphiria/aphiria/pull/345))
-- Added support for `iterable`s in `IList::intersect()`, `IList::union()`, `ISet::intersect()`, and `ISet::union()` ([#347](https://github.com/aphiria/aphiria/pull/347))
+- Added support for `iterable`s in `IList::intersect()`, `IList::union()`, `ISet::intersect()`, and `ISet::union()`
 
 ### Fixed
 
