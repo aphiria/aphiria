@@ -50,7 +50,7 @@ class AuthenticateTest extends TestCase
         return [
             [[null]],
             [['foo']],
-            [['foo', 'bar']]
+            [['foo', 'bar']],
         ];
     }
 

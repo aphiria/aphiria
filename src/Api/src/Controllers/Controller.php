@@ -143,7 +143,7 @@ class Controller
             $this->request,
             HttpStatusCode::Accepted,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -162,7 +162,7 @@ class Controller
             $this->request,
             HttpStatusCode::BadRequest,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -181,7 +181,7 @@ class Controller
             $this->request,
             HttpStatusCode::Conflict,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -199,13 +199,13 @@ class Controller
     protected function created(string|Uri $uri, object|string|int|float|array|null $body = null, ?Headers $headers = null): IResponse
     {
         $headers = $headers ?? new Headers();
-        $headers->add('Location', (string)$uri);
+        $headers->add('Location', (string) $uri);
 
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::Created,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -224,7 +224,7 @@ class Controller
             $this->request,
             HttpStatusCode::Forbidden,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -260,7 +260,7 @@ class Controller
             $this->request,
             HttpStatusCode::InternalServerError,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -293,7 +293,7 @@ class Controller
         return $this->responseFactory->createResponse(
             $this->request,
             HttpStatusCode::NoContent,
-            $headers
+            $headers,
         );
     }
 
@@ -312,7 +312,7 @@ class Controller
             $this->request,
             HttpStatusCode::NotFound,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -331,7 +331,7 @@ class Controller
             $this->request,
             HttpStatusCode::Ok,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -350,14 +350,14 @@ class Controller
         } catch (FailedContentNegotiationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnsupportedMediaType,
-                "Failed to negotiate request content with type $type"
+                "Failed to negotiate request content with type $type",
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnprocessableEntity,
                 "Failed to deserialize request body when resolving body as type $type",
                 0,
-                $ex
+                $ex,
             );
         }
     }
@@ -377,7 +377,7 @@ class Controller
             $this->request,
             HttpStatusCode::Unauthorized,
             $headers,
-            $body
+            $body,
         );
     }
 
@@ -395,20 +395,21 @@ class Controller
      */
     private function redirect(
         HttpStatusCode|int $statusCode,
-        string|Uri $uri, object|string|int|float|array|null $body = null,
-        ?Headers $headers = null
+        string|Uri $uri,
+        object|string|int|float|array|null $body = null,
+        ?Headers $headers = null,
     ): IResponse {
         if (\is_string($uri)) {
             $uriString = $uri;
         } else {
-            $uriString = (string)$uri;
+            $uriString = (string) $uri;
         }
 
         $response = $this->responseFactory->createResponse(
             $this->request,
             $statusCode,
             $headers,
-            $body
+            $body,
         );
         $response->headers->add('Location', $uriString);
 

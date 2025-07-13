@@ -30,8 +30,8 @@ use PHPUnit\Framework\TestCase;
 
 class RouteRequestFactoryTest extends TestCase
 {
-    private RouteCollection $routes;
     private RouteRequestFactory $factory;
+    private RouteCollection $routes;
 
     protected function setUp(): void
     {
@@ -63,7 +63,7 @@ class RouteRequestFactoryTest extends TestCase
     public function testCreatingRequestForNonExistentRouteThrowsException(): void
     {
         $this->expectException(OutOfBoundsException::class);
-        $this->expectExceptionMessage("Route \"foo\" does not exist");
+        $this->expectExceptionMessage('Route "foo" does not exist');
         $this->factory->createRouteUri('foo');
     }
 
@@ -88,15 +88,21 @@ class RouteRequestFactoryTest extends TestCase
         $this->assertSame('POST', $request->method);
     }
 
-    public function testCreatingRequestWithHeaderParameterThatRequiresValueThrowsException(): void
+    public function testCreatingRequestWhoseUriCouldNotBeCreatedThrowsException(): void
     {
         $this->expectException(RouteRequestCreationException::class);
-        $this->expectExceptionMessage('Failed to create route request because the parameter "foo" is required but not provided');
+        $this->expectExceptionMessage('Failed to create route request');
         $controller = new class () {
-            public function foo(#[Header] string $foo): void {}
+            public function foo(): void {}
         };
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $this->factory->createRouteUri('foo');
+        $uriFactory = $this->createMock(IRouteUriFactory::class);
+        $uriFactory
+            ->expects($this->once())
+            ->method('createRouteUri')
+            ->willThrowException(new RouteUriCreationException('foo'));
+        $factory = new RouteRequestFactory($this->routes, $uriFactory);
+        $factory->createRouteUri('foo');
     }
 
     public function testCreatingRequestWithDefaultValueHeaderParameterSetsHeaderValueToDefaultValue(): void
@@ -107,6 +113,29 @@ class RouteRequestFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
         $request = $this->factory->createRouteUri('foo');
         $this->assertSame('bar', $request->headers->getFirst('foo'));
+    }
+
+    public function testCreatingRequestWithFullUriSetsMethodUriAndHeaders(): void
+    {
+        $controller = new class () {
+            public function foo(#[Header] string $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', 'GET', 'example.com', '/foo', $controller, 'foo');
+        $request = $this->factory->createRouteUri('foo', ['foo' => 'bar']);
+        $this->assertSame('GET', $request->method);
+        $this->assertSame('https://example.com/foo', (string) $request->uri);
+        $this->assertSame('bar', $request->headers->getFirst('foo'));
+    }
+
+    public function testCreatingRequestWithHeaderParameterThatRequiresValueThrowsException(): void
+    {
+        $this->expectException(RouteRequestCreationException::class);
+        $this->expectExceptionMessage('Failed to create route request because the parameter "foo" is required but not provided');
+        $controller = new class () {
+            public function foo(#[Header] string $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
+        $this->factory->createRouteUri('foo');
     }
 
     public function testCreatingRequestWithHeaderValueInRouteVariablesUsesThatValue(): void
@@ -129,18 +158,6 @@ class RouteRequestFactoryTest extends TestCase
         $this->assertSame('baz', $request->headers->getFirst('bar'));
     }
 
-    public function testCreatingRequestWithFullUriSetsMethodUriAndHeaders(): void
-    {
-        $controller = new class () {
-            public function foo(#[Header] string $foo): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', 'GET', 'example.com', '/foo', $controller, 'foo');
-        $request = $this->factory->createRouteUri('foo', ['foo' => 'bar']);
-        $this->assertSame('GET', $request->method);
-        $this->assertSame('https://example.com/foo', (string)$request->uri);
-        $this->assertSame('bar', $request->headers->getFirst('foo'));
-    }
-
     public function testCreatingRequestWithNonHeaderRouteVariablesPopulatesThemInUri(): void
     {
         $controller = new class () {
@@ -149,7 +166,7 @@ class RouteRequestFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/:bar', $controller, 'foo');
         $request = $this->factory->createRouteUri('foo', ['foo' => '1', 'bar' => '2', 'baz' => '3']);
         $this->assertSame('GET', $request->method);
-        $this->assertSame('/2?baz=3', (string)$request->uri);
+        $this->assertSame('/2?baz=3', (string) $request->uri);
         $this->assertSame('1', $request->headers->getFirst('foo'));
     }
 
@@ -161,25 +178,8 @@ class RouteRequestFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
         $request = $this->factory->createRouteUri('foo', ['foo' => 'bar']);
         $this->assertSame('GET', $request->method);
-        $this->assertSame('/foo', (string)$request->uri);
+        $this->assertSame('/foo', (string) $request->uri);
         $this->assertSame('bar', $request->headers->getFirst('foo'));
-    }
-
-    public function testCreatingRequestWhoseUriCouldNotBeCreatedThrowsException(): void
-    {
-        $this->expectException(RouteRequestCreationException::class);
-        $this->expectExceptionMessage('Failed to create route request');
-        $controller = new class () {
-            public function foo(): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', 'GET', null, '/foo', $controller, 'foo');
-        $uriFactory = $this->createMock(IRouteUriFactory::class);
-        $uriFactory
-            ->expects($this->once())
-            ->method('createRouteUri')
-            ->willThrowException(new RouteUriCreationException('foo'));
-        $factory = new RouteRequestFactory($this->routes, $uriFactory);
-        $factory->createRouteUri('foo');
     }
 
     /**
@@ -198,7 +198,7 @@ class RouteRequestFactoryTest extends TestCase
         ?string $hostTemplate,
         string $pathTemplate,
         object $controller,
-        string $methodName
+        string $methodName,
     ): void {
         if (\is_string($methods)) {
             $methods = [$methods];
@@ -209,7 +209,7 @@ class RouteRequestFactoryTest extends TestCase
             new RouteAction($controller::class, $methodName),
             [new HttpMethodRouteConstraint($methods)],
             [],
-            $name
+            $name,
         ));
     }
 }

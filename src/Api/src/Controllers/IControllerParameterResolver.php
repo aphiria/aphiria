@@ -35,6 +35,6 @@ interface IControllerParameterResolver
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
         IRequest $request,
-        array $routeVariables
+        array $routeVariables,
     ): mixed;
 }

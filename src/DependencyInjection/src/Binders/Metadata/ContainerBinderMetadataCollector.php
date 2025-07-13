@@ -50,12 +50,12 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
         string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
-        bool $resolveAsSingleton = false
+        bool $resolveAsSingleton = false,
     ): void {
         $this->addBoundInterface($interfaces);
         $this->container->for(
             $this->currentContext,
-            fn(IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton)
+            fn(IContainer $container) => $container->bindClass($interfaces, $concreteClass, $primitives, $resolveAsSingleton),
         );
     }
 
@@ -180,7 +180,7 @@ final class ContainerBinderMetadataCollector implements IBinderMetadataCollector
      */
     private function addBoundInterface(string|array $interfaces): void
     {
-        foreach ((array)$interfaces as $interface) {
+        foreach ((array) $interfaces as $interface) {
             $boundInterface = new BoundInterface($interface, $this->currentContext);
 
             // We do not want to double-add bound interfaces (a universal and targeted binding are considered different)

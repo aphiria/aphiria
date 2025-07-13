@@ -37,8 +37,6 @@ final class AuthenticationSchemeRegistry
             return \count($this->schemesByName) === 1 ? \array_values($this->schemesByName)[0] : null;
         }
     }
-    /** @var array<string, AuthenticationScheme<AuthenticationSchemeOptions>> The mapping of authentication scheme names to schemes */
-    private array $schemesByName = [];
     /**
      * The virtual default authentication scheme if one is set, otherwise null
      *
@@ -49,6 +47,8 @@ final class AuthenticationSchemeRegistry
      * @psalm-suppress InvalidReturnType Ditto
      */
     private ?AuthenticationScheme $_defaultScheme = null;
+    /** @var array<string, AuthenticationScheme<AuthenticationSchemeOptions>> The mapping of authentication scheme names to schemes */
+    private array $schemesByName = [];
 
     /**
      * Gets an authentication scheme by name

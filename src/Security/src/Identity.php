@@ -40,7 +40,7 @@ class Identity implements IIdentity
         get {
             $idClaims = $this->filterClaims(ClaimType::Name);
 
-            return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
+            return \count($idClaims) === 0 ? null : (string) $idClaims[0]->value;
         }
     }
     /** @inheritdoc */
@@ -48,7 +48,7 @@ class Identity implements IIdentity
         get {
             $idClaims = $this->filterClaims(ClaimType::NameIdentifier);
 
-            return \count($idClaims) === 0 ? null : (string)$idClaims[0]->value;
+            return \count($idClaims) === 0 ? null : (string) $idClaims[0]->value;
         }
     }
     /** @var array<string, list<Claim<mixed>>> The mapping of claim types to claims */

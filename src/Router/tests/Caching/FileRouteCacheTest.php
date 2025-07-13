@@ -59,8 +59,8 @@ class FileRouteCacheTest extends TestCase
                 new UriTemplate('foo'),
                 new RouteAction($controller::class, 'bar'),
                 [$this->createMock(IRouteConstraint::class)],
-                [new MiddlewareBinding($middleware::class)]
-            )
+                [new MiddlewareBinding($middleware::class)],
+            ),
         ]);
         $this->cache->set($routes);
         $this->assertEquals($routes, $this->cache->get());

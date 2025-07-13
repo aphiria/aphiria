@@ -34,6 +34,6 @@ interface IRouteConstraint
         string $httpMethod,
         string $host,
         string $path,
-        array $headers
+        array $headers,
     ): bool;
 }

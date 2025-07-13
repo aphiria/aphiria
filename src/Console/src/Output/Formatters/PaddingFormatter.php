@@ -39,7 +39,7 @@ class PaddingFormatter
         $numRows = \count($rows);
 
         for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
-            $rows[$rowIndex] = (array)$rows[$rowIndex];
+            $rows[$rowIndex] = (array) $rows[$rowIndex];
         }
 
         /** @var array<int, array> $rows */
@@ -53,8 +53,8 @@ class PaddingFormatter
             foreach ($rows[$rowIndex] as $itemIndex => $item) {
                 // The formatting tags will be compiled and disappear from the string
                 // So, we want additional padding equal to the length of the formatting so that the widths come out right
-                $formattingWidth = $this->getStringWidth((string)$item, true) - $this->getStringWidth((string)$item, false);
-                $rows[$rowIndex][$itemIndex] = \str_pad((string)$item, $maxLengths[(int)$itemIndex] + $formattingWidth, $options->paddingString, $paddingType);
+                $formattingWidth = $this->getStringWidth((string) $item, true) - $this->getStringWidth((string) $item, false);
+                $rows[$rowIndex][$itemIndex] = \str_pad((string) $item, $maxLengths[(int) $itemIndex] + $formattingWidth, $options->paddingString, $paddingType);
             }
         }
 
@@ -96,7 +96,7 @@ class PaddingFormatter
         for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
             /** @psalm-suppress MixedAssignment The value could be a mixed type */
             foreach ($rows[$rowIndex] as $columnIndex => $value) {
-                $rows[$rowIndex][$columnIndex] = \trim((string)$value);
+                $rows[$rowIndex][$columnIndex] = \trim((string) $value);
                 $maxLengths[$columnIndex] = \max($maxLengths[$columnIndex], $this->getStringWidth($rows[$rowIndex][$columnIndex], false));
             }
         }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Aphiria
  *
@@ -9,6 +7,8 @@ declare(strict_types=1);
  * @copyright Copyright (C) 2025 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
+
+declare(strict_types=1);
 
 namespace Aphiria\Api\Controllers;
 
@@ -33,9 +33,9 @@ class RequestParameterDeserializer implements IRequestParameterDeserializer
                     default => false,
                 };
             },
-            'float' => fn(mixed $value): float => (float)$value,
-            'int' => fn(mixed $value): int => (int)$value,
-            'string' => fn(mixed $value): string => (string)$value
+            'float' => fn(mixed $value): float => (float) $value,
+            'int' => fn(mixed $value): int => (int) $value,
+            'string' => fn(mixed $value): string => (string) $value,
         ];
     }
 

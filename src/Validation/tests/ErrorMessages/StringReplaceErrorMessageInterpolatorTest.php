@@ -47,7 +47,7 @@ class StringReplaceErrorMessageInterpolatorTest extends TestCase
         $interpolator = new StringReplaceErrorMessageInterpolator();
         $this->assertSame(
             'foo dave young',
-            $interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young'])
+            $interpolator->interpolate('foo {bar} {baz}', ['bar' => 'dave', 'baz' => 'young']),
         );
     }
 

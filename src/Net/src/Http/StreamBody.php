@@ -50,7 +50,7 @@ class StreamBody implements IBody
      */
     public function readAsString(): string
     {
-        return (string)$this->stream;
+        return (string) $this->stream;
     }
 
     /**

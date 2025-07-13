@@ -96,7 +96,7 @@ class BodyParser
 
         /** @psalm-suppress MixedAssignment Value here really could be mixed */
         foreach ($formInputArray as $key => $value) {
-            $kvps[] = new KeyValuePair((string)$key, $value);
+            $kvps[] = new KeyValuePair((string) $key, $value);
         }
 
         // Cache this for next time

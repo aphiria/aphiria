@@ -73,7 +73,7 @@ class SynchronousApiApplicationBuilderTest extends TestCase
         $this->appBuilder->withModule($module);
         $app = new SynchronousApiApplication(
             $this->createMock(IRequestHandler::class),
-            $this->createMock(IRequest::class)
+            $this->createMock(IRequest::class),
         );
         $this->container->bindInstance(SynchronousApiApplication::class, $app);
         $this->appBuilder->build();

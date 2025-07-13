@@ -23,7 +23,7 @@ class TableFormatter
      */
     public function __construct(
         private readonly TableFormatterOptions $defaultOptions = new TableFormatterOptions(),
-        private readonly PaddingFormatter $padding = new PaddingFormatter()
+        private readonly PaddingFormatter $padding = new PaddingFormatter(),
     ) {}
 
     /**
@@ -45,7 +45,7 @@ class TableFormatter
 
         // Normalize all rows to be an array
         for ($rowIndex = 0;$rowIndex < $numRows;$rowIndex++) {
-            $rows[$rowIndex] = (array)$rows[$rowIndex];
+            $rows[$rowIndex] = (array) $rows[$rowIndex];
         }
 
         // If there are headers, we want them to be formatted along with the rows
@@ -60,12 +60,12 @@ class TableFormatter
                     '%s%s%s%s%s',
                     $options->verticalBorderChar,
                     $options->cellPaddingString,
-                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn(mixed $value): string => (string)$value, $row)),
+                    \implode($options->cellPaddingString . $options->verticalBorderChar . $options->cellPaddingString, \array_map(static fn(mixed $value): string => (string) $value, $row)),
                     $options->cellPaddingString,
-                    $options->verticalBorderChar
+                    $options->verticalBorderChar,
                 ),
-                new PaddingFormatterOptions($options->cellPaddingString, $options->padAfter, $options->eolChar)
-            )
+                new PaddingFormatterOptions($options->cellPaddingString, $options->padAfter, $options->eolChar),
+            ),
         );
 
         // Create the borders

@@ -37,7 +37,7 @@ final class InputCompiler implements IInputCompiler
         private readonly CommandRegistry $commands,
         private readonly IInputTokenizer $argvTokenizer = new ArgvInputTokenizer(),
         private readonly IInputTokenizer $stringTokenizer = new StringInputTokenizer(),
-        private readonly IInputTokenizer $arrayListTokenizer = new ArrayListInputTokenizer()
+        private readonly IInputTokenizer $arrayListTokenizer = new ArrayListInputTokenizer(),
     ) {}
 
     /**
@@ -59,7 +59,7 @@ final class InputCompiler implements IInputCompiler
         return new Input(
             $command->name,
             self::compileArguments($command, $argumentValues),
-            self::compileOptions($command, $options)
+            self::compileOptions($command, $options),
         );
     }
 
@@ -172,7 +172,7 @@ final class InputCompiler implements IInputCompiler
 
                 // Make sure the value is always treated as an array
                 if ($option->valueIsArray) {
-                    $value = (array)$value;
+                    $value = (array) $value;
                 }
 
                 /** @psalm-suppress MixedAssignment We're purposely assigning to a mixed type */
@@ -239,7 +239,7 @@ final class InputCompiler implements IInputCompiler
             $nextToken = \array_shift($remainingTokens);
 
             // Check if the next token is also an option
-            if (empty((string)$nextToken) || \str_starts_with((string)$nextToken, '-')) {
+            if (empty((string) $nextToken) || \str_starts_with((string) $nextToken, '-')) {
                 // The option must have not had a value, so put the next token back
                 \array_unshift($remainingTokens, $nextToken);
 
@@ -291,23 +291,23 @@ final class InputCompiler implements IInputCompiler
         array $tokens,
         string &$commandName,
         array &$argumentValues,
-        array &$options
+        array &$options,
     ): void {
         // We're guaranteed that tokens is not empty from an upstream check
-        $commandName = (string)\array_shift($tokens);
+        $commandName = (string) \array_shift($tokens);
 
         /** @psalm-suppress MixedAssignment We're purposely setting the token to a mixed value */
         while ($token = \array_shift($tokens)) {
-            if (\str_starts_with((string)$token, '--')) {
-                [$optionName, $optionValue] = self::parseLongOption((string)$token, $tokens);
+            if (\str_starts_with((string) $token, '--')) {
+                [$optionName, $optionValue] = self::parseLongOption((string) $token, $tokens);
                 self::addOption($options, $optionName, $optionValue);
-            } elseif (\str_starts_with((string)$token, '-')) {
-                foreach (self::parseShortOption((string)$token) as [$optionName, $optionValue]) {
+            } elseif (\str_starts_with((string) $token, '-')) {
+                foreach (self::parseShortOption((string) $token) as [$optionName, $optionValue]) {
                     self::addOption($options, $optionName, $optionValue);
                 }
             } else {
                 // We consider this to be an argument
-                $argumentValues[] = self::parseArgument((string)$token);
+                $argumentValues[] = self::parseArgument((string) $token);
             }
         }
     }

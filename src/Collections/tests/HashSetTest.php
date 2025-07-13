@@ -140,7 +140,7 @@ class HashSetTest extends TestCase
     {
         $expectedValues = [
             new FakeObject(),
-            new FakeObject()
+            new FakeObject(),
         ];
         $this->set->addRange($expectedValues);
         $actualValues = [];

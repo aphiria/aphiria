@@ -66,7 +66,7 @@ interface IAuthenticator
         IPrincipal $user,
         IRequest $request,
         IResponse $response,
-        array|string|null $schemeNames = null
+        array|string|null $schemeNames = null,
     ): void;
 
     /**

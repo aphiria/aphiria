@@ -33,6 +33,6 @@ interface IAuthority
     public function authorize(
         IPrincipal $user,
         AuthorizationPolicy|string $policy,
-        ?object $resource = null
+        ?object $resource = null,
     ): AuthorizationResult;
 }

@@ -33,7 +33,7 @@ final class BetweenConstraint extends Constraint
         private readonly int|float $max,
         private readonly bool $minIsInclusive,
         private readonly bool $maxIsInclusive,
-        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID,
     ) {
         parent::__construct($errorMessageId);
     }

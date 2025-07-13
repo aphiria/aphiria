@@ -63,7 +63,7 @@ class ConstraintTest extends TestCase
         $value = new class () {};
         $this->assertEquals(
             ['value' => $value::class . ' object'],
-            $this->constraint->getErrorMessagePlaceholders($value)
+            $this->constraint->getErrorMessagePlaceholders($value),
         );
     }
 }

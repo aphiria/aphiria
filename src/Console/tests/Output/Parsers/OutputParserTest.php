@@ -39,7 +39,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::Word, 'blah', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
             new OutputToken(OutputTokenType::TagClose, 'bar', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $this->parser->parse($tokens);
     }
@@ -53,7 +53,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
             new OutputToken(OutputTokenType::Word, 'blah', 1),
             new OutputToken(OutputTokenType::TagClose, 'bar', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -64,7 +64,7 @@ class OutputParserTest extends TestCase
         $expectedOutput->addChild($barNode);
         $this->assertEquals(
             $expectedOutput,
-            $this->parser->parse($tokens)
+            $this->parser->parse($tokens),
         );
     }
 
@@ -73,14 +73,14 @@ class OutputParserTest extends TestCase
         $tokens = [
             new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
         $expectedOutput->addChild($fooNode);
         $this->assertEquals(
             $expectedOutput,
-            $this->parser->parse($tokens)
+            $this->parser->parse($tokens),
         );
     }
 
@@ -88,7 +88,7 @@ class OutputParserTest extends TestCase
     {
         $tokens = [
             new OutputToken(OutputTokenType::Word, '<bar>', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new WordAstNode('<bar>');
@@ -102,7 +102,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
             new OutputToken(OutputTokenType::Word, '<bar>', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -121,7 +121,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::TagClose, 'bar', 1),
             new OutputToken(OutputTokenType::Word, 'baz', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -133,7 +133,7 @@ class OutputParserTest extends TestCase
         $expectedOutput->addChild($fooNode);
         $this->assertEquals(
             $expectedOutput,
-            $this->parser->parse($tokens)
+            $this->parser->parse($tokens),
         );
     }
 
@@ -149,7 +149,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::Word, 'baz', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
             new OutputToken(OutputTokenType::Word, 'young', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $expectedOutput->addChild(new WordAstNode('dave'));
@@ -163,7 +163,7 @@ class OutputParserTest extends TestCase
         $expectedOutput->addChild(new WordAstNode('young'));
         $this->assertEquals(
             $expectedOutput,
-            $this->parser->parse($tokens)
+            $this->parser->parse($tokens),
         );
     }
 
@@ -174,7 +174,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'bar', 1),
             new OutputToken(OutputTokenType::TagClose, 'bar', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -182,7 +182,7 @@ class OutputParserTest extends TestCase
         $expectedOutput->addChild($fooNode);
         $this->assertEquals(
             $expectedOutput,
-            $this->parser->parse($tokens)
+            $this->parser->parse($tokens),
         );
     }
 
@@ -190,14 +190,14 @@ class OutputParserTest extends TestCase
     {
         $tokens = [
             new OutputToken(OutputTokenType::Word, 'foobar', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $node = new WordAstNode('foobar');
         $expectedOutput->addChild($node);
         $this->assertEquals(
             $expectedOutput,
-            $this->parser->parse($tokens)
+            $this->parser->parse($tokens),
         );
     }
 
@@ -207,7 +207,7 @@ class OutputParserTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
             new OutputToken(OutputTokenType::Word, 'bar', 1),
             new OutputToken(OutputTokenType::TagClose, 'foo', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $expectedOutput = new RootAstNode();
         $fooNode = new TagAstNode('foo');
@@ -222,7 +222,7 @@ class OutputParserTest extends TestCase
         $tokens = [
             new OutputToken(OutputTokenType::TagOpen, 'foo', 1),
             new OutputToken(OutputTokenType::Word, 'bar', 1),
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $this->parser->parse($tokens);
     }
@@ -233,7 +233,7 @@ class OutputParserTest extends TestCase
         $tokens = [
             new OutputToken(OutputTokenType::Word, 'foo', 0),
             new OutputToken(OutputTokenType::TagClose, 'bar', 3),
-            new OutputToken(OutputTokenType::Eof, null, 9)
+            new OutputToken(OutputTokenType::Eof, null, 9),
         ];
         $this->parser->parse($tokens);
     }

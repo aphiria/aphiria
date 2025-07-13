@@ -61,8 +61,8 @@ class NegotiatedResponseFactoryTest extends TestCase
                 $mediaTypeFormatter,
                 null,
                 'utf-8',
-                null
-            )
+                null,
+            ),
         );
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertInstanceOf(StreamBody::class, $response->body);
@@ -83,8 +83,8 @@ class NegotiatedResponseFactoryTest extends TestCase
                 $mediaTypeFormatter,
                 null,
                 null,
-                null
-            )
+                null,
+            ),
         );
         $response = $this->factory->createResponse($request, 200, null, []);
         $this->assertNotNull($response->body);
@@ -136,7 +136,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->setUpContentNegotiationMock(
             User::class,
             $request,
-            new ContentNegotiationResult($this->createMock(IMediaTypeFormatter::class), null, 'utf-8', 'en-US')
+            new ContentNegotiationResult($this->createMock(IMediaTypeFormatter::class), null, 'utf-8', 'en-US'),
         );
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertSame('en-US', $response->headers->getFirst('Content-Language'));
@@ -158,8 +158,8 @@ class NegotiatedResponseFactoryTest extends TestCase
                 $this->createMock(IMediaTypeFormatter::class),
                 'foo/bar',
                 null,
-                null
-            )
+                null,
+            ),
         );
         $rawBody = new User(123, 'foo@bar.com');
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
@@ -213,7 +213,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->setUpContentNegotiationMock(
             User::class,
             $request,
-            new ContentNegotiationResult(null, null, null, null)
+            new ContentNegotiationResult(null, null, null, null),
         );
         $this->contentNegotiator
             ->expects($this->once())
@@ -227,7 +227,7 @@ class NegotiatedResponseFactoryTest extends TestCase
             $response = $ex->response;
             $this->assertSame(HttpStatusCode::NotAcceptable, $response->statusCode);
             $this->assertSame('application/json', $response->headers->getFirst('Content-Type'));
-            $this->assertSame('["foo\/bar"]', (string)$response->body);
+            $this->assertSame('["foo\/bar"]', (string) $response->body);
         }
     }
 
@@ -243,7 +243,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->setUpContentNegotiationMock(
             User::class,
             $request,
-            new ContentNegotiationResult($responseMediaTypeFormatter, null, 'utf-8', null)
+            new ContentNegotiationResult($responseMediaTypeFormatter, null, 'utf-8', null),
         );
         $response = $this->factory->createResponse($request, 200, null, $rawBody);
         $this->assertInstanceOf(StreamBody::class, $response->body);
@@ -262,7 +262,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $this->setUpContentNegotiationMock(
             User::class,
             $request,
-            new ContentNegotiationResult($responseMediaTypeFormatter, null, null, null)
+            new ContentNegotiationResult($responseMediaTypeFormatter, null, null, null),
         );
 
         try {
@@ -278,7 +278,7 @@ class NegotiatedResponseFactoryTest extends TestCase
         $rawBody = 'foo';
         $response = $this->factory->createResponse($this->createRequest('http://foo.com'), 200, null, $rawBody);
         $this->assertInstanceOf(StringBody::class, $response->body);
-        $this->assertSame('foo', (string)$response->body);
+        $this->assertSame('foo', (string) $response->body);
     }
 
     public function testCreatingResponseWithStreamBodyCreatesBodyFromStream(): void
@@ -309,7 +309,7 @@ class NegotiatedResponseFactoryTest extends TestCase
     private function setUpContentNegotiationMock(
         string $expectedType,
         IRequest $expectedRequest,
-        ContentNegotiationResult $expectedContentNegotiationResult
+        ContentNegotiationResult $expectedContentNegotiationResult,
     ): void {
         $this->contentNegotiator
             ->expects($this->once())

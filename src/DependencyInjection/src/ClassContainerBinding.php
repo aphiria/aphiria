@@ -28,6 +28,6 @@ readonly class ClassContainerBinding implements IContainerBinding
     public function __construct(
         public string $concreteClass,
         public array $constructorPrimitives,
-        public private(set) bool $resolveAsSingleton
+        public private(set) bool $resolveAsSingleton,
     ) {}
 }

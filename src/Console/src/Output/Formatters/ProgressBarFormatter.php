@@ -79,11 +79,11 @@ class ProgressBarFormatter implements IProgressBarObserver
             $percentCompleteString = $this->compilePercent($progress, $maxSteps);
             $completedProgressString = \str_repeat(
                 $options->completedProgressChar,
-                (int)\max(0, \floor($progress / $maxSteps * ($options->progressBarWidth - 2) - \strlen($percentCompleteString)))
+                (int) \max(0, \floor($progress / $maxSteps * ($options->progressBarWidth - 2) - \strlen($percentCompleteString))),
             ) . $percentCompleteString;
             $progressLeftString = \str_repeat(
                 $options->remainingProgressChar,
-                \max(0, $options->progressBarWidth - 2 - \strlen($completedProgressString))
+                \max(0, $options->progressBarWidth - 2 - \strlen($completedProgressString)),
             );
         }
 
@@ -109,9 +109,9 @@ class ProgressBarFormatter implements IProgressBarObserver
                 $this->compileBar($progress, $maxSteps, $options),
                 $this->compileTimeRemaining($progress, $maxSteps),
                 $this->compilePercent($progress, $maxSteps),
-                '%%'
+                '%%',
             ],
-            $options->outputFormat
+            $options->outputFormat,
         );
 
         if ($this->isFirstOutput) {

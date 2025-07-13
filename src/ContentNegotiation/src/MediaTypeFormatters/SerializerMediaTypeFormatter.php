@@ -38,7 +38,7 @@ abstract class SerializerMediaTypeFormatter extends MediaTypeFormatter
         }
 
         /** @var int|float|bool|string|object|array $value */
-        $value = $this->serializer->deserialize((string)$stream, $type, $this->format);
+        $value = $this->serializer->deserialize((string) $stream, $type, $this->format);
 
         return $value;
     }

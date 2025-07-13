@@ -29,7 +29,8 @@ use Aphiria\Collections\Stack;
  * @param list<T> $values The values to add to the list
  * @return ArrayList<T> The created list
  */
-function array_list(array $values = []): ArrayList {
+function array_list(array $values = []): ArrayList
+{
     return new ArrayList($values);
 }
 
@@ -40,7 +41,8 @@ function array_list(array $values = []): ArrayList {
  * @param list<T> $values The values to add to the hash set
  * @return HashSet<T> The created hash set
  */
-function hash_set(array $values = []): HashSet {
+function hash_set(array $values = []): HashSet
+{
     return new HashSet($values);
 }
 
@@ -52,7 +54,8 @@ function hash_set(array $values = []): HashSet {
  * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The values to add to the hash table
  * @return HashTable<TKey, TValue> The created hash table
  */
-function hash_table(array $kvps = []): HashTable {
+function hash_table(array $kvps = []): HashTable
+{
     return new HashTable($kvps);
 }
 
@@ -63,7 +66,8 @@ function hash_table(array $kvps = []): HashTable {
  * @param list<T> $values The values to add to the list
  * @return ImmutableArrayList<T> The created list
  */
-function immutable_array_list(array $values = []): ImmutableArrayList {
+function immutable_array_list(array $values = []): ImmutableArrayList
+{
     return new ImmutableArrayList($values);
 }
 
@@ -74,7 +78,8 @@ function immutable_array_list(array $values = []): ImmutableArrayList {
  * @param list<T> $values The values to add to the hash set
  * @return ImmutableHashSet<T> The created hash set
  */
-function immutable_hash_set(array $values = []): ImmutableHashSet {
+function immutable_hash_set(array $values = []): ImmutableHashSet
+{
     return new ImmutableHashSet($values);
 }
 
@@ -86,7 +91,8 @@ function immutable_hash_set(array $values = []): ImmutableHashSet {
  * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The key-value pairs to add to the hash table
  * @return ImmutableHashTable<TKey, TValue> The created hash table
  */
-function immutable_hash_table(array $kvps = []): ImmutableHashTable {
+function immutable_hash_table(array $kvps = []): ImmutableHashTable
+{
     return new ImmutableHashTable($kvps);
 }
 
@@ -96,7 +102,8 @@ function immutable_hash_table(array $kvps = []): ImmutableHashTable {
  * @template T
  * @return Queue<T> The created queue
  */
-function queue(): Queue {
+function queue(): Queue
+{
     return new Queue();
 }
 
@@ -106,6 +113,7 @@ function queue(): Queue {
  * @template T
  * @return Stack<T> The created stack
  */
-function stack(): Stack {
+function stack(): Stack
+{
     return new Stack();
 }

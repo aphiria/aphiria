@@ -34,6 +34,6 @@ class RouteGroupOptions
         public readonly bool $isHttpsOnly = false,
         public array $constraints = [],
         public array $middlewareBindings = [],
-        public readonly array $parameters = []
+        public readonly array $parameters = [],
     ) {}
 }

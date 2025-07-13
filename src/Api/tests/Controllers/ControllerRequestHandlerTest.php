@@ -63,7 +63,7 @@ class ControllerRequestHandlerTest extends TestCase
             $controllerClosure,
             [],
             $this->contentNegotiator,
-            $this->routeActionInvoker
+            $this->routeActionInvoker,
         );
         $this->assertSame($expectedResponse, $requestHandler->handle($request));
     }
@@ -103,7 +103,7 @@ class ControllerRequestHandlerTest extends TestCase
             [],
             $this->contentNegotiator,
             $this->routeActionInvoker,
-            $this->userAccessor
+            $this->userAccessor,
         );
         $requestHandler->handle($request);
         $this->assertInstanceOf(RequestParser::class, $controller->requestParser);

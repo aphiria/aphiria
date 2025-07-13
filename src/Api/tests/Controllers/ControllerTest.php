@@ -272,7 +272,7 @@ class ControllerTest extends TestCase
             fn(): IResponse => $this->controller->notFound(),
             fn(): IResponse => $this->controller->ok(),
             fn(): mixed => $this->controller->readRequestBodyAs('foo'),
-            fn(): IResponse => $this->controller->unauthorized()
+            fn(): IResponse => $this->controller->unauthorized(),
         ];
 
         foreach ($helperCallbacks as $helperCallback) {

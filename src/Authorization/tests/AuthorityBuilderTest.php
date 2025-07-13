@@ -71,7 +71,7 @@ class AuthorityBuilderTest extends TestCase
         $expectedPolicies->registerPolicy($policy);
         $expectedAuthority = new Authority(
             $expectedPolicies,
-            new AuthorizationRequirementHandlerRegistry()
+            new AuthorizationRequirementHandlerRegistry(),
         );
         $this->assertEquals($expectedAuthority, $authority);
     }

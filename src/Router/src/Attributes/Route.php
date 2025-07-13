@@ -34,6 +34,6 @@ class Route
         public readonly ?string $host = null,
         public readonly ?string $name = null,
         public readonly bool $isHttpsOnly = false,
-        public readonly array $parameters = []
+        public readonly array $parameters = [],
     ) {}
 }

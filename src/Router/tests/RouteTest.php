@@ -47,7 +47,7 @@ class RouteTest extends TestCase
             $this->constraints,
             $this->middlewareBindings,
             'name',
-            $this->parameters
+            $this->parameters,
         );
     }
 

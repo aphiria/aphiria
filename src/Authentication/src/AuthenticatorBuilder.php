@@ -26,7 +26,7 @@ class AuthenticatorBuilder
      * @param AuthenticationSchemeRegistry $schemes The authentication schemes to use
      */
     public function __construct(
-        private readonly AuthenticationSchemeRegistry $schemes = new AuthenticationSchemeRegistry()
+        private readonly AuthenticationSchemeRegistry $schemes = new AuthenticationSchemeRegistry(),
     ) {}
 
     /**

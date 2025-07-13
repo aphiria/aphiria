@@ -60,7 +60,7 @@ class HttpStatusCodeTest extends TestCase
             [HttpStatusCode::BadGateway, 'Bad Gateway'],
             [HttpStatusCode::ServiceUnavailable, 'Service Unavailable'],
             [HttpStatusCode::GatewayTimeout, 'Gateway Timeout'],
-            [HttpStatusCode::HttpVersionNotSupported, 'HTTP Version Not Supported']
+            [HttpStatusCode::HttpVersionNotSupported, 'HTTP Version Not Supported'],
         ];
     }
 

@@ -70,12 +70,12 @@ final class RoutingBinder extends Binder
                 $trieFactory = new TrieFactory(
                     $routes,
                     \getenv('APP_ENV') === 'production' ? $trieCache : null,
-                    new TrieCompiler($routeVariableConstraintFactory)
+                    new TrieCompiler($routeVariableConstraintFactory),
                 );
 
                 return new TrieRouteMatcher(($trieFactory)->createTrie());
             },
-            true
+            true,
         );
 
         $container->bindInstance(IRouteUriFactory::class, $routeUriFactory = new AstRouteUriFactory($routes));

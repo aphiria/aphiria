@@ -50,7 +50,7 @@ final class Cookie
         public ?string $domain = null,
         public bool $isSecure = false,
         public bool $isHttpOnly = true,
-        public ?SameSiteMode $sameSite = SameSiteMode::Lax
+        public ?SameSiteMode $sameSite = SameSiteMode::Lax,
     ) {
         $this->name = $name;
     }

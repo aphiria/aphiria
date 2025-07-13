@@ -47,7 +47,7 @@ final class ArraySessionDriver implements ISessionDriver
             throw new OutOfBoundsException("Session with ID $sessionId does not exist");
         }
 
-        return (string)$this->sessionData[$sessionId];
+        return (string) $this->sessionData[$sessionId];
     }
 
     /**

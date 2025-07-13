@@ -46,7 +46,7 @@ trait IntegrationTest
     /** @var string|null The app URI if one was set, otherwise null */
     protected ?string $appUri {
         get {
-            $appUrl = (string)\getenv('APP_URL');
+            $appUrl = (string) \getenv('APP_URL');
 
             if (empty($appUrl)) {
                 return null;

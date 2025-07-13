@@ -44,7 +44,7 @@ class RequestBodyValidatorTest extends TestCase
         $this->requestBodyValidator = new RequestBodyValidator(
             $this->validator,
             $this->errorMessageInterpolator,
-            $this->languageMatcher
+            $this->languageMatcher,
         );
     }
 
@@ -90,14 +90,14 @@ class RequestBodyValidatorTest extends TestCase
                 'error1',
                 $this->createMock(IConstraint::class),
                 $this,
-                $this
+                $this,
             ),
             new ConstraintViolation(
                 'error2',
                 $this->createMock(IConstraint::class),
                 $this,
-                $this
-            )
+                $this,
+            ),
         ];
         $expectedException = new ValidationException($violations);
         $this->validator

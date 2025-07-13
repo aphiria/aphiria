@@ -34,7 +34,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
     public function __construct(
         private readonly IValidator $validator,
         private readonly ?IErrorMessageInterpolator $errorMessageInterpolator = null,
-        private readonly ?ILanguageMatcher $languageMatcher = null
+        private readonly ?ILanguageMatcher $languageMatcher = null,
     ) {}
 
     /**

@@ -27,7 +27,7 @@ final class HelpCommand extends Command
             'help',
             [new Argument('command', ArgumentType::Optional, 'The command to get help with')],
             [],
-            'Displays information about a command'
+            'Displays information about a command',
         );
     }
 }

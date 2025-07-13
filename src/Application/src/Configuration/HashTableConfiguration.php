@@ -37,7 +37,7 @@ class HashTableConfiguration implements IConfiguration
      */
     public function getArray(string $path): array
     {
-        return (array)$this->getValue($path);
+        return (array) $this->getValue($path);
     }
 
     /**
@@ -45,7 +45,7 @@ class HashTableConfiguration implements IConfiguration
      */
     public function getBool(string $path): bool
     {
-        return (bool)$this->getValue($path);
+        return (bool) $this->getValue($path);
     }
 
     /**
@@ -53,7 +53,7 @@ class HashTableConfiguration implements IConfiguration
      */
     public function getFloat(string $path): float
     {
-        return (float)$this->getValue($path);
+        return (float) $this->getValue($path);
     }
 
     /**
@@ -61,7 +61,7 @@ class HashTableConfiguration implements IConfiguration
      */
     public function getInt(string $path): int
     {
-        return (int)$this->getValue($path);
+        return (int) $this->getValue($path);
     }
 
     /**
@@ -84,7 +84,7 @@ class HashTableConfiguration implements IConfiguration
      */
     public function getString(string $path): string
     {
-        return (string)$this->getValue($path);
+        return (string) $this->getValue($path);
     }
 
     /**
@@ -99,7 +99,7 @@ class HashTableConfiguration implements IConfiguration
             if (!isset($value[$pathPart])) {
                 $fullPathToThisPart = \implode(
                     $this->pathDelimiter,
-                    \array_map(static fn(mixed $value): string => (string)$value, \array_slice($explodedPath, 0, $i + 1))
+                    \array_map(static fn(mixed $value): string => (string) $value, \array_slice($explodedPath, 0, $i + 1)),
                 );
 
                 throw new MissingConfigurationValueException($fullPathToThisPart);

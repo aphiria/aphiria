@@ -15,6 +15,4 @@ namespace Aphiria\Reflection\Tests\Mocks\Finder;
 /**
  * Mocks an abstract class
  */
-abstract class AbstractClass
-{
-}
+abstract class AbstractClass {}

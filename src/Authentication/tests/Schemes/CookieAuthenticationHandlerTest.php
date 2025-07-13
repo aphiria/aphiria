@@ -76,7 +76,7 @@ class CookieAuthenticationHandlerTest extends TestCase
         $this->schemeHandler->expectedAuthenticationResult = AuthenticationResult::pass($this->createMock(IPrincipal::class), $scheme->name);
         $this->assertSame(
             $this->schemeHandler->expectedAuthenticationResult,
-            $this->schemeHandler->authenticate($request, $scheme)
+            $this->schemeHandler->authenticate($request, $scheme),
         );
     }
 
@@ -156,7 +156,7 @@ class CookieAuthenticationHandlerTest extends TestCase
             cookieDomain: 'example.com',
             cookieIsSecure: true,
             cookieIsHttpOnly: true,
-            cookieSameSite: SameSiteMode::Strict
+            cookieSameSite: SameSiteMode::Strict,
         );
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, $options);
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
@@ -164,7 +164,7 @@ class CookieAuthenticationHandlerTest extends TestCase
         $this->schemeHandler->logIn($this->createMock(IPrincipal::class), $this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame(
             'cookie=abc; Max-Age=360; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=strict',
-            $headers->getFirst('Set-Cookie')
+            $headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -182,7 +182,7 @@ class CookieAuthenticationHandlerTest extends TestCase
             cookieDomain: 'example.com',
             cookieIsSecure: true,
             cookieIsHttpOnly: true,
-            cookieSameSite: SameSiteMode::Strict
+            cookieSameSite: SameSiteMode::Strict,
         );
         $scheme = new AuthenticationScheme('foo', $this->schemeHandler::class, $options);
         /** @psalm-suppress UndefinedPropertyAssignment This property does actually exist on the anonymous class */
@@ -190,7 +190,7 @@ class CookieAuthenticationHandlerTest extends TestCase
         $this->schemeHandler->logOut($this->createMock(IRequest::class), $response, $scheme);
         $this->assertSame(
             'cookie=; Max-Age=0; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=strict',
-            $headers->getFirst('Set-Cookie')
+            $headers->getFirst('Set-Cookie'),
         );
     }
 }

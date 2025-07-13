@@ -21,7 +21,7 @@ class StringBodyTest extends TestCase
     public function testCastingToStringReturnsContents(): void
     {
         $body = new StringBody('foo');
-        $this->assertSame('foo', (string)$body);
+        $this->assertSame('foo', (string) $body);
     }
 
     public function testGettingLengthReturnsStringLength(): void

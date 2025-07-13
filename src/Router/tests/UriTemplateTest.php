@@ -56,13 +56,13 @@ class UriTemplateTest extends TestCase
     public function testToStringIgnoresHostIfItIsNull(): void
     {
         $uriTemplate = new UriTemplate('/foo');
-        $this->assertSame('/foo', (string)$uriTemplate);
+        $this->assertSame('/foo', (string) $uriTemplate);
     }
 
     public function testToStringIncludesHostIfItIsDefined(): void
     {
         $uriTemplate = new UriTemplate('/foo', 'example.com');
-        $this->assertSame('example.com/foo', (string)$uriTemplate);
+        $this->assertSame('example.com/foo', (string) $uriTemplate);
     }
 
     public function testTrailingSlashIsStrippedFromHost(): void

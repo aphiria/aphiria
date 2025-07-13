@@ -73,7 +73,7 @@ class MediaTypeHeaderValue
         $charset = null;
 
         if ($this->parameters->tryGet('charset', $charset)) {
-            $this->charset = (string)$charset;
+            $this->charset = (string) $charset;
         } else {
             $this->charset = null;
         }

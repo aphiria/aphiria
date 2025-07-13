@@ -62,7 +62,7 @@ final class AttributeObjectConstraintsRegistrant implements IObjectConstraintsRe
             $objectConstraints->registerObjectConstraints(new ObjectConstraints(
                 $class,
                 $propertyConstraints,
-                $methodConstraints
+                $methodConstraints,
             ));
         }
     }

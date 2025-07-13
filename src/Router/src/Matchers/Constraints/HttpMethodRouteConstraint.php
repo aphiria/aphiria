@@ -31,7 +31,7 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
      */
     public function __construct(string|array $allowedMethods)
     {
-        foreach ((array)$allowedMethods as $allowedMethod) {
+        foreach ((array) $allowedMethods as $allowedMethod) {
             $this->_allowedMethods[\strtoupper($allowedMethod)] = true;
         }
 
@@ -53,7 +53,7 @@ final class HttpMethodRouteConstraint implements IRouteConstraint
         string $httpMethod,
         string $host,
         string $path,
-        array $headers
+        array $headers,
     ): bool {
         return isset($this->_allowedMethods[\strtoupper($httpMethod)]);
     }

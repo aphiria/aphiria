@@ -19,7 +19,6 @@ use Aphiria\Console\Commands\CommandRegistrantCollection;
 use Aphiria\Console\Commands\CommandRegistry;
 use Aphiria\Console\Output\Compilers\Elements\Element;
 use Aphiria\Console\Output\Compilers\Elements\ElementRegistry;
-use Aphiria\Console\Output\Compilers\IOutputCompiler;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use Closure;

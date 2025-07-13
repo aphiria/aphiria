@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when a user's primary identity is not authenticated when attempting to log in
  */
-final class NotAuthenticatedException extends Exception
-{
-}
+final class NotAuthenticatedException extends Exception {}

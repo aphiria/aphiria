@@ -18,6 +18,4 @@ use Attribute;
  * Defines an attribute that is not a command
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-final class NonCommand
-{
-}
+final class NonCommand {}

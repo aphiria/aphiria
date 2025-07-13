@@ -45,6 +45,6 @@ class RegexConstraint extends Constraint
      */
     public function passes(mixed $value): bool
     {
-        return \preg_match($this->regex, (string)$value) === 1;
+        return \preg_match($this->regex, (string) $value) === 1;
     }
 }

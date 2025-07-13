@@ -27,7 +27,7 @@ readonly class AuthorizationResult
     protected function __construct(
         public bool $passed,
         public string $policyName,
-        public array $failedRequirements = []
+        public array $failedRequirements = [],
     ) {}
 
     /**

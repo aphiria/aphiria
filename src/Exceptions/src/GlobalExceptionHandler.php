@@ -24,10 +24,10 @@ use Throwable;
  */
 class GlobalExceptionHandler implements IGlobalExceptionHandler
 {
-    /** @const The amount of reserved memory in bytes to keep */
-    private const int RESERVED_MEMORY_BYTES = 10240;
     /** @const The default name to use for the logger */
     private const string DEFAULT_LOGGER_NAME = 'app';
+    /** @const The amount of reserved memory in bytes to keep */
+    private const int RESERVED_MEMORY_BYTES = 10240;
     /** @var LoggerInterface The PSR-3 logger */
     protected readonly LoggerInterface $logger;
     /** @var string|null Reserved memory that we'll use in case we run out of memory so that we can still display error messages */
@@ -41,7 +41,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
     public function __construct(
         protected readonly IExceptionRenderer $exceptionRenderer,
         ?LoggerInterface $logger = null,
-        protected readonly LogLevelFactory $logLevelFactory = new LogLevelFactory()
+        protected readonly LogLevelFactory $logLevelFactory = new LogLevelFactory(),
     ) {
         // Storing a long string will make sure we've reserved enough memory to be able to display error messages
         self::$reservedMemory = \str_repeat('x', self::RESERVED_MEMORY_BYTES);
@@ -56,7 +56,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
         string $message,
         string $file = '',
         int $line = 0,
-        array $context = []
+        array $context = [],
     ): void {
         if ((\error_reporting() & $level) !== 0) {
             throw new ErrorException($message, 0, $level, $file, $line);
@@ -95,7 +95,7 @@ class GlobalExceptionHandler implements IGlobalExceptionHandler
 
         if ($error !== null && \in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
             $this->handleException(
-                new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line'])
+                new FatalErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']),
             );
         }
     }

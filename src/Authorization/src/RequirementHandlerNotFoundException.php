@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that is thrown when an authorization requirement handler is not found
  */
-final class RequirementHandlerNotFoundException extends Exception
-{
-}
+final class RequirementHandlerNotFoundException extends Exception {}

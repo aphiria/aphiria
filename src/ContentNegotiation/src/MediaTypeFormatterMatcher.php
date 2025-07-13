@@ -37,7 +37,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function __construct(
         private readonly array $mediaTypeFormatters,
-        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()
+        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),
     ) {
         if (\count($this->mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
@@ -49,14 +49,14 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function getBestRequestMediaTypeFormatterMatch(
         string $type,
-        IRequest $request
+        IRequest $request,
     ): ?MediaTypeFormatterMatch {
         $contentTypeHeader = $this->headerParser->parseContentTypeHeader($request->headers);
 
         return $this->getBestMediaTypeFormatterMatch(
             $type,
             $contentTypeHeader === null ? [] : [$contentTypeHeader],
-            self::FORMATTER_TYPE_INPUT
+            self::FORMATTER_TYPE_INPUT,
         );
     }
 
@@ -65,12 +65,12 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
      */
     public function getBestResponseMediaTypeFormatterMatch(
         string $type,
-        IRequest $request
+        IRequest $request,
     ): ?MediaTypeFormatterMatch {
         return $this->getBestMediaTypeFormatterMatch(
             $type,
             $this->headerParser->parseAcceptHeader($request->headers),
-            self::FORMATTER_TYPE_OUTPUT
+            self::FORMATTER_TYPE_OUTPUT,
         );
     }
 
@@ -142,7 +142,7 @@ final class MediaTypeFormatterMatcher implements IMediaTypeFormatterMatcher
     private function getBestMediaTypeFormatterMatch(
         string $type,
         array $mediaTypeHeaders,
-        string $ioType
+        string $ioType,
     ): ?MediaTypeFormatterMatch {
         // Rank the media type headers if they are rankable
         if (\count($mediaTypeHeaders) > 0 && $mediaTypeHeaders[0] instanceof AcceptMediaTypeHeaderValue) {

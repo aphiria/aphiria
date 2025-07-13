@@ -30,7 +30,7 @@ class CookieAuthenticationOptionsTest extends TestCase
             cookieSameSite: SameSiteMode::Strict,
             loginPagePath: '/login',
             forbiddenPagePath: '/forbidden',
-            claimsIssuer: 'issuer'
+            claimsIssuer: 'issuer',
         );
         $this->assertSame('cookie', $options->cookieName);
         $this->assertSame(360, $options->cookieMaxAge);

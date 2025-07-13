@@ -24,7 +24,7 @@ class ProgressBarFormatterOptionsTest extends TestCase
             outputFormat: '%bar%',
             completedProgressChar: '+',
             remainingProgressChar: '=',
-            redrawFrequency: 2
+            redrawFrequency: 2,
         );
         $this->assertSame(100, $options->progressBarWidth);
         $this->assertSame('%bar%', $options->outputFormat);

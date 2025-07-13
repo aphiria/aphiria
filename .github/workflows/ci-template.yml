@@ -11,7 +11,7 @@ on:
         description: Whether or not to run PHP-CS-Fixer
         required: false
         type: boolean
-        default: false # Update to true when PHP-CS-Fixer supports PHP 8.4
+        default: true
       run-psalm:
         description: Whether or not to run Psalm static analysis
         required: false
@@ -44,7 +44,7 @@ jobs:
           tools: composer:v2
           coverage: xdebug
       - name: Install Dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress --ignore-platform-reqs
+        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress
       - name: Run Tests
         run: composer phpunit
       - name: Run Linter

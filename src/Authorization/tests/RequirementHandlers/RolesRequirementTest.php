@@ -26,6 +26,6 @@ class RolesRequirementTest extends TestCase
     public function testRolesAreConvertedToList(array|string $roles): void
     {
         $requirement = new RolesRequirement($roles);
-        $this->assertSame((array)$roles, $requirement->requiredRoles);
+        $this->assertSame((array) $roles, $requirement->requiredRoles);
     }
 }

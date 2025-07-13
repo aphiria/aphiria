@@ -43,7 +43,7 @@ final class Validator implements IValidator
         '__sleep' => true,
         '__toString' => true,
         '__unset' => true,
-        '__wakeup' => true
+        '__wakeup' => true,
     ];
     /**
      * @param ObjectConstraintsRegistry $objectConstraints The registry of object constraints
@@ -51,7 +51,7 @@ final class Validator implements IValidator
      */
     public function __construct(
         private readonly ObjectConstraintsRegistry $objectConstraints,
-        private readonly IErrorMessageInterpolator $errorMessageInterpolator = new StringReplaceErrorMessageInterpolator()
+        private readonly IErrorMessageInterpolator $errorMessageInterpolator = new StringReplaceErrorMessageInterpolator(),
     ) {}
 
     /**
@@ -280,13 +280,13 @@ final class Validator implements IValidator
                     $validationContext->addConstraintViolation(new ConstraintViolation(
                         $this->errorMessageInterpolator->interpolate(
                             $constraint->errorMessageId,
-                            $constraint->getErrorMessagePlaceholders($methodValue)
+                            $constraint->getErrorMessagePlaceholders($methodValue),
                         ),
                         $constraint,
                         $methodValue,
                         $validationContext->value,
                         null,
-                        $methodName
+                        $methodName,
                     ));
                 }
             }
@@ -380,12 +380,12 @@ final class Validator implements IValidator
                     $validationContext->addConstraintViolation(new ConstraintViolation(
                         $this->errorMessageInterpolator->interpolate(
                             $constraint->errorMessageId,
-                            $constraint->getErrorMessagePlaceholders($propertyValue)
+                            $constraint->getErrorMessagePlaceholders($propertyValue),
                         ),
                         $constraint,
                         $propertyValue,
                         $validationContext->value,
-                        $propertyName
+                        $propertyName,
                     ));
                 }
             }
@@ -417,11 +417,11 @@ final class Validator implements IValidator
                 $validationContext->addConstraintViolation(new ConstraintViolation(
                     $this->errorMessageInterpolator->interpolate(
                         $constraint->errorMessageId,
-                        $constraint->getErrorMessagePlaceholders($value)
+                        $constraint->getErrorMessagePlaceholders($value),
                     ),
                     $constraint,
                     $value,
-                    $value
+                    $value,
                 ));
             }
         }

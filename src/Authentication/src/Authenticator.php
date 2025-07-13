@@ -32,7 +32,7 @@ class Authenticator implements IAuthenticator
      */
     public function __construct(
         private readonly AuthenticationSchemeRegistry $schemes,
-        private readonly IAuthenticationSchemeHandlerResolver $handlerResolver
+        private readonly IAuthenticationSchemeHandlerResolver $handlerResolver,
     ) {}
 
     /**
@@ -104,7 +104,7 @@ class Authenticator implements IAuthenticator
         IPrincipal $user,
         IRequest $request,
         IResponse $response,
-        array|string|null $schemeNames = null
+        array|string|null $schemeNames = null,
     ): void {
         if (!($user->primaryIdentity?->isAuthenticated ?? false)) {
             throw new NotAuthenticatedException('User identity must be set and authenticated to log in');
@@ -149,7 +149,7 @@ class Authenticator implements IAuthenticator
     protected function authenticateWithScheme(
         IRequest $request,
         AuthenticationScheme $scheme,
-        IAuthenticationSchemeHandler $schemeHandler
+        IAuthenticationSchemeHandler $schemeHandler,
     ): AuthenticationResult {
         return $schemeHandler->authenticate($request, $scheme);
     }

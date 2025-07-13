@@ -51,7 +51,7 @@ class HttpMethodRouteConstraintTest extends TestCase
         $constraint = new HttpMethodRouteConstraint(['GET']);
         $matchedRoute = new MatchedRouteCandidate(
             new Route(new UriTemplate('foo'), new RouteAction($controller::class, 'bar'), []),
-            []
+            [],
         );
         $this->assertTrue($constraint->passes($matchedRoute, 'GET', 'example.com', '/foo', []));
         $this->assertTrue($constraint->passes($matchedRoute, 'HEAD', 'example.com', '/foo', []));
@@ -66,7 +66,7 @@ class HttpMethodRouteConstraintTest extends TestCase
         $constraint = new HttpMethodRouteConstraint(['POST']);
         $matchedRoute = new MatchedRouteCandidate(
             new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), []),
-            []
+            [],
         );
         $this->assertTrue($constraint->passes($matchedRoute, 'post', 'example.com', '/', []));
     }

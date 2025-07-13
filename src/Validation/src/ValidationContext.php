@@ -61,7 +61,7 @@ final class ValidationContext
         public readonly mixed $value,
         public readonly ?string $propertyName = null,
         public readonly ?string $methodName = null,
-        private readonly ?ValidationContext $parentContext = null
+        private readonly ?ValidationContext $parentContext = null,
     ) {
         $this->parentContext?->addChildContext($this);
         $this->validateNoCircularDependencies();
@@ -115,7 +115,7 @@ final class ValidationContext
         while ($parentContext !== null) {
             if ($parentContext->validatesObject($this->value)) {
                 throw new CircularDependencyException(
-                    'Circular dependency on ' . $this->value::class . ' detected'
+                    'Circular dependency on ' . $this->value::class . ' detected',
                 );
             }
 

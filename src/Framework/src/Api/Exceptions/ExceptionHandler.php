@@ -33,7 +33,7 @@ class ExceptionHandler implements IMiddleware
     public function __construct(
         private readonly IApiExceptionRenderer $exceptionRenderer,
         private readonly LoggerInterface $logger,
-        private readonly LogLevelFactory $logLevelFactory = new LogLevelFactory()
+        private readonly LogLevelFactory $logLevelFactory = new LogLevelFactory(),
     ) {}
 
     /**

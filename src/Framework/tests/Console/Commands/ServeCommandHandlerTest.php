@@ -47,8 +47,8 @@ class ServeCommandHandlerTest extends TestCase
                 'domain' => 'localhost.app',
                 'port' => 443,
                 'router' => 'router',
-                'docroot' => 'public'
-            ]
+                'docroot' => 'public',
+            ],
         );
         $handler = new class () extends ServeCommandHandler {
             public ?string $ranCommand = null;

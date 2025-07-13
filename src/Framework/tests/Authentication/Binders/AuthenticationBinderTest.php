@@ -75,7 +75,7 @@ class AuthenticationBinderTest extends TestCase
         $parameters = [
             [AuthenticationSchemeRegistry::class, AuthenticationSchemeRegistry::class],
             [IAuthenticationSchemeHandlerResolver::class, ContainerAuthenticationSchemeHandlerResolver::class],
-            [IUserAccessor::class, RequestPropertyUserAccessor::class]
+            [IUserAccessor::class, RequestPropertyUserAccessor::class],
         ];
 
         if ($inTestingEnvironment) {

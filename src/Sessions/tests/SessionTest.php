@@ -32,9 +32,9 @@ class SessionTest extends TestCase
             [
                 'foo' => 'baz',
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::STALE_FLASH_KEYS_KEY => ['foo'],
             ],
-            $session->variables
+            $session->variables,
         );
         $session->ageFlashData();
         $this->assertFalse($session->containsVariable('foo'));
@@ -42,9 +42,9 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => []
+                Session::STALE_FLASH_KEYS_KEY => [],
             ],
-            $session->variables
+            $session->variables,
         );
     }
     public function testAgingFlashDataEvictsOldData(): void
@@ -55,9 +55,9 @@ class SessionTest extends TestCase
             [
                 'foo' => 'bar',
                 Session::NEW_FLASH_KEYS_KEY => ['foo'],
-                Session::STALE_FLASH_KEYS_KEY => []
+                Session::STALE_FLASH_KEYS_KEY => [],
             ],
-            $session->variables
+            $session->variables,
         );
         $session->ageFlashData();
         $this->assertSame('bar', $session->getVariable('foo'));
@@ -66,9 +66,9 @@ class SessionTest extends TestCase
             [
                 'foo' => 'bar',
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::STALE_FLASH_KEYS_KEY => ['foo'],
             ],
-            $session->variables
+            $session->variables,
         );
         $session->flash('baz', 'blah');
         $session->ageFlashData();
@@ -79,9 +79,9 @@ class SessionTest extends TestCase
             [
                 'baz' => 'blah',
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => ['baz']
+                Session::STALE_FLASH_KEYS_KEY => ['baz'],
             ],
-            $session->variables
+            $session->variables,
         );
         $this->assertTrue($session->containsVariable('baz'));
         $session->ageFlashData();
@@ -90,9 +90,9 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => []
+                Session::STALE_FLASH_KEYS_KEY => [],
             ],
-            $session->variables
+            $session->variables,
         );
     }
 
@@ -125,9 +125,9 @@ class SessionTest extends TestCase
             [
                 'foo' => 'bar',
                 Session::NEW_FLASH_KEYS_KEY => ['foo'],
-                Session::STALE_FLASH_KEYS_KEY => []
+                Session::STALE_FLASH_KEYS_KEY => [],
             ],
-            $session->variables
+            $session->variables,
         );
     }
 
@@ -196,9 +196,9 @@ class SessionTest extends TestCase
             [
                 'foo' => 'bar',
                 Session::NEW_FLASH_KEYS_KEY => ['foo'],
-                Session::STALE_FLASH_KEYS_KEY => []
+                Session::STALE_FLASH_KEYS_KEY => [],
             ],
-            $session->variables
+            $session->variables,
         );
         $session->ageFlashData();
         $this->assertTrue($session->containsVariable('foo'));
@@ -207,9 +207,9 @@ class SessionTest extends TestCase
             [
                 'foo' => 'bar',
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => ['foo']
+                Session::STALE_FLASH_KEYS_KEY => ['foo'],
             ],
-            $session->variables
+            $session->variables,
         );
         $session->ageFlashData();
         $this->assertFalse($session->containsVariable('foo'));
@@ -217,9 +217,9 @@ class SessionTest extends TestCase
         $this->assertEquals(
             [
                 Session::NEW_FLASH_KEYS_KEY => [],
-                Session::STALE_FLASH_KEYS_KEY => []
+                Session::STALE_FLASH_KEYS_KEY => [],
             ],
-            $session->variables
+            $session->variables,
         );
     }
 
@@ -231,7 +231,7 @@ class SessionTest extends TestCase
             ->method('idIsValid')
             ->willReturnMap([
                 [null, false],
-                [$generatedId, true]
+                [$generatedId, true],
             ]);
         $idGenerator->method('generate')->willReturn($generatedId);
         $session = new Session(null, $idGenerator);
@@ -255,7 +255,7 @@ class SessionTest extends TestCase
             ->willReturnMap([
                 [1, false],
                 [2, false],
-                [$generatedId, true]
+                [$generatedId, true],
             ]);
         $idGenerator->method('generate')->willReturn($generatedId);
         $session = new Session(1, $idGenerator);

@@ -170,7 +170,7 @@ class LazyBinderDispatcherTest extends TestCase
             ->method('set')
             ->with($this->callback(function (BinderMetadataCollection $collection) use ($binder): bool {
                 $expectedCollection = new BinderMetadataCollection([
-                    new BinderMetadata($binder, [new BoundInterface(IFoo::class, new UniversalContext())], [])
+                    new BinderMetadata($binder, [new BoundInterface(IFoo::class, new UniversalContext())], []),
                 ]);
 
                 // Intentionally not checking reference equality

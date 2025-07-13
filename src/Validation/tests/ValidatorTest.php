@@ -49,7 +49,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             [],
-            ['method' => $constraints]
+            ['method' => $constraints],
         ));
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method'));
     }
@@ -66,7 +66,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             [],
-            ['method' => $constraints]
+            ['method' => $constraints],
         ));
         $this->assertTrue($this->validator->tryValidateMethod($object, 'method'));
     }
@@ -92,7 +92,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $innerObject::class,
             ['prop' => $this->createMockConstraint(true, 1)],
-            []
+            [],
         ));
         $this->assertTrue($this->validator->tryValidateMethod($outerObject, 'method'));
     }
@@ -107,12 +107,12 @@ class ValidatorTest extends TestCase
         };
         $constraints = [
             $this->createMockConstraint(true, 1),
-            $this->createMockConstraint(false, 1)
+            $this->createMockConstraint(false, 1),
         ];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             [],
-            ['method' => $constraints]
+            ['method' => $constraints],
         ));
         $this->assertFalse($this->validator->tryValidateMethod($object, 'method'));
     }
@@ -130,7 +130,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             [],
-            ['method' => $constraints]
+            ['method' => $constraints],
         ));
         $this->errorMessageInterpolator
             ->expects($this->once())
@@ -181,7 +181,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             [],
-            ['method' => $constraints]
+            ['method' => $constraints],
         ));
         $violations = [];
         $this->assertTrue($this->validator->tryValidateMethod($object, 'method', $violations));
@@ -197,7 +197,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->assertFalse($this->validator->tryValidateObject($object));
     }
@@ -211,7 +211,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->assertTrue($this->validator->tryValidateObject($object));
     }
@@ -232,7 +232,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $innerObject::class,
             ['prop' => $this->createMockConstraint(true, 1)],
-            []
+            [],
         ));
         $this->assertTrue($this->validator->tryValidateObject($outerObject));
     }
@@ -244,12 +244,12 @@ class ValidatorTest extends TestCase
         };
         $constraints = [
             $this->createMockConstraint(true, 1),
-            $this->createMockConstraint(false, 1)
+            $this->createMockConstraint(false, 1),
         ];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->assertFalse($this->validator->tryValidateObject($object));
     }
@@ -264,7 +264,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->errorMessageInterpolator
             ->expects($this->once())
@@ -290,7 +290,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop'));
     }
@@ -304,7 +304,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->assertTrue($this->validator->tryValidateProperty($object, 'prop'));
     }
@@ -325,7 +325,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $innerObject::class,
             ['prop' => $this->createMockConstraint(true, 1)],
-            []
+            [],
         ));
         $this->assertTrue($this->validator->tryValidateProperty($outerObject, 'innerObject'));
     }
@@ -337,12 +337,12 @@ class ValidatorTest extends TestCase
         };
         $constraints = [
             $this->createMockConstraint(true, 1),
-            $this->createMockConstraint(false, 1)
+            $this->createMockConstraint(false, 1),
         ];
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->assertFalse($this->validator->tryValidateProperty($object, 'prop'));
     }
@@ -357,7 +357,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $object::class,
             ['prop' => $constraints],
-            []
+            [],
         ));
         $this->errorMessageInterpolator
             ->expects($this->once())
@@ -432,7 +432,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $class::class,
             [],
-            ['foo' => [$constraint]]
+            ['foo' => [$constraint]],
         ));
         $this->validator->validateMethod($class, 'foo');
     }
@@ -501,7 +501,7 @@ class ValidatorTest extends TestCase
         $this->objectConstraints->registerObjectConstraints(new ObjectConstraints(
             $class::class,
             ['foo' => [$constraint]],
-            []
+            [],
         ));
         $this->validator->validateProperty($class, 'foo');
     }

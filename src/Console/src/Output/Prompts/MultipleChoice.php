@@ -44,7 +44,7 @@ class MultipleChoice extends Question
     public function formatAnswer(mixed $answer): mixed
     {
         $hasMultipleAnswers = false;
-        $answer = \str_replace(' ', '', (string)$answer);
+        $answer = \str_replace(' ', '', (string) $answer);
 
         if (!\str_contains($answer, ',')) {
             // The answer is not a list of answers
@@ -113,11 +113,11 @@ class MultipleChoice extends Question
          * @psalm-suppress MixedAssignment We're purposely looping through mixed values
          */
         foreach ($answers as $answer) {
-            if (!\ctype_digit((string)$answer)) {
+            if (!\ctype_digit((string) $answer)) {
                 throw new InvalidArgumentException('Answer is not an integer');
             }
 
-            $answer = (int)$answer;
+            $answer = (int) $answer;
 
             if ($answer < 1 || $answer > \count($this->choices)) {
                 throw new InvalidArgumentException('Choice must be between 1 and ' . \count($this->choices));

@@ -112,7 +112,7 @@ class ImmutableHashTableTest extends TestCase
     {
         $expectedArray = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'blah')
+            new KeyValuePair('baz', 'blah'),
         ];
         $hashTable = new ImmutableHashTable($expectedArray);
         /** @var list<array{0: string, 1: string}> $expectedValues */
@@ -153,7 +153,7 @@ class ImmutableHashTableTest extends TestCase
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar'), new KeyValuePair('baz', 'blah')]);
         $expectedArray = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'blah')
+            new KeyValuePair('baz', 'blah'),
         ];
         $this->assertEquals($expectedArray, $hashTable->toArray());
     }

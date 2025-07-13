@@ -47,9 +47,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [new Argument('arg', ArgumentType::Required, '')],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo bar\\baz');
         $this->assertSame('bar\\baz', $input->arguments['arg']);
@@ -66,11 +66,11 @@ class InputCompilerTest extends TestCase
                 [new Argument('arg', ArgumentType::Required, '')],
                 [
                     new Option('opt1', OptionType::RequiredValue, null, ''),
-                    new Option('opt2', OptionType::NoValue, 'r', '')
+                    new Option('opt2', OptionType::NoValue, 'r', ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo bar -r --opt1=dave');
         $this->assertSame('foo', $input->commandName);
@@ -86,7 +86,7 @@ class InputCompilerTest extends TestCase
         };
         $this->commands->registerCommand(
             new Command('bar', [], [], ''),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile(['foo', 'bar']);
         $this->assertSame('bar', $input->commandName);
@@ -101,13 +101,13 @@ class InputCompilerTest extends TestCase
             new Command(
                 'foo',
                 [
-                    new Argument('arg', ArgumentType::IsArray, '')
+                    new Argument('arg', ArgumentType::IsArray, ''),
                 ],
                 [],
                 '',
                 '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg']);
@@ -123,13 +123,13 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [
                     new Argument('arg1', ArgumentType::IsArray, ''),
-                    new Argument('arg2', ArgumentType::Optional, '', 'blah')
+                    new Argument('arg2', ArgumentType::Optional, '', 'blah'),
                 ],
                 [],
                 '',
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo bar baz');
         $this->assertEquals(['bar', 'baz'], $input->arguments['arg1']);
@@ -147,13 +147,13 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [
                     new Argument('arg1', ArgumentType::IsArray, ''),
-                    new Argument('arg2', ArgumentType::Required, '')
+                    new Argument('arg2', ArgumentType::Required, ''),
                 ],
                 [],
                 '',
                 '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->compiler->compile('foo bar baz');
     }
@@ -178,11 +178,11 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionType::IsArray, null, '')
+                    new Option('opt', OptionType::IsArray, null, ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt=dave --opt=young');
         $this->assertSame('foo', $input->commandName);
@@ -200,11 +200,11 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionType::IsArray, null, '')
+                    new Option('opt', OptionType::IsArray, null, ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt');
         $this->assertSame('foo', $input->commandName);
@@ -222,11 +222,11 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionType::IsArray, null, '')
+                    new Option('opt', OptionType::IsArray, null, ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt dave --opt young');
         $this->assertSame('foo', $input->commandName);
@@ -244,11 +244,11 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [
-                    new Option('opt', OptionType::IsArray, null, '')
+                    new Option('opt', OptionType::IsArray, null, ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt=dave');
         $this->assertSame('foo', $input->commandName);
@@ -266,9 +266,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo');
         $this->assertSame('foo', $input->commandName);
@@ -286,9 +286,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [new Option('opt', OptionType::RequiredValue, null, '')],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt=dave');
         $this->assertSame('foo', $input->commandName);
@@ -306,9 +306,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [new Option('opt', OptionType::RequiredValue, null, '')],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt dave');
         $this->assertSame('foo', $input->commandName);
@@ -326,9 +326,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [new Argument('arg', ArgumentType::Required, '')],
                 [new Option('opt', OptionType::RequiredValue, null, '')],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt dave bar');
         $this->assertSame('foo', $input->commandName);
@@ -347,11 +347,11 @@ class InputCompilerTest extends TestCase
                 [],
                 [
                     new Option('opt1', OptionType::RequiredValue, null, ''),
-                    new Option('opt2', OptionType::RequiredValue, null, '')
+                    new Option('opt2', OptionType::RequiredValue, null, ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile("foo --opt1 'dave' --opt2=\"young\"");
         $this->assertSame('foo', $input->commandName);
@@ -372,12 +372,12 @@ class InputCompilerTest extends TestCase
                 [
                     new Argument('arg1', ArgumentType::Optional, ''),
                     new Argument('arg2', ArgumentType::Optional, ''),
-                    new Argument('arg3', ArgumentType::Optional, '')
+                    new Argument('arg3', ArgumentType::Optional, ''),
                 ],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo bar baz blah');
         $this->assertSame('foo', $input->commandName);
@@ -399,11 +399,11 @@ class InputCompilerTest extends TestCase
                 [
                     new Option('opt1', OptionType::NoValue, 'r', ''),
                     new Option('opt2', OptionType::NoValue, 'f', ''),
-                    new Option('opt3', OptionType::NoValue, 'd', '')
+                    new Option('opt3', OptionType::NoValue, 'd', ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo -r -f -d');
         $this->assertSame('foo', $input->commandName);
@@ -425,11 +425,11 @@ class InputCompilerTest extends TestCase
                 [
                     new Option('opt1', OptionType::NoValue, 'r', ''),
                     new Option('opt2', OptionType::NoValue, 'f', ''),
-                    new Option('opt3', OptionType::NoValue, 'd', '')
+                    new Option('opt3', OptionType::NoValue, 'd', ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo -rfd');
         $this->assertSame('foo', $input->commandName);
@@ -451,9 +451,9 @@ class InputCompilerTest extends TestCase
                 [],
                 [new Option('opt', OptionType::NoValue, null, '')],
                 '',
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->compiler->compile('foo --opt=bar');
     }
@@ -469,9 +469,9 @@ class InputCompilerTest extends TestCase
                 [new Argument('arg', ArgumentType::Optional, '', 'bar')],
                 [],
                 '',
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo');
         $this->assertSame('bar', $input->arguments['arg']);
@@ -488,9 +488,9 @@ class InputCompilerTest extends TestCase
                 [],
                 [new Option('opt', OptionType::OptionalValue, defaultValue: 'bar')],
                 '',
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt');
         $this->assertSame('bar', $input->options['opt']);
@@ -507,10 +507,10 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [
                     new Argument('arg1', ArgumentType::Required, ''),
-                    new Argument('arg2', ArgumentType::Required, '')
-                ]
+                    new Argument('arg2', ArgumentType::Required, ''),
+                ],
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->compiler->compile('foo bar');
     }
@@ -527,9 +527,9 @@ class InputCompilerTest extends TestCase
                 [],
                 [new Option('opt', OptionType::RequiredValue, null, '')],
                 '',
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->compiler->compile('foo --opt');
     }
@@ -544,9 +544,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [new Argument('arg', ArgumentType::Required, '')],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo bar');
         $this->assertSame('foo', $input->commandName);
@@ -564,9 +564,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [],
                 [new Option('opt', OptionType::NoValue, 'r', '')],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo -r');
         $this->assertSame('foo', $input->commandName);
@@ -595,11 +595,11 @@ class InputCompilerTest extends TestCase
                 [],
                 [
                     new Option('opt1', OptionType::NoValue, null, ''),
-                    new Option('opt2', OptionType::NoValue, null, '')
+                    new Option('opt2', OptionType::NoValue, null, ''),
                 ],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo --opt1 --opt2');
         $this->assertSame('foo', $input->commandName);
@@ -626,12 +626,12 @@ class InputCompilerTest extends TestCase
                 [
                     new Option('foo', OptionType::RequiredValue, 'f', '', 'foo value'),
                     new Option('bar', OptionType::OptionalValue, 'b', '', 'bar value'),
-                    new Option('baz', OptionType::NoValue, 'z', 'Baz command', 'baz value')
+                    new Option('baz', OptionType::NoValue, 'z', 'Baz command', 'baz value'),
                 ],
                 '',
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $input = $this->compiler->compile('foo');
         $this->assertSame('foo value', $input->options['foo']);
@@ -650,9 +650,9 @@ class InputCompilerTest extends TestCase
                 'foo',
                 [new Argument('arg', ArgumentType::Required, '')],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->compiler->compile('foo bar baz');
     }
