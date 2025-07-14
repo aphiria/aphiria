@@ -26,7 +26,7 @@ return new PhpCsFixer\Config()
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         // A very tiny micro-optimization to reduce the number of opcodes for native function calls
         'native_function_invocation' => ['include' => ['@all']],
-        'new_with_parentheses ' => true,
+        'new_with_parentheses' => true,
         'no_empty_comment' => true,
         'no_empty_statement' => true,
         'no_leading_import_slash' => true,
