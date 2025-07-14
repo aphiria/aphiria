@@ -139,7 +139,7 @@ class AuthenticatorTest extends TestCase
 
         return [
             [$userWithNoIdentity],
-            [$userWithUnauthenticatedIdentity]
+            [$userWithUnauthenticatedIdentity],
         ];
     }
 
@@ -195,7 +195,7 @@ class AuthenticatorTest extends TestCase
         // I had to combine this check into one instance to make Psalm happy
         $this->assertTrue(
             $actualResult->failure instanceof AggregateAuthenticationException
-            && \count($actualResult->failure->innerExceptions) === 2
+            && \count($actualResult->failure->innerExceptions) === 2,
         );
     }
 

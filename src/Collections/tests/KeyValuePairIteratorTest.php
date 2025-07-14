@@ -22,7 +22,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertSame('bar', $iterator->current());
@@ -33,7 +33,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertSame('foo', $iterator->key());
@@ -45,7 +45,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertSame('foo', $iterator->key());
@@ -65,7 +65,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertTrue($iterator->valid());

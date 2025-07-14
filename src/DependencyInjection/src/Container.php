@@ -83,11 +83,11 @@ class Container implements IContainer
         string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
-        bool $resolveAsSingleton = false
+        bool $resolveAsSingleton = false,
     ): void {
         $binding = new ClassContainerBinding($concreteClass, $primitives, $resolveAsSingleton);
 
-        foreach ((array)$interfaces as $interface) {
+        foreach ((array) $interfaces as $interface) {
             $this->addBinding($interface, $binding);
         }
     }
@@ -99,7 +99,7 @@ class Container implements IContainer
     {
         $binding = new FactoryContainerBinding($factory, $resolveAsSingleton);
 
-        foreach ((array)$interfaces as $interface) {
+        foreach ((array) $interfaces as $interface) {
             $this->addBinding($interface, $binding);
         }
     }
@@ -111,7 +111,7 @@ class Container implements IContainer
     {
         $binding = new InstanceContainerBinding($instance);
 
-        foreach ((array)$interfaces as $interface) {
+        foreach ((array) $interfaces as $interface) {
             $this->addBinding($interface, $binding);
         }
     }
@@ -215,7 +215,7 @@ class Container implements IContainer
                 /** @var ClassContainerBinding<T> $binding */
                 $instance = $this->resolveClass(
                     $binding->concreteClass,
-                    $binding->constructorPrimitives
+                    $binding->constructorPrimitives,
                 );
                 break;
             case FactoryContainerBinding::class:
@@ -258,7 +258,7 @@ class Container implements IContainer
     {
         $target = $this->currentContext->targetClass ?? '';
 
-        foreach ((array)$interfaces as $interface) {
+        foreach ((array) $interfaces as $interface) {
             unset($this->bindings[$target][$interface]);
         }
     }
@@ -347,8 +347,8 @@ class Container implements IContainer
                         \sprintf(
                             '%s is not instantiable%s',
                             $className,
-                            $this->currentContext->isTargeted ? " (dependency of {$this->currentContext->targetClass})" : ''
-                        )
+                            $this->currentContext->isTargeted ? " (dependency of {$this->currentContext->targetClass})" : '',
+                        ),
                     );
                 }
 
@@ -385,7 +385,7 @@ class Container implements IContainer
     protected function resolveParameters(
         ?string $className,
         array $unresolvedParameters,
-        array $primitives
+        array $primitives,
     ): array {
         $resolvedParameters = [];
 
@@ -408,7 +408,7 @@ class Container implements IContainer
                     } elseif ($className !== null && $this->hasTargetedBinding($parameterClassName, $className)) {
                         $resolvedParameter = $this->for(
                             new TargetedContext($className),
-                            fn(IContainer $container): object => $container->resolve($parameterClassName)
+                            fn(IContainer $container): object => $container->resolve($parameterClassName),
                         );
                     } else {
                         try {
@@ -443,8 +443,8 @@ class Container implements IContainer
                         'Failed to resolve %s in %s::%s()',
                         $parameter->getName(),
                         $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
-                        $parameter->getDeclaringFunction()->getName()
-                    )
+                        $parameter->getDeclaringFunction()->getName(),
+                    ),
                 );
             }
         }
@@ -464,7 +464,7 @@ class Container implements IContainer
      */
     protected function resolvePrimitive(ReflectionParameter $parameter, ?ReflectionType $reflectionType, array &$primitives): mixed
     {
-        $parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string)$reflectionType;
+        $parameterTypeName = $reflectionType instanceof \ReflectionNamedType ? $reflectionType->getName() : (string) $reflectionType;
 
         if (\count($primitives) > 0) {
             // Grab the next primitive, and make sure its type matches the type of the next parameter if it has a type
@@ -484,8 +484,8 @@ class Container implements IContainer
                             $primitiveTypeName,
                             $parameter->getName(),
                             $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
-                            $parameter->getDeclaringFunction()->getName()
-                        )
+                            $parameter->getDeclaringFunction()->getName(),
+                        ),
                     );
                 }
             }
@@ -504,7 +504,7 @@ class Container implements IContainer
                     $this->currentContext,
                     "Failed to get the default value for parameter {$parameter->getName()}",
                     0,
-                    $ex
+                    $ex,
                 );
                 // @codeCoverageIgnoreEnd
             }
@@ -517,8 +517,8 @@ class Container implements IContainer
                 'No default value available for %s in %s::%s()',
                 $parameter->getName(),
                 $parameter->getDeclaringClass()?->getName() ?? 'Unknown',
-                $parameter->getDeclaringFunction()->getName()
-            )
+                $parameter->getDeclaringFunction()->getName(),
+            ),
         );
     }
 }

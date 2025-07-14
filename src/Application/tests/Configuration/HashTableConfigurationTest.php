@@ -213,8 +213,8 @@ class HashTableConfigurationTest extends TestCase
             $configuration->tryGetObject(
                 'foo',
                 fn(mixed $options): ConfigObject => new ConfigObject($options),
-                $object
-            )
+                $object,
+            ),
         );
         $this->assertEquals(new ConfigObject('bar'), $object);
     }
@@ -227,8 +227,8 @@ class HashTableConfigurationTest extends TestCase
             $configuration->tryGetObject(
                 'baz',
                 fn(mixed $options): ConfigObject => new ConfigObject($options),
-                $object
-            )
+                $object,
+            ),
         );
         $this->assertNull($object);
     }

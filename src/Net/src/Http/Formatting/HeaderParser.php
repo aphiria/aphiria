@@ -76,7 +76,7 @@ class HeaderParser
         }
 
         $contentTypeHeaderParameters = $this->parseParameters($headers, 'Content-Type');
-        $contentType = (string)$contentTypeHeaderParameters->keys[0];
+        $contentType = (string) $contentTypeHeaderParameters->keys[0];
 
         return new ContentTypeHeaderValue($contentType, $contentTypeHeaderParameters);
     }
@@ -103,11 +103,11 @@ class HeaderParser
         $kvps = [];
 
         /** @var list<string> $headerValues */
-        foreach (\preg_split(self::PARAMETER_SPLIT_REGEX, (string)$headerValues[$index]) as $kvp) {
+        foreach (\preg_split(self::PARAMETER_SPLIT_REGEX, (string) $headerValues[$index]) as $kvp) {
             $matches = [];
 
             // Split the parameters into names and values
-            if ((int)\preg_match_all(self::PARAMETER_KEY_VALUE_REGEX, $kvp, $matches) > 0) {
+            if ((int) \preg_match_all(self::PARAMETER_KEY_VALUE_REGEX, $kvp, $matches) > 0) {
                 $key = \trim($matches[0][0], self::PARAMETER_TRIMMED_CHARS);
                 $value = isset($matches[0][1]) ? \trim($matches[0][1], self::PARAMETER_TRIMMED_CHARS) : null;
                 $kvps[] = new KeyValuePair($key, $value);

@@ -25,6 +25,6 @@ final readonly class OutputToken
     public function __construct(
         public OutputTokenType $type,
         public mixed $value,
-        public int $position
+        public int $position,
     ) {}
 }

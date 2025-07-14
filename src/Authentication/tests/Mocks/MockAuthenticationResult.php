@@ -31,7 +31,7 @@ readonly class MockAuthenticationResult extends AuthenticationResult
         bool $passed,
         array|string $schemeNames,
         ?IPrincipal $user = null,
-        ?Exception $failure = null
+        ?Exception $failure = null,
     ) {
         parent::__construct($passed, $schemeNames, $user, $failure);
     }

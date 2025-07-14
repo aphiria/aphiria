@@ -61,7 +61,7 @@ class RouterTest extends TestCase
             $this->serviceResolver,
             $this->contentNegotiator,
             $this->routeActionInvoker,
-            $this->userAccessor
+            $this->userAccessor,
         );
     }
 
@@ -79,10 +79,10 @@ class RouterTest extends TestCase
                 new UriTemplate('foo'),
                 new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
-                [$middlewareBinding]
+                [$middlewareBinding],
             ),
             [],
-            []
+            [],
         );
         $this->routeMatcher
             ->expects($this->once())
@@ -110,10 +110,10 @@ class RouterTest extends TestCase
                 new UriTemplate('foo'),
                 new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
-                [$middlewareBinding]
+                [$middlewareBinding],
             ),
             [],
-            []
+            [],
         );
         $this->routeMatcher
             ->expects($this->once())
@@ -152,17 +152,15 @@ class RouterTest extends TestCase
             ->method(PropertyHook::get('headers'))
             ->willReturn($expectedHeaders);
         // We want different middleware class names to be able to test multiple middleware, hence the anon classes
-        $middleware1 = new class () extends MiddlewareThatIncrementsHeader {
-        };
-        $middleware2 = new class () extends MiddlewareThatIncrementsHeader {
-        };
+        $middleware1 = new class () extends MiddlewareThatIncrementsHeader {};
+        $middleware2 = new class () extends MiddlewareThatIncrementsHeader {};
         $controller = new ControllerMock();
         $this->serviceResolver
             ->method('resolve')
             ->willReturnMap([
                 [ControllerMock::class, $controller],
                 [$middleware1::class, $middleware1],
-                [$middleware2::class, $middleware2]
+                [$middleware2::class, $middleware2],
             ]);
         $matchingResult = new RouteMatchingResult(
             new Route(
@@ -171,11 +169,11 @@ class RouterTest extends TestCase
                 [],
                 [
                     new MiddlewareBinding($middleware1::class),
-                    new MiddlewareBinding($middleware2::class)
-                ]
+                    new MiddlewareBinding($middleware2::class),
+                ],
             ),
             [],
-            []
+            [],
         );
         $this->routeMatcher
             ->expects($this->once())
@@ -223,10 +221,10 @@ class RouterTest extends TestCase
                 new UriTemplate('foo'),
                 new RouteAction(ControllerMock::class, 'noParameters'),
                 [],
-                []
+                [],
             ),
             [],
-            []
+            [],
         );
         $this->routeMatcher
             ->expects($this->once())
@@ -252,12 +250,12 @@ class RouterTest extends TestCase
         $matchingResult = new RouteMatchingResult(
             new Route(
                 new UriTemplate('foo'),
-                new RouteAction(__CLASS__, \substr(__METHOD__, (int)\strpos(__METHOD__, '::') + 2)),
+                new RouteAction(__CLASS__, \substr(__METHOD__, (int) \strpos(__METHOD__, '::') + 2)),
                 [],
-                []
+                [],
             ),
             [],
-            []
+            [],
         );
         $this->serviceResolver
             ->expects($this->once())

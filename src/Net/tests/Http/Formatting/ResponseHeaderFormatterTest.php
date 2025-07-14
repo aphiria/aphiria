@@ -35,7 +35,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=' . \urlencode('+') . '; Path=/; SameSite=strict',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -45,7 +45,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=bar; Domain=foo.com',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -56,7 +56,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=bar; Max-Age=3600',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -66,7 +66,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=bar; SameSite=lax',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -76,7 +76,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=bar; Path=/foo',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -86,7 +86,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->setCookie($this->headers, $cookie);
         $this->assertSame(
             'foo=bar; SameSite=lax',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -96,7 +96,7 @@ class ResponseHeaderFormatterTest extends TestCase
         $this->formatter->deleteCookie($this->headers, 'bar');
         $expectedHeaders = [
             'foo=; Max-Age=0; HttpOnly; SameSite=lax',
-            'bar=; Max-Age=0; HttpOnly; SameSite=lax'
+            'bar=; Max-Age=0; HttpOnly; SameSite=lax',
         ];
         $this->assertEquals($expectedHeaders, $this->headers->get('Set-Cookie'));
     }

@@ -33,7 +33,7 @@ class CommandTest extends TestCase
             $expectedArguments,
             $expectedOptions,
             $expectedDescription,
-            $expectedHelpText
+            $expectedHelpText,
         );
         $this->assertSame($expectedName, $command->name);
         $this->assertSame($expectedArguments, $command->arguments);

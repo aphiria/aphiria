@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Collections\Tests;
 
-use Aphiria\Collections\KeyValuePair;
-use PHPUnit\Framework\TestCase;
 use function Aphiria\Collections\Functions\array_list;
 use function Aphiria\Collections\Functions\hash_set;
 use function Aphiria\Collections\Functions\hash_table;
@@ -22,6 +20,9 @@ use function Aphiria\Collections\Functions\immutable_hash_set;
 use function Aphiria\Collections\Functions\immutable_hash_table;
 use function Aphiria\Collections\Functions\queue;
 use function Aphiria\Collections\Functions\stack;
+
+use Aphiria\Collections\KeyValuePair;
+use PHPUnit\Framework\TestCase;
 
 class FunctionsTest extends TestCase
 {
@@ -42,6 +43,11 @@ class FunctionsTest extends TestCase
         $this->assertNotSame(array_list(['foo']), array_list(['foo']));
     }
 
+    public function testHashSetFunctionCreatesEmptyHashSetWhenNoValuesProvided(): void
+    {
+        $this->assertCount(0, hash_set());
+    }
+
     public function testHashSetFunctionCreatesHashSetWithValues(): void
     {
         $values = ['foo', 'bar'];
@@ -49,21 +55,14 @@ class FunctionsTest extends TestCase
         $this->assertEquals($values, $hashSet->toArray());
     }
 
-    public function testHashSetFunctionCreatesEmptyHashSetWhenNoValuesProvided(): void
-    {
-        $this->assertCount(0, hash_set());
-    }
-
-    public function testHashTableFunctionWithAssociativeArrayWorks(): void
-    {
-        $hashTable = hash_table(['foo' => 'bar', 'baz' => 'blah']);
-        $this->assertSame('bar', $hashTable->get('foo'));
-        $this->assertSame('blah', $hashTable->get('baz'));
-    }
-
     public function testHashSetFunctionReturnsNewInstanceEachCall(): void
     {
         $this->assertNotSame(hash_set(['foo']), hash_set(['foo']));
+    }
+
+    public function testHashTableFunctionCreatesEmptyHashTableWhenNoValuesProvided(): void
+    {
+        $this->assertCount(0, hash_table());
     }
 
     public function testHashTableFunctionCreatesHashTableWithValues(): void
@@ -73,15 +72,22 @@ class FunctionsTest extends TestCase
         $this->assertEquals($kvps, $hashTable->toArray());
     }
 
-    public function testHashTableFunctionCreatesEmptyHashTableWhenNoValuesProvided(): void
-    {
-        $this->assertCount(0, hash_table());
-    }
-
     public function testHashTableFunctionReturnsNewInstanceEachCall(): void
     {
         $kvps = [new KeyValuePair('foo', 'bar')];
         $this->assertNotSame(hash_table($kvps), hash_table($kvps));
+    }
+
+    public function testHashTableFunctionWithAssociativeArrayWorks(): void
+    {
+        $hashTable = hash_table(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
+    }
+
+    public function testImmutableArrayListFunctionCreatesEmptyImmutableArrayListWhenNoValuesProvided(): void
+    {
+        $this->assertCount(0, immutable_array_list());
     }
 
     public function testImmutableArrayListFunctionCreatesImmutableArrayListWithValues(): void
@@ -91,14 +97,14 @@ class FunctionsTest extends TestCase
         $this->assertEquals($values, $list->toArray());
     }
 
-    public function testImmutableArrayListFunctionCreatesEmptyImmutableArrayListWhenNoValuesProvided(): void
-    {
-        $this->assertCount(0, immutable_array_list());
-    }
-
     public function testImmutableArrayListFunctionReturnsNewInstanceEachCall(): void
     {
         $this->assertNotSame(immutable_array_list(['foo']), immutable_array_list(['foo']));
+    }
+
+    public function testImmutableHashSetFunctionCreatesEmptyImmutableHashSetWhenNoValuesProvided(): void
+    {
+        $this->assertCount(0, immutable_hash_set());
     }
 
     public function testImmutableHashSetFunctionCreatesImmutableHashSetWithValues(): void
@@ -108,21 +114,14 @@ class FunctionsTest extends TestCase
         $this->assertEquals($values, $hashSet->toArray());
     }
 
-    public function testImmutableHashSetFunctionCreatesEmptyImmutableHashSetWhenNoValuesProvided(): void
-    {
-        $this->assertCount(0, immutable_hash_set());
-    }
-
     public function testImmutableHashSetFunctionReturnsNewInstanceEachCall(): void
     {
         $this->assertNotSame(immutable_hash_set(['foo']), immutable_hash_set(['foo']));
     }
 
-    public function testImmutableHashTableFunctionWithAssociativeArrayWorks(): void
+    public function testImmutableHashTableFunctionCreatesEmptyHashTableWhenNoValuesProvided(): void
     {
-        $hashTable = immutable_hash_table(['foo' => 'bar', 'baz' => 'blah']);
-        $this->assertSame('bar', $hashTable->get('foo'));
-        $this->assertSame('blah', $hashTable->get('baz'));
+        $this->assertCount(0, immutable_hash_table());
     }
 
     public function testImmutableHashTableFunctionCreatesHashTableWithValues(): void
@@ -132,15 +131,17 @@ class FunctionsTest extends TestCase
         $this->assertEquals($kvps, $hashTable->toArray());
     }
 
-    public function testImmutableHashTableFunctionCreatesEmptyHashTableWhenNoValuesProvided(): void
-    {
-        $this->assertCount(0, immutable_hash_table());
-    }
-
     public function testImmutableHashTableFunctionReturnsNewInstanceEachCall(): void
     {
         $kvps = [new KeyValuePair('foo', 'bar')];
         $this->assertNotSame(hash_table($kvps), hash_table($kvps));
+    }
+
+    public function testImmutableHashTableFunctionWithAssociativeArrayWorks(): void
+    {
+        $hashTable = immutable_hash_table(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
     }
 
     public function testQueueFunctionCreatesQueueWithValues(): void

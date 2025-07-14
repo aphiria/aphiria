@@ -116,7 +116,7 @@ class ArrayList implements IList
             return null;
         }
 
-        return (int)$index;
+        return (int) $index;
     }
 
     /**
@@ -156,7 +156,7 @@ class ArrayList implements IList
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get((int)$offset);
+        return $this->get((int) $offset);
     }
 
     /**
@@ -164,7 +164,7 @@ class ArrayList implements IList
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->insert((int)$offset, $value);
+        $this->insert((int) $offset, $value);
     }
 
     /**
@@ -172,7 +172,7 @@ class ArrayList implements IList
      */
     public function offsetUnset(mixed $offset): void
     {
-        $this->removeIndex((int)$offset);
+        $this->removeIndex((int) $offset);
     }
 
     /**

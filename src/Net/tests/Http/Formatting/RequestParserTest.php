@@ -63,7 +63,7 @@ class RequestParserTest extends TestCase
 
         return [
             [$badRequest],
-            [$badMultipartBodyPart]
+            [$badMultipartBodyPart],
         ];
     }
 
@@ -78,7 +78,7 @@ class RequestParserTest extends TestCase
 
         return [
             [$request, $expectedBody],
-            [$multipartBodyPart, $expectedBody]
+            [$multipartBodyPart, $expectedBody],
         ];
     }
 
@@ -106,7 +106,7 @@ class RequestParserTest extends TestCase
     {
         $bodyPart = new MultipartBodyPart(
             new Headers([new KeyValuePair('Content-Type', 'image/png')]),
-            new StringBody('')
+            new StringBody(''),
         );
         $this->assertSame('image/png', $this->parser->getClientMimeType($bodyPart));
     }
@@ -121,7 +121,7 @@ class RequestParserTest extends TestCase
     {
         $bodyPart = new MultipartBodyPart(
             new Headers([new KeyValuePair('Content-Disposition', 'filename=foo.dave')]),
-            new StringBody('')
+            new StringBody(''),
         );
         $this->assertNull($this->parser->getClientMimeType($bodyPart));
     }
@@ -240,7 +240,7 @@ class RequestParserTest extends TestCase
     #[DataProvider('provideValidMultipartRequests')]
     public function testReadingAsMultipartRequestWithHeadersExtractsBody(
         IRequest|MultipartBodyPart $request,
-        string $expectedBody
+        string $expectedBody,
     ): void {
         $multipartBody = $this->parser->readAsMultipart($request);
         $this->assertNotNull($multipartBody);

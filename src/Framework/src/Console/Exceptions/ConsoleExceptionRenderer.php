@@ -33,7 +33,7 @@ class ConsoleExceptionRenderer implements IExceptionRenderer
      */
     public function __construct(
         public IOutput $output = new ConsoleOutput(),
-        protected readonly bool $shouldExit = true
+        protected readonly bool $shouldExit = true,
     ) {}
 
     /**

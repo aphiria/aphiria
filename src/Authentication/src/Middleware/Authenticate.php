@@ -35,7 +35,7 @@ class Authenticate extends ParameterizedMiddleware
      */
     public function __construct(
         protected readonly IAuthenticator $authenticator,
-        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor(),
     ) {}
 
     /**

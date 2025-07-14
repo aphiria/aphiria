@@ -26,7 +26,7 @@ class AuthorityBuilder
      */
     public function __construct(
         private readonly AuthorizationPolicyRegistry $policies = new AuthorizationPolicyRegistry(),
-        private readonly AuthorizationRequirementHandlerRegistry $requirementHandlers = new AuthorizationRequirementHandlerRegistry()
+        private readonly AuthorizationRequirementHandlerRegistry $requirementHandlers = new AuthorizationRequirementHandlerRegistry(),
     ) {}
 
     /**

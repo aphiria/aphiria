@@ -64,7 +64,7 @@ class MultipartBodyTest extends TestCase
             ->willReturn($streamMock2);
         $parts = [
             new MultipartBodyPart(new Headers(), $body1),
-            new MultipartBodyPart(new Headers(), $body2)
+            new MultipartBodyPart(new Headers(), $body2),
         ];
         $body = new MultipartBody($parts, '123');
         $this->assertNull($body->length);
@@ -98,7 +98,7 @@ class MultipartBodyTest extends TestCase
             ->willReturn($streamMock2);
         $parts = [
             new MultipartBodyPart(new Headers(), $body1),
-            new MultipartBodyPart(new Headers(), $body2)
+            new MultipartBodyPart(new Headers(), $body2),
         ];
         $body = new MultipartBody($parts, '123');
         /**
@@ -118,7 +118,7 @@ class MultipartBodyTest extends TestCase
     {
         $parts = [
             $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz'),
-            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark')
+            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark'),
         ];
         $body = new MultipartBody($parts, '123');
         $this->assertSame($parts, $body->parts);
@@ -127,24 +127,24 @@ class MultipartBodyTest extends TestCase
     public function testNoPartsResultsInOnlyHeaderAndFooter(): void
     {
         $body = new MultipartBody([], '123');
-        $this->assertSame("--123\r\n--123--", (string)$body);
+        $this->assertSame("--123\r\n--123--", (string) $body);
     }
 
     public function testPartsAreWrittenToStreamWithBoundaries(): void
     {
         $parts = [
             $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz'),
-            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark')
+            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark'),
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertSame("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123\r\nOh: hi\r\n\r\nmark\r\n--123--", (string)$body);
+        $this->assertSame("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123\r\nOh: hi\r\n\r\nmark\r\n--123--", (string) $body);
     }
 
     public function testReadingAsStreamReturnsAMultiStream(): void
     {
         $parts = [
             $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz'),
-            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark')
+            $this->createMultipartBodyPart(['Oh' => 'hi'], 'mark'),
         ];
         $body = new MultipartBody($parts, '123');
         $this->assertInstanceOf(MultiStream::class, $body->readAsStream());
@@ -153,10 +153,10 @@ class MultipartBodyTest extends TestCase
     public function testSinglePartIsWrappedWithHeaderAndFooter(): void
     {
         $parts = [
-            $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz')
+            $this->createMultipartBodyPart(['Foo' => 'bar'], 'baz'),
         ];
         $body = new MultipartBody($parts, '123');
-        $this->assertSame("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123--", (string)$body);
+        $this->assertSame("--123\r\nFoo: bar\r\n\r\nbaz\r\n--123--", (string) $body);
     }
 
     /**

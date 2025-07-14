@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Http;
 
-use InvalidArgumentException;
-
 /**
  * Defines the interface for HTTP response messages to implement
  */

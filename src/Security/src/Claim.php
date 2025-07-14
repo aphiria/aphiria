@@ -30,7 +30,7 @@ readonly class Claim
     public function __construct(
         ClaimType|string $type,
         public mixed $value,
-        public string $issuer
+        public string $issuer,
     ) {
         if ($type instanceof ClaimType) {
             $this->type = $type->value;

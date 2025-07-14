@@ -166,13 +166,13 @@ class UriTest extends TestCase
     public function testToStringWithAllPartsIsCreatedCorrectly(): void
     {
         $uri = new Uri('http://user:password@host:8080/path?query#fragment');
-        $this->assertSame('http://user:password@host:8080/path?query#fragment', (string)$uri);
+        $this->assertSame('http://user:password@host:8080/path?query#fragment', (string) $uri);
     }
 
     public function testToStringWithFragmentStringIncludesFragment(): void
     {
         $uri = new Uri('http://host#fragment');
-        $this->assertSame('http://host#fragment', (string)$uri);
+        $this->assertSame('http://host#fragment', (string) $uri);
     }
 
     /**
@@ -183,36 +183,36 @@ class UriTest extends TestCase
     public function testToStringWithNonStandardPortIncludesPort(string $uri): void
     {
         $httpUri = new Uri($uri);
-        $this->assertEquals($uri, (string)$httpUri);
+        $this->assertEquals($uri, (string) $httpUri);
     }
 
     public function testToStringWithNoSchemedDoesNotIncludeThatValue(): void
     {
         $uri = new Uri('host');
-        $this->assertSame('host', (string)$uri);
+        $this->assertSame('host', (string) $uri);
     }
 
     public function testToStringWithNoUserPasswordDoesNotIncludeThoseValues(): void
     {
         $uri = new Uri('http://host');
-        $this->assertSame('http://host', (string)$uri);
+        $this->assertSame('http://host', (string) $uri);
     }
 
     public function testToStringWithQueryStringIncludesQueryString(): void
     {
         $uri = new Uri('http://host?query');
-        $this->assertSame('http://host?query', (string)$uri);
+        $this->assertSame('http://host?query', (string) $uri);
     }
 
     public function testToStringWithUserButNoPasswordOnlyIncludesUser(): void
     {
         $uri = new Uri('http://user@host');
-        $this->assertSame('http://user@host', (string)$uri);
+        $this->assertSame('http://user@host', (string) $uri);
     }
 
     public function testToStringWithUserPasswordIncludesThoseValues(): void
     {
         $uri = new Uri('http://user:password@host');
-        $this->assertSame('http://user:password@host', (string)$uri);
+        $this->assertSame('http://user:password@host', (string) $uri);
     }
 }

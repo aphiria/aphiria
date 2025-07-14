@@ -33,7 +33,7 @@ readonly class AuthorizationPolicy
     public function __construct(
         public string $name,
         array|object $requirements,
-        array|string|null $authenticationSchemeNames = null
+        array|string|null $authenticationSchemeNames = null,
     ) {
         if (!\is_array($requirements)) {
             $requirements = [$requirements];

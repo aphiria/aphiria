@@ -55,7 +55,7 @@ final class SymfonySerializerBinder extends Binder
                 case XmlEncoder::class:
                     $encoders[] = new XmlEncoder([
                         XmlEncoder::ROOT_NODE_NAME => GlobalConfiguration::getString('aphiria.serialization.xml.rootNodeName'),
-                        XmlEncoder::REMOVE_EMPTY_TAGS => GlobalConfiguration::getBool('aphiria.serialization.xml.removeEmptyTags')
+                        XmlEncoder::REMOVE_EMPTY_TAGS => GlobalConfiguration::getBool('aphiria.serialization.xml.removeEmptyTags'),
                     ]);
                     break;
                 case JsonEncoder::class:
@@ -79,7 +79,7 @@ final class SymfonySerializerBinder extends Binder
             switch ($normalizerName) {
                 case DateTimeNormalizer::class:
                     $normalizers[] = new DateTimeNormalizer([
-                        DateTimeNormalizer::FORMAT_KEY => GlobalConfiguration::getString('aphiria.serialization.dateTimeFormat')
+                        DateTimeNormalizer::FORMAT_KEY => GlobalConfiguration::getString('aphiria.serialization.dateTimeFormat'),
                     ]);
                     break;
                 case ObjectNormalizer::class:
@@ -121,7 +121,7 @@ final class SymfonySerializerBinder extends Binder
         if (GlobalConfiguration::tryGetString('aphiria.serialization.nameConverter', $nameConverterName)) {
             $nameConverter = match ($nameConverterName) {
                 CamelCaseToSnakeCaseNameConverter::class => new CamelCaseToSnakeCaseNameConverter(),
-                default => null
+                default => null,
             };
         }
 

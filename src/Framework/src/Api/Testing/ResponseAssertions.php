@@ -36,7 +36,7 @@ class ResponseAssertions
      */
     public function __construct(
         private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
-        private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser()
+        private readonly ResponseHeaderParser $responseHeaderParser = new ResponseHeaderParser(),
     ) {}
 
     /**
@@ -157,7 +157,7 @@ class ResponseAssertions
             throw new AssertionFailedException("No header value for $headerName is set");
         }
 
-        if (\preg_match($regex, (string)$actualHeaderValue) !== 1) {
+        if (\preg_match($regex, (string) $actualHeaderValue) !== 1) {
             throw new AssertionFailedException("$actualHeaderValue does not match regex $regex");
         }
     }

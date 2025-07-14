@@ -39,7 +39,7 @@ class ProblemDetails
         public ?string $detail = null,
         HttpStatusCode|int $status = HttpStatusCode::InternalServerError,
         public ?string $instance = null,
-        public ?array $extensions = null
+        public ?array $extensions = null,
     ) {
         if ($status instanceof HttpStatusCode) {
             $status = $status->value;

@@ -31,7 +31,7 @@ class PaddingFormatterOptionsTest extends TestCase
         $options = new PaddingFormatterOptions(
             paddingString: '_',
             padAfter: false,
-            eolChar: '<br>'
+            eolChar: '<br>',
         );
         $this->assertSame('_', $options->paddingString);
         $this->assertFalse($options->padAfter);

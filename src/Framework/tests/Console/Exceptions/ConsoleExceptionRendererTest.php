@@ -45,7 +45,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 $output->writeln('bar');
 
                 return 1;
-            }
+            },
         ]);
         $this->output
             ->method('writeln')
@@ -79,7 +79,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 $output->writeln('foo');
 
                 return 1;
-            }
+            },
         );
         $this->output
             ->expects($this->once())
@@ -116,7 +116,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 $output->writeln('foo');
 
                 return 0;
-            }
+            },
         );
         $this->exceptionRenderer->render(new Exception());
     }

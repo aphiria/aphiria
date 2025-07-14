@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when an assertion fails
  */
-final class AssertionFailedException extends Exception
-{
-}
+final class AssertionFailedException extends Exception {}

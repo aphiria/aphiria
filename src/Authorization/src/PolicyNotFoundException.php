@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when an authorization policy is not found
  */
-final class PolicyNotFoundException extends Exception
-{
-}
+final class PolicyNotFoundException extends Exception {}

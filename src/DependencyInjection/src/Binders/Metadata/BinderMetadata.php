@@ -27,6 +27,6 @@ final readonly class BinderMetadata
     public function __construct(
         public Binder $binder,
         public array $boundInterfaces,
-        public array $resolvedInterfaces
+        public array $resolvedInterfaces,
     ) {}
 }

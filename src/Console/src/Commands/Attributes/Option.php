@@ -36,7 +36,7 @@ final readonly class Option
         array|OptionType $type,
         public ?string $shortName = null,
         public ?string $description = null,
-        public mixed $defaultValue = null
+        public mixed $defaultValue = null,
     ) {
         $this->type = \is_array($type) ? $type : [$type];
     }

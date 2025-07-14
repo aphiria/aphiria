@@ -242,7 +242,7 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $requirementType,
-                IAuthorizationRequirementHandler $requirementHandler
+                IAuthorizationRequirementHandler $requirementHandler,
             ): void {
                 $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
             }
@@ -284,7 +284,7 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $requirementType,
-                IAuthorizationRequirementHandler $requirementHandler
+                IAuthorizationRequirementHandler $requirementHandler,
             ): void {
                 $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
             }
@@ -310,7 +310,7 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $requirementType,
-                IAuthorizationRequirementHandler $requirementHandler
+                IAuthorizationRequirementHandler $requirementHandler,
             ): void {
                 $this->withAuthorizationRequirementHandler($appBuilder, $requirementType, $requirementHandler);
             }
@@ -612,6 +612,24 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder, fn(CommandRegistry $commands): mixed => null);
     }
 
+    public function testWithComponentAddsComponentToAppBuilder(): void
+    {
+        $component = $this->createMock(IComponent::class);
+        $this->appBuilder
+            ->expects($this->once())
+            ->method('withComponent')
+            ->with($component);
+        $module = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, IComponent $component): void
+            {
+                $this->withComponent($appBuilder, $component);
+            }
+        };
+        $module->build($this->appBuilder, $component);
+    }
+
     public function testWithConsoleElementConfiguresComponentToHaveMultipleElements(): void
     {
         $element1 = new Element('foo', new Style());
@@ -726,24 +744,6 @@ class AphiriaComponentsTest extends TestCase
         $component->build($this->appBuilder, new Element('foo', new Style()));
     }
 
-    public function testWithComponentAddsComponentToAppBuilder(): void
-    {
-        $component = $this->createMock(IComponent::class);
-        $this->appBuilder
-            ->expects($this->once())
-            ->method('withComponent')
-            ->with($component);
-        $module = new class () {
-            use AphiriaComponents;
-
-            public function build(IApplicationBuilder $appBuilder, IComponent $component): void
-            {
-                $this->withComponent($appBuilder, $component);
-            }
-        };
-        $module->build($this->appBuilder, $component);
-    }
-
     public function testWithConsoleExceptionOutputWriterConfiguresComponentToHaveWriter(): void
     {
         $outputWriter = function (Exception $ex, IOutput $output): int {
@@ -852,7 +852,7 @@ class AphiriaComponentsTest extends TestCase
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
-            'aphiria' => ['api' => ['localhostRouterPath' => '/router']]
+            'aphiria' => ['api' => ['localhostRouterPath' => '/router']],
         ]));
         $component = new class () {
             use AphiriaComponents;
@@ -887,7 +887,7 @@ class AphiriaComponentsTest extends TestCase
             ->with(CommandComponent::class)
             ->willReturn($expectedComponent);
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration([
-            'aphiria' => ['api' => ['localhostRouterPath' => '/router']]
+            'aphiria' => ['api' => ['localhostRouterPath' => '/router']],
         ]));
         $component = new class () {
             use AphiriaComponents;
@@ -965,7 +965,7 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 MiddlewareBinding $middlewareBinding,
-                int $priority
+                int $priority,
             ): void {
                 $this->withGlobalMiddleware($appBuilder, $middlewareBinding, $priority);
             }
@@ -1073,7 +1073,7 @@ class AphiriaComponentsTest extends TestCase
             public function build(
                 IApplicationBuilder $appBuilder,
                 string $exceptionType,
-                Closure $logLevelFactory
+                Closure $logLevelFactory,
             ): void {
                 $this->withLogLevelFactory($appBuilder, $exceptionType, $logLevelFactory);
             }
@@ -1295,7 +1295,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure|null $detail = null,
                 HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure|null $instance = null,
-                array|Closure|null $extensions = null
+                array|Closure|null $extensions = null,
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
             }
@@ -1338,7 +1338,7 @@ class AphiriaComponentsTest extends TestCase
                 string|Closure|null $detail = null,
                 HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
                 string|Closure|null $instance = null,
-                array|Closure|null $extensions = null
+                array|Closure|null $extensions = null,
             ): void {
                 $this->withProblemDetails($appBuilder, $exceptionType, $type, $title, $detail, $status, $instance, $extensions);
             }

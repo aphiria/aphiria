@@ -22,7 +22,7 @@ class AuthorizationContextTest extends TestCase
     {
         $requirements = [
             new class () {},
-            new class () {}
+            new class () {},
         ];
         $context = $this->createMockContext($requirements);
         $this->assertFalse($context->allRequirementsPassed);
@@ -39,7 +39,7 @@ class AuthorizationContextTest extends TestCase
     {
         $requirements = [
             new class () {},
-            new class () {}
+            new class () {},
         ];
         $context = $this->createMockContext($requirements);
         $this->assertFalse($context->anyRequirementsFailed);
@@ -52,7 +52,7 @@ class AuthorizationContextTest extends TestCase
     {
         $requirements = [
             new class () {},
-            new class () {}
+            new class () {},
         ];
         $context = $this->createMockContext($requirements);
         $context->fail();

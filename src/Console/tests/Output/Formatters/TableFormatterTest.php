@@ -69,7 +69,7 @@ class TableFormatterTest extends TestCase
         $rows = [
             ['a'],
             ['aa', 'bb'],
-            ['aaa', 'bbb', 'ccc']
+            ['aaa', 'bbb', 'ccc'],
         ];
         $options = new TableFormatterOptions(
             cellPaddingString: '_',
@@ -77,7 +77,7 @@ class TableFormatterTest extends TestCase
             horizontalBorderChar: '=',
             intersectionChar: '*',
             padAfter: false,
-            eolChar: '<br>'
+            eolChar: '<br>',
         );
         $expected =
             '*=====*=====*=====*<br>' .
@@ -112,7 +112,7 @@ class TableFormatterTest extends TestCase
         $rows = [
             ['a'],
             ['aa', 'bb'],
-            ['aaa', 'bbb', 'ccc']
+            ['aaa', 'bbb', 'ccc'],
         ];
         $expected =
             '+-----+-----+-----+------+' . PHP_EOL .
@@ -131,7 +131,7 @@ class TableFormatterTest extends TestCase
         $rows = [
             ['a'],
             ['aa', 'bb'],
-            ['aaa', 'bbb', 'ccc']
+            ['aaa', 'bbb', 'ccc'],
         ];
         $expected =
             '+-----+-----+-----+' . PHP_EOL .
@@ -149,7 +149,7 @@ class TableFormatterTest extends TestCase
         $rows = [
             ['a'],
             ['aa', 'bb'],
-            ['aaa', 'bbb', 'ccc']
+            ['aaa', 'bbb', 'ccc'],
         ];
         $expected =
             '+-----+-----+-----+' . PHP_EOL .

@@ -17,14 +17,14 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
  */
 final class UriTemplateLexer implements IUriTemplateLexer
 {
-    /** @const The maximum length of a variable name */
-    private const int VARIABLE_NAME_MAX_LENGTH = 32;
     /** @const The regex for finding a number */
     private const string NUMBER_REGEX = '/\d+(?:\.\d+)?/A';
     /** @const The list of punctuation characters */
     private const string PUNCTUATION = '.()[],/';
     /** @const The regex for finding a quoted string */
     private const string QUOTED_STRING_REGEX = '/\s*"([^#"\\\\]*(?:\\\\.[^#"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'\s*/A';
+    /** @const The maximum length of a variable name */
+    private const int VARIABLE_NAME_MAX_LENGTH = 32;
     /** @const The regex for finding a variable name and default value */
     private const string VARIABLE_NAME_REGEX = '/:[a-zA-Z_][\w]*/A';
 
@@ -89,8 +89,8 @@ final class UriTemplateLexer implements IUriTemplateLexer
      */
     private static function lexNumber(string $number, array &$tokens, int &$cursor): void
     {
-        $floatVal = (float)$number;
-        $intVal = (int)$number;
+        $floatVal = (float) $number;
+        $intVal = (int) $number;
 
         // Determine if this was a float or not
         if ($floatVal && $intVal != $floatVal) {

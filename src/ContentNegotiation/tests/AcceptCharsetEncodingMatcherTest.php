@@ -47,7 +47,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-8'],
             $this->request,
-            $this->headerParser->parseAcceptHeader($this->headers)[0]
+            $this->headerParser->parseAcceptHeader($this->headers)[0],
         );
         $this->assertSame('utf-8', $encoding);
     }
@@ -59,7 +59,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-8', 'utf-16'],
             $this->request,
-            $this->headerParser->parseAcceptHeader($this->headers)[0]
+            $this->headerParser->parseAcceptHeader($this->headers)[0],
         );
         $this->assertSame('utf-16', $encoding);
     }
@@ -77,7 +77,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-16'],
             $this->request,
-            $this->headerParser->parseAcceptHeader($this->headers)[0]
+            $this->headerParser->parseAcceptHeader($this->headers)[0],
         );
         $this->assertSame('utf-16', $encoding);
     }
@@ -95,7 +95,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-8'],
             $this->request,
-            $this->headerParser->parseContentTypeHeader($this->headers)
+            $this->headerParser->parseContentTypeHeader($this->headers),
         );
         $this->assertSame('utf-8', $encoding);
     }
@@ -154,7 +154,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-8'],
             $this->request,
-            $this->headerParser->parseAcceptHeader($this->headers)[0]
+            $this->headerParser->parseAcceptHeader($this->headers)[0],
         );
         $this->assertNull($encoding);
     }
@@ -165,7 +165,7 @@ class AcceptCharsetEncodingMatcherTest extends TestCase
         $encoding = $this->matcher->getBestEncodingMatch(
             ['utf-8'],
             $this->request,
-            $this->headerParser->parseContentTypeHeader($this->headers)
+            $this->headerParser->parseContentTypeHeader($this->headers),
         );
         $this->assertNull($encoding);
     }

@@ -31,7 +31,7 @@ class ArgumentTest extends TestCase
     {
         return [
             [[ArgumentType::Required], ArgumentType::Required],
-            [[ArgumentType::Required], [ArgumentType::Required]]
+            [[ArgumentType::Required], [ArgumentType::Required]],
         ];
     }
 

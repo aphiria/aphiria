@@ -52,7 +52,7 @@ class CommandRegistryTest extends TestCase
         };
         $expectedBindings = [
             new CommandBinding(new Command('foo'), $commandHandler1::class),
-            new CommandBinding(new Command('bar'), $commandHandler2::class)
+            new CommandBinding(new Command('bar'), $commandHandler2::class),
         ];
         $this->commands->registerManyCommands($expectedBindings);
         $actualBindings = $this->commands->commandBindings;
@@ -73,7 +73,7 @@ class CommandRegistryTest extends TestCase
         };
         $this->commands->registerManyCommands([
             new CommandBinding($expectedCommand1, $commandHandler1::class),
-            new CommandBinding($expectedCommand2, $commandHandler2::class)
+            new CommandBinding($expectedCommand2, $commandHandler2::class),
         ]);
         $actualCommands = $this->commands->commands;
         $this->assertCount(2, $actualCommands);
@@ -100,7 +100,7 @@ class CommandRegistryTest extends TestCase
             public function handle(Input $input, IOutput $output): void {}
         };
         $this->commands->registerManyCommands([
-            new CommandBinding($command, $commandHandler::class)
+            new CommandBinding($command, $commandHandler::class),
         ]);
         $actualCommandHandlerClassName = null;
         $this->assertTrue($this->commands->tryGetHandlerClassName('FOO', $actualCommandHandlerClassName));

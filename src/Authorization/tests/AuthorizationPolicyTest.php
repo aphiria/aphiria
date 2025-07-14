@@ -25,7 +25,7 @@ class AuthorizationPolicyTest extends TestCase
         return [
             ['foo', ['foo']],
             [['foo', 'bar'], ['foo', 'bar']],
-            [null, null]
+            [null, null],
         ];
     }
 
@@ -35,7 +35,7 @@ class AuthorizationPolicyTest extends TestCase
 
         return [
             [$object, [$object]],
-            [[$object, $object], [$object, $object]]
+            [[$object, $object], [$object, $object]],
         ];
     }
 

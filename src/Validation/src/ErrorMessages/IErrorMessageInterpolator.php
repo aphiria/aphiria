@@ -32,6 +32,6 @@ interface IErrorMessageInterpolator
     public function interpolate(
         string $errorMessageId,
         array $errorMessagePlaceholders = [],
-        ?string $locale = null
+        ?string $locale = null,
     ): string;
 }

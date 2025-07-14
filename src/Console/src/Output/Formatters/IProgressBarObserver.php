@@ -29,6 +29,6 @@ interface IProgressBarObserver
         ?int $prevProgress,
         int $currProgress,
         int $maxSteps,
-        ProgressBarFormatterOptions $options
+        ProgressBarFormatterOptions $options,
     ): void;
 }

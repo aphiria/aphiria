@@ -61,7 +61,7 @@ class RequestBuilderTest extends TestCase
             ->withMethod('GET')
             ->withUri('http://localhost/path')
             ->build();
-        $this->assertSame('GET /path HTTP/1.1', \explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET /path HTTP/1.1', \explode("\r\n", (string) $request)[0]);
         $this->assertSame('localhost', $request->headers->getFirst('Host'));
     }
 
@@ -144,7 +144,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withProtocolVersion('2.0')
             ->build();
-        $this->assertSame('GET / HTTP/2.0', \explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET / HTTP/2.0', \explode("\r\n", (string) $request)[0]);
     }
 
     public function testWithRequestTargetTypeSetsRequestTargetType(): void
@@ -154,7 +154,7 @@ class RequestBuilderTest extends TestCase
             ->withUri('http://localhost')
             ->withRequestTargetType(RequestTargetType::AbsoluteForm)
             ->build();
-        $this->assertSame('GET http://localhost HTTP/1.1', \explode("\r\n", (string)$request)[0]);
+        $this->assertSame('GET http://localhost HTTP/1.1', \explode("\r\n", (string) $request)[0]);
     }
 
     public function testWithStringUriSetsRequestUri(): void
@@ -163,7 +163,7 @@ class RequestBuilderTest extends TestCase
             ->withMethod('GET')
             ->withUri('http://localhost')
             ->build();
-        $this->assertSame('http://localhost', (string)$request->uri);
+        $this->assertSame('http://localhost', (string) $request->uri);
     }
 
     public function testWithUriSetsRequestUri(): void

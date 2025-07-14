@@ -37,7 +37,7 @@ readonly class AuthenticationResult
         public bool $passed,
         array|string $schemeNames,
         public ?IPrincipal $user = null,
-        public ?Exception $failure = null
+        public ?Exception $failure = null,
     ) {
         if (!$this->passed && $this->failure === null) {
             throw new InvalidArgumentException('Failed authentication results must specify a failure reason');

@@ -29,6 +29,6 @@ final readonly class ContentNegotiationResult
         public ?IMediaTypeFormatter $formatter,
         public ?string $mediaType,
         public ?string $encoding,
-        public ?string $language
+        public ?string $language,
     ) {}
 }

@@ -44,7 +44,7 @@ final class AuthorizationContext
     public function __construct(
         public readonly IPrincipal $user,
         public readonly array $requirements,
-        public readonly ?object $resource
+        public readonly ?object $resource,
     ) {
         $this->pendingRequirements = new HashSet($this->requirements);
     }

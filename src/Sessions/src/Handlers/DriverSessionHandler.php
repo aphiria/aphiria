@@ -25,7 +25,7 @@ final class DriverSessionHandler implements SessionHandlerInterface
      */
     public function __construct(
         private readonly ISessionDriver $driver,
-        private readonly ?ISessionEncrypter $encrypter = null
+        private readonly ?ISessionEncrypter $encrypter = null,
     ) {}
 
     /**

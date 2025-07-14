@@ -24,7 +24,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
         $interpolator = new IcuFormatErrorMessageInterpolator(defaultLocale: 'de');
         $this->assertSame(
             'Dave has $1,23',
-            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23]),
         );
     }
 
@@ -33,7 +33,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
         $interpolator = new IcuFormatErrorMessageInterpolator();
         $this->assertSame(
             'Dave has $1,23',
-            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23], 'de')
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23], 'de'),
         );
     }
     public function testInterpolatingCorrectlyFormatsIcuFormattedErrorMessageIdWithNoPlaceholders(): void
@@ -41,7 +41,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
         $interpolator = new IcuFormatErrorMessageInterpolator();
         $this->assertSame(
             'foo bar',
-            $interpolator->interpolate('foo bar')
+            $interpolator->interpolate('foo bar'),
         );
     }
 
@@ -50,7 +50,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
         $interpolator = new IcuFormatErrorMessageInterpolator();
         $this->assertSame(
             'Dave has $1.23',
-            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23]),
         );
     }
 
@@ -80,7 +80,7 @@ class IcuFormatErrorMessageInterpolatorTest extends TestCase
         $interpolator->defaultLocale = 'de';
         $this->assertSame(
             'Dave has $1,23',
-            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23])
+            $interpolator->interpolate('Dave has ${amount, number}', ['amount' => 1.23]),
         );
     }
 }

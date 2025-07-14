@@ -33,7 +33,7 @@ class SynchronousApiApplication implements IApplication
     public function __construct(
         private readonly IRequestHandler $apiGateway,
         private readonly IRequest $request,
-        private readonly IResponseWriter $responseWriter = new StreamResponseWriter()
+        private readonly IResponseWriter $responseWriter = new StreamResponseWriter(),
     ) {}
 
     /**

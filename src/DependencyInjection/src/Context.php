@@ -25,6 +25,6 @@ abstract class Context
     protected function __construct(
         public readonly ?string $targetClass,
         public readonly bool $isTargeted,
-        public readonly bool $isUniversal
+        public readonly bool $isUniversal,
     ) {}
 }

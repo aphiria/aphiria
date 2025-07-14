@@ -46,7 +46,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . ' can only read strings');
         }
 
-        return (string)$stream;
+        return (string) $stream;
     }
 
     /**

@@ -65,7 +65,7 @@ class RequestBuilder implements IRequestBuilder
             $this->body,
             $this->properties,
             $this->protocolVersion,
-            $this->requestTargetType
+            $this->requestTargetType,
         );
     }
 

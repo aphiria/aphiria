@@ -27,7 +27,7 @@ class StreamBodyTest extends TestCase
             ->method('__toString')
             ->willReturn('foo');
         $body = new StreamBody($stream);
-        $this->assertSame('foo', (string)$body);
+        $this->assertSame('foo', (string) $body);
     }
 
     public function testGettingLengthReturnsUnderlyingStreamLength(): void

@@ -51,7 +51,7 @@ final class Session implements IMiddleware
         private readonly bool $sessionCookieIsHttpOnly = true,
         private readonly float $gcChance = 0.01,
         private readonly RequestParser $requestParser = new RequestParser(),
-        private readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
+        private readonly ResponseFormatter $responseFormatter = new ResponseFormatter(),
     ) {}
 
     /**
@@ -66,20 +66,20 @@ final class Session implements IMiddleware
         $requestCookies = $this->requestParser->parseCookies($request);
 
         if ($requestCookies->containsKey($this->sessionCookieName)) {
-            $this->session->id = (string)$requestCookies->get($this->sessionCookieName);
+            $this->session->id = (string) $requestCookies->get($this->sessionCookieName);
         } else {
             $this->session->regenerateId();
         }
 
         $this->sessionHandler->open('', $this->sessionCookieName);
         /** @var array<string, mixed>|false $sessionVars */
-        $sessionVars = @\unserialize($this->sessionHandler->read((string)$this->session->id));
+        $sessionVars = @\unserialize($this->sessionHandler->read((string) $this->session->id));
         $this->session->addManyVariables($sessionVars === false ? [] : $sessionVars);
 
         $response = $next->handle($request);
 
         $this->session->ageFlashData();
-        $this->sessionHandler->write((string)$this->session->id, \serialize($this->session->variables));
+        $this->sessionHandler->write((string) $this->session->id, \serialize($this->session->variables));
         $this->writeSessionToResponse($response);
 
         return $response;
@@ -101,8 +101,8 @@ final class Session implements IMiddleware
                 $this->sessionCookiePath,
                 $this->sessionCookieDomain,
                 $this->sessionCookieIsSecure,
-                $this->sessionCookieIsHttpOnly
-            )
+                $this->sessionCookieIsHttpOnly,
+            ),
         );
     }
 }

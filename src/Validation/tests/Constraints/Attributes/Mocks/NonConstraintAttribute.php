@@ -18,6 +18,4 @@ use Attribute;
  * Mocks an attribute that is not a constraint attribute
  */
 #[Attribute(Attribute::TARGET_ALL)]
-final class NonConstraintAttribute
-{
-}
+final class NonConstraintAttribute {}

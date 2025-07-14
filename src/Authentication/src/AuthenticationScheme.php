@@ -29,6 +29,6 @@ final readonly class AuthenticationScheme
     public function __construct(
         public string $name,
         public string $handlerClassName,
-        public AuthenticationSchemeOptions $options = new AuthenticationSchemeOptions()
+        public AuthenticationSchemeOptions $options = new AuthenticationSchemeOptions(),
     ) {}
 }

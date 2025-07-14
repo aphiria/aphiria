@@ -59,7 +59,7 @@ class ResponseFormatterTest extends TestCase
         $this->formatter->deleteCookie($this->response, 'name', '/path', 'example.com', true, true, SameSiteMode::Lax);
         $this->assertSame(
             'name=; Max-Age=0; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -70,7 +70,7 @@ class ResponseFormatterTest extends TestCase
     #[TestWith([HttpStatusCode::Found, 302])]
     public function testRedirectingToUriAcceptsBothIntAndEnumStatusCodes(
         HttpStatusCode $expectedStatusCode,
-        HttpStatusCode|int $rawStatusCode
+        HttpStatusCode|int $rawStatusCode,
     ): void {
         $this->response
             ->expects($this->once())
@@ -103,11 +103,11 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->setCookie(
             $this->response,
-            new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, SameSiteMode::Lax)
+            new Cookie('name', 'value', 3600, '/path', 'example.com', true, true, SameSiteMode::Lax),
         );
         $this->assertSame(
             'name=value; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
-            $this->headers->getFirst('Set-Cookie')
+            $this->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -115,18 +115,18 @@ class ResponseFormatterTest extends TestCase
     {
         $this->formatter->setCookies(
             $this->response,
-            [new Cookie('name1', 'value1', 3600), new Cookie('name2', 'value2', 7200)]
+            [new Cookie('name1', 'value1', 3600), new Cookie('name2', 'value2', 7200)],
         );
         /** @var array<int, string> $cookies */
         $cookies = $this->headers->get('Set-Cookie');
         $this->assertCount(2, $cookies);
         $this->assertSame(
             'name1=value1; Max-Age=3600; HttpOnly; SameSite=lax',
-            $cookies[0]
+            $cookies[0],
         );
         $this->assertSame(
             'name2=value2; Max-Age=7200; HttpOnly; SameSite=lax',
-            $cookies[1]
+            $cookies[1],
         );
     }
 

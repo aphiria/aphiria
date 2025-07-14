@@ -104,7 +104,7 @@ class HashSet implements ISet
     public function intersect(iterable $values): static
     {
         $intersectedValues = [];
-        $valuesArray = \is_array($values) ? $values : iterator_to_array($values);
+        $valuesArray = \is_array($values) ? $values : \iterator_to_array($values);
 
         // We don't use array_intersect because that does string comparisons, which requires __toString()
         foreach ($this->values as $value) {

@@ -30,6 +30,6 @@ final class Controller
         public string $path = '',
         public ?string $host = null,
         public bool $isHttpsOnly = false,
-        public array $parameters = []
+        public array $parameters = [],
     ) {}
 }

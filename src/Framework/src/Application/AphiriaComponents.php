@@ -87,7 +87,7 @@ trait AphiriaComponents
     protected function withAuthenticationScheme(
         IApplicationBuilder $appBuilder,
         AuthenticationScheme $scheme,
-        bool $isDefault = false
+        bool $isDefault = false,
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthenticationComponent::class)) {
@@ -153,7 +153,7 @@ trait AphiriaComponents
     protected function withAuthorizationRequirementHandler(
         IApplicationBuilder $appBuilder,
         string $requirementType,
-        IAuthorizationRequirementHandler $requirementHandler
+        IAuthorizationRequirementHandler $requirementHandler,
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(AuthorizationComponent::class)) {
@@ -165,7 +165,7 @@ trait AphiriaComponents
             if (!Container::$globalInstance->hasBinding(AuthorizationRequirementHandlerRegistry::class)) {
                 Container::$globalInstance->bindInstance(
                     AuthorizationRequirementHandlerRegistry::class,
-                    new AuthorizationRequirementHandlerRegistry()
+                    new AuthorizationRequirementHandlerRegistry(),
                 );
             }
 
@@ -197,9 +197,9 @@ trait AphiriaComponents
 
             $appBuilder->withComponent(
                 new BinderComponent(
-                    Container::$globalInstance
+                    Container::$globalInstance,
                 ),
-                0
+                0,
             );
         }
 
@@ -228,9 +228,9 @@ trait AphiriaComponents
 
             $appBuilder->withComponent(
                 new BinderComponent(
-                    Container::$globalInstance
+                    Container::$globalInstance,
                 ),
-                0
+                0,
             );
         }
 
@@ -345,7 +345,7 @@ trait AphiriaComponents
     protected function withConsoleExceptionOutputWriter(
         IApplicationBuilder $appBuilder,
         string $exceptionType,
-        Closure $callback
+        Closure $callback,
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -394,7 +394,7 @@ trait AphiriaComponents
                 $commandBindings = [
                     new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class),
                     new CommandBinding(new ServeCommand(), ServeCommandHandler::class),
-                    new CommandBinding(new RouteListCommand(), RouteListCommandHandler::class)
+                    new CommandBinding(new RouteListCommand(), RouteListCommandHandler::class),
                 ];
 
                 foreach ($commandBindings as $commandBinding) {
@@ -422,7 +422,7 @@ trait AphiriaComponents
     protected function withGlobalMiddleware(
         IApplicationBuilder $appBuilder,
         MiddlewareBinding|array $middlewareBindings,
-        ?int $priority = null
+        ?int $priority = null,
     ): static {
         if (!$appBuilder->hasComponent(MiddlewareComponent::class)) {
             if (!isset(Container::$globalInstance)) {
@@ -456,7 +456,7 @@ trait AphiriaComponents
     protected function withLogLevelFactory(
         IApplicationBuilder $appBuilder,
         string $exceptionType,
-        Closure $logLevelFactory
+        Closure $logLevelFactory,
     ): static {
         //Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {
@@ -544,7 +544,7 @@ trait AphiriaComponents
         string|Closure|null $detail = null,
         HttpStatusCode|int|Closure|null $status = HttpStatusCode::InternalServerError,
         string|Closure|null $instance = null,
-        array|Closure|null $extensions = null
+        array|Closure|null $extensions = null,
     ): static {
         // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
         if (!$appBuilder->hasComponent(ExceptionHandlerComponent::class)) {

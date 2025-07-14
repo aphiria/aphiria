@@ -44,7 +44,7 @@ class Authorize extends ParameterizedMiddleware
         protected readonly IAuthority $authority,
         protected readonly IAuthenticator $authenticator,
         protected readonly AuthorizationPolicyRegistry $policies,
-        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor(),
     ) {}
 
     /**

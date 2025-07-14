@@ -29,7 +29,7 @@ class RequestHeaderParserTest extends TestCase
         'HTTP_CONNECTION' => 'connection',
         'HTTP_HOST' => 'host',
         'HTTP_REFERER' => 'referer',
-        'HTTP_USER_AGENT' => 'user_agent'
+        'HTTP_USER_AGENT' => 'user_agent',
     ];
     /** @var RequestHeaderParser The header parser */
     private RequestHeaderParser $headerParser;

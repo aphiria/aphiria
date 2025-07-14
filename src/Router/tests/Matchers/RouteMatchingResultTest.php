@@ -51,7 +51,7 @@ class RouteMatchingResultTest extends TestCase
         $routeMatchingResult = new RouteMatchingResult(
             $expectedMatchedRoute,
             $expectedRouteVariables,
-            $expectedAllowedMethods
+            $expectedAllowedMethods,
         );
         $this->assertTrue($routeMatchingResult->matchFound);
         $this->assertSame($expectedMatchedRoute, $routeMatchingResult->route);

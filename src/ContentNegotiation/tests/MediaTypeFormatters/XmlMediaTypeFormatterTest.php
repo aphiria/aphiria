@@ -49,7 +49,7 @@ class XmlMediaTypeFormatterTest extends TestCase
     {
         $this->assertEquals(
             ['text/xml', 'application/problem+xml'],
-            $this->formatter->supportedMediaTypes
+            $this->formatter->supportedMediaTypes,
         );
     }
 

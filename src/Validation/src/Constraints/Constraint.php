@@ -34,10 +34,10 @@ abstract class Constraint implements IConstraint
     public function getErrorMessagePlaceholders($value): array
     {
         if (\is_scalar($value)) {
-            $serializedValue = (string)$value;
+            $serializedValue = (string) $value;
         } elseif (\is_object($value)) {
             if (\method_exists($value, '__toString')) {
-                $serializedValue = (string)$value;
+                $serializedValue = (string) $value;
             } else {
                 $serializedValue = $value::class . ' object';
             }

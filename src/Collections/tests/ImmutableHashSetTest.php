@@ -90,7 +90,7 @@ class ImmutableHashSetTest extends TestCase
     {
         $expectedValues = [
             new FakeObject(),
-            new FakeObject()
+            new FakeObject(),
         ];
         $set = new ImmutableHashSet($expectedValues);
         $actualValues = [];

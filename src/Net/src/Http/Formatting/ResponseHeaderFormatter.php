@@ -41,7 +41,7 @@ class ResponseHeaderFormatter extends HeaderParser
         ?string $domain = null,
         bool $isSecure = false,
         bool $isHttpOnly = true,
-        ?SameSiteMode $sameSite = SameSiteMode::Lax
+        ?SameSiteMode $sameSite = SameSiteMode::Lax,
     ): void {
         $headerValue = "$name=";
         $headerValue .= '; Max-Age=0';
@@ -103,7 +103,7 @@ class ResponseHeaderFormatter extends HeaderParser
      */
     private function getSetCookieHeaderValue(Cookie $cookie): string
     {
-        $headerValue = "{$cookie->name}=" . \urlencode((string)$cookie->value);
+        $headerValue = "{$cookie->name}=" . \urlencode((string) $cookie->value);
 
         if (($maxAge = $cookie->maxAge) !== null) {
             $headerValue .= "; Max-Age=$maxAge";

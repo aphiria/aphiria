@@ -178,7 +178,7 @@ class BodyParserTest extends TestCase
         $this->assertCount(1, $bodyParts);
         $this->assertSame(
             'multipart/mixed; boundary="boundary2"',
-            $bodyParts[0]->headers->getFirst('Content-Type')
+            $bodyParts[0]->headers->getFirst('Content-Type'),
         );
         $expectedBodyString = 'body1' .
             "\r\n" .
