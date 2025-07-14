@@ -95,8 +95,8 @@ class UnixLikeDriverTest extends TestCase
             $this->fail('Dimensions could not be read from STTY output');
         }
 
-        $this->assertSame((int)$matches[2], $this->driver->cliWidth);
-        $this->assertSame((int)$matches[1], $this->driver->cliHeight);
+        $this->assertSame((int) $matches[2], $this->driver->cliWidth);
+        $this->assertSame((int) $matches[1], $this->driver->cliHeight);
     }
 
     public function testCliHeightIsMemoized(): void

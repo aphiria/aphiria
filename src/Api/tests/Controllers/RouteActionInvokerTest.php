@@ -58,7 +58,7 @@ class RouteActionInvokerTest extends TestCase
             $this->contentNegotiator,
             $this->requestBodyValidator,
             $this->responseFactory,
-            $this->parameterResolver
+            $this->parameterResolver,
         );
         $this->controller = new ControllerWithEndpoints();
     }
@@ -74,7 +74,7 @@ class RouteActionInvokerTest extends TestCase
             $this->invoker->invokeRouteAction(
                 Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
-                []
+                [],
             );
             $this->fail('Failed to assert that a 415 was thrown');
         } catch (HttpException $ex) {
@@ -93,7 +93,7 @@ class RouteActionInvokerTest extends TestCase
             $this->invoker->invokeRouteAction(
                 Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
-                []
+                [],
             );
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
@@ -132,7 +132,7 @@ class RouteActionInvokerTest extends TestCase
         $actualResponse = $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'popo']),
             $request,
-            []
+            [],
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -144,7 +144,7 @@ class RouteActionInvokerTest extends TestCase
         $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'throwsException']),
             $this->createRequestWithoutBody('http://foo.com'),
-            []
+            [],
         );
     }
 
@@ -166,7 +166,7 @@ class RouteActionInvokerTest extends TestCase
         $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'objectParameter']),
             $request,
-            []
+            [],
         );
     }
 
@@ -175,7 +175,7 @@ class RouteActionInvokerTest extends TestCase
         $response = $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'noParameters']),
             $this->createRequestWithoutBody('http://foo.com'),
-            []
+            [],
         );
         $this->assertNotNull($response->body);
         $this->assertSame('noParameters', $response->body?->readAsString());
@@ -197,7 +197,7 @@ class RouteActionInvokerTest extends TestCase
         $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'objectParameter']),
             $request,
-            []
+            [],
         );
     }
 
@@ -206,7 +206,7 @@ class RouteActionInvokerTest extends TestCase
         $response = $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'voidReturnType']),
             $this->createRequestWithoutBody('http://foo.com'),
-            []
+            [],
         );
         $this->assertNull($response->body);
         $this->assertSame(HttpStatusCode::NoContent, $response->statusCode);
@@ -241,7 +241,7 @@ class RouteActionInvokerTest extends TestCase
         $routeActionInvoker->invokeRouteAction(
             Closure::fromCallable([$controller::class, 'foo']),
             $this->createRequestWithoutBody('http://example.com'),
-            []
+            [],
         );
     }
 
@@ -256,7 +256,7 @@ class RouteActionInvokerTest extends TestCase
             $this->invoker->invokeRouteAction(
                 Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
-                []
+                [],
             );
             $this->fail('Failed to assert that a 400 was thrown');
         } catch (HttpException $ex) {
@@ -276,7 +276,7 @@ class RouteActionInvokerTest extends TestCase
         $this->invoker->invokeRouteAction(
             Closure::fromCallable([$this->controller, 'objectParameter']),
             $request,
-            []
+            [],
         );
         $this->assertEquals($expectedUser, $request->properties->get('__APHIRIA_PARSED_BODY'));
     }
@@ -292,7 +292,7 @@ class RouteActionInvokerTest extends TestCase
             $this->invoker->invokeRouteAction(
                 Closure::fromCallable([$this->controller, 'stringParameter']),
                 $this->createMock(IRequest::class),
-                []
+                [],
             );
             $this->fail('Failed to assert that a 522 was thrown');
         } catch (HttpException $ex) {

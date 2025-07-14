@@ -99,7 +99,7 @@ final class UriTemplateParser implements IUriTemplateParser
                     $tokens->expect(
                         TokenType::Punctuation,
                         '/',
-                        'Expected optional path part to start with \'/\', got %s'
+                        'Expected optional path part to start with \'/\', got %s',
                     );
                 }
 
@@ -264,7 +264,7 @@ final class UriTemplateParser implements IUriTemplateParser
             $tokens->expect(
                 TokenType::Punctuation,
                 ')',
-                'Expected closing parenthesis after constraint parameters, got %s'
+                'Expected closing parenthesis after constraint parameters, got %s',
             );
             $tokens->next();
         }

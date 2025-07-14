@@ -82,17 +82,17 @@ class UserTest extends TestCase
         $identity1Claims = [
             new Claim('foo', 'bar', 'http://example.com'),
             new Claim('foo', 'baz', 'http://example.com'),
-            new Claim('baz', 'quz', 'http://example.com')
+            new Claim('baz', 'quz', 'http://example.com'),
         ];
         $identity2Claims = [
             new Claim('foo', 'quz', 'http://example.com'),
             new Claim('foo', 'qux', 'http://example.com'),
-            new Claim('baz', 'qiz', 'http://example.com')
+            new Claim('baz', 'qiz', 'http://example.com'),
         ];
         $user = new User([new Identity($identity1Claims), new Identity($identity2Claims)]);
         $this->assertSame(
             [$identity1Claims[0], $identity1Claims[1], $identity2Claims[0], $identity2Claims[1]],
-            $user->filterClaims('foo')
+            $user->filterClaims('foo'),
         );
     }
 
@@ -101,12 +101,12 @@ class UserTest extends TestCase
         $identity1Claims = [
             new Claim('foo', 'bar', 'http://example.com'),
             new Claim('foo', 'baz', 'http://example.com'),
-            new Claim('baz', 'quz', 'http://example.com')
+            new Claim('baz', 'quz', 'http://example.com'),
         ];
         $identity2Claims = [
             new Claim('foo', 'quz', 'http://example.com'),
             new Claim('foo', 'qux', 'http://example.com'),
-            new Claim('baz', 'qiz', 'http://example.com')
+            new Claim('baz', 'qiz', 'http://example.com'),
         ];
         $user = new User([new Identity($identity1Claims), new Identity($identity2Claims)]);
         $this->assertSame([...$identity1Claims, ...$identity2Claims], $user->claims);
@@ -138,7 +138,7 @@ class UserTest extends TestCase
         // Test with multiple identities
         $user = new User([
             new Identity([new Claim('foo', 'bar', 'http://example.com')]),
-            new Identity([new Claim('baz', 'quz', 'http://example.com')])
+            new Identity([new Claim('baz', 'quz', 'http://example.com')]),
         ]);
         $this->assertTrue($user->hasClaim('foo', 'bar'));
         $this->assertTrue($user->hasClaim('baz', 'quz'));
@@ -150,7 +150,7 @@ class UserTest extends TestCase
         $user1Identities = [new Identity([new Claim('foo', 'bar', 'example.com')], 'authScheme')];
         $user2Identities = [
             new Identity([new Claim('baz', 'quz', 'example.com')], 'authScheme'),
-            new Identity([new Claim('qux', 'blah', 'example.com')])
+            new Identity([new Claim('qux', 'blah', 'example.com')]),
         ];
         $user1 = new User($user1Identities);
         $user2 = new User($user2Identities);
@@ -159,7 +159,7 @@ class UserTest extends TestCase
         $this->assertCount(3, $mergedIdentities);
         $this->assertSame(
             [...$user1Identities, ...$user2Identities],
-            $mergedIdentities
+            $mergedIdentities,
         );
     }
 
@@ -168,7 +168,7 @@ class UserTest extends TestCase
         $user1Identities = [new Identity([new Claim('foo', 'bar', 'example.com')], 'authScheme')];
         $user2Identities = [
             new Identity([new Claim('baz', 'quz', 'example.com')], 'authScheme'),
-            new Identity([new Claim('qux', 'blah', 'example.com')])
+            new Identity([new Claim('qux', 'blah', 'example.com')]),
         ];
         $user1 = new User($user1Identities);
         $user2 = new User($user2Identities);
@@ -177,7 +177,7 @@ class UserTest extends TestCase
         $this->assertCount(2, $mergedIdentities);
         $this->assertSame(
             [...$user1Identities, $user2Identities[0]],
-            $mergedIdentities
+            $mergedIdentities,
         );
     }
 
@@ -185,7 +185,7 @@ class UserTest extends TestCase
     {
         $identities = [
             new Identity([], 'http://example.com'),
-            new Identity([], 'http://example.com')
+            new Identity([], 'http://example.com'),
         ];
         $user = new User($identities);
         $this->assertSame($identities[0], $user->primaryIdentity);

@@ -82,7 +82,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            1.1 // The GC checks uses '<'.  So, to ensure we always do GC, set it at higher than 100%
+            1.1, // The GC checks uses '<'.  So, to ensure we always do GC, set it at higher than 100%
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -109,12 +109,12 @@ class SessionTest extends TestCase
             'example.com',
             true,
             true,
-            0
+            0,
         );
         $actualResponse = $middleware->handle($this->request, $this->next);
         $this->assertSame(
             'session=foo; Max-Age=3600; Path=/path; Domain=example.com; Secure; HttpOnly; SameSite=lax',
-            $actualResponse->headers->getFirst('Set-Cookie')
+            $actualResponse->headers->getFirst('Set-Cookie'),
         );
     }
 
@@ -140,7 +140,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            0 // Make sure GC doesn't happen
+            0, // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -167,7 +167,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            0 // Make sure GC doesn't happen
+            0, // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -200,7 +200,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            0 // Make sure GC doesn't happen
+            0, // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -235,7 +235,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            0 // Make sure GC doesn't happen
+            0, // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }
@@ -266,7 +266,7 @@ class SessionTest extends TestCase
             null,
             false,
             true,
-            0 // Make sure GC doesn't happen
+            0, // Make sure GC doesn't happen
         );
         $middleware->handle($this->request, $this->next);
     }

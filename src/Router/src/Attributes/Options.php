@@ -28,7 +28,7 @@ final class Options extends Route
         ?string $host = null,
         ?string $name = null,
         bool $isHttpsOnly = false,
-        array $parameters = []
+        array $parameters = [],
     ) {
         /** @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug */
         parent::__construct(['OPTIONS'], $path, $host, $name, $isHttpsOnly, $parameters);

@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when data necessary to authenticate a request is missing
  */
-final class MissingAuthenticationDataException extends Exception
-{
-}
+final class MissingAuthenticationDataException extends Exception {}

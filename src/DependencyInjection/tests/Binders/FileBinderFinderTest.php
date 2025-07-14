@@ -34,7 +34,7 @@ class FileBinderFinderTest extends TestCase
         $expectedBinders = [BinderC::class];
         $this->assertEquals(
             $expectedBinders,
-            $this->binderFinder->findAll(self::BINDER_DIRECTORY . '/Subdirectory')
+            $this->binderFinder->findAll(self::BINDER_DIRECTORY . '/Subdirectory'),
         );
     }
 
@@ -48,7 +48,7 @@ class FileBinderFinderTest extends TestCase
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedBinders,
-            $this->binderFinder->findAll(self::BINDER_DIRECTORY)
+            $this->binderFinder->findAll(self::BINDER_DIRECTORY),
         );
     }
 

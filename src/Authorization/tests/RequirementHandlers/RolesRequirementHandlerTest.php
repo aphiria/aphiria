@@ -72,7 +72,7 @@ class RolesRequirementHandlerTest extends TestCase
             {
                 $this->claims = [
                     new Claim(ClaimType::Role, 'admin', 'example.com'),
-                    new Claim(ClaimType::Role, 'dev', 'example.com')
+                    new Claim(ClaimType::Role, 'dev', 'example.com'),
                 ];
             }
 
@@ -84,7 +84,7 @@ class RolesRequirementHandlerTest extends TestCase
             {
                 return [
                     new Claim(ClaimType::Role, 'admin', 'example.com'),
-                    new Claim(ClaimType::Role, 'dev', 'example.com')
+                    new Claim(ClaimType::Role, 'dev', 'example.com'),
                 ];
             }
 
@@ -101,7 +101,7 @@ class RolesRequirementHandlerTest extends TestCase
 
         return [
             [$userWithSingleMatchingRole],
-            [$userWithManyRolesIncludingMatchingOne]
+            [$userWithManyRolesIncludingMatchingOne],
         ];
     }
 
@@ -163,7 +163,7 @@ class RolesRequirementHandlerTest extends TestCase
 
         return [
             [$userWithNoRoles],
-            [$userWithNoMatchingRoles]
+            [$userWithNoMatchingRoles],
         ];
     }
 

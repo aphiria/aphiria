@@ -200,46 +200,6 @@ final class RouteActionParameterValues
     }
 
     /**
-     * Validates the route variables against the route action parameters to ensure no values were missing or extra variables were passed in that do not match any route action parameters
-     *
-     * @param RouteAction $routeAction The route action being validated
-     * @param array<string, true> $parametersWithMissingValues The map of route action parameter names that were missing values to true
-     * @param array<string, mixed> $routeVariables The map of route variable names to values
-     * @throws InvalidArgumentException Thrown if the route action parameters did not match the route variables
-     */
-    private function validateRouteVariablesAndRouteActionParameters(
-        RouteAction $routeAction,
-        array $parametersWithMissingValues,
-        array $routeVariables
-    ): void {
-        $exceptionMessage = '';
-
-        if (!empty($parametersWithMissingValues)) {
-            $exceptionMessage = \sprintf(
-                'Following route action parameters have no matching value in %s::%s: "%s"',
-                $routeAction->className,
-                $routeAction->methodName,
-                \implode("\", \"", $parametersWithMissingValues)
-            );
-        }
-
-        // Throw an error if any extra route variables were passed in because they may indicate a logic flaw
-        if (!empty($routeVariables)) {
-            $exceptionMessage .= \sprintf(
-                '%sollowing route variables have no matching route action parameter in %s::%s: "%s"',
-                empty($exceptionMessage) ? 'F' : ', f',
-                $routeAction->className,
-                $routeAction->methodName,
-                \implode("\", \"", \array_keys($routeVariables))
-            );
-        }
-
-        if (!empty($exceptionMessage)) {
-            throw new InvalidArgumentException($exceptionMessage);
-        }
-    }
-
-    /**
      * Tries to add a parameter to a collection
      *
      * @param array<string, mixed> $collection The collection to add the parameter to
@@ -251,7 +211,7 @@ final class RouteActionParameterValues
         array &$collection,
         ReflectionParameter $parameter,
         string $parameterName,
-        array &$routeVariables
+        array &$routeVariables,
     ): bool {
         $successful = true;
 
@@ -267,5 +227,45 @@ final class RouteActionParameterValues
         }
 
         return $successful;
+    }
+
+    /**
+     * Validates the route variables against the route action parameters to ensure no values were missing or extra variables were passed in that do not match any route action parameters
+     *
+     * @param RouteAction $routeAction The route action being validated
+     * @param array<string, true> $parametersWithMissingValues The map of route action parameter names that were missing values to true
+     * @param array<string, mixed> $routeVariables The map of route variable names to values
+     * @throws InvalidArgumentException Thrown if the route action parameters did not match the route variables
+     */
+    private function validateRouteVariablesAndRouteActionParameters(
+        RouteAction $routeAction,
+        array $parametersWithMissingValues,
+        array $routeVariables,
+    ): void {
+        $exceptionMessage = '';
+
+        if (!empty($parametersWithMissingValues)) {
+            $exceptionMessage = \sprintf(
+                'Following route action parameters have no matching value in %s::%s: "%s"',
+                $routeAction->className,
+                $routeAction->methodName,
+                \implode('", "', $parametersWithMissingValues),
+            );
+        }
+
+        // Throw an error if any extra route variables were passed in because they may indicate a logic flaw
+        if (!empty($routeVariables)) {
+            $exceptionMessage .= \sprintf(
+                '%sollowing route variables have no matching route action parameter in %s::%s: "%s"',
+                empty($exceptionMessage) ? 'F' : ', f',
+                $routeAction->className,
+                $routeAction->methodName,
+                \implode('", "', \array_keys($routeVariables)),
+            );
+        }
+
+        if (!empty($exceptionMessage)) {
+            throw new InvalidArgumentException($exceptionMessage);
+        }
     }
 }

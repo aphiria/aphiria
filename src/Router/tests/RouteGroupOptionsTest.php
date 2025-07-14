@@ -36,7 +36,7 @@ class RouteGroupOptionsTest extends TestCase
             true,
             $this->constraints,
             $this->middlewareBindings,
-            ['foo' => 'bar']
+            ['foo' => 'bar'],
         );
     }
 

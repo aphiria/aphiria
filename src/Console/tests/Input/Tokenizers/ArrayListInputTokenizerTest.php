@@ -30,7 +30,7 @@ class ArrayListInputTokenizerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->tokenizer->tokenize([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ]);
     }
 
@@ -39,7 +39,7 @@ class ArrayListInputTokenizerTest extends TestCase
         $tokens = $this->tokenizer->tokenize([
             'name' => 'foo',
             'arguments' => ['bar'],
-            'options' => ['--name=dave', '-r']
+            'options' => ['--name=dave', '-r'],
         ]);
         $this->assertEquals(['foo', 'bar', '--name=dave', '-r'], $tokens);
     }

@@ -70,7 +70,7 @@ class RouteListCommandHandlerTest extends TestCase
             new UriTemplate(''),
             new RouteAction(self::class, 'foo'),
             [new HttpMethodRouteConstraint(['POST'])],
-            [new MiddlewareBinding(MiddlewareA::class)]
+            [new MiddlewareBinding(MiddlewareA::class)],
         );
         $this->routes->add($route);
         $this->setUpOutputExpectations([['POST', '/', '<comment>' . MiddlewareA::class . '</comment> → <comment>' . self::class . '::foo</comment>']]);
@@ -92,7 +92,7 @@ class RouteListCommandHandlerTest extends TestCase
             new UriTemplate(''),
             new RouteAction(self::class, 'foo'),
             // Purposely registering out of alphabetic order
-            [new HttpMethodRouteConstraint(['POST', 'DELETE'])]
+            [new HttpMethodRouteConstraint(['POST', 'DELETE'])],
         );
         $this->routes->add($route);
         $this->setUpOutputExpectations([['DELETE|POST', '/', '<comment>RouteListCommandHandlerTest::foo</comment>']]);
@@ -105,7 +105,7 @@ class RouteListCommandHandlerTest extends TestCase
             new UriTemplate(''),
             new RouteAction(self::class, 'foo'),
             [new HttpMethodRouteConstraint(['POST'])],
-            [new MiddlewareBinding(MiddlewareA::class), new MiddlewareBinding(MiddlewareB::class)]
+            [new MiddlewareBinding(MiddlewareA::class), new MiddlewareBinding(MiddlewareB::class)],
         );
         $this->routes->add($route);
         $this->setUpOutputExpectations([['POST', '/', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']]);
@@ -118,18 +118,18 @@ class RouteListCommandHandlerTest extends TestCase
         $route1 = new Route(
             new UriTemplate('/bar'),
             new RouteAction(self::class, 'bar'),
-            [new HttpMethodRouteConstraint(['POST'])]
+            [new HttpMethodRouteConstraint(['POST'])],
         );
         $route2 = new Route(
             new UriTemplate('/foo'),
             new RouteAction(self::class, 'foo'),
             [new HttpMethodRouteConstraint(['POST'])],
-            [new MiddlewareBinding(MiddlewareA::class), new MiddlewareBinding(MiddlewareB::class)]
+            [new MiddlewareBinding(MiddlewareA::class), new MiddlewareBinding(MiddlewareB::class)],
         );
         $this->routes->addMany([$route1, $route2]);
         $this->setUpOutputExpectations([
             ['POST', '/bar', '<comment>RouteListCommandHandlerTest::bar</comment>'],
-            ['POST', '/foo', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']
+            ['POST', '/foo', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>'],
         ]);
         $input = new Input('route:list', [], ['middleware' => []]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($input, $this->output));
@@ -142,7 +142,7 @@ class RouteListCommandHandlerTest extends TestCase
             new UriTemplate(''),
             new RouteAction(self::class, 'foo'),
             [new HttpMethodRouteConstraint(['POST'])],
-            [new MiddlewareBinding(MiddlewareB::class)]
+            [new MiddlewareBinding(MiddlewareB::class)],
         );
         $this->routes->add($route);
         $this->setUpOutputExpectations([['POST', '/', '<comment>MiddlewareA</comment> → <comment>MiddlewareB</comment> → <comment>RouteListCommandHandlerTest::foo</comment>']]);
@@ -156,17 +156,17 @@ class RouteListCommandHandlerTest extends TestCase
         $route1 = new Route(
             new UriTemplate('/foo'),
             new RouteAction(self::class, 'foo'),
-            [new HttpMethodRouteConstraint(['POST'])]
+            [new HttpMethodRouteConstraint(['POST'])],
         );
         $route2 = new Route(
             new UriTemplate('/bar'),
             new RouteAction(self::class, 'bar'),
-            [new HttpMethodRouteConstraint(['POST'])]
+            [new HttpMethodRouteConstraint(['POST'])],
         );
         $this->routes->addMany([$route1, $route2]);
         $this->setUpOutputExpectations([
             ['POST', '/bar', '<comment>RouteListCommandHandlerTest::bar</comment>'],
-            ['POST', '/foo', '<comment>RouteListCommandHandlerTest::foo</comment>']
+            ['POST', '/foo', '<comment>RouteListCommandHandlerTest::foo</comment>'],
         ]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($this->input, $this->output));
     }
@@ -177,17 +177,17 @@ class RouteListCommandHandlerTest extends TestCase
         $route1 = new Route(
             new UriTemplate('/foo'),
             new RouteAction(self::class, 'foo'),
-            [new HttpMethodRouteConstraint(['POST'])]
+            [new HttpMethodRouteConstraint(['POST'])],
         );
         $route2 = new Route(
             new UriTemplate('/foo'),
             new RouteAction(self::class, 'bar'),
-            [new HttpMethodRouteConstraint(['DELETE'])]
+            [new HttpMethodRouteConstraint(['DELETE'])],
         );
         $this->routes->addMany([$route1, $route2]);
         $this->setUpOutputExpectations([
             ['DELETE', '/foo', '<comment>RouteListCommandHandlerTest::bar</comment>'],
-            ['POST', '/foo', '<comment>RouteListCommandHandlerTest::foo</comment>']
+            ['POST', '/foo', '<comment>RouteListCommandHandlerTest::foo</comment>'],
         ]);
         $this->assertSame(StatusCode::Ok, $this->commandHandler->handle($this->input, $this->output));
     }
@@ -206,7 +206,7 @@ class RouteListCommandHandlerTest extends TestCase
         $route = new Route(
             new UriTemplate($uriTemplate),
             new RouteAction(self::class, 'foo'),
-            [new HttpMethodRouteConstraint(['POST'])]
+            [new HttpMethodRouteConstraint(['POST'])],
         );
         $this->routes->add($route);
         $this->setUpOutputExpectations([['POST', $expectedFormattedUriTemplate, '<comment>RouteListCommandHandlerTest::foo</comment>']]);
@@ -219,7 +219,7 @@ class RouteListCommandHandlerTest extends TestCase
             new UriTemplate(''),
             new RouteAction(self::class, 'foo'),
             [new HttpMethodRouteConstraint(['POST'])],
-            [new MiddlewareBinding(MiddlewareA::class)]
+            [new MiddlewareBinding(MiddlewareA::class)],
         );
         $this->routes->add($route);
         $input = new Input('route:list', [], ['middleware' => []]);

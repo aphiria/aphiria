@@ -62,7 +62,7 @@ class RouteBuilder
             $this->constraints,
             $this->middlewareBindings,
             $this->name,
-            $this->parameters
+            $this->parameters,
         );
     }
 
@@ -124,7 +124,7 @@ class RouteBuilder
                 $this->middlewareBindings[] = $middlewareBinding;
             } else {
                 throw new InvalidArgumentException(
-                    'Middleware binding must either be a string or an instance of ' . MiddlewareBinding::class
+                    'Middleware binding must either be a string or an instance of ' . MiddlewareBinding::class,
                 );
             }
         }

@@ -34,6 +34,6 @@ interface IRouteActionInvoker
     public function invokeRouteAction(
         Closure $routeActionDelegate,
         IRequest $request,
-        array $routeVariables
+        array $routeVariables,
     ): IResponse;
 }

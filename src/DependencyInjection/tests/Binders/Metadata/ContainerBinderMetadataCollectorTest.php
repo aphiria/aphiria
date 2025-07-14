@@ -96,7 +96,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             [$binder3, IFoo::class, false, null],
             [$binder4, IFoo::class, true, $target::class],
             [$binder5, IFoo::class, true, $target::class],
-            [$binder6, IFoo::class, true, $target::class]
+            [$binder6, IFoo::class, true, $target::class],
         ];
     }
 

@@ -28,7 +28,7 @@ class MinConstraint extends Constraint
     public function __construct(
         private readonly int|float $min,
         private readonly bool $isInclusive,
-        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID,
     ) {
         parent::__construct($errorMessageId);
     }

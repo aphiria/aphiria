@@ -59,13 +59,13 @@ class LazyBinderDispatcher implements IBinderDispatcher
                     $binderMetadatas,
                     $binderMetadata,
                     $boundInterface,
-                    $container
+                    $container,
                 );
 
                 if ($boundInterface->context->isTargeted) {
                     $container->for(
                         $boundInterface->context,
-                        fn(IContainer $container) => $container->bindFactory($boundInterface->interface, $resolvingFactory)
+                        fn(IContainer $container) => $container->bindFactory($boundInterface->interface, $resolvingFactory),
                     );
                 } else {
                     $container->bindFactory($boundInterface->interface, $resolvingFactory);
@@ -87,7 +87,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
         BinderMetadataCollection $binderMetadatas,
         BinderMetadata $binderMetadata,
         BoundInterface $boundInterface,
-        IContainer $container
+        IContainer $container,
     ): Closure {
         return function () use ($binderMetadatas, $binderMetadata, $boundInterface, $container) {
             /**
@@ -98,7 +98,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
             if ($boundInterface->context->isTargeted) {
                 $container->for(
                     $boundInterface->context,
-                    fn(IContainer $container) => $container->unbind($boundInterface->interface)
+                    fn(IContainer $container) => $container->unbind($boundInterface->interface),
                 );
             } else {
                 $container->unbind($boundInterface->interface);
@@ -150,7 +150,7 @@ class LazyBinderDispatcher implements IBinderDispatcher
         if ($boundInterface->context->isTargeted) {
             return $container->for(
                 $boundInterface->context,
-                fn(IContainer $container): object => $container->resolve($boundInterface->interface)
+                fn(IContainer $container): object => $container->resolve($boundInterface->interface),
             );
         }
 

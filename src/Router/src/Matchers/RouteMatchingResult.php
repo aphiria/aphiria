@@ -33,7 +33,7 @@ final readonly class RouteMatchingResult
     public function __construct(
         public ?Route $route,
         public array $routeVariables,
-        public array $allowedMethods = []
+        public array $allowedMethods = [],
     ) {
         $this->matchFound = $this->route !== null;
 

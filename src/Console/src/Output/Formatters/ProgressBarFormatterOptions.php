@@ -33,6 +33,6 @@ class ProgressBarFormatterOptions
         public readonly string $outputFormat = '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%',
         public readonly string $completedProgressChar = '=',
         public readonly string $remainingProgressChar = '-',
-        public readonly int $redrawFrequency = 1
+        public readonly int $redrawFrequency = 1,
     ) {}
 }

@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that is thrown when content negotiation fails
  */
-class FailedContentNegotiationException extends Exception
-{
-}
+class FailedContentNegotiationException extends Exception {}

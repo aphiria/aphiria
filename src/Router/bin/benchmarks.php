@@ -56,7 +56,7 @@ function formatResults(string $library, float $memoryTakenBytes, float $timeTake
         \number_format(1000 * $timeTakenSeconds),
         \round(1000 * $timeTakenSeconds / ($numTests * $numRoutes), 4),
         \number_format(\round(($numTests * $numRoutes) / $timeTakenSeconds)),
-        \round($memoryTakenBytes / 1024 / 1024, 3)
+        \round($memoryTakenBytes / 1024 / 1024, 3),
     );
 }
 
@@ -96,7 +96,7 @@ $routesBuilder = new RouteCollectionBuilder();
 for ($routeIter = 0;$routeIter < $numRoutes;$routeIter++) {
     $routesBuilder
         ->route('GET', "/abc$routeIter/$routeIter/:foo/$routeIter")
-        ->mapsToMethod('Foo', (string)$routeIter);
+        ->mapsToMethod('Foo', (string) $routeIter);
 }
 
 $routes = new AphiriaRouteCollection();

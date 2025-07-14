@@ -41,7 +41,7 @@ final class TrieCompiler implements ITrieCompiler
     public function __construct(
         ?RouteVariableConstraintFactory $constraintFactory = null,
         private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
-        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
+        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer(),
     ) {
         if ($constraintFactory === null) {
             $this->constraintFactory = new RouteVariableConstraintFactory();
@@ -57,7 +57,7 @@ final class TrieCompiler implements ITrieCompiler
     public function compile(Route $route): TrieNode
     {
         try {
-            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
+            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string) $route->uriTemplate));
             $trie = new RootTrieNode();
             $hostTrie = null;
 
@@ -94,7 +94,7 @@ final class TrieCompiler implements ITrieCompiler
         bool &$segmentContainsVariable,
         bool $isEndpoint,
         Route $route,
-        ?TrieNode $hostTrie
+        ?TrieNode $hostTrie,
     ): TrieNode {
         $routes = $isEndpoint ? $route : [];
 
@@ -127,7 +127,7 @@ final class TrieCompiler implements ITrieCompiler
         TrieNode $currTrieNode,
         AstNode $ast,
         Route $route,
-        ?TrieNode $hostTrie
+        ?TrieNode $hostTrie,
     ): void {
         $astChildren = $ast->children;
         $numAstChildren = \count($astChildren);
@@ -148,7 +148,7 @@ final class TrieCompiler implements ITrieCompiler
                     && (
                         $i === $numAstChildren - 1
                         || $childAstNode->type === AstNodeType::OptionalRoutePart
-                        || ($astChildren[(int)$i + 1]->type === AstNodeType::OptionalRoutePart)
+                        || ($astChildren[(int) $i + 1]->type === AstNodeType::OptionalRoutePart)
                     )
                 );
 
@@ -161,7 +161,7 @@ final class TrieCompiler implements ITrieCompiler
                             $segmentContainsVariable,
                             $isEndpoint,
                             $route,
-                            $hostTrie
+                            $hostTrie,
                         );
                         $currTrieNode->addChild($newTrieNode);
                         $currTrieNode = $newTrieNode;
@@ -176,7 +176,7 @@ final class TrieCompiler implements ITrieCompiler
                             $segmentContainsVariable,
                             $isEndpoint,
                             $route,
-                            $hostTrie
+                            $hostTrie,
                         );
                         $currTrieNode->addChild($newTrieNode);
                         $currTrieNode = $newTrieNode;
@@ -185,7 +185,7 @@ final class TrieCompiler implements ITrieCompiler
                     $this->compileNode($isCompilingHostTrie, $currTrieNode, $childAstNode, $route, $hostTrie);
                     break;
                 case AstNodeType::Text:
-                    $segmentBuffer[] = (string)$childAstNode->value;
+                    $segmentBuffer[] = (string) $childAstNode->value;
                     break;
                 case AstNodeType::Variable:
                     $segmentContainsVariable = true;
@@ -199,7 +199,7 @@ final class TrieCompiler implements ITrieCompiler
         // Check if we need to flush the buffer
         if (\count($segmentBuffer) > 0) {
             $currTrieNode->addChild(
-                self::createTrieNode($segmentBuffer, $segmentContainsVariable, $isEndpoint, $route, $hostTrie)
+                self::createTrieNode($segmentBuffer, $segmentContainsVariable, $isEndpoint, $route, $hostTrie),
             );
         }
     }
@@ -223,11 +223,11 @@ final class TrieCompiler implements ITrieCompiler
             /** @var list<mixed> $constraintParams */
             $constraintParams = $childAstNode->hasChildren ? $childAstNode->children[0]->value : [];
             $constraints[] = $this->constraintFactory->createConstraint(
-                (string)$childAstNode->value,
-                (array)$constraintParams
+                (string) $childAstNode->value,
+                (array) $constraintParams,
             );
         }
 
-        return new RouteVariable((string)$astNode->value, $constraints);
+        return new RouteVariable((string) $astNode->value, $constraints);
     }
 }

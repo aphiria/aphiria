@@ -28,6 +28,6 @@ final readonly class MediaTypeFormatterMatch
     public function __construct(
         public IMediaTypeFormatter $formatter,
         public string $mediaType,
-        public MediaTypeHeaderValue $mediaTypeHeaderValue
+        public MediaTypeHeaderValue $mediaTypeHeaderValue,
     ) {}
 }

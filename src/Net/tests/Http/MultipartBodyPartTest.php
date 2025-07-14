@@ -48,6 +48,6 @@ class MultipartBodyPartTest extends TestCase
             ->expects($this->once())
             ->method('__toString')
             ->willReturn('baz');
-        $this->assertSame("Foo: bar\r\n\r\nbaz", (string)$this->bodyPart);
+        $this->assertSame("Foo: bar\r\n\r\nbaz", (string) $this->bodyPart);
     }
 }

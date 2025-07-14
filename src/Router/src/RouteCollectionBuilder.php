@@ -145,12 +145,12 @@ final class RouteCollectionBuilder
         string|array $httpMethods,
         string $path,
         ?string $host = null,
-        bool $isHttpsOnly = false
+        bool $isHttpsOnly = false,
     ): RouteBuilder {
         $this->applyGroupRouteTemplates($path, $host, $isHttpsOnly);
         $routeBuilder = new RouteBuilder(
-            (array)$httpMethods,
-            new UriTemplate($path, $host, $isHttpsOnly)
+            (array) $httpMethods,
+            new UriTemplate($path, $host, $isHttpsOnly),
         );
         $this->applyGroupConstraints($routeBuilder);
         $this->applyGroupMiddleware($routeBuilder);
@@ -218,7 +218,7 @@ final class RouteCollectionBuilder
     private function applyGroupRouteTemplates(
         string &$path,
         ?string &$host = null,
-        bool &$isHttpsOnly = false
+        bool &$isHttpsOnly = false,
     ): void {
         $groupPath = '';
         $groupHost = '';
@@ -228,9 +228,9 @@ final class RouteCollectionBuilder
             $groupPath .= empty($groupOptions->path)
                 ? ''
                 : '/' . \ltrim($groupOptions->path, '/');
-            $groupHost = empty((string)$groupOptions->host)
+            $groupHost = empty((string) $groupOptions->host)
                 ? ''
-                : \rtrim((string)$groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
+                : \rtrim((string) $groupOptions->host, '.') . (empty($groupHost) ? '' : '.' . $groupHost);
             $groupIsHttpsOnly = $groupIsHttpsOnly || $groupOptions->isHttpsOnly;
         }
 

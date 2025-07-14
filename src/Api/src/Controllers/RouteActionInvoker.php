@@ -50,7 +50,7 @@ class RouteActionInvoker implements IRouteActionInvoker
         IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         private readonly ?IRequestBodyValidator $requestBodyValidator = null,
         ?IResponseFactory $responseFactory = null,
-        ?IControllerParameterResolver $controllerParameterResolver = null
+        ?IControllerParameterResolver $controllerParameterResolver = null,
     ) {
         $this->responseFactory = $responseFactory ?? new NegotiatedResponseFactory($contentNegotiator);
         $this->controllerParameterResolver = $controllerParameterResolver
@@ -63,7 +63,7 @@ class RouteActionInvoker implements IRouteActionInvoker
     public function invokeRouteAction(
         Closure $routeActionDelegate,
         IRequest $request,
-        array $routeVariables
+        array $routeVariables,
     ): IResponse {
         try {
             $reflectionFunction = $this->reflectRouteActionDelegate($routeActionDelegate);
@@ -72,7 +72,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                 HttpStatusCode::InternalServerError,
                 'Failed to reflect controller',
                 0,
-                $ex
+                $ex,
             );
         }
 
@@ -84,7 +84,7 @@ class RouteActionInvoker implements IRouteActionInvoker
                 $resolvedParameter = $this->controllerParameterResolver->resolveParameter(
                     $reflectionParameter,
                     $request,
-                    $routeVariables
+                    $routeVariables,
                 );
 
                 $this->requestBodyValidator?->validate($request, $resolvedParameter);
@@ -101,21 +101,21 @@ class RouteActionInvoker implements IRouteActionInvoker
                 HttpStatusCode::BadRequest,
                 'Failed to invoke controller',
                 0,
-                $ex
+                $ex,
             );
         } catch (FailedRequestContentNegotiationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnsupportedMediaType,
                 'Failed to invoke controller',
                 0,
-                $ex
+                $ex,
             );
         } catch (RequestBodyDeserializationException $ex) {
             throw new HttpException(
                 HttpStatusCode::UnprocessableEntity,
                 'Failed to invoke controller',
                 0,
-                $ex
+                $ex,
             );
         }
 
@@ -136,7 +136,7 @@ class RouteActionInvoker implements IRouteActionInvoker
             $request,
             HttpStatusCode::Ok,
             null,
-            $actionResult
+            $actionResult,
         );
     }
 

@@ -212,7 +212,7 @@ class HashTableTest extends TestCase
         $this->hashTable->add('baz', 'blah');
         $expectedArray = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'blah')
+            new KeyValuePair('baz', 'blah'),
         ];
         $this->assertEquals($expectedArray, $this->hashTable->toArray());
     }

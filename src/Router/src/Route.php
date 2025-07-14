@@ -35,6 +35,6 @@ final readonly class Route
         public array $constraints,
         public array $middlewareBindings = [],
         public ?string $name = null,
-        public array $parameters = []
+        public array $parameters = [],
     ) {}
 }

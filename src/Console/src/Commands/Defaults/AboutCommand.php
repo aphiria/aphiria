@@ -25,7 +25,7 @@ final class AboutCommand extends Command
             '',
             [],
             [],
-            'Describes the Aphiria console application'
+            'Describes the Aphiria console application',
         );
     }
 }

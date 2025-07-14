@@ -65,7 +65,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new LiteralTrieNode(
             '',
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -74,7 +74,7 @@ class TrieCompilerTest extends TestCase
             ->willReturn(new TokenStream([]));
         $this->assertEquals(
             $this->expectedTrie,
-            $this->compiler->compile($expectedRoute)
+            $this->compiler->compile($expectedRoute),
         );
     }
 
@@ -91,7 +91,7 @@ class TrieCompilerTest extends TestCase
             ->addChild(
                 new AstNode(AstNodeType::OptionalRoutePart, '[')
                     ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'))
-                    ->addChild(new AstNode(AstNodeType::Text, 'bar'))
+                    ->addChild(new AstNode(AstNodeType::Text, 'bar')),
             );
         $this->ast->addChild($pathAst);
         $hostTemplate = 'example.com';
@@ -104,18 +104,18 @@ class TrieCompilerTest extends TestCase
                     new LiteralTrieNode(
                         'example',
                         [],
-                        $expectedRoute
-                    )
-                ]
-            )
+                        $expectedRoute,
+                    ),
+                ],
+            ),
         ]);
         $this->expectedTrie->addChild(new LiteralTrieNode(
             'foo',
             [
-                new LiteralTrieNode('bar', [], [], $expectedHostTrie)
+                new LiteralTrieNode('bar', [], [], $expectedHostTrie),
             ],
             [],
-            $expectedHostTrie
+            $expectedHostTrie,
         ));
         $this->lexer
             ->expects($this->once())
@@ -131,7 +131,7 @@ class TrieCompilerTest extends TestCase
             ->addChild(
                 new AstNode(AstNodeType::OptionalRoutePart, '[')
                     ->addChild(new AstNode(AstNodeType::Text, 'api'))
-                    ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'))
+                    ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.')),
             )
             ->addChild(new AstNode(AstNodeType::Text, 'example'))
             ->addChild(new AstNode(AstNodeType::SegmentDelimiter, '.'))
@@ -158,14 +158,14 @@ class TrieCompilerTest extends TestCase
                                 new LiteralTrieNode(
                                     'api',
                                     [],
-                                    $expectedRoute
-                                )
+                                    $expectedRoute,
+                                ),
                             ],
-                            $expectedRoute
-                        )
-                    ]
-                )
-            ])
+                            $expectedRoute,
+                        ),
+                    ],
+                ),
+            ]),
         ));
         $this->lexer
             ->expects($this->once())
@@ -191,7 +191,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -212,7 +212,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -243,7 +243,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo', [$constraint]),
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -282,7 +282,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo', [$constraint1, $constraint2]),
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -328,10 +328,10 @@ class TrieCompilerTest extends TestCase
                 new LiteralTrieNode(
                     'bar',
                     [],
-                    $expectedRoute
-                )
+                    $expectedRoute,
+                ),
             ],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -352,7 +352,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new LiteralTrieNode(
             'foo',
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -373,7 +373,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())
@@ -399,7 +399,7 @@ class TrieCompilerTest extends TestCase
         $this->expectedTrie->addChild(new VariableTrieNode(
             new RouteVariable('foo', [new IntegerConstraint()]),
             [],
-            $expectedRoute
+            $expectedRoute,
         ));
         $this->lexer
             ->expects($this->once())

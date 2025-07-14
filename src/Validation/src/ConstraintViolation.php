@@ -33,6 +33,6 @@ final readonly class ConstraintViolation
         public mixed $invalidValue,
         public mixed $rootValue,
         public ?string $propertyName = null,
-        public ?string $methodName = null
+        public ?string $methodName = null,
     ) {}
 }

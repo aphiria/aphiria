@@ -35,7 +35,7 @@ class StreamTest extends TestCase
         $stream = new Stream($handle);
         $stream->write('foo');
         $stream->close();
-        $this->assertSame('', (string)$stream);
+        $this->assertSame('', (string) $stream);
     }
 
     public function testCastingToStringRewindsAndReadsToEnd(): void
@@ -44,7 +44,7 @@ class StreamTest extends TestCase
         $stream = new Stream($handle);
         $stream->write('foo');
         $stream->read(1);
-        $this->assertSame('foo', (string)$stream);
+        $this->assertSame('foo', (string) $stream);
     }
 
     public function testClosingStreamUnsetsResource(): void

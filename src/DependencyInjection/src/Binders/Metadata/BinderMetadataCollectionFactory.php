@@ -29,7 +29,7 @@ final class BinderMetadataCollectionFactory
      */
     public function __construct(
         private readonly IContainer $container,
-        ?IBinderMetadataCollector $binderMetadataCollector = null
+        ?IBinderMetadataCollector $binderMetadataCollector = null,
     ) {
         $this->binderMetadataCollector = $binderMetadataCollector ?? new ContainerBinderMetadataCollector($this->container);
     }
@@ -56,7 +56,7 @@ final class BinderMetadataCollectionFactory
 
             $binderMetadatas = [
                 ...$binderMetadatas,
-                ...$this->retryFailedBinders($failedInterfacesToBinders)
+                ...$this->retryFailedBinders($failedInterfacesToBinders),
             ];
         }
 
@@ -75,7 +75,7 @@ final class BinderMetadataCollectionFactory
      */
     private static function addFailedResolutionToMap(
         array &$failedInterfacesToBinders,
-        FailedBinderMetadataCollectionException $ex
+        FailedBinderMetadataCollectionException $ex,
     ): void {
         $interface = $ex->failedInterface;
 
@@ -96,7 +96,7 @@ final class BinderMetadataCollectionFactory
     private static function removeFailedResolutionFromMap(
         array &$failedInterfacesToBinders,
         string $interface,
-        int $binderIndex
+        int $binderIndex,
     ): void {
         unset($failedInterfacesToBinders[$interface][$binderIndex]);
 

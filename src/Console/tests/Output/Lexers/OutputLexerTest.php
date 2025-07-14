@@ -36,11 +36,11 @@ class OutputLexerTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'bar', 14),
             new OutputToken(OutputTokenType::Word, 'blah', 19),
             new OutputToken(OutputTokenType::TagClose, 'bar', 23),
-            new OutputToken(OutputTokenType::Eof, null, 29)
+            new OutputToken(OutputTokenType::Eof, null, 29),
         ];
         $this->assertEquals(
             $expectedOutput,
-            $this->lexer->lex('<foo>baz</foo><bar>blah</bar>')
+            $this->lexer->lex('<foo>baz</foo><bar>blah</bar>'),
         );
     }
 
@@ -49,11 +49,11 @@ class OutputLexerTest extends TestCase
         $expectedOutput = [
             new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
             new OutputToken(OutputTokenType::TagClose, 'foo', 5),
-            new OutputToken(OutputTokenType::Eof, null, 11)
+            new OutputToken(OutputTokenType::Eof, null, 11),
         ];
         $this->assertEquals(
             $expectedOutput,
-            $this->lexer->lex('<foo></foo>')
+            $this->lexer->lex('<foo></foo>'),
         );
     }
 
@@ -61,7 +61,7 @@ class OutputLexerTest extends TestCase
     {
         $expectedOutput = [
             new OutputToken(OutputTokenType::Word, '<bar>', 1),
-            new OutputToken(OutputTokenType::Eof, null, 6)
+            new OutputToken(OutputTokenType::Eof, null, 6),
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('\\<bar>'));
     }
@@ -72,7 +72,7 @@ class OutputLexerTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
             new OutputToken(OutputTokenType::Word, '<bar>', 6),
             new OutputToken(OutputTokenType::TagClose, 'foo', 11),
-            new OutputToken(OutputTokenType::Eof, null, 17)
+            new OutputToken(OutputTokenType::Eof, null, 17),
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('<foo>\\<bar></foo>'));
     }
@@ -87,11 +87,11 @@ class OutputLexerTest extends TestCase
             new OutputToken(OutputTokenType::Word, PHP_EOL . 'bar' . PHP_EOL, 5),
             new OutputToken(OutputTokenType::TagClose, 'foo', 5 + 3 + (2 * $eolLength)),
             new OutputToken(OutputTokenType::Word, PHP_EOL . 'baz', 5 + 3 + (2 * $eolLength) + 6),
-            new OutputToken(OutputTokenType::Eof, null, 5 + 3 + (3 * $eolLength) + 6 + 3)
+            new OutputToken(OutputTokenType::Eof, null, 5 + 3 + (3 * $eolLength) + 6 + 3),
         ];
         $this->assertEquals(
             $expectedOutput,
-            $this->lexer->lex($text)
+            $this->lexer->lex($text),
         );
     }
 
@@ -105,11 +105,11 @@ class OutputLexerTest extends TestCase
             new OutputToken(OutputTokenType::TagClose, 'bar', 17),
             new OutputToken(OutputTokenType::Word, 'baz', 23),
             new OutputToken(OutputTokenType::TagClose, 'foo', 26),
-            new OutputToken(OutputTokenType::Eof, null, 32)
+            new OutputToken(OutputTokenType::Eof, null, 32),
         ];
         $this->assertEquals(
             $expectedOutput,
-            $this->lexer->lex('<foo>bar<bar>blah</bar>baz</foo>')
+            $this->lexer->lex('<foo>bar<bar>blah</bar>baz</foo>'),
         );
     }
 
@@ -120,18 +120,18 @@ class OutputLexerTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'bar', 5),
             new OutputToken(OutputTokenType::TagClose, 'bar', 10),
             new OutputToken(OutputTokenType::TagClose, 'foo', 16),
-            new OutputToken(OutputTokenType::Eof, null, 22)
+            new OutputToken(OutputTokenType::Eof, null, 22),
         ];
         $this->assertEquals(
             $expectedOutput,
-            $this->lexer->lex('<foo><bar></bar></foo>')
+            $this->lexer->lex('<foo><bar></bar></foo>'),
         );
     }
 
     public function testLexingOpenTagAtEndOfInputIsIgnored(): void
     {
         $expectedOutput = [
-            new OutputToken(OutputTokenType::Eof, null, 1)
+            new OutputToken(OutputTokenType::Eof, null, 1),
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('<'));
     }
@@ -142,7 +142,7 @@ class OutputLexerTest extends TestCase
         $inputs = [
             ['<<', 'Invalid tags near "<<", character #1'],
             ['<fo<', 'Invalid tags near "<fo<", character #3'],
-            ['<foo<', 'Invalid tags near "foo<", character #4']
+            ['<foo<', 'Invalid tags near "foo<", character #4'],
         ];
 
         foreach ($inputs as $input) {
@@ -173,11 +173,11 @@ class OutputLexerTest extends TestCase
     {
         $expectedOutput = [
             new OutputToken(OutputTokenType::Word, 'foobar', 0),
-            new OutputToken(OutputTokenType::Eof, null, 6)
+            new OutputToken(OutputTokenType::Eof, null, 6),
         ];
         $this->assertEquals(
             $expectedOutput,
-            $this->lexer->lex('foobar')
+            $this->lexer->lex('foobar'),
         );
     }
 
@@ -187,7 +187,7 @@ class OutputLexerTest extends TestCase
             new OutputToken(OutputTokenType::TagOpen, 'foo', 0),
             new OutputToken(OutputTokenType::Word, 'bar', 5),
             new OutputToken(OutputTokenType::TagClose, 'foo', 8),
-            new OutputToken(OutputTokenType::Eof, null, 14)
+            new OutputToken(OutputTokenType::Eof, null, 14),
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('<foo>bar</foo>'));
     }
@@ -197,7 +197,7 @@ class OutputLexerTest extends TestCase
         $expectedOutput = [
             new OutputToken(OutputTokenType::Word, 'foo', 0),
             new OutputToken(OutputTokenType::TagClose, 'bar', 3),
-            new OutputToken(OutputTokenType::Eof, null, 9)
+            new OutputToken(OutputTokenType::Eof, null, 9),
         ];
         $this->assertEquals($expectedOutput, $this->lexer->lex('foo</bar>'));
     }

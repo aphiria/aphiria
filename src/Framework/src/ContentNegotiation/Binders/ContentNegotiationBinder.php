@@ -55,7 +55,7 @@ class ContentNegotiationBinder extends Binder
 
                 return $mediaTypeFormatter;
             },
-            GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters')
+            GlobalConfiguration::getArray('aphiria.contentNegotiation.mediaTypeFormatters'),
         );
         $mediaTypeFormatterMatcher = new MediaTypeFormatterMatcher($mediaTypeFormatters);
         $container->bindInstance(IMediaTypeFormatterMatcher::class, $mediaTypeFormatterMatcher);
@@ -96,7 +96,7 @@ class ContentNegotiationBinder extends Binder
             $mediaTypeFormatters,
             $mediaTypeFormatterMatcher,
             $encodingMatcher,
-            $languageMatcher
+            $languageMatcher,
         );
         $responseFactory = new NegotiatedResponseFactory($contentNegotiator);
         $bodyDeserializer = new NegotiatedBodyDeserializer($contentNegotiator);

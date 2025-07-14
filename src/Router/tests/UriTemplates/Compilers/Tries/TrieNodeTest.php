@@ -56,13 +56,13 @@ class TrieNodeTest extends TestCase
                         new LiteralTrieNode(
                             'baz',
                             [],
-                            [$bazARoute]
-                        )
+                            [$bazARoute],
+                        ),
                     ],
-                    [$barARoute]
-                )
+                    [$barARoute],
+                ),
             ],
-            [$fooARoute]
+            [$fooARoute],
         ));
         $this->node->addChild(new LiteralTrieNode(
             'foo',
@@ -73,13 +73,13 @@ class TrieNodeTest extends TestCase
                         new LiteralTrieNode(
                             'baz',
                             [],
-                            [$bazBRoute]
-                        )
+                            [$bazBRoute],
+                        ),
                     ],
-                    [$barBRoute]
-                )
+                    [$barBRoute],
+                ),
             ],
-            [$fooBRoute]
+            [$fooBRoute],
         ));
         $expectedChildren = [
             new LiteralTrieNode(
@@ -91,14 +91,14 @@ class TrieNodeTest extends TestCase
                             new LiteralTrieNode(
                                 'baz',
                                 [],
-                                [$bazARoute, $bazBRoute]
-                            )
+                                [$bazARoute, $bazBRoute],
+                            ),
                         ],
-                        [$barARoute, $barBRoute]
-                    )
+                        [$barARoute, $barBRoute],
+                    ),
                 ],
-                [$fooARoute, $fooBRoute]
-            )
+                [$fooARoute, $fooBRoute],
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }
@@ -116,16 +116,16 @@ class TrieNodeTest extends TestCase
                 new LiteralTrieNode(
                     'bar',
                     [],
-                    $barRoutes
-                )
+                    $barRoutes,
+                ),
             ],
-            $fooRoutes
+            $fooRoutes,
         ));
         $bazRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $this->node->addChild(new LiteralTrieNode(
             'baz',
             [],
-            $bazRoutes
+            $bazRoutes,
         ));
         $expectedChildren = [
             new LiteralTrieNode(
@@ -134,16 +134,16 @@ class TrieNodeTest extends TestCase
                     new LiteralTrieNode(
                         'bar',
                         [],
-                        $barRoutes
-                    )
+                        $barRoutes,
+                    ),
                 ],
-                $fooRoutes
+                $fooRoutes,
             ),
             new LiteralTrieNode(
                 'baz',
                 [],
-                $bazRoutes
-            )
+                $bazRoutes,
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }
@@ -158,8 +158,8 @@ class TrieNodeTest extends TestCase
             new LiteralTrieNode(
                 'foo',
                 [],
-                $fooRoutes
-            )
+                $fooRoutes,
+            ),
         );
         $barRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
         $bazRoutes = [new Route(new UriTemplate(''), new RouteAction($controller::class, 'bar'), [])];
@@ -169,16 +169,16 @@ class TrieNodeTest extends TestCase
                 new LiteralTrieNode(
                     'baz',
                     [],
-                    $bazRoutes
-                )
+                    $bazRoutes,
+                ),
             ],
-            $barRoutes
+            $barRoutes,
         ));
         $expectedChildren = [
             new LiteralTrieNode(
                 'foo',
                 [],
-                $fooRoutes
+                $fooRoutes,
             ),
             new LiteralTrieNode(
                 'bar',
@@ -186,11 +186,11 @@ class TrieNodeTest extends TestCase
                     new LiteralTrieNode(
                         'baz',
                         [],
-                        $bazRoutes
-                    )
+                        $bazRoutes,
+                    ),
                 ],
-                $barRoutes
-            )
+                $barRoutes,
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }
@@ -205,19 +205,19 @@ class TrieNodeTest extends TestCase
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [],
-            [$fooRoute]
+            [$fooRoute],
         ));
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [],
-            [$barRoute]
+            [$barRoute],
         ));
         $expectedChildren = [
             new LiteralTrieNode(
                 'foo',
                 [],
-                [$fooRoute, $barRoute]
-            )
+                [$fooRoute, $barRoute],
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }
@@ -237,24 +237,24 @@ class TrieNodeTest extends TestCase
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
-            [$fooRoute]
+            [$fooRoute],
         ));
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             // Test that grandchildren also get merged in
             [
-                new LiteralTrieNode('bar', [], [$bazRoute])
+                new LiteralTrieNode('bar', [], [$bazRoute]),
             ],
-            [$barRoute]
+            [$barRoute],
         ));
         $expectedChildren = [
             new VariableTrieNode(
                 new RouteVariable('foo'),
                 [
-                    new LiteralTrieNode('bar', [], [$bazRoute])
+                    new LiteralTrieNode('bar', [], [$bazRoute]),
                 ],
-                [$fooRoute, $barRoute]
-            )
+                [$fooRoute, $barRoute],
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }
@@ -289,24 +289,24 @@ class TrieNodeTest extends TestCase
         $this->node->addChild(new LiteralTrieNode(
             'foo',
             [],
-            $fooRoutes
+            $fooRoutes,
         ));
         $this->node->addChild(new LiteralTrieNode(
             'bar',
             [],
-            $barRoutes
+            $barRoutes,
         ));
         $expectedChildren = [
             new LiteralTrieNode(
                 'foo',
                 [],
-                $fooRoutes
+                $fooRoutes,
             ),
             new LiteralTrieNode(
                 'bar',
                 [],
-                $barRoutes
-            )
+                $barRoutes,
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }
@@ -321,24 +321,24 @@ class TrieNodeTest extends TestCase
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('foo'),
             [],
-            $fooRoutes
+            $fooRoutes,
         ));
         $this->node->addChild(new VariableTrieNode(
             new RouteVariable('bar'),
             [],
-            $barRoutes
+            $barRoutes,
         ));
         $expectedChildren = [
             new VariableTrieNode(
                 new RouteVariable('foo'),
                 [],
-                $barRoutes
+                $barRoutes,
             ),
             new VariableTrieNode(
                 new RouteVariable('bar'),
                 [],
-                $barRoutes
-            )
+                $barRoutes,
+            ),
         ];
         $this->assertEquals($expectedChildren, $this->node->children);
     }

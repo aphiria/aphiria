@@ -23,7 +23,7 @@ class EachConstraintTest extends TestCase
     {
         $this->assertEquals(
             ['value' => 'val'],
-            (new EachConstraint([$this->createMock(IConstraint::class)]))->getErrorMessagePlaceholders('val')
+            (new EachConstraint([$this->createMock(IConstraint::class)]))->getErrorMessagePlaceholders('val'),
         );
     }
 

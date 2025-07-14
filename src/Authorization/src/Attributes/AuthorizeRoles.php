@@ -30,7 +30,7 @@ final class AuthorizeRoles extends Middleware
      */
     public function __construct(
         array|string $roles,
-        array|string|null $authenticationSchemeNames = null
+        array|string|null $authenticationSchemeNames = null,
     ) {
         $policy = new AuthorizationPolicy('roles', new RolesRequirement($roles), $authenticationSchemeNames);
 

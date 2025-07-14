@@ -39,7 +39,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
     public function __construct(
         private readonly RouteCollection $routes,
         private readonly IUriTemplateParser $uriTemplateParser = new UriTemplateParser(),
-        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer()
+        private readonly IUriTemplateLexer $uriTemplateLexer = new UriTemplateLexer(),
     ) {}
 
     /**
@@ -58,7 +58,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         }
 
         try {
-            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string)$route->uriTemplate));
+            $ast = $this->uriTemplateParser->parse($this->uriTemplateLexer->lex((string) $route->uriTemplate));
         } catch (LexingException $ex) {
             throw new RouteUriCreationException('Failed to lex URI template', 0, $ex);
         } catch (UnexpectedTokenException $ex) {
@@ -83,9 +83,9 @@ final class AstRouteUriFactory implements IRouteUriFactory
         $queryString = \http_build_query(
             \array_merge(
                 $routeActionParameters->useRemainingQueryStringParameterValues(),
-                $routeActionParameters->useRemainingImplicitParameterValues()
+                $routeActionParameters->useRemainingImplicitParameterValues(),
             ),
-            encoding_type: PHP_QUERY_RFC3986
+            encoding_type: PHP_QUERY_RFC3986,
         );
         $path .= empty($queryString) ? '' : "?$queryString";
 
@@ -116,7 +116,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
         bool $compilingHost,
         AstNode $node,
         RouteActionParameterValues $routeActionParameters,
-        bool $inUndefinedOptionalRoutePart = false
+        bool $inUndefinedOptionalRoutePart = false,
     ): array {
         $parts = [];
         $inOptionalRoutePart = $node->type === AstNodeType::OptionalRoutePart;
@@ -128,7 +128,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
             if ($inUndefinedOptionalRoutePart) {
                 if ($childNode->type === AstNodeType::Variable) {
                     // Use up any implicit parameter so that it does not get included in the query string
-                    $routeActionParameters->tryUseImplicitParameterValue((string)$childNode->value, $routeVariable);
+                    $routeActionParameters->tryUseImplicitParameterValue((string) $childNode->value, $routeVariable);
                 } elseif ($childNode->type === AstNodeType::OptionalRoutePart) {
                     // Keep stepping through the tree, but don't bother capturing the path because we're not going to use any of it anyway
                     $this->compileNode($compilingHost, $childNode, $routeActionParameters, $inUndefinedOptionalRoutePart);
@@ -141,9 +141,9 @@ final class AstRouteUriFactory implements IRouteUriFactory
                 case AstNodeType::SegmentDelimiter:
                     // If we're in an optional part, we don't want to include it unless it contains text or a defined variable
                     if ($inOptionalRoutePart) {
-                        $optionalSegmentBuffer .= (string)$childNode->value;
+                        $optionalSegmentBuffer .= (string) $childNode->value;
                     } else {
-                        $parts[] = (string)$childNode->value;
+                        $parts[] = (string) $childNode->value;
                     }
 
                     break;
@@ -153,7 +153,7 @@ final class AstRouteUriFactory implements IRouteUriFactory
                         $optionalSegmentBuffer = '';
                     }
 
-                    $parts[] = (string)$childNode->value;
+                    $parts[] = (string) $childNode->value;
                     break;
                 case AstNodeType::OptionalRoutePart:
                     $inOptionalRoutePart = true;
@@ -162,8 +162,8 @@ final class AstRouteUriFactory implements IRouteUriFactory
                 case AstNodeType::Variable:
                     $routeVariable = null;
 
-                    $routeActionParameters->tryUseRouteVariableParameterValue((string)$childNode->value, $routeVariable)
-                        || $routeActionParameters->tryUseImplicitParameterValue((string)$childNode->value, $routeVariable);
+                    $routeActionParameters->tryUseRouteVariableParameterValue((string) $childNode->value, $routeVariable)
+                        || $routeActionParameters->tryUseImplicitParameterValue((string) $childNode->value, $routeVariable);
 
                     if ($routeVariable !== null) {
                         // Check if we've hit a defined variable, eg "[:foo.]bar.com", and flush the buffer, eg "."

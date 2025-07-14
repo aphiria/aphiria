@@ -72,7 +72,7 @@ class MultiStreamTest extends TestCase
         $stream2 = new Stream(\fopen('php://temp', 'r+b'));
         $stream2->write('bar');
         $multistream = new MultiStream([$stream1, $stream2]);
-        $this->assertSame('foobar', (string)$multistream);
+        $this->assertSame('foobar', (string) $multistream);
     }
 
     public function testCopyingToClosedStreamThrowsException(): void
@@ -372,7 +372,7 @@ class MultiStreamTest extends TestCase
         $stream2->seek(1);
         $this->multiStream->addStream($stream1);
         $this->multiStream->addStream($stream2);
-        $this->assertSame('foobar', (string)$this->multiStream);
+        $this->assertSame('foobar', (string) $this->multiStream);
     }
 
     public function testToStringWithUnseekableStreamReturnsEmptyString(): void
@@ -385,7 +385,7 @@ class MultiStreamTest extends TestCase
             ->expects($this->never())
             ->method('readToEnd');
         $multiStream = new MultiStream([$unseekableStream]);
-        $this->assertEmpty((string)$multiStream);
+        $this->assertEmpty((string) $multiStream);
     }
 
     public function testWritingThrowsException(): void

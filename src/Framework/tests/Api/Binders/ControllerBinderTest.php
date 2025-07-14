@@ -70,28 +70,10 @@ class ControllerBinderTest extends TestCase
             'aphiria' => [
                 'serialization' => [
                     'dateFormat' => 'Y-m-d',
-                    'dateTimeFormat' => DateTimeInterface::ATOM
-                ]
-            ]
+                    'dateTimeFormat' => DateTimeInterface::ATOM,
+                ],
+            ],
         ]));
-    }
-
-    public function testDateTimeCanBeDeserializedUsingDateTimeFormat(): void
-    {
-        $this->container
-            ->shouldReceive('bindInstance')
-            ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
-                $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
-                /** @var RequestParameterDeserializer $value */
-                // Zero out the time so we don't get weirdness with microseconds
-                $now = new DateTime()->setTime(0, 0);
-                $this->assertEquals($now, $value->deserializeRouteActionParameter(DateTime::class, $now->format(DateTimeInterface::ATOM)));
-
-                return true;
-            }));
-        $this->binder->bind($this->container);
-        // Dummy assertion
-        $this->assertTrue(true);
     }
 
     public function testDateTimeCanBeDeserializedUsingDateFormat(): void
@@ -114,23 +96,7 @@ class ControllerBinderTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testDateTimeThatCannotBeDeserializedThrowsException(): void
-    {
-        $this->expectException(FailedRequestParameterConversionException::class);
-        $this->expectExceptionMessage('Could not convert "foo" to ' . DateTime::class);
-        $this->container
-            ->shouldReceive('bindInstance')
-            ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
-                $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
-                /** @var RequestParameterDeserializer $value */
-                $value->deserializeRouteActionParameter(DateTime::class, 'foo');
-
-                return true;
-            }));
-        $this->binder->bind($this->container);
-    }
-
-    public function testDateTimeImmutableCanBeDeserializedUsingDateTimeFormat(): void
+    public function testDateTimeCanBeDeserializedUsingDateTimeFormat(): void
     {
         $this->container
             ->shouldReceive('bindInstance')
@@ -138,8 +104,8 @@ class ControllerBinderTest extends TestCase
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
                 // Zero out the time so we don't get weirdness with microseconds
-                $now = new DateTimeImmutable()->setTime(0, 0);
-                $this->assertEquals($now, $value->deserializeRouteActionParameter(DateTimeImmutable::class, $now->format(DateTimeInterface::ATOM)));
+                $now = new DateTime()->setTime(0, 0);
+                $this->assertEquals($now, $value->deserializeRouteActionParameter(DateTime::class, $now->format(DateTimeInterface::ATOM)));
 
                 return true;
             }));
@@ -168,6 +134,24 @@ class ControllerBinderTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testDateTimeImmutableCanBeDeserializedUsingDateTimeFormat(): void
+    {
+        $this->container
+            ->shouldReceive('bindInstance')
+            ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
+                $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
+                /** @var RequestParameterDeserializer $value */
+                // Zero out the time so we don't get weirdness with microseconds
+                $now = new DateTimeImmutable()->setTime(0, 0);
+                $this->assertEquals($now, $value->deserializeRouteActionParameter(DateTimeImmutable::class, $now->format(DateTimeInterface::ATOM)));
+
+                return true;
+            }));
+        $this->binder->bind($this->container);
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
     public function testDateTimeImmutableThatCannotBeDeserializedThrowsException(): void
     {
         $this->expectException(FailedRequestParameterConversionException::class);
@@ -178,6 +162,22 @@ class ControllerBinderTest extends TestCase
                 $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
                 /** @var RequestParameterDeserializer $value */
                 $value->deserializeRouteActionParameter(DateTimeImmutable::class, 'foo');
+
+                return true;
+            }));
+        $this->binder->bind($this->container);
+    }
+
+    public function testDateTimeThatCannotBeDeserializedThrowsException(): void
+    {
+        $this->expectException(FailedRequestParameterConversionException::class);
+        $this->expectExceptionMessage('Could not convert "foo" to ' . DateTime::class);
+        $this->container
+            ->shouldReceive('bindInstance')
+            ->with(IRequestParameterDeserializer::class, Mockery::on(function (mixed $value): bool {
+                $this->assertInstanceOf(RequestParameterDeserializer::class, $value);
+                /** @var RequestParameterDeserializer $value */
+                $value->deserializeRouteActionParameter(DateTime::class, 'foo');
 
                 return true;
             }));

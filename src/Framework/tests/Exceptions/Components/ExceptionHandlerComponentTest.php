@@ -103,7 +103,7 @@ class ExceptionHandlerComponentTest extends TestCase
             'detail',
             400,
             'instance',
-            ['foo' => 'bar']
+            ['foo' => 'bar'],
         );
         $this->exceptionHandlerComponent->build();
         $apiExceptionRenderer->createResponse(new Exception());

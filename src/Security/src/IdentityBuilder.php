@@ -272,7 +272,7 @@ class IdentityBuilder
      */
     public function withRoles(string|array $value, ?string $issuer = null): static
     {
-        foreach ((array)$value as $role) {
+        foreach ((array) $value as $role) {
             $this->addClaim(ClaimType::Role, $role, $issuer);
         }
 

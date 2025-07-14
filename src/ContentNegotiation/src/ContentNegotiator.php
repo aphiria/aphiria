@@ -44,12 +44,12 @@ final class ContentNegotiator implements IContentNegotiator
             new JsonMediaTypeFormatter(),
             new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
-            new PlainTextMediaTypeFormatter()
+            new PlainTextMediaTypeFormatter(),
         ],
         ?IMediaTypeFormatterMatcher $mediaTypeFormatterMatcher = null,
         private readonly IEncodingMatcher $encodingMatcher = new AcceptCharsetEncodingMatcher(),
         private readonly ILanguageMatcher $languageMatcher = new AcceptLanguageMatcher(['en']),
-        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()
+        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),
     ) {
         if (\count($mediaTypeFormatters) === 0) {
             throw new InvalidArgumentException('List of formatters cannot be empty');
@@ -69,7 +69,7 @@ final class ContentNegotiator implements IContentNegotiator
             if ($mediaTypeFormatter->canWriteType($type)) {
                 $acceptableMediaTypes = [
                     ...$acceptableMediaTypes,
-                    ...$mediaTypeFormatter->supportedMediaTypes
+                    ...$mediaTypeFormatter->supportedMediaTypes,
                 ];
             }
         }
@@ -95,7 +95,7 @@ final class ContentNegotiator implements IContentNegotiator
 
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(
             $type,
-            $request
+            $request,
         );
 
         if ($mediaTypeFormatterMatch === null) {
@@ -105,14 +105,14 @@ final class ContentNegotiator implements IContentNegotiator
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
             $mediaTypeFormatterMatch->formatter->supportedEncodings,
             $request,
-            $mediaTypeFormatterMatch->mediaTypeHeaderValue
+            $mediaTypeFormatterMatch->mediaTypeHeaderValue,
         );
 
         return new ContentNegotiationResult(
             $mediaTypeFormatterMatch->formatter,
             $mediaTypeFormatterMatch->mediaType,
             $encoding,
-            $language
+            $language,
         );
     }
 
@@ -129,7 +129,7 @@ final class ContentNegotiator implements IContentNegotiator
 
         $mediaTypeFormatterMatch = $this->mediaTypeFormatterMatcher->getBestResponseMediaTypeFormatterMatch(
             $type,
-            $request
+            $request,
         );
 
         if ($mediaTypeFormatterMatch === null) {
@@ -139,14 +139,14 @@ final class ContentNegotiator implements IContentNegotiator
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
             $mediaTypeFormatterMatch->formatter->supportedEncodings,
             $request,
-            $mediaTypeFormatterMatch->mediaTypeHeaderValue
+            $mediaTypeFormatterMatch->mediaTypeHeaderValue,
         );
 
         return new ContentNegotiationResult(
             $mediaTypeFormatterMatch->formatter,
             $mediaTypeFormatterMatch->mediaType,
             $encoding,
-            $language
+            $language,
         );
     }
 
@@ -161,7 +161,7 @@ final class ContentNegotiator implements IContentNegotiator
     private function createDefaultResponseContentNegotiationResult(
         string $type,
         ?string $language,
-        IRequest $request
+        IRequest $request,
     ): ContentNegotiationResult {
         // Default to the first registered media type formatter that can write the input type
         $selectedMediaTypeFormatter = null;
@@ -179,14 +179,14 @@ final class ContentNegotiator implements IContentNegotiator
 
         $encoding = $this->encodingMatcher->getBestEncodingMatch(
             $selectedMediaTypeFormatter->supportedEncodings,
-            $request
+            $request,
         );
 
         return new ContentNegotiationResult(
             $selectedMediaTypeFormatter,
             $selectedMediaTypeFormatter->defaultMediaType,
             $encoding,
-            $language
+            $language,
         );
     }
 }

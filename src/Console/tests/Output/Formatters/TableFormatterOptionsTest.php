@@ -34,7 +34,7 @@ class TableFormatterOptionsTest extends TestCase
             'horizontalBorder',
             'intersection',
             false,
-            "\r"
+            "\r",
         );
         $this->assertSame('padding', $options->cellPaddingString);
         $this->assertSame('verticalBorder', $options->verticalBorderChar);

@@ -34,7 +34,7 @@ final readonly class Argument
         public string $name,
         array|ArgumentType $type,
         public ?string $description = null,
-        public mixed $defaultValue = null
+        public mixed $defaultValue = null,
     ) {
         $this->type = \is_array($type) ? $type : [$type];
     }

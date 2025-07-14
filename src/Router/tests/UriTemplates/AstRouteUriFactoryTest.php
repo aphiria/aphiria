@@ -40,19 +40,6 @@ class AstRouteUriFactoryTest extends TestCase
         $this->uriFactory = new AstRouteUriFactory($this->routes);
     }
 
-    public static function namedAttributeParameterProvider(): array
-    {
-        $controller = new class () {
-            public function queryString(#[QueryString('foo')] string $unused): void {}
-            public function routeVariable(#[RouteVariable('foo')] string $unused1, #[RouteVariable('bar')] string $unused2): void {}
-        };
-
-        return [
-            [$controller, 'queryString', null, '/', '/?foo=bar', ['foo' => 'bar']],
-            [$controller, 'routeVariable', ':foo.example.com', '/:bar', 'https://qux.example.com/quux', ['foo' => 'qux', 'bar' => 'quux']]
-        ];
-    }
-
     public static function invalidRouteVariableProvider(): array
     {
         $controller = new class () {
@@ -74,7 +61,7 @@ class AstRouteUriFactoryTest extends TestCase
                 'noParameters',
                 null,
                 '',
-                ['foo' => 'bar']
+                ['foo' => 'bar'],
             ],
             [
                 'Following route action parameters have no matching value in ' . $controller::class . '::queryString: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::queryString: "bar"',
@@ -82,7 +69,7 @@ class AstRouteUriFactoryTest extends TestCase
                 'queryString',
                 null,
                 '',
-                ['bar' => 'baz']
+                ['bar' => 'baz'],
             ],
             [
                 'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar"',
@@ -90,7 +77,7 @@ class AstRouteUriFactoryTest extends TestCase
                 'routeVariable',
                 null,
                 '/:foo',
-                ['bar' => 'baz']
+                ['bar' => 'baz'],
             ],
             [
                 'Following route action parameters have no matching value in ' . $controller::class . '::implicit: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::implicit: "bar"',
@@ -98,7 +85,7 @@ class AstRouteUriFactoryTest extends TestCase
                 'implicit',
                 null,
                 '/:foo',
-                ['bar' => 'baz']
+                ['bar' => 'baz'],
             ],
             [
                 'Following route action parameters have no matching value in ' . $controller::class . '::routeVariable: "foo", following route variables have no matching route action parameter in ' . $controller::class . '::routeVariable: "bar", "qux"',
@@ -106,7 +93,7 @@ class AstRouteUriFactoryTest extends TestCase
                 'routeVariable',
                 null,
                 '/:foo',
-                ['bar' => 'baz', 'qux' => 'quz']
+                ['bar' => 'baz', 'qux' => 'quz'],
             ],
             [
                 'Following route action parameters have no matching value in ' . $controller::class . '::multipleParameters: "foo", "bar", following route variables have no matching route action parameter in ' . $controller::class . '::multipleParameters: "baz"',
@@ -114,66 +101,22 @@ class AstRouteUriFactoryTest extends TestCase
                 'multipleParameters',
                 null,
                 '/:foo',
-                ['baz' => 'qux']
-            ]
+                ['baz' => 'qux'],
+            ],
         ];
     }
 
-    /**
-     * @param object $controller The route action controller
-     * @param string $methodName The name of the route action method
-     * @param string|null $hostTemplate The optional host template
-     * @param string $pathTemplate The path template
-     * @param string $expectedUri The expected URI
-     * @param array<string, mixed> $routeVariables The route variables
-     */
-    #[DataProvider('namedAttributeParameterProvider')]
-    public function testCreatingUriWithNamedAttributeParametersUsesThoseNamesInsteadOfVariableNameFromController(
-        object $controller,
-        string $methodName,
-        ?string $hostTemplate,
-        string $pathTemplate,
-        string $expectedUri,
-        array $routeVariables
-    ): void {
-        $this->addRouteWithUriTemplate($methodName, $hostTemplate, $pathTemplate, controller: $controller, methodName: $methodName);
-        $this->assertSame($expectedUri, $this->uriFactory->createRouteUri($methodName, $routeVariables));
-    }
-
-    /**
-     * @param string $expectedExceptionMessage The expected exception message
-     * @param object $controller The route action controller
-     * @param string $methodName The name of the route action method
-     * @param string|null $hostTemplate The optional host template
-     * @param string $pathTemplate The path template
-     * @param array<string, mixed> $routeVariables The route variables
-     */
-    #[DataProvider('invalidRouteVariableProvider')]
-    public function testCreatingUriWithRouteVariablesThatDoNotAppearAsRouteActionParametersThrowsException(
-        string $expectedExceptionMessage,
-        object $controller,
-        string $methodName,
-        ?string $hostTemplate,
-        string $pathTemplate,
-        array $routeVariables
-    ): void {
-        $this->expectException(RouteUriCreationException::class);
-        $this->addRouteWithUriTemplate($methodName, $hostTemplate, $pathTemplate, controller: $controller, methodName: $methodName);
-
-        try {
-            $this->uriFactory->createRouteUri($methodName, $routeVariables);
-        } catch (RouteUriCreationException $ex) {
-            $this->assertSame($expectedExceptionMessage, $ex->getPrevious()->getMessage());
-            throw $ex;
-        }
-    }
-
-    public function testCreatingUriWithInvalidRouteActionThrowsException(): void
+    public static function namedAttributeParameterProvider(): array
     {
-        $this->expectException(RouteUriCreationException::class);
-        $this->expectExceptionMessage('Failed to create route action parameters for ' . $this::class . '::__doesNotExist');
-        $this->addRouteWithUriTemplate('foo', null, '', controller: $this, methodName: '__doesNotExist');
-        $this->uriFactory->createRouteUri('foo');
+        $controller = new class () {
+            public function queryString(#[QueryString('foo')] string $unused): void {}
+            public function routeVariable(#[RouteVariable('foo')] string $unused1, #[RouteVariable('bar')] string $unused2): void {}
+        };
+
+        return [
+            [$controller, 'queryString', null, '/', '/?foo=bar', ['foo' => 'bar']],
+            [$controller, 'routeVariable', ':foo.example.com', '/:bar', 'https://qux.example.com/quux', ['foo' => 'qux', 'bar' => 'quux']],
+        ];
     }
 
     public function testCreatingUriForUnregisteredRouteThrowsException(): void
@@ -213,6 +156,26 @@ class AstRouteUriFactoryTest extends TestCase
         $uriFactory->createRouteUri('foo');
     }
 
+    public function testCreatingUriWillThrowExceptionWhenQueryStringAttributeParamIsOnlyParamThatMatchesRequiredRouteVariable(): void
+    {
+        $this->expectException(RouteUriCreationException::class);
+        $this->expectExceptionMessage('No value set for foo in path');
+        $controller = new class () {
+            public function foo(#[QueryString] $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/:foo', controller: $controller, methodName: 'foo');
+        $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']);
+    }
+
+    public function testCreatingUriWithHeaderAttributeSimplyIgnoresIt(): void
+    {
+        $controller = new class () {
+            public function foo(#[Header] string $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', null, '', controller: $controller, methodName: 'foo');
+        $this->assertSame('/', $this->uriFactory->createRouteUri('foo'));
+    }
+
     public function testCreatingUriWithHostAndEmptyPathStripsTrailingSlash(): void
     {
         $this->addRouteWithUriTemplate('foo', 'example.com', '');
@@ -225,6 +188,14 @@ class AstRouteUriFactoryTest extends TestCase
         $this->assertSame('https://example.com/foo', $this->uriFactory->createRouteUri('foo'));
     }
 
+    public function testCreatingUriWithInvalidRouteActionThrowsException(): void
+    {
+        $this->expectException(RouteUriCreationException::class);
+        $this->expectExceptionMessage('Failed to create route action parameters for ' . $this::class . '::__doesNotExist');
+        $this->addRouteWithUriTemplate('foo', null, '', controller: $this, methodName: '__doesNotExist');
+        $this->uriFactory->createRouteUri('foo');
+    }
+
     public function testCreatingUriWithMultipleHostVarsPopulatesThemFromArgs(): void
     {
         $controller = new class () {
@@ -233,7 +204,7 @@ class AstRouteUriFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', ':foo.:bar.example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://dave.young.example.com',
-            $this->uriFactory->createRouteUri('foo', ['foo' => 'dave', 'bar' => 'young'])
+            $this->uriFactory->createRouteUri('foo', ['foo' => 'dave', 'bar' => 'young']),
         );
     }
 
@@ -245,8 +216,47 @@ class AstRouteUriFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', null, '/:foo/:bar', controller: $controller, methodName: 'foo');
         $this->assertSame(
             '/dave/young',
-            $this->uriFactory->createRouteUri('foo', ['foo' => 'dave', 'bar' => 'young'])
+            $this->uriFactory->createRouteUri('foo', ['foo' => 'dave', 'bar' => 'young']),
         );
+    }
+
+    public function testCreatingUriWithMultipleQueryStringAttributesWillUseValuesInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/foo?foo=1&bar=2', $this->uriFactory->createRouteUri('foo', ['foo' => '1', 'bar' => '2']));
+    }
+
+    /**
+     * @param object $controller The route action controller
+     * @param string $methodName The name of the route action method
+     * @param string|null $hostTemplate The optional host template
+     * @param string $pathTemplate The path template
+     * @param string $expectedUri The expected URI
+     * @param array<string, mixed> $routeVariables The route variables
+     */
+    #[DataProvider('namedAttributeParameterProvider')]
+    public function testCreatingUriWithNamedAttributeParametersUsesThoseNamesInsteadOfVariableNameFromController(
+        object $controller,
+        string $methodName,
+        ?string $hostTemplate,
+        string $pathTemplate,
+        string $expectedUri,
+        array $routeVariables,
+    ): void {
+        $this->addRouteWithUriTemplate($methodName, $hostTemplate, $pathTemplate, controller: $controller, methodName: $methodName);
+        $this->assertSame($expectedUri, $this->uriFactory->createRouteUri($methodName, $routeVariables));
+    }
+
+    public function testCreatingUriWithNoAttributeWillUseItsValueInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(string $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
     }
 
     public function testCreatingUriWithNonHttpsOnlyHostUsesHttpPrefix(): void
@@ -272,7 +282,7 @@ class AstRouteUriFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', '[:foo.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://bar.example.com',
-            $this->uriFactory->createRouteUri('foo', ['foo' => 'bar'])
+            $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']),
         );
     }
 
@@ -299,11 +309,11 @@ class AstRouteUriFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', '[[:foo.]:bar.]example.com', '', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://1.example.com',
-            $this->uriFactory->createRouteUri('foo', ['bar' => '1'])
+            $this->uriFactory->createRouteUri('foo', ['bar' => '1']),
         );
         $this->assertSame(
             'https://2.1.example.com',
-            $this->uriFactory->createRouteUri('foo', ['bar' => '1', 'foo' => '2'])
+            $this->uriFactory->createRouteUri('foo', ['bar' => '1', 'foo' => '2']),
         );
     }
 
@@ -324,11 +334,11 @@ class AstRouteUriFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', 'example.com', 'foo[/:bar[/:baz]]', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://example.com/foo/1',
-            $this->uriFactory->createRouteUri('foo', ['bar' => '1'])
+            $this->uriFactory->createRouteUri('foo', ['bar' => '1']),
         );
         $this->assertSame(
             'https://example.com/foo/1/2',
-            $this->uriFactory->createRouteUri('foo', ['bar' => '1', 'baz' => '2'])
+            $this->uriFactory->createRouteUri('foo', ['bar' => '1', 'baz' => '2']),
         );
     }
 
@@ -352,7 +362,7 @@ class AstRouteUriFactoryTest extends TestCase
         $this->addRouteWithUriTemplate('foo', 'example.com', '/foo[/:bar]', controller: $controller, methodName: 'foo');
         $this->assertSame(
             'https://example.com/foo/baz',
-            $this->uriFactory->createRouteUri('foo', ['bar' => 'baz'])
+            $this->uriFactory->createRouteUri('foo', ['bar' => 'baz']),
         );
     }
 
@@ -376,6 +386,25 @@ class AstRouteUriFactoryTest extends TestCase
         $this->expectExceptionMessage('No value set for foo in path');
         $this->addRouteWithUriTemplate('foo', null, '/:foo');
         $this->uriFactory->createRouteUri('foo');
+    }
+
+    public function testCreatingUriWithQueryStringAttributeWillUrlEncodeItsValueInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(#[QueryString] string $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        // We are specifically using spaces as the special characters here to ensure they're being encoded to "%20" (what's used in URLs), not "+" (what's used in form data)
+        $this->assertSame('/foo?foo=%20bar%20', $this->uriFactory->createRouteUri('foo', ['foo' => ' bar ']));
+    }
+
+    public function testCreatingUriWithQueryStringAttributeWillUseItsValueInQueryString(): void
+    {
+        $controller = new class () {
+            public function foo(#[QueryString] string $foo): void {}
+        };
+        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
+        $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
     }
 
     public function testCreatingUriWithRelativePathHasLeadingSlash(): void
@@ -402,61 +431,32 @@ class AstRouteUriFactoryTest extends TestCase
         $this->assertSame('/bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
     }
 
-    public function testCreatingUriWithMultipleQueryStringAttributesWillUseValuesInQueryString(): void
-    {
-        $controller = new class () {
-            public function foo(#[QueryString] string $foo, #[QueryString] string $bar): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
-        $this->assertSame('/foo?foo=1&bar=2', $this->uriFactory->createRouteUri('foo', ['foo' => '1', 'bar' => '2']));
-    }
-
-    public function testCreatingUriWithQueryStringAttributeWillUseItsValueInQueryString(): void
-    {
-        $controller = new class () {
-            public function foo(#[QueryString] string $foo): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
-        $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
-    }
-
-    public function testCreatingUriWithNoAttributeWillUseItsValueInQueryString(): void
-    {
-        $controller = new class () {
-            public function foo(string $foo): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
-        $this->assertSame('/foo?foo=bar', $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']));
-    }
-
-    public function testCreatingUriWithQueryStringAttributeWillUrlEncodeItsValueInQueryString(): void
-    {
-        $controller = new class () {
-            public function foo(#[QueryString] string $foo): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', null, '/foo', controller: $controller, methodName: 'foo');
-        // We are specifically using spaces as the special characters here to ensure they're being encoded to "%20" (what's used in URLs), not "+" (what's used in form data)
-        $this->assertSame('/foo?foo=%20bar%20', $this->uriFactory->createRouteUri('foo', ['foo' => ' bar ']));
-    }
-
-    public function testCreatingUriWithHeaderAttributeSimplyIgnoresIt(): void
-    {
-        $controller = new class () {
-            public function foo(#[Header] string $foo): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', null, '', controller: $controller, methodName: 'foo');
-        $this->assertSame('/', $this->uriFactory->createRouteUri('foo'));
-    }
-
-    public function testCreatingUriWillThrowExceptionWhenQueryStringAttributeParamIsOnlyParamThatMatchesRequiredRouteVariable(): void
-    {
+    /**
+     * @param string $expectedExceptionMessage The expected exception message
+     * @param object $controller The route action controller
+     * @param string $methodName The name of the route action method
+     * @param string|null $hostTemplate The optional host template
+     * @param string $pathTemplate The path template
+     * @param array<string, mixed> $routeVariables The route variables
+     */
+    #[DataProvider('invalidRouteVariableProvider')]
+    public function testCreatingUriWithRouteVariablesThatDoNotAppearAsRouteActionParametersThrowsException(
+        string $expectedExceptionMessage,
+        object $controller,
+        string $methodName,
+        ?string $hostTemplate,
+        string $pathTemplate,
+        array $routeVariables,
+    ): void {
         $this->expectException(RouteUriCreationException::class);
-        $this->expectExceptionMessage('No value set for foo in path');
-        $controller = new class () {
-            public function foo(#[QueryString] $foo): void {}
-        };
-        $this->addRouteWithUriTemplate('foo', null, '/:foo', controller: $controller, methodName: 'foo');
-        $this->uriFactory->createRouteUri('foo', ['foo' => 'bar']);
+        $this->addRouteWithUriTemplate($methodName, $hostTemplate, $pathTemplate, controller: $controller, methodName: $methodName);
+
+        try {
+            $this->uriFactory->createRouteUri($methodName, $routeVariables);
+        } catch (RouteUriCreationException $ex) {
+            $this->assertSame($expectedExceptionMessage, $ex->getPrevious()->getMessage());
+            throw $ex;
+        }
     }
 
     /**
@@ -475,7 +475,7 @@ class AstRouteUriFactoryTest extends TestCase
         string $pathTemplate,
         bool $isHttpsOnly = true,
         ?object $controller = null,
-        ?string $methodName = null
+        ?string $methodName = null,
     ): void {
         if ($controller === null && $methodName === null) {
             $controller = new class () {
@@ -489,7 +489,7 @@ class AstRouteUriFactoryTest extends TestCase
             new RouteAction($controller::class, $methodName),
             [],
             [],
-            $name
+            $name,
         ));
     }
 }

@@ -14,7 +14,6 @@ namespace Aphiria\Api\Tests\Controllers\Mocks;
 
 use Aphiria\Api\Controllers\Controller as BaseController;
 use Aphiria\Net\Http\HttpStatusCode;
-use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;

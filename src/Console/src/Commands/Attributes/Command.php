@@ -28,6 +28,6 @@ final readonly class Command
     public function __construct(
         public string $name,
         public ?string $description = null,
-        public ?string $helpText = null
+        public ?string $helpText = null,
     ) {}
 }

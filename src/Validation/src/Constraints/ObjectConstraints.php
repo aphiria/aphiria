@@ -30,7 +30,7 @@ final class ObjectConstraints
     public function __construct(
         public readonly string $className,
         array $propertyConstraints = [],
-        array $methodConstraints = []
+        array $methodConstraints = [],
     ) {
         foreach ($propertyConstraints as $propertyName => $propertyConstraint) {
             $this->addPropertyConstraint($propertyName, $propertyConstraint);

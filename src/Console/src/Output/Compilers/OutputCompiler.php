@@ -34,7 +34,7 @@ final class OutputCompiler implements IOutputCompiler
     public function __construct(
         private readonly ElementRegistry $elements = new ElementRegistry(),
         private readonly IOutputLexer $lexer = new OutputLexer(),
-        private readonly IOutputParser $parser = new OutputParser()
+        private readonly IOutputParser $parser = new OutputParser(),
     ) {}
 
     /**
@@ -72,14 +72,14 @@ final class OutputCompiler implements IOutputCompiler
                 return '';
             }
 
-            return $node->value === null ? '' : (string)$node->value;
+            return $node->value === null ? '' : (string) $node->value;
         }
 
         $output = '';
 
         foreach ($node->children as $childNode) {
             if ($node->isTag) {
-                $style = $this->elements->getElement((string)$node->value)->style;
+                $style = $this->elements->getElement((string) $node->value)->style;
                 $output .= $style->format($this->compileNode($childNode));
             } else {
                 $output .= $this->compileNode($childNode);

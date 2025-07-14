@@ -31,7 +31,7 @@ class Response implements IResponse
     public ?string $reasonPhrase;
     /** @inheritdoc */
     public HttpStatusCode $statusCode {
-        set (HttpStatusCode|int $value) {
+        set(HttpStatusCode|int $value) {
             if (\is_int($value)) {
                 $originalStatusCode = $value;
 
@@ -56,7 +56,7 @@ class Response implements IResponse
         HttpStatusCode|int $statusCode = HttpStatusCode::Ok,
         Headers $headers = new Headers(),
         ?IBody $body = null,
-        string $protocolVersion = '1.1'
+        string $protocolVersion = '1.1',
     ) {
         $this->statusCode = $statusCode;
         $this->headers = $headers;

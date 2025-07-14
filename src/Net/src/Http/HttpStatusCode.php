@@ -193,7 +193,7 @@ enum HttpStatusCode: int
             self::ServiceUnavailable => 'Service Unavailable',
             self::GatewayTimeout => 'Gateway Timeout',
             self::HttpVersionNotSupported => 'HTTP Version Not Supported',
-            default => null
+            default => null,
         };
     }
 }

@@ -34,7 +34,7 @@ class RequestFactory
         'HTTP_CLIENT_IP' => 'HTTP_X_FORWARDED_FOR',
         'HTTP_CLIENT_HOST' => 'HTTP_X_FORWARDED_HOST',
         'HTTP_CLIENT_PORT' => 'HTTP_X_FORWARDED_PORT',
-        'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO'
+        'HTTP_CLIENT_PROTO' => 'HTTP_X_FORWARDED_PROTO',
     ];
     /** @var array<string, true> The list of HTTP request headers that permit multiple values */
     private static array $headersThatPermitMultipleValues = [
@@ -62,7 +62,7 @@ class RequestFactory
         'HTTP_VIA' => true,
         'HTTP_WARNING' => true,
         'HTTP_WWW_AUTHENTICATE' => true,
-        'HTTP_X_FORWARDED_FOR' => true
+        'HTTP_X_FORWARDED_FOR' => true,
     ];
     /** @var array<string, true> The list of header names whose values should be URL-decoded */
     private static array $headersToUrlDecode = ['HTTP_COOKIE' => true];
@@ -74,7 +74,7 @@ class RequestFactory
         'PHP_AUTH_DIGEST' => true,
         'PHP_AUTH_PW' => true,
         'PHP_AUTH_TYPE' => true,
-        'PHP_AUTH_USER' => true
+        'PHP_AUTH_USER' => true,
     ];
 
     /**
@@ -96,11 +96,11 @@ class RequestFactory
      */
     public function createRequestFromSuperglobals(array $server): IRequest
     {
-        $method = (string)($server['REQUEST_METHOD'] ?? 'GET');
+        $method = (string) ($server['REQUEST_METHOD'] ?? 'GET');
 
         // Permit the overriding of the request method for POST requests
         if ($method === 'POST' && isset($server['X-HTTP-METHOD-OVERRIDE'])) {
-            $method = (string)$server['X-HTTP-METHOD-OVERRIDE'];
+            $method = (string) $server['X-HTTP-METHOD-OVERRIDE'];
         }
 
         $uri = $this->createUriFromSuperglobals($server);
@@ -127,11 +127,11 @@ class RequestFactory
         foreach ($server as $name => $values) {
             // If this header supports multiple values and has unquoted string delimiters...
             $containsMultipleValues = isset(self::$headersThatPermitMultipleValues[$name])
-                && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', (string)$values)) > 1;
+                && \count($explodedValues = \preg_split('/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/', (string) $values)) > 1;
 
             if ($containsMultipleValues) {
                 /** @var bool|float|int|string $value */
-                foreach ((array)$explodedValues as $value) {
+                foreach ((array) $explodedValues as $value) {
                     // Exploded values are guaranteed to be strings, so no need to check if the value is scalar
                     self::addHeaderValue($headers, $name, $value, true);
                 }
@@ -175,14 +175,14 @@ class RequestFactory
         $isUsingTrustedProxy = $this->isUsingTrustedProxy($server);
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']])) {
-            $protoString = (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
+            $protoString = (string) $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']];
             $protoArray = \explode(',', $protoString);
             $isSecure = \count($protoArray) > 0 && \in_array(\strtolower($protoArray[0]), ['https', 'ssl', 'on'], true);
         } else {
             $isSecure = isset($server['HTTPS']) && $server['HTTPS'] !== 'off';
         }
 
-        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? \strtolower((string)$server['SERVER_PROTOCOL']) : 'http/1.1';
+        $rawProtocol = isset($server['SERVER_PROTOCOL']) ? \strtolower((string) $server['SERVER_PROTOCOL']) : 'http/1.1';
         $scheme = \substr($rawProtocol, 0, (($slashIndex = \strpos($rawProtocol, '/')) === false ? 0 : $slashIndex)) . ($isSecure ? 's' : '');
         /** @var string|null $user */
         $user = $server['PHP_AUTH_USER'] ?? null;
@@ -192,7 +192,7 @@ class RequestFactory
 
         if ($isUsingTrustedProxy) {
             if (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']])) {
-                $port = (int)$server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']];
+                $port = (int) $server[$this->trustedHeaderNames['HTTP_CLIENT_PORT']];
             } elseif (
                 isset($server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']]) &&
                 $server[$this->trustedHeaderNames['HTTP_CLIENT_PROTO']] === 'https'
@@ -202,30 +202,30 @@ class RequestFactory
         }
 
         if ($port === null) {
-            $port = isset($server['SERVER_PORT']) ? (int)$server['SERVER_PORT'] : null;
+            $port = isset($server['SERVER_PORT']) ? (int) $server['SERVER_PORT'] : null;
         }
 
         if ($isUsingTrustedProxy && isset($server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']])) {
-            $hostWithPort = \explode(',', (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
+            $hostWithPort = \explode(',', (string) $server[$this->trustedHeaderNames['HTTP_CLIENT_HOST']]);
             $hostWithPort = \trim(\end($hostWithPort));
         } else {
-            $hostWithPort = (string)($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '');
+            $hostWithPort = (string) ($server['HTTP_HOST'] ?? $server['SERVER_NAME'] ?? $server['SERVER_ADDR'] ?? '');
         }
 
         // Remove the port from the host
         $host = \strtolower(\preg_replace("/:\d+$/", '', \trim($hostWithPort)));
 
         // Check for forbidden characters
-        if (!empty($host) && !empty((string)\preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
+        if (!empty($host) && !empty((string) \preg_replace("/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/", '', $host))) {
             throw new InvalidArgumentException("Invalid host \"$host\"");
         }
 
-        $path = \parse_url('http://foo.com' . (string)($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+        $path = \parse_url('http://foo.com' . (string) ($server['REQUEST_URI'] ?? ''), PHP_URL_PATH);
         $path = $path === false ? '' : ($path ?? '');
-        $queryString = (string)($server['QUERY_STRING'] ?? '');
+        $queryString = (string) ($server['QUERY_STRING'] ?? '');
 
         if ($queryString === '') {
-            $queryString = \parse_url('http://foo.com' . (string)($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
+            $queryString = \parse_url('http://foo.com' . (string) ($server['REQUEST_URI'] ?? ''), PHP_URL_QUERY);
             $queryString = $queryString === false || $queryString === null ? '' : $queryString;
         }
 
@@ -265,11 +265,11 @@ class RequestFactory
 
         // RFC 7239
         if (isset($server[$this->trustedHeaderNames['HTTP_FORWARDED']])) {
-            $header = (string)$server[$this->trustedHeaderNames['HTTP_FORWARDED']];
+            $header = (string) $server[$this->trustedHeaderNames['HTTP_FORWARDED']];
             \preg_match_all("/for=(?:\"?\[?)([a-z0-9:\.\-\/_]*)/", $header, $matches);
             $ipAddresses = $matches[1];
         } elseif (isset($server[$this->trustedHeaderNames['HTTP_CLIENT_IP']])) {
-            $ipAddresses = \explode(',', (string)$server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
+            $ipAddresses = \explode(',', (string) $server[$this->trustedHeaderNames['HTTP_CLIENT_IP']]);
             $ipAddresses = \array_map('trim', $ipAddresses);
         }
 
@@ -312,7 +312,7 @@ class RequestFactory
      */
     private static function addHeaderValue(Headers $headers, string $name, string|int|float|bool $value, bool $append): void
     {
-        $decodedValue = \trim((string)(isset(self::$headersToUrlDecode[$name]) ? \urldecode((string)$value) : $value));
+        $decodedValue = \trim((string) (isset(self::$headersToUrlDecode[$name]) ? \urldecode((string) $value) : $value));
 
         if (isset(self::$specialCaseHeaders[$name])) {
             $headers->add($name, $decodedValue, $append);

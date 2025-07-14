@@ -118,7 +118,7 @@ class ExceptionHandlerComponent implements IComponent
         string|Closure|null $detail = null,
         HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
         string|Closure|null $instance = null,
-        array|Closure|null $extensions = null
+        array|Closure|null $extensions = null,
     ): static {
         /** @psalm-suppress PropertyTypeCoercion Psalm doesn't like mixing generics of different types */
         $this->exceptionProblemDetailMappings[$exceptionType] = [
@@ -127,7 +127,7 @@ class ExceptionHandlerComponent implements IComponent
             'detail' => $detail,
             'status' => $status,
             'instance' => $instance,
-            'extensions' => $extensions
+            'extensions' => $extensions,
         ];
 
         return $this;

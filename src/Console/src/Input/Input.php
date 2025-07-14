@@ -25,6 +25,6 @@ final readonly class Input
     public function __construct(
         public string $commandName,
         public array $arguments = [],
-        public array $options = []
+        public array $options = [],
     ) {}
 }

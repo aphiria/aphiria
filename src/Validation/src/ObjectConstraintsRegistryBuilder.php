@@ -26,7 +26,7 @@ final class ObjectConstraintsRegistryBuilder
      * @param ObjectConstraintsRegistry $objectConstraints The constraints to add to, or null if building a new registry
      */
     public function __construct(
-        private readonly ObjectConstraintsRegistry $objectConstraints = new ObjectConstraintsRegistry()
+        private readonly ObjectConstraintsRegistry $objectConstraints = new ObjectConstraintsRegistry(),
     ) {}
 
     /**

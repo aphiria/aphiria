@@ -255,10 +255,10 @@ class SymfonySerializerBinderTest extends TestCase
                     'normalizers' => [],
                     'xml' => [
                         'removeEmptyTags' => true,
-                        'rootNodeName' => 'response'
-                    ]
-                ]
-            ]
+                        'rootNodeName' => 'response',
+                    ],
+                ],
+            ],
         ];
     }
 }

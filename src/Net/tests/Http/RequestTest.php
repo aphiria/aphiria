@@ -45,7 +45,7 @@ class RequestTest extends TestCase
             $this->headers,
             $this->body,
             $this->properties,
-            '2.0'
+            '2.0',
         );
     }
 
@@ -92,7 +92,7 @@ class RequestTest extends TestCase
         $request = new Request('GET', new Uri('https://example.com'));
         $request->headers->add('Foo', 'bar');
         $request->headers->add('Foo', 'baz', true);
-        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar, baz\r\n\r\n", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar, baz\r\n\r\n", (string) $request);
     }
 
     public function testRequestTargetTypeAbsoluteFormIncludesEntireUri(): void
@@ -100,11 +100,11 @@ class RequestTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://example.com:4343/foo?bar'),
-            requestTargetType: RequestTargetType::AbsoluteForm
+            requestTargetType: RequestTargetType::AbsoluteForm,
         );
         $this->assertSame(
             "GET https://example.com:4343/foo?bar HTTP/1.1\r\nHost: example.com:4343\r\n\r\n",
-            (string)$request
+            (string) $request,
         );
     }
 
@@ -113,9 +113,9 @@ class RequestTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://example.com'),
-            requestTargetType: RequestTargetType::AsteriskForm
+            requestTargetType: RequestTargetType::AsteriskForm,
         );
-        $this->assertSame("GET * HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
+        $this->assertSame("GET * HTTP/1.1\r\nHost: example.com\r\n\r\n", (string) $request);
     }
 
     public function testRequestTargetTypeAuthorityFormIncludeUriAuthorityWithoutUserInfo(): void
@@ -123,9 +123,9 @@ class RequestTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('https://user:password@www.example.com:4343/foo?bar'),
-            requestTargetType: RequestTargetType::AuthorityForm
+            requestTargetType: RequestTargetType::AuthorityForm,
         );
-        $this->assertSame("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string)$request);
+        $this->assertSame("GET www.example.com:4343 HTTP/1.1\r\n\r\n", (string) $request);
     }
 
     /**
@@ -139,27 +139,27 @@ class RequestTest extends TestCase
     public function testRequestTargetTypeOriginFormIncludesHostHeader(string $requestQueryString, string $uri, string $expectedRequestQueryString): void
     {
         $requestQueryString = new Request($requestQueryString, new Uri($uri));
-        $this->assertEquals($expectedRequestQueryString, (string)$requestQueryString);
+        $this->assertEquals($expectedRequestQueryString, (string) $requestQueryString);
     }
 
     public function testRequestWithHeadersAndBodyEndsWithBody(): void
     {
         $request = new Request('GET', new Uri('https://example.com'), new Headers(), new StringBody('foo'));
         $request->headers->add('Foo', 'bar');
-        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\nfoo", (string) $request);
     }
 
     public function testRequestWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
         $request->headers->add('Foo', 'bar');
-        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\n", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\nFoo: bar\r\n\r\n", (string) $request);
     }
 
     public function testRequestWithNoHeadersOrBodyEndsWithBlankLine(): void
     {
         $request = new Request('GET', new Uri('https://example.com'));
-        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n", (string)$request);
+        $this->assertSame("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n", (string) $request);
     }
 
     public function testSettingBody(): void

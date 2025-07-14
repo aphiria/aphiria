@@ -20,7 +20,6 @@ use Aphiria\Console\Commands\ICommandHandler;
 use Aphiria\Console\ConsoleGateway;
 use Aphiria\Console\Input\Argument;
 use Aphiria\Console\Input\ArgumentType;
-use Aphiria\Console\Input\Compilers\CommandNotFoundException;
 use Aphiria\Console\Input\Input;
 use Aphiria\Console\Input\Option;
 use Aphiria\Console\Input\OptionType;
@@ -83,7 +82,7 @@ class ConsoleGatewayTest extends TestCase
         };
         $this->commands->registerCommand(
             new Command('foo'),
-            $commandHandler::class
+            $commandHandler::class,
         );
         \ob_start();
         $status = $this->consoleGateway->handle(new Input('foo'), $this->output);
@@ -159,9 +158,9 @@ class ConsoleGatewayTest extends TestCase
                 'holiday',
                 [new Argument('holiday', ArgumentType::Required, '')],
                 [new Option('yell', OptionType::OptionalValue, 'y', '', 'yes')],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         \ob_start();
         $status = $this->consoleGateway->handle(new Input('holiday', ['holiday' => 'birthday'], ['yell' => 'yes']), $this->output);

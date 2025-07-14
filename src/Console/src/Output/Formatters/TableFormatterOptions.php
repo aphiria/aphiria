@@ -34,7 +34,7 @@ readonly class TableFormatterOptions
         public string $horizontalBorderChar = '-',
         public string $intersectionChar = '+',
         public bool $padAfter = true,
-        public string $eolChar = PHP_EOL
+        public string $eolChar = PHP_EOL,
     ) {
         if (empty($this->eolChar)) {
             throw new InvalidArgumentException('EOL character cannot be empty');

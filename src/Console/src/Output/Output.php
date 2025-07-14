@@ -33,7 +33,7 @@ abstract class Output implements IOutput
      */
     public function __construct(
         protected readonly IOutputCompiler $outputCompiler = new OutputCompiler(),
-        ?IDriver $driver = null
+        ?IDriver $driver = null,
     ) {
         $this->driver = $driver ?? new DriverSelector()->select();
     }
@@ -51,8 +51,8 @@ abstract class Output implements IOutput
      */
     public function write(string|array $messages): void
     {
-        foreach ((array)$messages as $message) {
-            $this->doWrite($this->outputCompiler->compile((string)$message, $this->includeStyles), false);
+        foreach ((array) $messages as $message) {
+            $this->doWrite($this->outputCompiler->compile((string) $message, $this->includeStyles), false);
         }
     }
 
@@ -61,8 +61,8 @@ abstract class Output implements IOutput
      */
     public function writeln(string|array $messages): void
     {
-        foreach ((array)$messages as $message) {
-            $this->doWrite($this->outputCompiler->compile((string)$message), true);
+        foreach ((array) $messages as $message) {
+            $this->doWrite($this->outputCompiler->compile((string) $message), true);
         }
     }
 

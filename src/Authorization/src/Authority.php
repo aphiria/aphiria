@@ -28,7 +28,7 @@ class Authority implements IAuthority
     public function __construct(
         private readonly AuthorizationPolicyRegistry $policies,
         private readonly AuthorizationRequirementHandlerRegistry $requirementHandlers,
-        private readonly bool $continueOnFailure = true
+        private readonly bool $continueOnFailure = true,
     ) {}
 
     /**
@@ -39,7 +39,7 @@ class Authority implements IAuthority
     public function authorize(
         IPrincipal $user,
         AuthorizationPolicy|string $policy,
-        ?object $resource = null
+        ?object $resource = null,
     ): AuthorizationResult {
         if (\is_string($policy)) {
             $policyName = $policy;

@@ -37,7 +37,7 @@ class ConsoleGateway implements ICommandHandler
      */
     public function __construct(
         private readonly CommandRegistry $commands,
-        private readonly IServiceResolver $commandHandlerResolver
+        private readonly IServiceResolver $commandHandlerResolver,
     ) {
         $this->registerDefaultCommands();
     }
@@ -75,7 +75,7 @@ class ConsoleGateway implements ICommandHandler
     {
         $this->commands->registerManyCommands([
             new CommandBinding(new HelpCommand(), HelpCommandHandler::class),
-            new CommandBinding(new AboutCommand(), AboutCommandHandler::class)
+            new CommandBinding(new AboutCommand(), AboutCommandHandler::class),
         ]);
     }
 

@@ -38,7 +38,7 @@ class FlushFrameworkCachesCommandHandler implements ICommandHandler
         private readonly ?ICommandRegistryCache $commandCache,
         private readonly ?IRouteCache $routeCache,
         private readonly ?ITrieCache $trieCache,
-        private readonly ?IObjectConstraintsRegistryCache $constraintCache
+        private readonly ?IObjectConstraintsRegistryCache $constraintCache,
     ) {}
 
     /**

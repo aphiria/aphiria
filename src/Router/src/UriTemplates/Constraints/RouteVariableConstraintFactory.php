@@ -43,7 +43,7 @@ final class RouteVariableConstraintFactory
 
         if (!$constraint instanceof IRouteVariableConstraint) {
             throw new RuntimeException(
-                "Factory for constraint \"$slug\" does not return an instance of " . IRouteVariableConstraint::class
+                "Factory for constraint \"$slug\" does not return an instance of " . IRouteVariableConstraint::class,
             );
         }
 

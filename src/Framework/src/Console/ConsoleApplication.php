@@ -34,7 +34,7 @@ class ConsoleApplication implements IApplication
     public function __construct(
         private readonly ICommandHandler $consoleGateway,
         private readonly Input $input,
-        private readonly IOutput $output = new ConsoleOutput()
+        private readonly IOutput $output = new ConsoleOutput(),
     ) {}
 
     /**

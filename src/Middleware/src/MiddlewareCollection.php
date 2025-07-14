@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Middleware;
 
-use IteratorAggregate;
-
 /**
  * Defines a collection of middleware
  */

@@ -28,7 +28,7 @@ final class Put extends Route
         ?string $host = null,
         ?string $name = null,
         bool $isHttpsOnly = false,
-        array $parameters = []
+        array $parameters = [],
     ) {
         /** @psalm-suppress MixedArgumentTypeCoercion Psalm does not pass array types via inheritdoc (#4504) - bug */
         parent::__construct(['PUT'], $path, $host, $name, $isHttpsOnly, $parameters);

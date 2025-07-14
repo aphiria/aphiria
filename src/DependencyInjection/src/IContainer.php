@@ -32,7 +32,7 @@ interface IContainer extends IServiceResolver
         string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
-        bool $resolveAsSingleton = false
+        bool $resolveAsSingleton = false,
     ): void;
 
     /**
@@ -78,7 +78,7 @@ interface IContainer extends IServiceResolver
         object|string $instance,
         string $methodName,
         array $primitives = [],
-        bool $ignoreMissingMethod = false
+        bool $ignoreMissingMethod = false,
     ): mixed;
 
     /**

@@ -47,7 +47,7 @@ final class Argument
         public readonly string $name,
         array|ArgumentType $type,
         public readonly ?string $description = null,
-        public readonly mixed $defaultValue = null
+        public readonly mixed $defaultValue = null,
     ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Argument name cannot be empty');

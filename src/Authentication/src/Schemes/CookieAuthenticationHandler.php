@@ -37,7 +37,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
      */
     public function __construct(
         protected readonly RequestParser $requestParser = new RequestParser(),
-        protected readonly ResponseFormatter $responseFormatter = new ResponseFormatter()
+        protected readonly ResponseFormatter $responseFormatter = new ResponseFormatter(),
     ) {}
 
     /**
@@ -49,7 +49,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
         if (($cookieValue = $this->getCookieValueFromRequest($request, $scheme)) === null) {
             return AuthenticationResult::fail(
                 new MissingAuthenticationDataException("Cookie {$scheme->options->cookieName} not set"),
-                $scheme->name
+                $scheme->name,
             );
         }
 
@@ -99,8 +99,8 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
                 $scheme->options->cookieDomain,
                 $scheme->options->cookieIsSecure,
                 $scheme->options->cookieIsHttpOnly,
-                $scheme->options->cookieSameSite
-            )
+                $scheme->options->cookieSameSite,
+            ),
         );
     }
 
@@ -117,7 +117,7 @@ abstract class CookieAuthenticationHandler implements IAuthenticationSchemeHandl
             $scheme->options->cookieDomain,
             $scheme->options->cookieIsSecure,
             $scheme->options->cookieIsHttpOnly,
-            $scheme->options->cookieSameSite
+            $scheme->options->cookieSameSite,
         );
     }
 

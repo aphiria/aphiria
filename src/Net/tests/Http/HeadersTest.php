@@ -35,7 +35,7 @@ class HeadersTest extends TestCase
         return [
             ['foo', $object],
             ['foo', [$object]],
-            ['foo', ['bar', $object]]
+            ['foo', ['bar', $object]],
         ];
     }
 
@@ -165,14 +165,14 @@ class HeadersTest extends TestCase
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Foo', 'baz', true);
-        $this->assertSame('Foo: bar, baz', (string)$this->headers);
+        $this->assertSame('Foo: bar, baz', (string) $this->headers);
     }
 
     public function testSerializingSplitsHeadersIntoLines(): void
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Baz', 'blah');
-        $this->assertSame("Foo: bar\r\nBaz: blah", (string)$this->headers);
+        $this->assertSame("Foo: bar\r\nBaz: blah", (string) $this->headers);
     }
 
     public function testSettingHeaderAndAppendingItAppendsIt(): void

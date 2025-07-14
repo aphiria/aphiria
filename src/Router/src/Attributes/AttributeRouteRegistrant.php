@@ -73,7 +73,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeGroupOptions,
                     function (RouteCollectionBuilder $routeBuilders) use ($reflectionController) {
                         $this->registerRouteBuilders($reflectionController, $routeBuilders);
-                    }
+                    },
                 );
             }
         }
@@ -102,7 +102,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                 $middlewareBindings[] = new MiddlewareBinding(
                     $middlewareAttributeInstance->className,
-                    $middlewareAttributeInstance->parameters
+                    $middlewareAttributeInstance->parameters,
                 );
             }
         }
@@ -121,7 +121,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $controllerAttributeInstance->isHttpsOnly,
                 $routeConstraints,
                 $middlewareBindings,
-                $controllerAttributeInstance->parameters
+                $controllerAttributeInstance->parameters,
             );
         }
 
@@ -157,7 +157,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                     $middlewareBindings[] = new MiddlewareBinding(
                         $middlewareAttributeInstance->className,
-                        $middlewareAttributeInstance->parameters
+                        $middlewareAttributeInstance->parameters,
                     );
                 }
             }
@@ -196,8 +196,8 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeBuilder->withManyConstraints($routeConstraints);
                 }
 
-                if (!empty((string)$routeAttributeInstance->name)) {
-                    $routeBuilder->withName((string)$routeAttributeInstance->name);
+                if (!empty((string) $routeAttributeInstance->name)) {
+                    $routeBuilder->withName((string) $routeAttributeInstance->name);
                 }
 
                 if (!empty($routeAttributeInstance->parameters)) {

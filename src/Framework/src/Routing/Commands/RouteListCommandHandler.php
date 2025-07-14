@@ -36,7 +36,7 @@ class RouteListCommandHandler implements ICommandHandler
     public function __construct(
         private readonly RouteCollection $routes,
         private readonly MiddlewareCollection $middleware,
-        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
+        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter(),
     ) {}
 
     /**
@@ -77,7 +77,7 @@ class RouteListCommandHandler implements ICommandHandler
             $rows[] = [
                 $this->formatHttpMethodString($route),
                 $this->formatUriTemplate($route->uriTemplate->pathTemplate),
-                "$formattedMiddlewareText<comment>{$this->formatClassName($route->action->className, $useFqn)}::{$route->action->methodName}</comment>"
+                "$formattedMiddlewareText<comment>{$this->formatClassName($route->action->className, $useFqn)}::{$route->action->methodName}</comment>",
             ];
         }
 

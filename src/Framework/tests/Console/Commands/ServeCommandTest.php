@@ -35,7 +35,7 @@ class ServeCommandTest extends TestCase
             new Option('domain', OptionType::RequiredValue, null, 'The domain to run your app at', 'localhost'),
             new Option('port', OptionType::RequiredValue, null, 'The port to run your app at', 8080),
             new Option('docroot', OptionType::RequiredValue, null, 'The document root of your app', 'public'),
-            new Option('router', OptionType::RequiredValue, null, 'The router file for your app', 'router')
+            new Option('router', OptionType::RequiredValue, null, 'The router file for your app', 'router'),
         ];
         $this->assertEquals($expectedOptions, $command->options);
     }
@@ -43,7 +43,7 @@ class ServeCommandTest extends TestCase
     public function testRouterPathCanBeSetFromConfig(): void
     {
         GlobalConfiguration::addConfigurationSource(
-            new HashTableConfiguration(['aphiria' => ['api' => ['localhostRouterPath' => '/foo']]])
+            new HashTableConfiguration(['aphiria' => ['api' => ['localhostRouterPath' => '/foo']]]),
         );
         $command = new ServeCommand();
         $this->assertCount(4, $command->options);

@@ -31,6 +31,6 @@ readonly class MultipartBodyPart
      */
     public function __toString(): string
     {
-        return "{$this->headers}\r\n\r\n" . ($this->body === null ? '' : (string)$this->body);
+        return "{$this->headers}\r\n\r\n" . ($this->body === null ? '' : (string) $this->body);
     }
 }

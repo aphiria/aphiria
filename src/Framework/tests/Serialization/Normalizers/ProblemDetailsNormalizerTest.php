@@ -42,16 +42,16 @@ class ProblemDetailsNormalizerTest extends TestCase
             'detail' => 'details',
             'status' => HttpStatusCode::InternalServerError->value,
             'instance' => 'instance',
-            'extensions' => ['foo' => 'bar']
+            'extensions' => ['foo' => 'bar'],
         ];
         $expectedProblemDetails = new ProblemDetails('foo', 'title', 'details', HttpStatusCode::InternalServerError, 'instance', ['foo' => 'bar']);
         $this->assertEquals(
             $expectedProblemDetails,
-            $this->objectNormalizer->denormalize($normalizedData, ProblemDetails::class)
+            $this->objectNormalizer->denormalize($normalizedData, ProblemDetails::class),
         );
         $this->assertEquals(
             $expectedProblemDetails,
-            $this->normalizer->denormalize($normalizedData, ProblemDetails::class)
+            $this->normalizer->denormalize($normalizedData, ProblemDetails::class),
         );
     }
 
@@ -92,7 +92,7 @@ class ProblemDetailsNormalizerTest extends TestCase
             'detail' => null,
             'status' => HttpStatusCode::InternalServerError->value,
             'instance' => null,
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
         $this->assertEquals($expectedNormalizedValue, $this->normalizer->normalize($problemDetails));
     }
@@ -105,7 +105,7 @@ class ProblemDetailsNormalizerTest extends TestCase
             'title' => null,
             'detail' => null,
             'status' => HttpStatusCode::InternalServerError->value,
-            'instance' => null
+            'instance' => null,
         ];
         $this->assertEquals($expectedNormalizedValue, $this->normalizer->normalize($problemDetails));
     }

@@ -17,6 +17,4 @@ use Exception;
 /**
  * Defines the exception that's thrown when an authentication handler does not support certain features
  */
-final class UnsupportedAuthenticationHandlerException extends Exception
-{
-}
+final class UnsupportedAuthenticationHandlerException extends Exception {}

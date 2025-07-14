@@ -29,7 +29,7 @@ final class BetweenConstraint implements IRouteVariableConstraint
         private readonly int|float $min,
         private readonly int|float $max,
         private readonly bool $minIsInclusive = true,
-        private readonly bool $maxIsInclusive = true
+        private readonly bool $maxIsInclusive = true,
     ) {}
 
     /**

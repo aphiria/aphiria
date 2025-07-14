@@ -49,7 +49,7 @@ class JsonMediaTypeFormatterTest extends TestCase
     {
         $this->assertEquals(
             ['application/json', 'text/json', 'application/problem+json'],
-            $this->formatter->supportedMediaTypes
+            $this->formatter->supportedMediaTypes,
         );
     }
 
