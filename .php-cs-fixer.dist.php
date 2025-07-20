@@ -40,7 +40,7 @@ return new PhpCsFixer\Config()
                 'switch_case',
                 'yield',
                 'yield_from',
-            ]
+            ],
         ],
         'no_unused_imports' => true,
         'no_whitespace_in_blank_line' => true,
