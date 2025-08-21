@@ -146,6 +146,34 @@ class RouteBuilderTest extends TestCase
         $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->parameters);
     }
 
+
+    public function testWithoutMiddlewareRemovesBinding(): void
+    {
+        $middleware = new class () {};
+
+        // Add middleware to the route
+        $this->routeBuilder->withMiddleware($middleware::class, ['bar' => 'baz']);
+
+        $controller = new class () {
+            public function bar(): void {}
+        };
+        $this->routeBuilder->mapsToMethod($controller::class, 'bar');
+
+        $route = $this->routeBuilder->build();
+
+        // Ensure middleware is initially set
+        $this->assertCount(1, $route->middlewareBindings);
+        $this->assertSame($middleware::class, $route->middlewareBindings[0]->className);
+        $this->assertEquals(['bar' => 'baz'], $route->middlewareBindings[0]->parameters);
+
+        // Call withoutMiddleware to remove it
+        $this->routeBuilder->withoutMiddleware($middleware::class);
+        $route = $this->routeBuilder->build();
+
+        // Assert that the middleware has been removed
+        $this->assertCount(0, $route->middlewareBindings, 'Middleware binding should be removed.');
+    }
+
     public function testNameIsSet(): void
     {
         $controller = new class () {

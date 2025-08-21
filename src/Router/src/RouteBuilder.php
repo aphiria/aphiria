@@ -161,6 +161,24 @@ class RouteBuilder
     }
 
     /**
+     * Unbind middleware class to the route
+     *
+     * @param class-string $middlewareClassName The name of the middleware class to unbind
+     * @return static For chaining
+     */
+    public function withoutMiddleware(string $middlewareClassName): static
+    {
+        $this->middlewareBindings = array_values(
+            array_filter(
+                $this->middlewareBindings,
+                static fn(MiddlewareBinding $binding) => $binding->className !== $middlewareClassName
+            )
+        );
+
+        return $this;
+    }
+
+    /**
      * Binds a name to the route
      *
      * @param string $name The name of the route
