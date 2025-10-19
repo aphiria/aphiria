@@ -14,6 +14,7 @@ namespace Aphiria\Application\Discoverers\Routing;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Application\Discoverers\DiscoveredComponent;
+use Aphiria\Application\Discoverers\IComponentBuilder;
 use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Attributes\Middleware;
@@ -31,7 +32,7 @@ use Aphiria\Routing\RouteGroupOptions;
  *
  * TODO:  Move this into another library
  */
-final class RouteComponentBuilder
+final class RouteComponentBuilder implements IComponentBuilder
 {
     /**
      * @param RouteCollection $routes The routes collection to add routes to

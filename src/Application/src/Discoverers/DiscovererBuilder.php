@@ -12,6 +12,9 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Discoverers;
 
+/**
+ * Defines the builder of discoverers
+ */
 final class DiscovererBuilder implements IComponentBuilder
 {
     public function __construct(private readonly IDiscovererResolver $discovererResolver) {}
@@ -21,6 +24,9 @@ final class DiscovererBuilder implements IComponentBuilder
      */
     public function build(array $components): void
     {
+        foreach ($components as $component) {
+
+        }
         // TODO: Missing logic to actually build the discoverers
     }
 }

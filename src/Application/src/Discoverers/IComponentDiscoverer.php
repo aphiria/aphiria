@@ -14,6 +14,9 @@ namespace Aphiria\Application\Discoverers;
 
 use ReflectionClass;
 
+/**
+ * Defines the interface for component discoverers to implement
+ */
 interface IComponentDiscoverer
 {
     /**

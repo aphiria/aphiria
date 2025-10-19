@@ -14,6 +14,7 @@ namespace Aphiria\Application\Discoverers\Routing;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Application\Discoverers\DiscoveredComponent;
+use Aphiria\Application\Discoverers\IComponentDiscoverer;
 use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Attributes\Middleware;
@@ -28,7 +29,7 @@ use ReflectionMethod;
  *
  * TODO:  Move this into another library
  */
-final class RouteComponentDiscoverer
+final class RouteComponentDiscoverer implements IComponentDiscoverer
 {
     /**
      * @inheritdoc

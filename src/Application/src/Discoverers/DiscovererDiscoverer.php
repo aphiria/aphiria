@@ -15,7 +15,7 @@ namespace Aphiria\Application\Discoverers;
 use ReflectionClass;
 
 /**
- * Defines the discoverer for discoverers
+ * Defines the discoverer of discoverers
  */
 final class DiscovererDiscoverer implements IComponentDiscoverer
 {
