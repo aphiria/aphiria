@@ -12,29 +12,30 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Discoverers;
 
+use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IServiceResolver;
 use Aphiria\DependencyInjection\ResolutionException;
 use RuntimeException;
 
 /**
- * Defines the container discoverer resolver
+ * Defines the container resolver
  */
-final class ContainerDiscovererResolver implements IDiscovererResolver
+final class ContainerResolver implements IResolver
 {
     /**
      * @param IServiceResolver $serviceResolver The service resolver to use
      */
-    public function __construct(private readonly IServiceResolver $serviceResolver) {}
+    public function __construct(private readonly IServiceResolver $serviceResolver = new Container()) {}
 
     /**
      * @inheritdoc
      */
-    public function resolve(string $discovererClassName): IComponentDiscoverer
+    public function resolve(string $className): object
     {
         try {
-            return $this->serviceResolver->resolve($discovererClassName);
+            return $this->serviceResolver->resolve($className);
         } catch (ResolutionException $ex) {
-            throw new RuntimeException('Could not resolve discoverer', 0, $ex);
+            throw new RuntimeException("Could not resolve $className", 0, $ex);
         }
     }
 }

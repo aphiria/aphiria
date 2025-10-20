@@ -15,9 +15,9 @@ namespace Aphiria\Application\Discoverers;
 use ReflectionClass;
 
 /**
- * Defines the discoverer of discoverers
+ * Defines the discoverer for component builders
  */
-final class DiscovererDiscoverer implements IComponentDiscoverer
+final class BuilderDiscoverer implements IComponentDiscoverer
 {
     public string $componentName {
         get => 'aphiria:discoverers';
@@ -28,10 +28,10 @@ final class DiscovererDiscoverer implements IComponentDiscoverer
      */
     public function discover(ReflectionClass $class): array
     {
-        if ($class->getName() === self::class || !$class->implementsInterface(IComponentDiscoverer::class)) {
+        if ($class->getName() === self::class || !$class->implementsInterface(IComponentBuilder::class)) {
             return [];
         }
 
-        return [new DiscoveredComponent($this->componentName, $class)];
+        return [new DiscoveredComponent($class)];
     }
 }

@@ -31,6 +31,10 @@ use ReflectionMethod;
  */
 final class RouteComponentDiscoverer implements IComponentDiscoverer
 {
+    public string $componentName {
+        get => 'aphiria:routing';
+    }
+
     /**
      * @inheritdoc
      */
@@ -42,9 +46,9 @@ final class RouteComponentDiscoverer implements IComponentDiscoverer
 
         // Only consider classes that extend Controller or use the #[Controller] attribute
         if (!empty($class->getAttributes(ControllerAttribute::class))) {
-            $controllerComponent = new DiscoveredComponent($class, attribute: $class->getAttributes(ControllerAttribute::class)[0]);
+            $controllerComponent = new DiscoveredComponent($this->componentName, $class, attribute: $class->getAttributes(ControllerAttribute::class)[0]);
         } elseif ($class->isSubclassOf(Controller::class)) {
-            $controllerComponent = new DiscoveredComponent($class);
+            $controllerComponent = new DiscoveredComponent($this->componentName, $class);
         } else {
             return [];
         }
@@ -93,6 +97,7 @@ final class RouteComponentDiscoverer implements IComponentDiscoverer
     ): void {
         foreach ($method->getAttributes(RouteConstraint::class, ReflectionAttribute::IS_INSTANCEOF) as $routeConstraintAttribute) {
             $components[] = new DiscoveredComponent(
+                $this->componentName,
                 $controllerComponent->class,
                 method: $method,
                 attribute: $routeConstraintAttribute,

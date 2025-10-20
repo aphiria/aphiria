@@ -14,7 +14,7 @@ namespace Aphiria\Application\Discoverers\Routing;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Application\Discoverers\DiscoveredComponent;
-use Aphiria\Application\Discoverers\IComponentBuilder;
+use Aphiria\Application\Discoverers\ICacheableComponentBuilder;
 use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Attributes\Middleware;
@@ -32,8 +32,12 @@ use Aphiria\Routing\RouteGroupOptions;
  *
  * TODO:  Move this into another library
  */
-final class RouteComponentBuilder implements IComponentBuilder
+final class RouteComponentBuilder implements ICacheableComponentBuilder
 {
+    public string $componentName {
+        get => 'aphiria:routing';
+    }
+
     /**
      * @param RouteCollection $routes The routes collection to add routes to
      * @param IRouteCache|null $routeCache The route cache to use, or null if not using a cache
@@ -45,7 +49,6 @@ final class RouteComponentBuilder implements IComponentBuilder
 
     /**
      * @inheritdoc
-     * @param list<DiscoveredComponent> $components
      */
     public function build(array $components): void
     {

@@ -17,16 +17,23 @@ use RecursiveIteratorIterator;
 use ReflectionClass;
 use ReflectionException;
 use RegexIterator;
+use RuntimeException;
 
 /**
  * Defines the class that scans for discoverers
+ *
+ * TODO:  Think about the PHPDoc above, name, and main method of this class - I'm doing more than just scanning - I'm scanning + building
  */
 final class DiscovererScanner
 {
     /**
      * @param string $path The path to scan for discoverers in
+     * @param IResolver $resolver The resolver to use
      */
-    public function __construct(private readonly string $path) {}
+    public function __construct(
+        private readonly string $path,
+        private readonly IResolver $resolver = new ContainerResolver(),
+    ) {}
 
     /**
      * Scans for discoverers
@@ -34,13 +41,39 @@ final class DiscovererScanner
     public function scan(): void
     {
         $discovererDiscoverer = new DiscovererDiscoverer();
+        $builderDiscoverer = new BuilderDiscoverer();
+        $componentNamesToDiscoverers = [];
+        $componentNamesToBuilders = [];
 
-        // Recursively scan all files in the path
+        /**
+         * TODO:
+         * - Likely need BuilderDiscoverer to be cacheable so I can bypass all this if there is a cache
+         * - For now, just proceeding to write the code as if I don't have any caching
+         * - I'm going a little cross-eyed at the fact that I'm discovering both discoverers and builders, and need to be crystal clear on what's being discovered, and what (if anything) is being built for discoverers and builders that are found during scanning
+         * - Need to figure out what's returned by DiscovererDiscoverer::discover(), and whether I actually have a builder for them
+         * - Need to figure out what's returned by BuilderDiscoverer::discover(), and whether I actually have a builder for them
+         * - Need to think about both of the above cases and determine if I need a Builder for either of them, and if so, what they're actually building (need to think about caching, too)
+         */
+        // Find all discoverers
         foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredComponent) {
-            // TODO: Need to actually loop through all the discovered discoverers, run discover() on them
+            \assert($discoveredComponent->class->implementsInterface(IComponentDiscoverer::class));
+            $componentNamesToDiscoverers[$discovererDiscoverer->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
         }
 
-        // TODO: Need a place to actually register component builders and call build() on them
+        // Find all builders
+        foreach ($this->scanDirectory($this->path, $builderDiscoverer) as $discoveredComponent) {
+            \assert($discoveredComponent->class->implementsInterface(IComponentBuilder::class));
+            $componentNamesToBuilders[$builderDiscoverer->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
+        }
+
+        // Build all discovered components
+        foreach ($componentNamesToDiscoverers as $componentName => $discoverer) {
+            if (!isset($componentNamesToBuilders[$componentName])) {
+                throw new RuntimeException("No builder found for component $componentName");
+            }
+
+            $componentNamesToBuilders[$componentName]->build($this->scanDirectory($this->path, $discoverer));
+        }
     }
 
     /**

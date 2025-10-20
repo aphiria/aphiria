@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Application\Discoverers;
 
 /**
- * Defines the interface for cacehable component builders to implement
+ * Defines the interface for cacheable component builders to implement
  */
 interface ICacheableComponentBuilder extends IComponentBuilder
 {

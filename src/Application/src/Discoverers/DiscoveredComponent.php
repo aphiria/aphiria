@@ -23,6 +23,7 @@ use ReflectionProperty;
 class DiscoveredComponent
 {
     /**
+     * @param string $componentName The name of the component
      * @param ReflectionClass $class The class that was discovered
      * @param ReflectionMethod|null $method The method that was discovered if there was one, otherwise null
      * @param ReflectionProperty|null $property The property that was discovered if there was one, otherwise null
@@ -31,6 +32,7 @@ class DiscoveredComponent
      * @param list<DiscoveredComponent> $childComponents The child components that were discovered under this component, if any
      */
     public function __construct(
+        public protected(set) string $componentName,
         public protected(set) ReflectionClass $class,
         public protected(set) ?ReflectionMethod $method = null,
         public protected(set) ?ReflectionProperty $property = null,

@@ -19,6 +19,9 @@ use ReflectionClass;
  */
 interface IComponentDiscoverer
 {
+    /** @var string The name of the component being discovered, which must match the corresponding component builder's component name */
+    public string $componentName { get; }
+
     /**
      * Discovers all components in the input class
      *
