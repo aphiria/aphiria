@@ -57,13 +57,13 @@ final class DiscovererScanner
         // Find all discoverers
         foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredComponent) {
             \assert($discoveredComponent->class->implementsInterface(IComponentDiscoverer::class));
-            $componentNamesToDiscoverers[$discovererDiscoverer->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
+            $componentNamesToDiscoverers[$discoveredComponent->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
         }
 
         // Find all builders
         foreach ($this->scanDirectory($this->path, $builderDiscoverer) as $discoveredComponent) {
             \assert($discoveredComponent->class->implementsInterface(IComponentBuilder::class));
-            $componentNamesToBuilders[$builderDiscoverer->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
+            $componentNamesToBuilders[$discoveredComponent->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
         }
 
         // Build all discovered components
