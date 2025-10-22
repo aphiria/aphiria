@@ -10,16 +10,17 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Application\Tests\Discoverers\Delete;
+namespace Aphiria\Application\Discoverers;
 
-use Aphiria\Application\Discoverers\DiscoveredComponent;
-use Aphiria\Application\Discoverers\IComponentDiscoverer;
 use ReflectionClass;
 
-class Discoverer implements IComponentDiscoverer
+/**
+ * Defines the discoverer of component discoverers
+ */
+final class ComponentDiscovererDiscoverer implements IComponentDiscoverer
 {
     public string $componentName {
-        get => 'app:foo';
+        get => 'aphiria:discoverers';
     }
 
     /**
@@ -27,8 +28,7 @@ class Discoverer implements IComponentDiscoverer
      */
     public function discover(ReflectionClass $class): array
     {
-        // Do  some dummy filtering
-        if ($class->name !== SomeClass::class) {
+        if ($class->getName() === self::class || !$class->implementsInterface(IComponentDiscoverer::class)) {
             return [];
         }
 

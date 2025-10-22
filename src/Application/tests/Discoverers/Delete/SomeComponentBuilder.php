@@ -15,9 +15,8 @@ namespace Aphiria\Application\Tests\Discoverers\Delete;
 use Aphiria\Application\Discoverers\IComponentBuilder;
 use Exception;
 
-class Builder implements IComponentBuilder
+class SomeComponentBuilder implements IComponentBuilder
 {
-    public ?string $builtComponent = null;
     public string $componentName {
         get => 'app:foo';
     }
@@ -31,6 +30,12 @@ class Builder implements IComponentBuilder
             throw new Exception('Expected 1 component, got ' . \count($components));
         }
 
-        $this->builtComponent = $components[0]->class->name;
+        if ($components[0]->componentName !== $this->componentName) {
+            throw new Exception('Expected component name to be ' . $this->componentName);
+        }
+
+        if ($components[0]->class->name !== SomeClass::class) {
+            throw new Exception('Expected class to be ' . SomeClass::class);
+        }
     }
 }

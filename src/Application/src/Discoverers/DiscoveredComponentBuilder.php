@@ -20,11 +20,11 @@ use RegexIterator;
 use RuntimeException;
 
 /**
- * Defines the class that scans for discoverers
+ * Defines the discovered component builder
  *
  * TODO:  Think about the PHPDoc above, name, and main method of this class - I'm doing more than just scanning - I'm scanning + building
  */
-final class DiscovererScanner
+final class DiscoveredComponentBuilder
 {
     /**
      * @param string $path The path to scan for discoverers in
@@ -36,12 +36,12 @@ final class DiscovererScanner
     ) {}
 
     /**
-     * Scans for discoverers
+     * Builds all discovered components
      */
-    public function scan(): void
+    public function build(): void
     {
-        $discovererDiscoverer = new DiscovererDiscoverer();
-        $builderDiscoverer = new BuilderDiscoverer();
+        $discovererDiscoverer = new ComponentDiscovererDiscoverer();
+        $builderDiscoverer = new ComponentBuilderDiscoverer();
         $componentNamesToDiscoverers = [];
         $componentNamesToBuilders = [];
 
@@ -49,10 +49,6 @@ final class DiscovererScanner
          * TODO:
          * - Likely need BuilderDiscoverer to be cacheable so I can bypass all this if there is a cache
          * - For now, just proceeding to write the code as if I don't have any caching
-         * - I'm going a little cross-eyed at the fact that I'm discovering both discoverers and builders, and need to be crystal clear on what's being discovered, and what (if anything) is being built for discoverers and builders that are found during scanning
-         * - Need to figure out what's returned by DiscovererDiscoverer::discover(), and whether I actually have a builder for them
-         * - Need to figure out what's returned by BuilderDiscoverer::discover(), and whether I actually have a builder for them
-         * - Need to think about both of the above cases and determine if I need a Builder for either of them, and if so, what they're actually building (need to think about caching, too)
          */
         // Find all discoverers
         foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredComponent) {
