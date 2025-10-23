@@ -19,10 +19,6 @@ use ReflectionClass;
  */
 final class ComponentBuilderDiscoverer implements IComponentDiscoverer
 {
-    public string $componentName {
-        get => 'aphiria:discoverers';
-    }
-
     /**
      * @inheritdoc
      */
@@ -32,6 +28,6 @@ final class ComponentBuilderDiscoverer implements IComponentDiscoverer
             return [];
         }
 
-        return [new DiscoveredComponent($this->componentName, $class)];
+        return [new DiscoveredComponent($class)];
     }
 }

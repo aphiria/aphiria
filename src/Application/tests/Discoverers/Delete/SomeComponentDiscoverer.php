@@ -18,10 +18,6 @@ use ReflectionClass;
 
 class SomeComponentDiscoverer implements IComponentDiscoverer
 {
-    public string $componentName {
-        get => 'app:foo';
-    }
-
     /**
      * @inheritdoc
      */
@@ -32,6 +28,6 @@ class SomeComponentDiscoverer implements IComponentDiscoverer
             return [];
         }
 
-        return [new DiscoveredComponent($this->componentName, $class)];
+        return [new DiscoveredComponent($class)];
     }
 }

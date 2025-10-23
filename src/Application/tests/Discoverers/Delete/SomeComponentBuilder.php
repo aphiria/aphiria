@@ -17,8 +17,8 @@ use Exception;
 
 class SomeComponentBuilder implements IComponentBuilder
 {
-    public string $componentName {
-        get => 'app:foo';
+    public string $discovererClassName {
+        get => SomeComponentDiscoverer::class ;
     }
 
     /**
@@ -28,10 +28,6 @@ class SomeComponentBuilder implements IComponentBuilder
     {
         if (\count($components) !== 1) {
             throw new Exception('Expected 1 component, got ' . \count($components));
-        }
-
-        if ($components[0]->componentName !== $this->componentName) {
-            throw new Exception('Expected component name to be ' . $this->componentName);
         }
 
         if ($components[0]->class->name !== SomeClass::class) {

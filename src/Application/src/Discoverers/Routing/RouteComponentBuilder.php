@@ -26,6 +26,7 @@ use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteCollectionBuilder;
 use Aphiria\Routing\RouteGroupOptions;
+use ReflectionMethod;
 
 /**
  * Defines the route component builder
@@ -34,8 +35,8 @@ use Aphiria\Routing\RouteGroupOptions;
  */
 final class RouteComponentBuilder implements ICacheableComponentBuilder
 {
-    public string $componentName {
-        get => 'aphiria:routing';
+    public string $discovererClassName {
+        get => RouteComponentDiscoverer::class;
     }
 
     /**

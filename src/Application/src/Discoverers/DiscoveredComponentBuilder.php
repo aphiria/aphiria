@@ -42,8 +42,10 @@ final class DiscoveredComponentBuilder
     {
         $discovererDiscoverer = new ComponentDiscovererDiscoverer();
         $builderDiscoverer = new ComponentBuilderDiscoverer();
-        $componentNamesToDiscoverers = [];
-        $componentNamesToBuilders = [];
+        /** @var list<IComponentDiscoverer> $discoverers */
+        $discoverers = [];
+        /** @var array<class-string<IComponentDiscoverer>, IComponentDiscoverer> $discovererClassNamesToBuilders */
+        $discovererClassNamesToBuilders = [];
 
         /**
          * TODO:
@@ -53,22 +55,28 @@ final class DiscoveredComponentBuilder
         // Find all discoverers
         foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredComponent) {
             \assert($discoveredComponent->class->implementsInterface(IComponentDiscoverer::class));
-            $componentNamesToDiscoverers[$discoveredComponent->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
+            $discoverers[] = $this->resolver->resolve($discoveredComponent->class->name);
         }
 
         // Find all builders
         foreach ($this->scanDirectory($this->path, $builderDiscoverer) as $discoveredComponent) {
             \assert($discoveredComponent->class->implementsInterface(IComponentBuilder::class));
-            $componentNamesToBuilders[$discoveredComponent->componentName] = $this->resolver->resolve($discoveredComponent->class->name);
+            $builder = $this->resolver->resolve($discoveredComponent->class->name);
+
+            if (isset($discovererClassNamesToBuilders[$builder->discovererClassName])) {
+                throw new RuntimeException("Duplicate builder found for discoverer $builder->discovererClassName");
+            }
+
+            $discovererClassNamesToBuilders[$builder->discovererClassName] = $builder;
         }
 
         // Build all discovered components
-        foreach ($componentNamesToDiscoverers as $componentName => $discoverer) {
-            if (!isset($componentNamesToBuilders[$componentName])) {
-                throw new RuntimeException("No builder found for component $componentName");
+        foreach ($discoverers as $discoverer) {
+            if (!isset($discovererClassNamesToBuilders[$discoverer::class])) {
+                throw new RuntimeException('No builder found for discoverer ' . $discoverer::class);
             }
 
-            $componentNamesToBuilders[$componentName]->build($this->scanDirectory($this->path, $discoverer));
+            $discovererClassNamesToBuilders[$discoverer::class]->build($this->scanDirectory($this->path, $discoverer));
         }
     }
 
