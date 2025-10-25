@@ -49,16 +49,97 @@ final class RouteComponentDiscoverer implements IComponentDiscoverer
             return [];
         }
 
-        foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+        $controllerComponents = $this->addComponentsForController($controllerComponent);
+        $methodComponents = $this->addComponentsForMethods($controllerComponent);
+
+        // Now that we've discovered all method components, be sure to add them as children of the controller component
+        $controllerComponent->childComponents = $methodComponents;
+
+        return [$controllerComponent, ...$controllerComponents, ...$methodComponents];
+    }
+
+    /**
+     * Adds a component from a class attribute to the list of components
+     *
+     * @param list<DiscoveredComponent> $components The list of components to add to
+     * @param ReflectionClass $class The class that the attribute was found on
+     * @param class-string $attributeType The type of attribute to find
+     */
+    private function addComponentFromClassAttribute(
+        array &$components,
+        ReflectionClass $class,
+        string $attributeType,
+    ): void {
+        foreach ($class->getAttributes($attributeType, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            $components[] = new DiscoveredComponent($class, attribute: $attribute);
+        }
+    }
+
+    /**
+     * Adds a component from a method attribute to the list of components
+     *
+     * @param list<DiscoveredComponent> $components The list of components to add to
+     * @param ReflectionMethod $method The method that the attribute was found on
+     * @param class-string $attributeType The type of attribute to find
+     * @param DiscoveredComponent $controllerComponent The parent component that the attribute was found in
+     */
+    private function addComponentFromMethodAttribute(
+        array &$components,
+        ReflectionMethod $method,
+        string $attributeType,
+        DiscoveredComponent $controllerComponent,
+    ): void {
+        foreach ($method->getAttributes($attributeType, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+            $components[] = new DiscoveredComponent(
+                $controllerComponent->class,
+                method: $method,
+                attribute: $attribute,
+                parentComponent: $controllerComponent,
+            );
+        }
+    }
+
+    /**
+     * Adds components for the controller
+     *
+     * @param DiscoveredComponent $controllerComponent The controller component
+     * @return list<DiscoveredComponent> The list of components that were added
+     */
+    private function addComponentsForController(DiscoveredComponent $controllerComponent): array
+    {
+        $controllerComponents = [];
+
+        foreach ([Middleware::class, MiddlewareLibraryMiddleware::class] as $middlewareAttributeClass) {
+            $this->addComponentFromClassAttribute($controllerComponents, $controllerComponent->class, $middlewareAttributeClass);
+        }
+
+        $this->addComponentFromClassAttribute($controllerComponents, $controllerComponent->class, RouteConstraint::class);
+        $this->addSiblingComponents($controllerComponents, $controllerComponents);
+        $this->addSiblingComponents($controllerComponent, $controllerComponents);
+
+        return $controllerComponents;
+    }
+
+    /**
+     * Adds components for all methods in the controller
+     *
+     * @param DiscoveredComponent $controllerComponent The controller component
+     * @return list<DiscoveredComponent> The list of components that were added
+     */
+    private function addComponentsForMethods(DiscoveredComponent $controllerComponent): array
+    {
+        $methodComponents = [];
+
+        foreach ($controllerComponent->class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeComponents = [];
             $routeConstraintComponents = [];
             $middlewareComponents = [];
 
-            $this->addComponentFromAttribute($routeComponents, $method, Route::class, $controllerComponent);
-            $this->addComponentFromAttribute($routeConstraintComponents, $method, RouteConstraint::class, $controllerComponent);
+            $this->addComponentFromMethodAttribute($routeComponents, $method, Route::class, $controllerComponent);
+            $this->addComponentFromMethodAttribute($routeConstraintComponents, $method, RouteConstraint::class, $controllerComponent);
 
             foreach ([Middleware::class, MiddlewareLibraryMiddleware::class] as $middlewareAttributeClass) {
-                $this->addComponentFromAttribute($middlewareComponents, $method, $middlewareAttributeClass, $controllerComponent);
+                $this->addComponentFromMethodAttribute($middlewareComponents, $method, $middlewareAttributeClass, $controllerComponent);
             }
 
             // Associate all these components as siblings
@@ -66,50 +147,26 @@ final class RouteComponentDiscoverer implements IComponentDiscoverer
             $this->addSiblingComponents($middlewareComponents, $routeComponents, $routeConstraintComponents);
             $this->addSiblingComponents($routeConstraintComponents, $routeComponents, $middlewareComponents);
 
-            $components = [
-                ...$components,
+            $methodComponents = [
+                ...$methodComponents,
                 ...$routeComponents,
                 ...$middlewareComponents,
                 ...$routeConstraintComponents,
             ];
         }
 
-        return $components;
-    }
-
-    /**
-     * Adds a component from an attribute to the list of components
-     *
-     * @param list<DiscoveredComponent> $components The list of components to add to
-     * @param ReflectionMethod $method The method that the attribute was found on
-     * @param string $attributeType The type of attribute to find
-     * @param DiscoveredComponent $controllerComponent The controller component that the attribute was found in
-     */
-    private function addComponentFromAttribute(
-        array &$components,
-        ReflectionMethod $method,
-        string $attributeType,
-        DiscoveredComponent $controllerComponent,
-    ): void {
-        foreach ($method->getAttributes(RouteConstraint::class, ReflectionAttribute::IS_INSTANCEOF) as $routeConstraintAttribute) {
-            $components[] = new DiscoveredComponent(
-                $controllerComponent->class,
-                method: $method,
-                attribute: $routeConstraintAttribute,
-                parentComponent: $controllerComponent,
-            );
-        }
+        return $methodComponents;
     }
 
     /**
      * Adds sibling components to the list of components
      *
-     * @param list<DiscoveredComponent> $components The list of components to add to
+     * @param list<DiscoveredComponent>|DiscoveredComponent $components The component or list of components to add to
      * @param list<DiscoveredComponent> ...$siblingComponents The sibling components to add
      */
-    private function addSiblingComponents(array &$components, array ...$siblingComponents): void
+    private function addSiblingComponents(array|DiscoveredComponent &$components, array ...$siblingComponents): void
     {
-        foreach ($components as $component) {
+        foreach (\is_array($components) ? $components : [$components] as $component) {
             $component->siblingComponents = \array_merge(...$siblingComponents);
         }
     }

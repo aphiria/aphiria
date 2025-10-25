@@ -49,6 +49,7 @@ final class DiscoveredComponentBuilder
 
         /**
          * TODO:
+         * - If binders are auto-discovered, how will builders get things like RouteCollection bound and passed into it?
          * - Likely need BuilderDiscoverer to be cacheable so I can bypass all this if there is a cache
          * - For now, just proceeding to write the code as if I don't have any caching
          */

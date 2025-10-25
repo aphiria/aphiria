@@ -70,13 +70,11 @@ final class RouteComponentBuilder implements ICacheableComponentBuilder
                 }
 
                 if ($routeGroupOptions === null) {
-                    $this->registerRouteBuilders($controllerComponent, $routeBuilders);
+                    $this->registerRouteBuilders($childComponent, $routeBuilders);
                 } else {
                     $routeBuilders->group(
                         $routeGroupOptions,
-                        function (RouteCollectionBuilder $routeBuilders) use ($controllerComponent) {
-                            $this->registerRouteBuilders($controllerComponent, $routeBuilders);
-                        },
+                        fn(RouteCollectionBuilder $routeBuilders) => $this->registerRouteBuilders($childComponent, $routeBuilders),
                     );
                 }
             }
@@ -125,13 +123,13 @@ final class RouteComponentBuilder implements ICacheableComponentBuilder
         /** @var list<IRouteConstraint> $routeConstraints */
         $routeConstraints = [];
 
-        foreach ($controllerComponent->childComponents as $childComponent) {
+        foreach ($controllerComponent->siblingComponents as $siblingComponent) {
             if (
-                ($middlewareAttribute = $childComponent->attribute?->newInstance()) instanceof Middleware
+                ($middlewareAttribute = $siblingComponent->attribute?->newInstance()) instanceof Middleware
                 || $middlewareAttribute instanceof MiddlewareLibraryMiddleware
             ) {
                 $middlewareBindings[] = new MiddlewareBinding($middlewareAttribute->className, $middlewareAttribute->parameters);
-            } elseif (($routeConstraintAttribute = $childComponent->attribute?->newInstance()) instanceof RouteConstraint) {
+            } elseif (($routeConstraintAttribute = $siblingComponent->attribute?->newInstance()) instanceof RouteConstraint) {
                 $routeConstraints[] = new $routeConstraintAttribute->className(...$routeConstraintAttribute->constructorParameters);
             }
         }
