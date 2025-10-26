@@ -21,7 +21,7 @@ interface IComponentBuilder
     public string $discovererClassName { get; }
 
     /**
-     * @param list<DiscoveredComponent> $components The components to build
+     * @param list<DiscoveredComponent> $components The discovered components to build
      */
     public function build(array $components): void;
 }

@@ -49,20 +49,24 @@ final class DiscoveredComponentBuilder
 
         /**
          * TODO:
-         * - If binders are auto-discovered, how will builders get things like RouteCollection bound and passed into it?
+         * - I should really look into how I can use the actual components (eg RouteComponent) to do things like register routes, which creates more consistency in how things get registered with Aphiria - right now, there are too many ways of doing things.
+         *      - How do I pass the components to the component builders?  I don't believe they're ever bound to the container, which means they'd be separate instances
+         *          - Where are these actually getting instantiated and bound to the container so that IApplicationBuilder can get the same instance (calling resolve() will return a new instance every time unless we bind it as an instance)
+         *          - I could pass IApplicationBuilder into the IComponentBuilder::__construct(), but then it will acts as a service locator to grab the component I need, whereas what I really need is a place to bind the components instance to the container and inject that (all without using Binders)
+         *          - The crux of my issues is that I need services that are auto-wired as constructor parameters to be bound instances, themselves, and the container does not support that
          * - Likely need BuilderDiscoverer to be cacheable so I can bypass all this if there is a cache
          * - For now, just proceeding to write the code as if I don't have any caching
          */
         // Find all discoverers
-        foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredComponent) {
-            \assert($discoveredComponent->class->implementsInterface(IComponentDiscoverer::class));
-            $discoverers[] = $this->resolver->resolve($discoveredComponent->class->name);
+        foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredDiscovererComponent) {
+            \assert($discoveredDiscovererComponent->class->implementsInterface(IComponentDiscoverer::class));
+            $discoverers[] = $this->resolver->resolve($discoveredDiscovererComponent->class->name);
         }
 
         // Find all builders
-        foreach ($this->scanDirectory($this->path, $builderDiscoverer) as $discoveredComponent) {
-            \assert($discoveredComponent->class->implementsInterface(IComponentBuilder::class));
-            $builder = $this->resolver->resolve($discoveredComponent->class->name);
+        foreach ($this->scanDirectory($this->path, $builderDiscoverer) as $discoveredBuilderComponent) {
+            \assert($discoveredBuilderComponent->class->implementsInterface(IComponentBuilder::class));
+            $builder = $this->resolver->resolve($discoveredBuilderComponent->class->name);
 
             if (isset($discovererClassNamesToBuilders[$builder->discovererClassName])) {
                 throw new RuntimeException("Duplicate builder found for discoverer $builder->discovererClassName");

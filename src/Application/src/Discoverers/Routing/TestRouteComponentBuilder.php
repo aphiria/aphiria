@@ -14,16 +14,15 @@ namespace Aphiria\Application\Discoverers\Routing;
 
 use Aphiria\Api\Controllers\Controller;
 use Aphiria\Application\Discoverers\DiscoveredComponent;
-use Aphiria\Application\Discoverers\ICacheableComponentBuilder;
+use Aphiria\Application\Discoverers\IComponentBuilder;
+use Aphiria\Framework\Routing\Components\RouterComponent;
 use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
 use Aphiria\Routing\Attributes\Middleware;
 use Aphiria\Routing\Attributes\Route;
 use Aphiria\Routing\Attributes\RouteConstraint;
-use Aphiria\Routing\Caching\IRouteCache;
 use Aphiria\Routing\Matchers\Constraints\IRouteConstraint;
 use Aphiria\Routing\Middleware\MiddlewareBinding;
-use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\RouteCollectionBuilder;
 use Aphiria\Routing\RouteGroupOptions;
 use ReflectionMethod;
@@ -33,28 +32,22 @@ use ReflectionMethod;
  *
  * TODO:  Move this into another library
  */
-final class RouteComponentBuilder implements ICacheableComponentBuilder
+final class TestRouteComponentBuilder implements IComponentBuilder
 {
     public string $discovererClassName {
         get => RouteComponentDiscoverer::class;
     }
 
     /**
-     * @param RouteCollection $routes The routes collection to add routes to
-     * @param IRouteCache|null $routeCache The route cache to use, or null if not using a cache
+     * @param RouterComponent $routerComponent The router component to add routes to
      */
-    public function __construct(
-        private readonly RouteCollection $routes,
-        private readonly ?IRouteCache $routeCache = null,
-    ) {}
+    public function __construct(private readonly RouterComponent $routerComponent) {}
 
     /**
      * @inheritdoc
      */
     public function build(array $components): void
     {
-        $routeBuilders = new RouteCollectionBuilder();
-
         foreach ($components as $controllerComponent) {
             // Check if this was a controller (extends Controller or uses the #[Controller] attribute)
             if (!$controllerComponent->class->isSubclassOf(Controller::class) && empty($controllerComponent->class->getAttributes(ControllerAttribute::class))) {
@@ -69,44 +62,18 @@ final class RouteComponentBuilder implements ICacheableComponentBuilder
                     continue;
                 }
 
-                if ($routeGroupOptions === null) {
-                    $this->registerRouteBuilders($childComponent, $routeBuilders);
-                } else {
-                    $routeBuilders->group(
-                        $routeGroupOptions,
-                        fn(RouteCollectionBuilder $routeBuilders) => $this->registerRouteBuilders($childComponent, $routeBuilders),
-                    );
-                }
+                $this->routerComponent->withRoutes(function (RouteCollectionBuilder $routes) use ($routeGroupOptions, $controllerComponent, $childComponent) {
+                    if ($routeGroupOptions === null) {
+                        $this->registerRouteBuilders($childComponent, $routes);
+                    } else {
+                        $routes->group(
+                            $routeGroupOptions,
+                            fn(RouteCollectionBuilder $routeBuilders) => $this->registerRouteBuilders($childComponent, $routeBuilders)
+                        );
+                    }
+                });
             }
         }
-
-        $this->routes->addMany($routeBuilders->build()->values);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildFromCache(): void
-    {
-        if (($routes = $this->routeCache?->get()) instanceof RouteCollection) {
-            $this->routes->copy($routes);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function flush(): void
-    {
-        $this->routeCache?->flush();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function has(): bool
-    {
-        return $this->routeCache?->has();
     }
 
     /**
@@ -159,9 +126,9 @@ final class RouteComponentBuilder implements ICacheableComponentBuilder
      * Registers route builders for a controller class
      *
      * @param DiscoveredComponent $routeComponent The route component to create route builders from
-     * @param RouteCollectionBuilder $routeBuilders The registry to register route builders to
+     * @param RouteCollectionBuilder $routes The registry to register route builders to
      */
-    private function registerRouteBuilders(DiscoveredComponent $routeComponent, RouteCollectionBuilder $routeBuilders): void
+    private function registerRouteBuilders(DiscoveredComponent $routeComponent, RouteCollectionBuilder $routes): void
     {
         // For sanity's sake, ensure that the parent component was set to the controller and that the method was set
         \assert($routeComponent->parentComponent instanceof DiscoveredComponent);
@@ -185,7 +152,7 @@ final class RouteComponentBuilder implements ICacheableComponentBuilder
             }
         }
 
-        $routeBuilder = $routeBuilders->route(
+        $routeBuilder = $routes->route(
             $routeAttribute->httpMethods,
             $routeAttribute->path,
             $routeAttribute->host,
