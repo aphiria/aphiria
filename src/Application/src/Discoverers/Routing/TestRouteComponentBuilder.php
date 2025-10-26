@@ -68,7 +68,7 @@ final class TestRouteComponentBuilder implements IComponentBuilder
                     } else {
                         $routes->group(
                             $routeGroupOptions,
-                            fn(RouteCollectionBuilder $routeBuilders) => $this->registerRouteBuilders($childComponent, $routeBuilders)
+                            fn(RouteCollectionBuilder $routeBuilders) => $this->registerRouteBuilders($childComponent, $routeBuilders),
                         );
                     }
                 });

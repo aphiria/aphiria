@@ -18,8 +18,6 @@ use Aphiria\Application\Discoverers\Routing\TestRouteComponentBuilder;
 use Aphiria\Application\Tests\Discoverers\Delete\FooController;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Components\RouterComponent;
-use Aphiria\Routing\RouteCollection;
-use Aphiria\Routing\RouteRegistrantCollection;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
