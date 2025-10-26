@@ -10,15 +10,15 @@
 
 declare(strict_types=1);
 
-namespace Aphiria\Application\Discoverers;
+namespace Aphiria\Framework\Application\Components;
 
+use Aphiria\Application\Discoverers\ContainerResolver;
+use Aphiria\Application\Discoverers\DiscoveredComponentBuilder;
 use Aphiria\Application\IComponent;
-use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\IServiceResolver;
 
 /**
  * Defines the discoverer component
- *
- * TODO:  Move this into the framework library
  */
 class DiscovererComponent implements IComponent
 {
@@ -28,9 +28,9 @@ class DiscovererComponent implements IComponent
     private ?string $path = null;
 
     /**
-     * @param IContainer $container The container to use
+     * @param IServiceResolver $serviceResolver The service resolver to use
      */
-    public function __construct(private readonly IContainer $container) {}
+    public function __construct(private readonly IServiceResolver $serviceResolver) {}
 
     /**
      * @inheritdoc
@@ -41,13 +41,14 @@ class DiscovererComponent implements IComponent
             return;
         }
 
-        $discoveredComponentBuilder = new DiscoveredComponentBuilder($this->path, new ContainerResolver($this->container));
+        $discoveredComponentBuilder = new DiscoveredComponentBuilder($this->path, new ContainerResolver($this->serviceResolver));
         $discoveredComponentBuilder->build();
     }
 
     /**
      * Enables discoverers
      *
+     * @param string $path The path to scan for discoverers in
      * @return static For chaining
      */
     public function withDiscoverers(string $path): static

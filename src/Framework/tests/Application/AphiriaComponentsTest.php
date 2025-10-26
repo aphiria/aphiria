@@ -14,7 +14,6 @@ namespace Aphiria\Framework\Tests\Application;
 
 use Aphiria\Application\Configuration\GlobalConfiguration;
 use Aphiria\Application\Configuration\HashTableConfiguration;
-use Aphiria\Application\Discoverers\DiscovererComponent;
 use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
@@ -33,6 +32,7 @@ use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\AphiriaComponents;
+use Aphiria\Framework\Application\Components\DiscovererComponent;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Components\CommandComponent;

@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Application;
 
-use Aphiria\Application\Discoverers\DiscovererComponent;
 use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
 use Aphiria\Application\IModule;
@@ -32,6 +31,7 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Framework\Application\Components\DiscovererComponent;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommand;
