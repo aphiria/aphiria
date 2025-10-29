@@ -98,10 +98,10 @@ final class ContainerServiceResolver implements IServiceResolver
                 }
 
                 throw new RuntimeException(
-                    sprintf(
+                    \sprintf(
                         "Cannot resolve $className::__construct($parameterClassName \$$parameter->name) - only the following types may be auto-resolved: %s",
-                        \implode(', ', [IComponent::class, IContainer::class, DIIServiceResolver::class, Container::class, IApplicationBuilder::class, IServiceResolver::class])
-                    )
+                        \implode(', ', [IComponent::class, IContainer::class, DIIServiceResolver::class, Container::class, IApplicationBuilder::class, IServiceResolver::class]),
+                    ),
                 );
             }
 

@@ -47,7 +47,7 @@ class DiscovererComponent implements IComponent
         try {
             $discoveredComponentBuilder = new DiscoveredComponentBuilder(
                 $this->path,
-                new ContainerServiceResolver($this->container, $this->container->resolve(IApplicationBuilder::class))
+                new ContainerServiceResolver($this->container, $this->container->resolve(IApplicationBuilder::class)),
             );
         } catch (ResolutionException $ex) {
             throw new RuntimeException('Failed to resolve ' . IApplicationBuilder::class, 0, $ex);

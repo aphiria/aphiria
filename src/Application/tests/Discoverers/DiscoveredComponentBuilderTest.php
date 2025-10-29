@@ -18,9 +18,6 @@ use Aphiria\Application\Discoverers\DiscoveredComponentBuilder;
 use Aphiria\Application\Discoverers\Routing\RouteComponentDiscoverer;
 use Aphiria\Application\Discoverers\Routing\TestRouteComponentBuilder;
 use Aphiria\Application\IApplication;
-use Aphiria\Application\IApplicationBuilder;
-use Aphiria\Application\IComponent;
-use Aphiria\Application\IModule;
 use Aphiria\Application\Tests\Discoverers\Delete\FooController;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Components\RouterComponent;
@@ -43,11 +40,12 @@ class DiscoveredComponentBuilderTest extends TestCase
 
     public function testFoo(): void
     {
-        $appBuilder = new class() extends ApplicationBuilder {
+        $appBuilder = new class () extends ApplicationBuilder {
             public function build(): IApplication
             {
-                return new class() implements IApplication {
-                    public function run(): int {
+                return new class () implements IApplication {
+                    public function run(): int
+                    {
                         return 0;
                     }
                 };
