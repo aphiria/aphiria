@@ -12,10 +12,13 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Application\Components;
 
-use Aphiria\Application\Discoverers\ContainerResolver;
+use Aphiria\Application\Discoverers\ContainerServiceResolver;
 use Aphiria\Application\Discoverers\DiscoveredComponentBuilder;
+use Aphiria\Application\IApplicationBuilder;
 use Aphiria\Application\IComponent;
-use Aphiria\DependencyInjection\IServiceResolver;
+use Aphiria\DependencyInjection\IContainer;
+use Aphiria\DependencyInjection\ResolutionException;
+use RuntimeException;
 
 /**
  * Defines the discoverer component
@@ -28,9 +31,9 @@ class DiscovererComponent implements IComponent
     private ?string $path = null;
 
     /**
-     * @param IServiceResolver $serviceResolver The service resolver to use
+     * @param IContainer $container The container to use
      */
-    public function __construct(private readonly IServiceResolver $serviceResolver) {}
+    public function __construct(private readonly IContainer $container) {}
 
     /**
      * @inheritdoc
@@ -41,7 +44,15 @@ class DiscovererComponent implements IComponent
             return;
         }
 
-        $discoveredComponentBuilder = new DiscoveredComponentBuilder($this->path, new ContainerResolver($this->serviceResolver));
+        try {
+            $discoveredComponentBuilder = new DiscoveredComponentBuilder(
+                $this->path,
+                new ContainerServiceResolver($this->container, $this->container->resolve(IApplicationBuilder::class))
+            );
+        } catch (ResolutionException $ex) {
+            throw new RuntimeException('Failed to resolve ' . IApplicationBuilder::class, 0, $ex);
+        }
+
         $discoveredComponentBuilder->build();
     }
 

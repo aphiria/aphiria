@@ -21,18 +21,16 @@ use RuntimeException;
 
 /**
  * Defines the discovered component builder
- *
- * TODO:  Think about the PHPDoc above, name, and main method of this class - I'm doing more than just scanning - I'm scanning + building
  */
 final class DiscoveredComponentBuilder
 {
     /**
      * @param string $path The path to scan for discoverers in
-     * @param IResolver $resolver The resolver to use
+     * @param IServiceResolver $resolver The resolver to use
      */
     public function __construct(
         private readonly string $path,
-        private readonly IResolver $resolver = new ContainerResolver(),
+        private readonly IServiceResolver $resolver,
     ) {}
 
     /**

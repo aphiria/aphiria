@@ -15,9 +15,9 @@ namespace Aphiria\Application\Discoverers;
 use RuntimeException;
 
 /**
- * Defines the interface for resolvers to implement
+ * Defines the interface for service resolvers to implement
  */
-interface IResolver
+interface IServiceResolver
 {
     /**
      * Resolves a class instance

@@ -12,9 +12,15 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Tests\Discoverers;
 
+use Aphiria\Application\ApplicationBuilder;
+use Aphiria\Application\Discoverers\ContainerServiceResolver;
 use Aphiria\Application\Discoverers\DiscoveredComponentBuilder;
 use Aphiria\Application\Discoverers\Routing\RouteComponentDiscoverer;
 use Aphiria\Application\Discoverers\Routing\TestRouteComponentBuilder;
+use Aphiria\Application\IApplication;
+use Aphiria\Application\IApplicationBuilder;
+use Aphiria\Application\IComponent;
+use Aphiria\Application\IModule;
 use Aphiria\Application\Tests\Discoverers\Delete\FooController;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\Framework\Routing\Components\RouterComponent;
@@ -37,7 +43,18 @@ class DiscoveredComponentBuilderTest extends TestCase
 
     public function testFoo(): void
     {
-        $componentBuilder = new DiscoveredComponentBuilder(__DIR__ . '/Delete');
+        $appBuilder = new class() extends ApplicationBuilder {
+            public function build(): IApplication
+            {
+                return new class() implements IApplication {
+                    public function run(): int {
+                        return 0;
+                    }
+                };
+            }
+        };
+        $serviceResolver = new ContainerServiceResolver(Container::$globalInstance, $appBuilder);
+        $componentBuilder = new DiscoveredComponentBuilder(__DIR__ . '/Delete', $serviceResolver);
         $componentBuilder->build();
         $this->assertTrue(true);
     }
