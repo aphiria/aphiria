@@ -51,7 +51,7 @@ class DiscoveredComponentBuilderTest extends TestCase
                 };
             }
         };
-        $serviceResolver = new ContainerServiceResolver(Container::$globalInstance, $appBuilder);
+        $serviceResolver = new ContainerServiceResolver($appBuilder, Container::$globalInstance);
         $componentBuilder = new DiscoveredComponentBuilder(__DIR__ . '/Delete', $serviceResolver);
         $componentBuilder->build();
         $this->assertTrue(true);

@@ -26,6 +26,7 @@ interface IServiceResolver
      * @param class-string<T> $className The fully-qualified name of the class to resolve
      * @return T The resolved instance
      * @throws RuntimeException Thrown if the instance could not be resolved
+     * @note This can only resolve the following types in the class' constructor:  IComponent, IContainer, IServiceResolver, Container, and IApplicationBuilder
      */
     public function resolve(string $className): object;
 }

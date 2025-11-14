@@ -47,12 +47,6 @@ final class DiscoveredComponentBuilder
 
         /**
          * TODO:
-         * - I should really look into how I can use the actual components (eg RouteComponent) to do things like register routes, which creates more consistency in how things get registered with Aphiria - right now, there are too many ways of doing things.
-         *      - How do I pass the components to the component builders?  I don't believe they're ever bound to the container, which means they'd be separate instances
-         *          - Where are these actually getting instantiated and bound to the container so that IApplicationBuilder can get the same instance (calling resolve() will return a new instance every time unless we bind it as an instance)
-         *          - I could pass IApplicationBuilder into the IComponentBuilder::__construct(), but then it will acts as a service locator to grab the component I need, whereas what I really need is a place to bind the components instance to the container and inject that (all without using Binders)
-         *              - Another problem with this if a 3rd party component doesn't bind components to the container prior to returning them from IApplicationBuilder()::getComponent(), a new instance will be resolved each time by the container
-         *          - The crux of my issues is that I need services that are auto-wired as constructor parameters to be bound instances, themselves, and the container does not support that
          * - Likely need BuilderDiscoverer to be cacheable so I can bypass all this if there is a cache
          * - For now, just proceeding to write the code as if I don't have any caching
          */

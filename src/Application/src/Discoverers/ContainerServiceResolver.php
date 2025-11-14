@@ -24,17 +24,17 @@ use ReflectionUnionType;
 use RuntimeException;
 
 /**
- * Defines the container resolver
+ * Defines the container service resolver
  */
 final class ContainerServiceResolver implements IServiceResolver
 {
     /**
-     * @param IContainer $container The service resolver to use
+     * @param IContainer $container The container to use
      * @param IApplicationBuilder $appBuilder The application builder to use
      */
     public function __construct(
-        private readonly IContainer $container = new Container(),
         private readonly IApplicationBuilder $appBuilder,
+        private readonly IContainer $container = new Container(),
     ) {}
 
     /**
@@ -64,12 +64,13 @@ final class ContainerServiceResolver implements IServiceResolver
 
                 if (\is_subclass_of($parameterClassName, IComponent::class)) {
                     if ($this->appBuilder->hasComponent($parameterClassName)) {
-                        return $this->appBuilder->getComponent($parameterClassName);
+                        $component = $this->appBuilder->getComponent($parameterClassName);
+                    } else {
+                        $component = $this->container->resolve($parameterClassName);
+                        $this->appBuilder->withComponent($component);
                     }
 
-                    $component = $this->container->resolve($parameterClassName);
                     $this->container->bindInstance($parameterClassName, $component);
-                    $this->appBuilder->withComponent($component);
                     $constructorParameters[] = $component;
 
                     continue;
