@@ -5,6 +5,7 @@
 ### Changed
 
 - Re-enabled PHP-CS-Fixer([#348](https://github.com/aphiria/aphiria/pull/348))
+- Added CI for PHP 8.5
 
 ### Added
 
