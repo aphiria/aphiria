@@ -30,6 +30,8 @@ jobs:
         include:
           - php: '8.4'
             stability: prefer-stable
+          - php: '8.5'
+            stability: prefer-stable
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
     steps:
       - name: Check Out Code
