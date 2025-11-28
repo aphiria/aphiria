@@ -38,8 +38,6 @@ final class DiscoveredComponentBuilder
      */
     public function build(): void
     {
-        $discovererDiscoverer = new ComponentDiscovererDiscoverer();
-        $builderDiscoverer = new ComponentBuilderDiscoverer();
         /** @var list<IComponentDiscoverer> $discoverers */
         $discoverers = [];
         /** @var array<class-string<IComponentDiscoverer>, IComponentDiscoverer> $discovererClassNamesToBuilders */
@@ -51,13 +49,13 @@ final class DiscoveredComponentBuilder
          * - For now, just proceeding to write the code as if I don't have any caching
          */
         // Find all discoverers
-        foreach ($this->scanDirectory($this->path, $discovererDiscoverer) as $discoveredDiscovererComponent) {
+        foreach ($this->scanDirectory($this->path, new ComponentDiscovererDiscoverer()) as $discoveredDiscovererComponent) {
             \assert($discoveredDiscovererComponent->class->implementsInterface(IComponentDiscoverer::class));
             $discoverers[] = $this->resolver->resolve($discoveredDiscovererComponent->class->name);
         }
 
         // Find all builders
-        foreach ($this->scanDirectory($this->path, $builderDiscoverer) as $discoveredBuilderComponent) {
+        foreach ($this->scanDirectory($this->path, new ComponentBuilderDiscoverer()) as $discoveredBuilderComponent) {
             \assert($discoveredBuilderComponent->class->implementsInterface(IComponentBuilder::class));
             $builder = $this->resolver->resolve($discoveredBuilderComponent->class->name);
 
