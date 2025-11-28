@@ -9,6 +9,7 @@ Aphiria
 EOT;
 
 return new PhpCsFixer\Config()
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setRules([
         '@PER-CS2.0' => true,
         'array_syntax' => ['syntax' => 'short'],

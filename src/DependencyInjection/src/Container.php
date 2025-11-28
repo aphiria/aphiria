@@ -320,7 +320,7 @@ class Container implements IContainer
      */
     protected function hasTargetedBinding(string $interface, ?string $target = null): bool
     {
-        return isset($this->bindings[$target][$interface]);
+        return isset($this->bindings[$target ?? ''][$interface]);
     }
 
     /**
