@@ -6,6 +6,7 @@
 
 - Re-enabled PHP-CS-Fixer ([#348](https://github.com/aphiria/aphiria/pull/348))
 - Added CI for PHP 8.5 ([#353](https://github.com/aphiria/aphiria/pull/353))
+- Updated to use Symfony 8 components ([#354](https://github.com/aphiria/aphiria/pull/354))
 
 ### Added
 
