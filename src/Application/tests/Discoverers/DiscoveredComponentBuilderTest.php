@@ -16,7 +16,7 @@ use Aphiria\Application\ApplicationBuilder;
 use Aphiria\Application\Discoverers\ContainerServiceResolver;
 use Aphiria\Application\Discoverers\DiscoveredComponentBuilder;
 use Aphiria\Application\Discoverers\Routing\RouteComponentDiscoverer;
-use Aphiria\Application\Discoverers\Routing\TestRouteComponentBuilder;
+use Aphiria\Application\Discoverers\Routing\RouteComponentBuilder;
 use Aphiria\Application\IApplication;
 use Aphiria\Application\Tests\Discoverers\Delete\FooController;
 use Aphiria\DependencyInjection\Container;
@@ -61,7 +61,7 @@ class DiscoveredComponentBuilderTest extends TestCase
     {
         $routerComponent = new RouterComponent(Container::$globalInstance);
         $routeDiscoverer = new RouteComponentDiscoverer();
-        $routeBuilder = new TestRouteComponentBuilder($routerComponent);
+        $routeBuilder = new RouteComponentBuilder($routerComponent);
         $discoveredComponents = $routeDiscoverer->discover(new ReflectionClass(FooController::class));
         $routeBuilder->build($discoveredComponents);
         $routerComponent->build();
