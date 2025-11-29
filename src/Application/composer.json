@@ -40,8 +40,8 @@
     "require": {
         "aphiria/dependency-injection": "1.x-dev",
         "php": "^8.4",
-        "symfony/dotenv": "^7.0",
-        "symfony/yaml": "^7.0"
+        "symfony/dotenv": "^8.0",
+        "symfony/yaml": "^8.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
