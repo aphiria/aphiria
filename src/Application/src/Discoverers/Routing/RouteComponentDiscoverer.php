@@ -36,7 +36,6 @@ final class RouteComponentDiscoverer implements IComponentDiscoverer
      */
     public function discover(ReflectionClass $class): array
     {
-        $components = [];
         /** @var DiscoveredComponent|null $controllerComponent */
         $controllerComponent = null;
 
