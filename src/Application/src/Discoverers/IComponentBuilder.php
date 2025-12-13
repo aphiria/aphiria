@@ -17,7 +17,7 @@ namespace Aphiria\Application\Discoverers;
  */
 interface IComponentBuilder
 {
-    /** @var class-string<IDiscoverer> The name of the discoverer class whose components we're building */
+    /** @var class-string<IComponentDiscoverer> The name of the discoverer class whose components we're building */
     public string $discovererClassName { get; }
 
     /**

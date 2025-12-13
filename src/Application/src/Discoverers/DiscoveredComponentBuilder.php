@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Application\Discoverers;
 
+use Aphiria\Application\Discoverers\Caching\IDiscoveredComponentCache;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -27,10 +28,12 @@ final class DiscoveredComponentBuilder
     /**
      * @param string $path The path to scan for discoverers in
      * @param IServiceResolver $resolver The resolver to use
+     * @param IDiscoveredComponentCache|null $cache The optional cache to use for discovered components
      */
     public function __construct(
         private readonly string $path,
         private readonly IServiceResolver $resolver,
+        private readonly ?IDiscoveredComponentCache $cache = null,
     ) {}
 
     /**
@@ -40,22 +43,22 @@ final class DiscoveredComponentBuilder
     {
         /** @var list<IComponentDiscoverer> $discoverers */
         $discoverers = [];
-        /** @var array<class-string<IComponentDiscoverer>, IComponentDiscoverer> $discovererClassNamesToBuilders */
+        /** @var array<class-string<IComponentDiscoverer>, IComponentBuilder> $discovererClassNamesToBuilders */
         $discovererClassNamesToBuilders = [];
 
-        /**
-         * TODO:
-         * - Likely need BuilderDiscoverer to be cacheable so I can bypass all this if there is a cache
-         * - For now, just proceeding to write the code as if I don't have any caching
-         */
         // Find all discoverers
-        foreach ($this->scanDirectory($this->path, new ComponentDiscovererDiscoverer()) as $discoveredDiscovererComponent) {
+        $discovererDiscoverer = new ComponentDiscovererDiscoverer();
+
+        foreach ($this->getDiscoveredComponents($discovererDiscoverer) as $discoveredDiscovererComponent) {
             \assert($discoveredDiscovererComponent->class->implementsInterface(IComponentDiscoverer::class));
             $discoverers[] = $this->resolver->resolve($discoveredDiscovererComponent->class->name);
         }
 
         // Find all builders
-        foreach ($this->scanDirectory($this->path, new ComponentBuilderDiscoverer()) as $discoveredBuilderComponent) {
+        $builderDiscoverer = new ComponentBuilderDiscoverer();
+        $discoveredBuilderComponents = $this->getDiscoveredComponents($builderDiscoverer);
+
+        foreach ($discoveredBuilderComponents as $discoveredBuilderComponent) {
             \assert($discoveredBuilderComponent->class->implementsInterface(IComponentBuilder::class));
             $builder = $this->resolver->resolve($discoveredBuilderComponent->class->name);
 
@@ -72,7 +75,8 @@ final class DiscoveredComponentBuilder
                 throw new RuntimeException('No builder found for discoverer ' . $discoverer::class);
             }
 
-            $discovererClassNamesToBuilders[$discoverer::class]->build($this->scanDirectory($this->path, $discoverer));
+            $discoveredComponents = $this->getDiscoveredComponents($discoverer);
+            $discovererClassNamesToBuilders[$discoverer::class]->build($discoveredComponents);
         }
     }
 
@@ -108,6 +112,28 @@ final class DiscoveredComponentBuilder
         }
 
         return $namespace . '\\' . $className;
+    }
+
+    /**
+     * Gets discovered components for a specific discoverer, using cache if available
+     *
+     * @param IComponentDiscoverer $discoverer The discoverer to get components for
+     * @return list<DiscoveredComponent> The list of discovered components
+     */
+    private function getDiscoveredComponents(IComponentDiscoverer $discoverer): array
+    {
+        // Try to get from cache first
+        if ($this->cache !== null && $this->cache->has($discoverer::class)) {
+            return $this->cache->get($discoverer::class);
+        }
+
+        // Cache miss - scan directory
+        $discoveredComponents = $this->scanDirectory($this->path, $discoverer);
+
+        // Store in cache if cache is configured
+        $this->cache?->set($discoverer::class, $discoveredComponents);
+
+        return $discoveredComponents;
     }
 
     /**

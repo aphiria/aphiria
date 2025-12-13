@@ -1,8 +1,10 @@
+/.claude/
 /.coverage/
 /.idea/
 /.php-cs-fixer.cache
 /.phpunit.result.cache
 /.phpunit.cache
+/.specs
 /composer.lock
 /composer.phar
 /nbproject/

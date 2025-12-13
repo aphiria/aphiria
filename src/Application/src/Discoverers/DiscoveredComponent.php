@@ -14,6 +14,7 @@ namespace Aphiria\Application\Discoverers;
 
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -39,4 +40,65 @@ class DiscoveredComponent
         public array $siblingComponents = [],
         public array $childComponents = [],
     ) {}
+
+    /**
+     * @return array{className: string, methodName: string|null, propertyName: string|null, attributeName: string|null, attributeArgs: array, parentComponent: array|null, siblingComponents: list<array>, childComponents: list<array>}
+     */
+    public function __serialize(): array
+    {
+        return [
+            'className' => $this->class->name,
+            'methodName' => $this->method?->name,
+            'propertyName' => $this->property?->name,
+            'attributeName' => $this->attribute?->getName(),
+            'attributeArgs' => $this->attribute?->getArguments() ?? [],
+            'parentComponent' => $this->parentComponent?->__serialize(),
+            'siblingComponents' => \array_map(static fn(DiscoveredComponent $component): array => $component->__serialize(), $this->siblingComponents),
+            'childComponents' => \array_map(static fn(DiscoveredComponent $component): array => $component->__serialize(), $this->childComponents),
+        ];
+    }
+
+    /**
+     * @param array{className: string, methodName: string|null, propertyName: string|null, attributeName: string|null, attributeArgs: array, parentComponent: array|null, siblingComponents: list<array>, childComponents: list<array>} $data
+     * @throws ReflectionException Thrown if the class could not be reflected
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->class = new ReflectionClass($data['className']);
+        $this->method = $data['methodName'] !== null ? $this->class->getMethod($data['methodName']) : null;
+        $this->property = $data['propertyName'] !== null ? $this->class->getProperty($data['propertyName']) : null;
+        $this->attribute = $data['attributeName'] !== null && $this->method !== null
+            ? ($this->method->getAttributes($data['attributeName'])[0] ?? null)
+            : ($data['attributeName'] !== null && $this->property !== null
+                ? ($this->property->getAttributes($data['attributeName'])[0] ?? null)
+                : ($data['attributeName'] !== null
+                    ? ($this->class->getAttributes($data['attributeName'])[0] ?? null)
+                    : null));
+        $this->parentComponent = $data['parentComponent'] !== null
+            ? $this->unserializeComponent($data['parentComponent'])
+            : null;
+        $this->siblingComponents = \array_map(
+            fn(array $componentData): DiscoveredComponent => $this->unserializeComponent($componentData),
+            $data['siblingComponents'],
+        );
+        $this->childComponents = \array_map(
+            fn(array $componentData): DiscoveredComponent => $this->unserializeComponent($componentData),
+            $data['childComponents'],
+        );
+    }
+
+    /**
+     * Unserializes a single component from array data
+     *
+     * @param array{className: string, methodName: string|null, propertyName: string|null, attributeName: string|null, attributeArgs: array, parentComponent: array|null, siblingComponents: list<array>, childComponents: list<array>} $data
+     * @return self
+     * @throws ReflectionException Thrown if the class could not be reflected
+     */
+    private function unserializeComponent(array $data): self
+    {
+        $component = new self(new ReflectionClass('stdClass'));
+        $component->__unserialize($data);
+
+        return $component;
+    }
 }
