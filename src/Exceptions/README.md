@@ -22,4 +22,4 @@ composer require aphiria/exceptions:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/1.x/exception-handling.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/1.x/exception-handling" target="_blank">here</a>.

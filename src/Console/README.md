@@ -22,4 +22,4 @@ composer require aphiria/console:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/1.x/console.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/1.x/console" target="_blank">here</a>.

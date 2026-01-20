@@ -22,4 +22,4 @@ composer require aphiria/sessions:^1.0@dev
 
 ## Documentation
 
-Full documentation is available <a href="https://www.aphiria.com/docs/1.x/sessions.html" target="_blank">here</a>.
+Full documentation is available <a href="https://www.aphiria.com/docs/1.x/sessions" target="_blank">here</a>.
