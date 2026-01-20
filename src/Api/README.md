@@ -24,6 +24,6 @@ composer require aphiria/api:^1.0@dev
 
 Read the full documentation for this library's components:
 
-* <a href="https://www.aphiria.com/docs/1.x/controllers.html" target="_blank">Controllers</a>
-* <a href="https://www.aphiria.com/docs/1.x/http-exception-handling.html" target="_blank">Exception Handling</a>
-* <a href="https://www.aphiria.com/docs/1.x/content-negotiation.html" target="_blank">Content Negotiation</a>
+* <a href="https://www.aphiria.com/docs/1.x/controllers" target="_blank">Controllers</a>
+* <a href="https://www.aphiria.com/docs/1.x/http-exception-handling" target="_blank">Exception Handling</a>
+* <a href="https://www.aphiria.com/docs/1.x/content-negotiation" target="_blank">Content Negotiation</a>

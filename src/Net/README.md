@@ -24,6 +24,6 @@ composer require aphiria/net:^1.0@dev
 
 Read the full documentation for this library's components:
 
-* <a href="https://www.aphiria.com/docs/1.x/http-requests.html" target="_blank">HTTP Requests</a>
-* <a href="https://www.aphiria.com/docs/1.x/http-responses.html" target="_blank">HTTP Responses</a>
-* <a href="https://www.aphiria.com/docs/1.x/content-negotiation.html" target="_blank">Content Negotiation</a>
+* <a href="https://www.aphiria.com/docs/1.x/http-requests" target="_blank">HTTP Requests</a>
+* <a href="https://www.aphiria.com/docs/1.x/http-responses" target="_blank">HTTP Responses</a>
+* <a href="https://www.aphiria.com/docs/1.x/content-negotiation" target="_blank">Content Negotiation</a>
