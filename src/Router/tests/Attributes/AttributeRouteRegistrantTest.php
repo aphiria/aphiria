@@ -229,11 +229,9 @@ class AttributeRouteRegistrantTest extends TestCase
                 // Empty
             }
 
-            #[
-                Get(''),
+            #[Get(''),
                 /** @psalm-suppress ArgumentTypeCoercion https://github.com/vimeo/psalm/issues/4871 */
-                RouteConstraint(DummyConstraint::class, ['bar'])
-            ]
+                RouteConstraint(DummyConstraint::class, ['bar'])]
             public function routeWithExtraConstraints(): void
             {
                 // Empty
@@ -256,10 +254,8 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithAllPropertiesSetCreatesRouteWithAllThosePropertiesSet(): void
     {
         $controller = new class () extends Controller {
-            #[
-                Get('foo', 'example.com', 'routename', true, ['foo' => 'bar']),
-                RouteConstraint(DummyConstraint::class, ['param'])
-            ]
+            #[Get('foo', 'example.com', 'routename', true, ['foo' => 'bar']),
+                RouteConstraint(DummyConstraint::class, ['param'])]
             public function route(): void
             {
                 // Empty
@@ -287,10 +283,8 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMiddlewareCreatesRouteWithThatMiddleware(): void
     {
         $controller = new class () extends Controller {
-            #[
-                Get('bar'),
-                Middleware(DummyMiddleware::class, ['foo' => 'bar'])
-            ]
+            #[Get('bar'),
+                Middleware(DummyMiddleware::class, ['foo' => 'bar'])]
             public function route(): void
             {
                 // Empty
@@ -314,10 +308,8 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMiddlewareFromMiddlewareLibraryCreatesRouteWithThatMiddleware(): void
     {
         $controller = new class () extends Controller {
-            #[
-                Get('bar'),
-                MiddlewareLibraryMiddlewareAttribute(MiddlewareLibraryMiddleware::class, ['foo' => 'bar'])
-            ]
+            #[Get('bar'),
+                MiddlewareLibraryMiddlewareAttribute(MiddlewareLibraryMiddleware::class, ['foo' => 'bar'])]
             public function route(): void
             {
                 // Empty
@@ -341,10 +333,8 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMiddlewareThatExtendsMiddlewareAttributeIsAddedToRoute(): void
     {
         $controller = new class () extends Controller {
-            #[
-                Get(''),
-                CustomMiddleware
-            ]
+            #[Get(''),
+                CustomMiddleware]
             public function route(): void
             {
                 // Empty
@@ -366,10 +356,8 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMiddlewareThatIsInRouteGroupWithMiddlewareCreatesRouteWithBothMiddleware(): void
     {
         $controller = new #[Middleware(DummyMiddleware::class, ['foo' => 'bar'])] class () extends Controller {
-            #[
-                Get('bar'),
-                Middleware(DummyMiddleware::class, ['baz' => 'blah'])
-            ]
+            #[Get('bar'),
+                Middleware(DummyMiddleware::class, ['baz' => 'blah'])]
             public function route(): void
             {
                 // Empty
@@ -395,11 +383,9 @@ class AttributeRouteRegistrantTest extends TestCase
     public function testRegisteringRouteWithMultipleMiddlewareCreatesRouteWithThoseMiddleware(): void
     {
         $controller = new class () extends Controller {
-            #[
-                Get('bar'),
+            #[Get('bar'),
                 Middleware(DummyMiddleware::class, ['foo' => 'bar']),
-                Middleware(DummyMiddleware::class, ['baz' => 'blah'])
-            ]
+                Middleware(DummyMiddleware::class, ['baz' => 'blah'])]
             public function route(): void
             {
                 // Empty
