@@ -45,7 +45,7 @@ interface IServiceResolver
      * @template T of object
      * @param class-string<T> $interface The interface to resolve
      * @param-out T $instance The resolved instance if successful
-     * @return bool True if the binding was successful, otherwise false
+     * @return bool True if the resolution was successful, otherwise false
      */
     public function tryResolve(string $interface, ?object &$instance): bool;
 }

@@ -31,6 +31,7 @@ use Aphiria\DependencyInjection\Binders\Binder;
 use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\ResolutionException;
+use Aphiria\Framework\Application\Components\DiscovererComponent;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommand;
@@ -199,7 +200,7 @@ trait AphiriaComponents
                 new BinderComponent(
                     Container::$globalInstance,
                 ),
-                0,
+                1,
             );
         }
 
@@ -230,7 +231,7 @@ trait AphiriaComponents
                 new BinderComponent(
                     Container::$globalInstance,
                 ),
-                0,
+                1,
             );
         }
 
@@ -360,6 +361,37 @@ trait AphiriaComponents
         $appBuilder
             ->getComponent(ExceptionHandlerComponent::class)
             ->withConsoleOutputWriter($exceptionType, $callback);
+
+        return $this;
+    }
+
+    /**
+     * Enables discoverers
+     *
+     * @param IApplicationBuilder $appBuilder The app builder to decorate
+     * @param string $path The path to discover
+     * @return static For chaining
+     * @throws RuntimeException Thrown if the global instance of the container is not set
+     */
+    protected function withDiscoverers(IApplicationBuilder $appBuilder, string $path): static
+    {
+        // Note: We are violating DRY here just so that we don't have confusing methods for enabling this component
+        if (!$appBuilder->hasComponent(DiscovererComponent::class)) {
+            if (!isset(Container::$globalInstance)) {
+                throw new RuntimeException('Global container instance not set');
+            }
+
+            $appBuilder->withComponent(
+                new DiscovererComponent(
+                    Container::$globalInstance,
+                ),
+                0,
+            );
+        }
+
+        $appBuilder
+            ->getComponent(DiscovererComponent::class)
+            ->withDiscoverers($path);
 
         return $this;
     }

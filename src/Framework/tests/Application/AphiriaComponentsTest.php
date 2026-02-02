@@ -32,6 +32,7 @@ use Aphiria\DependencyInjection\Binders\IBinderDispatcher;
 use Aphiria\DependencyInjection\Container;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Application\AphiriaComponents;
+use Aphiria\Framework\Application\Components\DiscovererComponent;
 use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Components\CommandComponent;
@@ -355,7 +356,7 @@ class AphiriaComponentsTest extends TestCase
             ->willReturn(false);
         $this->appBuilder
             ->method('withComponent')
-            ->with($this->isInstanceOf(BinderComponent::class), 0);
+            ->with($this->isInstanceOf(BinderComponent::class), 1);
         $this->appBuilder
             ->method('getComponent')
             ->with(BinderComponent::class)
@@ -429,7 +430,7 @@ class AphiriaComponentsTest extends TestCase
             ->willReturn(false);
         $this->appBuilder
             ->method('withComponent')
-            ->with($this->isInstanceOf(BinderComponent::class), 0);
+            ->with($this->isInstanceOf(BinderComponent::class), 1);
         $this->appBuilder
             ->method('getComponent')
             ->with(BinderComponent::class)
@@ -827,6 +828,74 @@ class AphiriaComponentsTest extends TestCase
             }
         };
         $component->build($this->appBuilder);
+    }
+
+    public function testWithDiscoverersRegistersComponentIfItIsNotRegisteredYet(): void
+    {
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(DiscovererComponent::class)
+            ->willReturn(false);
+        $this->appBuilder
+            ->method('withComponent')
+            ->with($this->isInstanceOf(DiscovererComponent::class), 0);
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(DiscovererComponent::class)
+            ->willReturn($this->createMock(DiscovererComponent::class));
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, string $path): void
+            {
+                $this->withDiscoverers($appBuilder, $path);
+            }
+        };
+        $component->build($this->appBuilder, 'foo');
+        // Dummy assertion
+        $this->assertTrue(true);
+    }
+
+    public function testWithDiscoverersRegistersDiscoverersToComponent(): void
+    {
+        $expectedComponent = $this->createMock(DiscovererComponent::class);
+        $expectedComponent
+            ->expects($this->once())
+            ->method('withDiscoverers')
+            ->with('foo');
+        $this->appBuilder
+            ->method('hasComponent')
+            ->with(DiscovererComponent::class)
+            ->willReturn(true);
+        $this->appBuilder
+            ->method('getComponent')
+            ->with(DiscovererComponent::class)
+            ->willReturn($expectedComponent);
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, string $path): void
+            {
+                $this->withDiscoverers($appBuilder, $path);
+            }
+        };
+        $component->build($this->appBuilder, 'foo');
+    }
+
+    public function testWithDiscoverersWithoutGlobalContainerInstanceSetThrowsException(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Global container instance not set');
+        Container::$globalInstance = null;
+        $component = new class () {
+            use AphiriaComponents;
+
+            public function build(IApplicationBuilder $appBuilder, string $path): void
+            {
+                $this->withDiscoverers($appBuilder, $path);
+            }
+        };
+        $component->build($this->appBuilder, 'foo');
     }
 
     public function testWithFrameworkCommandsConfiguresComponentToHaveCommands(): void

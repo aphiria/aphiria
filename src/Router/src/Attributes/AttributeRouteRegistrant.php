@@ -82,7 +82,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
     }
 
     /**
-     * Creates route group options for a controller lass
+     * Creates route group options for a controller class
      *
      * @param ReflectionClass $controller The controller class to create route group options from
      * @return RouteGroupOptions|null The route group options if there were any, otherwise null

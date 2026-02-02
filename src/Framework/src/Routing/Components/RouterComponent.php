@@ -53,6 +53,10 @@ class RouterComponent implements IComponent
      */
     public function build(): void
     {
+        if (!$this->container->hasBinding(RouteRegistrantCollection::class)) {
+            $this->container->bindInstance(RouteRegistrantCollection::class, new RouteRegistrantCollection());
+        }
+
         $routeRegistrants = $this->container->resolve(RouteRegistrantCollection::class);
 
         if ($this->attributesEnabled) {
