@@ -69,4 +69,19 @@ class RouteGroupOptionsTest extends TestCase
     {
         $this->assertSame('path', $this->routeGroupOptions->path);
     }
+
+    public function testExcludedMiddlewareClassNamesDefaultsToEmptyArray(): void
+    {
+        $this->assertSame([], $this->routeGroupOptions->excludedMiddlewareClassNames);
+    }
+
+    public function testCorrectExcludedMiddlewareClassNamesAreReturned(): void
+    {
+        $excludedMiddlewareClassName = 'SomeMiddleware';
+        $routeGroupOptions = new RouteGroupOptions(
+            'path',
+            excludedMiddlewareClassNames: [$excludedMiddlewareClassName]
+        );
+        $this->assertSame([$excludedMiddlewareClassName], $routeGroupOptions->excludedMiddlewareClassNames);
+    }
 }

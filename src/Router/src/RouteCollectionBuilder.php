@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Aphiria\Routing;
 
+use Aphiria\Routing\Middleware\MiddlewareBinding;
 use Aphiria\Routing\UriTemplates\UriTemplate;
 use Closure;
 
@@ -184,10 +185,19 @@ final class RouteCollectionBuilder
     private function applyGroupMiddleware(RouteBuilder $routeBuilder): void
     {
         $groupMiddlewareBindings = [];
+        $excludedMiddlewareClassNames = [];
 
         foreach ($this->groupOptionsStack as $groupOptions) {
             $groupMiddlewareBindings = [...$groupMiddlewareBindings, ...$groupOptions->middlewareBindings];
+            $excludedMiddlewareClassNames = [...$excludedMiddlewareClassNames, ...$groupOptions->excludedMiddlewareClassNames];
         }
+
+        $groupMiddlewareBindings = \array_values(
+            \array_filter(
+                $groupMiddlewareBindings,
+                static fn (MiddlewareBinding $binding): bool => !\in_array($binding->className, $excludedMiddlewareClassNames, true)
+            )
+        );
 
         $routeBuilder->withManyMiddleware($groupMiddlewareBindings);
     }
