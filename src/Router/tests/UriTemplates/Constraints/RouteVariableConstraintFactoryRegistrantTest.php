@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -41,43 +41,43 @@ class RouteVariableConstraintFactoryRegistrantTest extends TestCase
         $this->registrant->registerConstraintFactories($factory);
         $this->assertInstanceOf(
             AlphaConstraint::class,
-            $factory->createConstraint(AlphaConstraint::getSlug())
+            $factory->createConstraint(AlphaConstraint::getSlug()),
         );
         $this->assertInstanceOf(
             AlphanumericConstraint::class,
-            $factory->createConstraint(AlphanumericConstraint::getSlug())
+            $factory->createConstraint(AlphanumericConstraint::getSlug()),
         );
         $this->assertInstanceOf(
             BetweenConstraint::class,
-            $factory->createConstraint(BetweenConstraint::getSlug(), [1, 2])
+            $factory->createConstraint(BetweenConstraint::getSlug(), [1, 2]),
         );
         $this->assertInstanceOf(
             DateConstraint::class,
-            $factory->createConstraint(DateConstraint::getSlug(), [['Ymd']])
+            $factory->createConstraint(DateConstraint::getSlug(), [['Ymd']]),
         );
         $this->assertInstanceOf(
             InConstraint::class,
-            $factory->createConstraint(InConstraint::getSlug(), [['foo']])
+            $factory->createConstraint(InConstraint::getSlug(), [['foo']]),
         );
         $this->assertInstanceOf(
             IntegerConstraint::class,
-            $factory->createConstraint(IntegerConstraint::getSlug())
+            $factory->createConstraint(IntegerConstraint::getSlug()),
         );
         $this->assertInstanceOf(
             NotInConstraint::class,
-            $factory->createConstraint(NotInConstraint::getSlug(), [['foo']])
+            $factory->createConstraint(NotInConstraint::getSlug(), [['foo']]),
         );
         $this->assertInstanceOf(
             NumericConstraint::class,
-            $factory->createConstraint(NumericConstraint::getSlug())
+            $factory->createConstraint(NumericConstraint::getSlug()),
         );
         $this->assertInstanceOf(
             RegexConstraint::class,
-            $factory->createConstraint(RegexConstraint::getSlug(), ['/foo/'])
+            $factory->createConstraint(RegexConstraint::getSlug(), ['/foo/']),
         );
         $this->assertInstanceOf(
             UuidV4Constraint::class,
-            $factory->createConstraint(UuidV4Constraint::getSlug())
+            $factory->createConstraint(UuidV4Constraint::getSlug()),
         );
     }
 }

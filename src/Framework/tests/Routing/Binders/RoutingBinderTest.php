@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -103,7 +103,7 @@ class RoutingBinderTest extends TestCase
                 Mockery::on(function (Closure $factory) {
                     return $factory() instanceof TrieRouteMatcher;
                 }),
-                true
+                true,
             );
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -121,7 +121,7 @@ class RoutingBinderTest extends TestCase
                 Mockery::on(function (Closure $factory) {
                     return $factory() instanceof TrieRouteMatcher;
                 }),
-                true
+                true,
             );
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -139,7 +139,7 @@ class RoutingBinderTest extends TestCase
                 Mockery::on(function (Closure $factory) {
                     return $factory() instanceof TrieRouteMatcher;
                 }),
-                true
+                true,
             );
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -157,7 +157,7 @@ class RoutingBinderTest extends TestCase
                 Mockery::on(function (Closure $factory) {
                     return $factory() instanceof TrieRouteMatcher;
                 }),
-                true
+                true,
             );
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -176,9 +176,9 @@ class RoutingBinderTest extends TestCase
                 'routing' => [
                     'attributePaths' => ['/src'],
                     'routeCachePath' => self::ROUTE_CACHE_PATH,
-                    'trieCachePath' => self::TRIE_CACHE_PATH
-                ]
-            ]
+                    'trieCachePath' => self::TRIE_CACHE_PATH,
+                ],
+            ],
         ];
     }
 
@@ -192,7 +192,7 @@ class RoutingBinderTest extends TestCase
             [IRouteUriFactory::class, AstRouteUriFactory::class],
             [IRouteRequestFactory::class, RouteRequestFactory::class],
             [AttributeRouteRegistrant::class, AttributeRouteRegistrant::class],
-            [RouteVariableConstraintFactory::class, RouteVariableConstraintFactory::class]
+            [RouteVariableConstraintFactory::class, RouteVariableConstraintFactory::class],
         ];
 
         foreach ($parameters as $parameter) {

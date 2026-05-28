@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -64,7 +64,7 @@ class ValidationBinderTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
             [IErrorMessageInterpolator::class, IErrorMessageInterpolator::class],
-            [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class]
+            [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class],
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -77,7 +77,7 @@ class ValidationBinderTest extends TestCase
         \putenv('APP_ENV=production');
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class],
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -89,11 +89,11 @@ class ValidationBinderTest extends TestCase
         $errorMessageTemplates = Mockery::mock(IErrorMessageTemplateRegistry::class);
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
-            'type' => $errorMessageTemplates::class
+            'type' => $errorMessageTemplates::class,
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class],
         ]);
         $this->container
             ->shouldReceive('resolve')
@@ -108,11 +108,11 @@ class ValidationBinderTest extends TestCase
     {
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
-            'type' => DefaultErrorMessageTemplateRegistry::class
+            'type' => DefaultErrorMessageTemplateRegistry::class,
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class],
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -123,7 +123,7 @@ class ValidationBinderTest extends TestCase
     {
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class],
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -136,11 +136,11 @@ class ValidationBinderTest extends TestCase
         $this->expectExceptionMessage('Error message template must be instance of ' . IErrorMessageTemplateRegistry::class);
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageTemplates'] = [
-            'type' => self::class
+            'type' => self::class,
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class]
+            [IErrorMessageInterpolator::class, StringReplaceErrorMessageInterpolator::class],
         ]);
         $this->container
             ->shouldReceive('resolve')
@@ -165,11 +165,11 @@ class ValidationBinderTest extends TestCase
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageInterpolator'] = [
             'type' => IcuFormatErrorMessageInterpolator::class,
-            'defaultLocale' => 'en'
+            'defaultLocale' => 'en',
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, IcuFormatErrorMessageInterpolator::class]
+            [IErrorMessageInterpolator::class, IcuFormatErrorMessageInterpolator::class],
         ]);
         $this->binder->bind($this->container);
         // Dummy assertion
@@ -182,11 +182,11 @@ class ValidationBinderTest extends TestCase
         $this->expectExceptionMessage('Unsupported error message interpolator type foo');
         $config = self::getBaseConfig();
         $config['aphiria']['validation']['errorMessageInterpolator'] = [
-            'type' => 'foo'
+            'type' => 'foo',
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMock([
-            [IErrorMessageInterpolator::class, 'foo']
+            [IErrorMessageInterpolator::class, 'foo'],
         ]);
         $this->binder->bind($this->container);
     }
@@ -204,10 +204,10 @@ class ValidationBinderTest extends TestCase
                     'attributePaths' => ['/src'],
                     'constraintsCachePath' => '/cache',
                     'errorMessageInterpolator' => [
-                        'type' => StringReplaceErrorMessageInterpolator::class
-                    ]
-                ]
-            ]
+                        'type' => StringReplaceErrorMessageInterpolator::class,
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -223,7 +223,7 @@ class ValidationBinderTest extends TestCase
             [[IValidator::class, Validator::class], Validator::class],
             [IObjectConstraintsRegistryCache::class, FileObjectConstraintsRegistryCache::class],
             [ObjectConstraintsRegistrantCollection::class, ObjectConstraintsRegistrantCollection::class],
-            [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class]
+            [AttributeObjectConstraintsRegistrant::class, AttributeObjectConstraintsRegistrant::class],
         ];
 
         foreach ($additionalParameters as $additionalParameter) {

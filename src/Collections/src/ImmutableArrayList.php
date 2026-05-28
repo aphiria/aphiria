@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -84,7 +84,7 @@ class ImmutableArrayList implements IImmutableList
             return null;
         }
 
-        return (int)$index;
+        return (int) $index;
     }
 
     /**
@@ -108,7 +108,7 @@ class ImmutableArrayList implements IImmutableList
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get((int)$offset);
+        return $this->get((int) $offset);
     }
 
     /**

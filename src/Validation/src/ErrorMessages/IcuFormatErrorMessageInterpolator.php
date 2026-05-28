@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -34,7 +34,7 @@ final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolat
      */
     public function __construct(
         private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry(),
-        string $defaultLocale = 'en'
+        string $defaultLocale = 'en',
     ) {
         $this->defaultLocale = $defaultLocale;
     }
@@ -45,12 +45,12 @@ final class IcuFormatErrorMessageInterpolator implements IErrorMessageInterpolat
     public function interpolate(
         string $errorMessageId,
         array $errorMessagePlaceholders = [],
-        ?string $locale = null
+        ?string $locale = null,
     ): string {
         $interpolatedErrorMessage = MessageFormatter::formatMessage(
             $locale ?? $this->_defaultLocale,
             $this->errorMessageTemplates->getErrorMessageTemplate($errorMessageId, $locale),
-            $errorMessagePlaceholders
+            $errorMessagePlaceholders,
         );
 
         if ($interpolatedErrorMessage === false) {

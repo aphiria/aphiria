@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -33,7 +33,7 @@ class SynchronousApiApplication implements IApplication
     public function __construct(
         private readonly IRequestHandler $apiGateway,
         private readonly IRequest $request,
-        private readonly IResponseWriter $responseWriter = new StreamResponseWriter()
+        private readonly IResponseWriter $responseWriter = new StreamResponseWriter(),
     ) {}
 
     /**

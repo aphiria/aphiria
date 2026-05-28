@@ -1,10 +1,27 @@
 # Changelog
 
-## [v1.0.0-alpha11](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha10...v1.0.0-alpha11) (?)
+## [v1.0.0-alpha12](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha11...v1.0.0-alpha12) (?)
+
+### Changed
+
+- Re-enabled PHP-CS-Fixer ([#348](https://github.com/aphiria/aphiria/pull/348))
+- Added CI for PHP 8.5 ([#353](https://github.com/aphiria/aphiria/pull/353))
+- Updated to use Symfony 8 components ([#354](https://github.com/aphiria/aphiria/pull/354))
+
+### Added
+
+- Nothing
+
+### Fixed
+
+- Nothing
+
+## [v1.0.0-alpha11](https://github.com/aphiria/aphiria/compare/v1.0.0-alpha10...v1.0.0-alpha11) (2025-06-21)
 
 ### Changed
 
 - Updated to use PER CS 2.0 coding standards ([#327](https://github.com/aphiria/aphiria/pull/327))
+- Updated `HashTable::addRange()` parameter to be named `$kvps` ([#345](https://github.com/aphiria/aphiria/pull/345))
 
 ### Added
 
@@ -15,6 +32,9 @@
 - Added the ability to register custom route variable constraints with the `RouterComponent` ([#330](https://github.com/aphiria/aphiria/pull/330))
 - Added the ability to register custom console elements with the `CommandComponent` ([#330](https://github.com/aphiria/aphiria/pull/330))
 - Added `filter()` and `map()` methods to most collections ([#338](https://github.com/aphiria/aphiria/pull/338))
+- Added `array_list()`, `hash_set()`, `hash_table()`, `immutable_array_list()`, `immutable_hash_set()`, `immutable_hash_table()`, `queue()`, and `stack()` functions in the `Aphiria\Collections\Functions` namespace ([#341](https://github.com/aphiria/aphiria/pull/341), [#343](https://github.com/aphiria/aphiria/pull/343))
+- Added support for associative arrays in `HashTable` and `ImmutableHashTable` ([#345](https://github.com/aphiria/aphiria/pull/345))
+- Added support for `iterable`s in `IList::intersect()`, `IList::union()`, `ISet::intersect()`, and `ISet::union()`
 
 ### Fixed
 

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -272,7 +272,7 @@ class IdentityBuilder
      */
     public function withRoles(string|array $value, ?string $issuer = null): static
     {
-        foreach ((array)$value as $role) {
+        foreach ((array) $value as $role) {
             $this->addClaim(ClaimType::Role, $role, $issuer);
         }
 

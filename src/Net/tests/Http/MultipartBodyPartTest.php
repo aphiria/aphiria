@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -48,6 +48,6 @@ class MultipartBodyPartTest extends TestCase
             ->expects($this->once())
             ->method('__toString')
             ->willReturn('baz');
-        $this->assertSame("Foo: bar\r\n\r\nbaz", (string)$this->bodyPart);
+        $this->assertSame("Foo: bar\r\n\r\nbaz", (string) $this->bodyPart);
     }
 }

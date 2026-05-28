@@ -22,7 +22,7 @@
     "homepage": "https://www.aphiria.com",
     "license": "MIT",
     "support": {
-        "docs": "https://www.aphiria.com/docs/1.x/introduction.html",
+        "docs": "https://www.aphiria.com/docs/1.x/introduction",
         "forum": "https://github.com/aphiria/aphiria/discussions",
         "issues": "https://github.com/aphiria/aphiria/issues",
         "source": "https://github.com/aphiria/aphiria"
@@ -54,7 +54,10 @@
             "Aphiria\\Security\\": "src/Security/src",
             "Aphiria\\Sessions\\": "src/Sessions/src",
             "Aphiria\\Validation\\": "src/Validation/src"
-        }
+        },
+        "files": [
+            "src/Collections/src/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -91,10 +94,10 @@
         "psr/http-factory": "^1.0",
         "psr/http-message": "^2.0",
         "psr/log": "^3.0",
-        "symfony/dotenv": "^7.0",
-        "symfony/property-access": "^7.0",
-        "symfony/serializer": "^7.0",
-        "symfony/yaml": "^7.0"
+        "symfony/dotenv": "^8.0",
+        "symfony/property-access": "^8.0",
+        "symfony/serializer": "^8.0",
+        "symfony/yaml": "^8.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.6",
@@ -118,11 +121,6 @@
             "@phpcs-test",
             "@psalm"
         ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
     },
     "config": {
         "optimize-autoloader": true,

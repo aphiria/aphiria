@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -55,7 +55,7 @@ class GlobalExceptionHandlerTest extends TestCase
             ['type' => \E_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1],
             ['type' => \E_PARSE, 'message' => 'foo', 'file' => '/file', 'line' => 1],
             ['type' => \E_CORE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1],
-            ['type' => \E_COMPILE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1]
+            ['type' => \E_COMPILE_ERROR, 'message' => 'foo', 'file' => '/file', 'line' => 1],
         ];
         $globalExceptionHandler = new class ($this->createMock(IExceptionRenderer::class)) extends GlobalExceptionHandler {
             public ?Throwable $handledException = null;

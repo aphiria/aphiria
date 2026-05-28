@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -62,7 +62,7 @@ class BasicAuthenticationHandlerTest extends TestCase
                 string $username,
                 string $password,
                 IRequest $request,
-                AuthenticationScheme $scheme
+                AuthenticationScheme $scheme,
             ): AuthenticationResult {
                 return AuthenticationResult::fail('foo', $scheme->name);
             }
@@ -70,7 +70,7 @@ class BasicAuthenticationHandlerTest extends TestCase
 
         return [
             [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions()), 'Basic'],
-            [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions(realm: 'example.com')), 'Basic realm="example.com"']
+            [new AuthenticationScheme('foo', $schemeHandler::class, new BasicAuthenticationOptions(realm: 'example.com')), 'Basic realm="example.com"'],
         ];
     }
 
@@ -81,7 +81,7 @@ class BasicAuthenticationHandlerTest extends TestCase
             ['Basic', 'Authorization header value was invalid'],
             ['Basic ' . \base64_encode('foo:bar') . ' baz', 'Authorization header value was invalid'],
             ['Basic ===', 'Authorization header did not contain valid base64-encoded value'],
-            ['Basic foo', 'Authorization header did not contain a base64-encoded username:password value']
+            ['Basic foo', 'Authorization header did not contain a base64-encoded username:password value'],
         ];
     }
 
@@ -92,7 +92,7 @@ class BasicAuthenticationHandlerTest extends TestCase
             ['Basic ' . \base64_encode('foo:bar')],
             ['basic ' . \base64_encode('foo:bar')],
             [' basic ' . \base64_encode('foo:bar')],
-            ['basic ' . \base64_encode('foo:bar') . ' ']
+            ['basic ' . \base64_encode('foo:bar') . ' '],
         ];
     }
 

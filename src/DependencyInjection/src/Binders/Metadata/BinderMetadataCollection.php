@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -91,14 +91,14 @@ final class BinderMetadataCollection
             if (isset($this->targetedResolutions[$boundInterface->context->targetClass][$boundInterface->interface])) {
                 $binders = [
                     ...$binders,
-                    ...$this->targetedResolutions[$boundInterface->context->targetClass][$boundInterface->interface]
+                    ...$this->targetedResolutions[$boundInterface->context->targetClass][$boundInterface->interface],
                 ];
             }
         } else {
             if (isset($this->universalResolutions[$boundInterface->interface])) {
                 $binders = [
                     ...$binders,
-                    ...$this->universalResolutions[$boundInterface->interface]
+                    ...$this->universalResolutions[$boundInterface->interface],
                 ];
             }
 
@@ -106,7 +106,7 @@ final class BinderMetadataCollection
                 if (isset($interfacesToBinderMetadatas[$boundInterface->interface])) {
                     $binders = [
                         ...$binders,
-                        ...$interfacesToBinderMetadatas[$boundInterface->interface]
+                        ...$interfacesToBinderMetadatas[$boundInterface->interface],
                     ];
                 }
             }

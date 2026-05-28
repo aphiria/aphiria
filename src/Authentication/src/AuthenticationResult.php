@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -37,7 +37,7 @@ readonly class AuthenticationResult
         public bool $passed,
         array|string $schemeNames,
         public ?IPrincipal $user = null,
-        public ?Exception $failure = null
+        public ?Exception $failure = null,
     ) {
         if (!$this->passed && $this->failure === null) {
             throw new InvalidArgumentException('Failed authentication results must specify a failure reason');

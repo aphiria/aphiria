@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -62,7 +62,7 @@ class RequestFactoryTest extends TestCase
         $request = $this->factory->createRequestFromSuperglobals([
             'PHP_AUTH_USER' => 'user',
             'PHP_AUTH_PW' => 'pw',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('user', $request->uri->user);
         $this->assertSame('pw', $request->uri->password);
@@ -80,7 +80,7 @@ class RequestFactoryTest extends TestCase
         $request = $this->factory->createRequestFromSuperglobals([
             'HTTP_FOO' => '%25',
             'HTTP_COOKIE' => '%25',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('%25', $request->headers->getFirst('Foo'));
         $this->assertSame('%', $request->headers->getFirst('Cookie'));
@@ -91,7 +91,7 @@ class RequestFactoryTest extends TestCase
         $factory = new RequestFactory(['192.168.1.1']);
         $request = $factory->createRequestFromSuperglobals([
             'REMOTE_ADDR' => '192.168.1.1',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('192.168.1.1', $request->properties->get('CLIENT_IP_ADDRESS'));
     }
@@ -110,7 +110,7 @@ class RequestFactoryTest extends TestCase
         $factory = new RequestFactory([], ['HTTP_FORWARDED' => 'HTTP_FORWARDED']);
         $request = $factory->createRequestFromSuperglobals([
             'HTTP_FORWARDED' => $ipDatum1,
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertEquals($expectedIpDatum, $request->properties->get('CLIENT_IP_ADDRESS'));
     }
@@ -120,7 +120,7 @@ class RequestFactoryTest extends TestCase
         $factory = new RequestFactory([], ['HTTP_CLIENT_IP' => 'HTTP_CLIENT_IP', 'HTTP_FORWARDED' => 'FORWARDED']);
         $request = $factory->createRequestFromSuperglobals([
             'HTTP_CLIENT_IP' => '192.168.1.1',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('192.168.1.1', $request->properties->get('CLIENT_IP_ADDRESS'));
     }
@@ -131,7 +131,7 @@ class RequestFactoryTest extends TestCase
         $request = $factory->createRequestFromSuperglobals([
             'REMOTE_ADDR' => '192.168.1.1',
             'HTTP_X_FORWARDED_PORT' => 8080,
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame(8080, $request->uri->port);
     }
@@ -142,7 +142,7 @@ class RequestFactoryTest extends TestCase
         $request = $factory->createRequestFromSuperglobals([
             'REMOTE_ADDR' => '192.168.1.1',
             'HTTP_X_FORWARDED_PROTO' => 'https',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame(443, $request->uri->port);
     }
@@ -173,7 +173,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'HTTP_FOO' => 'text/html,application/xhtml+xml',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertEquals(['text/html,application/xhtml+xml'], $request->headers->get('Foo'));
     }
@@ -182,7 +182,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'HTTP_COOKIE' => 'foo=bar; baz=blah',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('foo=bar; baz=blah', $request->headers->getFirst('Cookie'));
     }
@@ -223,7 +223,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'REQUEST_METHOD' => 'CONNECT',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('CONNECT', $request->method);
     }
@@ -240,7 +240,7 @@ class RequestFactoryTest extends TestCase
         $request = $this->factory->createRequestFromSuperglobals([
             'REQUEST_METHOD' => 'POST',
             'X-HTTP-METHOD-OVERRIDE' => 'PUT',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('PUT', $request->method);
     }
@@ -249,7 +249,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'HTTP_ACCEPT' => 'text/html,application/xhtml+xml',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertEquals(['text/html', 'application/xhtml+xml'], $request->headers->get('Accept'));
     }
@@ -264,7 +264,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             $name => $value,
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertFalse($request->headers->containsKey($name));
     }
@@ -273,7 +273,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'REQUEST_URI' => '/foo/bar?baz=blah',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('/foo/bar', $request->uri->path);
     }
@@ -282,7 +282,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'SERVER_PORT' => 8080,
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame(8080, $request->uri->port);
     }
@@ -292,7 +292,7 @@ class RequestFactoryTest extends TestCase
         $request = $this->factory->createRequestFromSuperglobals([
             'QUERY_STRING' => '?foo=bar',
             'REQUEST_URI' => '/baz?blah=dave',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('foo=bar', $request->uri->queryString);
     }
@@ -301,7 +301,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'HTTP_ACCEPT' => 'foo/bar;p="A,B",baz',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertEquals(['foo/bar;p="A,B"', 'baz'], $request->headers->get('Accept'));
     }
@@ -310,7 +310,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'REMOTE_ADDR' => '192.168.2.1',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('192.168.2.1', $request->properties->get('CLIENT_IP_ADDRESS'));
     }
@@ -319,7 +319,7 @@ class RequestFactoryTest extends TestCase
     {
         $request = $this->factory->createRequestFromSuperglobals([
             'REQUEST_URI' => '/foo?bar=baz',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ]);
         $this->assertSame('bar=baz', $request->uri->queryString);
     }
@@ -334,7 +334,7 @@ class RequestFactoryTest extends TestCase
             'PHP_AUTH_PW' => 'php_auth_pw',
             'PHP_AUTH_TYPE' => 'php_auth_type',
             'PHP_AUTH_USER' => 'php_auth_user',
-            'HTTP_HOST' => 'foo.com'
+            'HTTP_HOST' => 'foo.com',
         ];
         $expectedHeaders = [
             'Auth-Type' => ['auth_type'],
@@ -343,7 +343,7 @@ class RequestFactoryTest extends TestCase
             'Php-Auth-Digest' => ['php_auth_digest'],
             'Php-Auth-Pw' => ['php_auth_pw'],
             'Php-Auth-Type' => ['php_auth_type'],
-            'Php-Auth-User' => ['php_auth_user']
+            'Php-Auth-User' => ['php_auth_user'],
         ];
         $headers = $this->factory->createRequestFromSuperglobals($server)->headers;
 

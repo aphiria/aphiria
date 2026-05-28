@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -47,7 +47,7 @@ class RouteCollectionTest extends TestCase
             public function bar(): void {}
         };
         $expectedRoutes = [
-            new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), [])
+            new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), []),
         ];
         $collection = new RouteCollection($expectedRoutes);
         $this->assertEquals($expectedRoutes, $collection->values);
@@ -62,7 +62,7 @@ class RouteCollectionTest extends TestCase
         };
         $expectedRoutes = [
             new Route(new UriTemplate('abc'), new RouteAction($controller::class, 'bar'), []),
-            new Route(new UriTemplate('def'), new RouteAction($controller::class, 'baz'), [])
+            new Route(new UriTemplate('def'), new RouteAction($controller::class, 'baz'), []),
         ];
         $this->collection->addMany($expectedRoutes);
         $this->assertEquals($expectedRoutes, $this->collection->values);
@@ -83,7 +83,7 @@ class RouteCollectionTest extends TestCase
             new RouteAction($controller::class, 'bar'),
             [],
             [],
-            'foo'
+            'foo',
         );
         $this->collection->addMany([$expectedRoute]);
         $this->assertSame($expectedRoute, $this->collection->getNamedRoute('foo'));
@@ -99,7 +99,7 @@ class RouteCollectionTest extends TestCase
             new RouteAction($controller::class, 'bar'),
             [],
             [],
-            'foo'
+            'foo',
         );
         $this->collection->add($expectedRoute);
         $this->assertSame($expectedRoute, $this->collection->getNamedRoute('foo'));

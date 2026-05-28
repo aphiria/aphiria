@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -57,7 +57,7 @@ class PrincipalBuilderTest extends TestCase
             [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withThumbprint('foo'), ClaimType::Thumbprint, 'foo'],
             [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withUpn('foo'), ClaimType::Upn, 'foo'],
             [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withUri('https://example.com'), ClaimType::Uri, 'https://example.com'],
-            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withX500DistinguishedName('foo'), ClaimType::X500DistinguishedName, 'foo']
+            [fn(PrincipalBuilder $principalBuilder): PrincipalBuilder => $principalBuilder->withX500DistinguishedName('foo'), ClaimType::X500DistinguishedName, 'foo'],
         ];
     }
 
@@ -65,7 +65,7 @@ class PrincipalBuilderTest extends TestCase
     public function testAddingClaimsAddsThemToPrimaryIdentity(
         Closure $claimsCall,
         ClaimType $type,
-        mixed $value
+        mixed $value,
     ): void {
         $principalBuilder = new PrincipalBuilder('example.com');
         $claimsCall($principalBuilder);
@@ -97,7 +97,7 @@ class PrincipalBuilderTest extends TestCase
         $user = new PrincipalBuilder()
             ->withIdentity(
                 fn(IdentityBuilder $identity) => $identity->withName('Dave', 'example.com')
-                ->build()
+                ->build(),
             )->build();
         $this->assertCount(1, $user->identities);
         $this->assertSame('Dave', $user->identities[0]->filterClaims(ClaimType::Name)[0]->value);
@@ -143,7 +143,7 @@ class PrincipalBuilderTest extends TestCase
     {
         $identities = [
             new Identity([], 'example.com1'),
-            new Identity([], 'example.com2')
+            new Identity([], 'example.com2'),
         ];
         $user = new PrincipalBuilder()
             ->withIdentity($identities[0])
@@ -156,7 +156,7 @@ class PrincipalBuilderTest extends TestCase
     {
         $identities = [
             new Identity([], 'example1.com'),
-            new Identity([], 'example2.com')
+            new Identity([], 'example2.com'),
         ];
         // By default, the primary identity is the first one added, so for testing we'll select the last one added
         $user = new PrincipalBuilder('foo')
@@ -190,7 +190,7 @@ class PrincipalBuilderTest extends TestCase
     {
         $expectedClaims = [
             new Claim(ClaimType::Name, 'Dave', 'example.com'),
-            new Claim(ClaimType::Email, 'foo@bar.com', 'example.com')
+            new Claim(ClaimType::Email, 'foo@bar.com', 'example.com'),
         ];
         $user = new PrincipalBuilder('example.com')
             ->withClaims($expectedClaims)
@@ -201,7 +201,7 @@ class PrincipalBuilderTest extends TestCase
     public function testWithClaimsForSingleClaimsAddsItToPrimaryIdentity(): void
     {
         $expectedClaims = [
-            new Claim(ClaimType::Name, 'Dave', 'example.com')
+            new Claim(ClaimType::Name, 'Dave', 'example.com'),
         ];
         $user = new PrincipalBuilder('example.com')
             ->withClaims($expectedClaims[0])

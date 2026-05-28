@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -213,8 +213,8 @@ class HashTableConfigurationTest extends TestCase
             $configuration->tryGetObject(
                 'foo',
                 fn(mixed $options): ConfigObject => new ConfigObject($options),
-                $object
-            )
+                $object,
+            ),
         );
         $this->assertEquals(new ConfigObject('bar'), $object);
     }
@@ -227,8 +227,8 @@ class HashTableConfigurationTest extends TestCase
             $configuration->tryGetObject(
                 'baz',
                 fn(mixed $options): ConfigObject => new ConfigObject($options),
-                $object
-            )
+                $object,
+            ),
         );
         $this->assertNull($object);
     }

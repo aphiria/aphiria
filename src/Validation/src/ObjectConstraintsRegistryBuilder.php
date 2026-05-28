@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -26,7 +26,7 @@ final class ObjectConstraintsRegistryBuilder
      * @param ObjectConstraintsRegistry $objectConstraints The constraints to add to, or null if building a new registry
      */
     public function __construct(
-        private readonly ObjectConstraintsRegistry $objectConstraints = new ObjectConstraintsRegistry()
+        private readonly ObjectConstraintsRegistry $objectConstraints = new ObjectConstraintsRegistry(),
     ) {}
 
     /**

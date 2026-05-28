@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -36,7 +36,7 @@ class LogLevelFactoryTest extends TestCase
     {
         $exception = new Exception();
         $this->factory->registerManyLogLevelFactories([
-            Exception::class => fn(Exception $ex) => LogLevel::EMERGENCY
+            Exception::class => fn(Exception $ex) => LogLevel::EMERGENCY,
         ]);
         $this->assertSame(LogLevel::EMERGENCY, $this->factory->createLogLevel($exception));
     }

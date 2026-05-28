@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -73,7 +73,7 @@ class SynchronousApiApplicationBuilderTest extends TestCase
         $this->appBuilder->withModule($module);
         $app = new SynchronousApiApplication(
             $this->createMock(IRequestHandler::class),
-            $this->createMock(IRequest::class)
+            $this->createMock(IRequest::class),
         );
         $this->container->bindInstance(SynchronousApiApplication::class, $app);
         $this->appBuilder->build();

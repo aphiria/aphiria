@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -53,7 +53,7 @@ final class Option
         array|OptionType $type,
         public readonly ?string $shortName = null,
         public readonly ?string $description = null,
-        public readonly mixed $defaultValue = null
+        public readonly mixed $defaultValue = null,
     ) {
         if (empty($this->name)) {
             throw new InvalidArgumentException('Option name cannot be empty');

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -51,7 +51,7 @@ EOF;
     public function __construct(
         private readonly CommandRegistry $commands,
         private readonly CommandFormatter $commandFormatter = new CommandFormatter(),
-        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
+        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter(),
     ) {}
 
     /**
@@ -69,9 +69,9 @@ EOF;
             /** @var Command $command */
             $command = null;
 
-            if (!$this->commands->tryGetCommand((string)$input->arguments['command'], $command)) {
+            if (!$this->commands->tryGetCommand((string) $input->arguments['command'], $command)) {
                 throw new InvalidArgumentException(
-                    "Command \"{$input->arguments['command']}\" is not registered"
+                    "Command \"{$input->arguments['command']}\" is not registered",
                 );
             }
 
@@ -91,9 +91,9 @@ EOF;
                     $command->name,
                     $this->getArgumentText($command),
                     $this->getOptionText($command),
-                    $helpText
+                    $helpText,
                 ],
-                self::$template
+                self::$template,
             );
             $output->writeln($compiledTemplate);
         } catch (InvalidArgumentException $ex) {
@@ -142,7 +142,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $argumentTexts,
-            fn(array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
+            fn(array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}"),
         );
     }
 
@@ -166,7 +166,7 @@ EOF;
 
         return $this->paddingFormatter->format(
             $optionTexts,
-            fn(array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}")
+            fn(array $row): string => "  <info>{$row[0]}</info>" . (empty($row[1]) ? '' : " - {$row[1]}"),
         );
     }
 }

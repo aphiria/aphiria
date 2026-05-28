@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -73,7 +73,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeGroupOptions,
                     function (RouteCollectionBuilder $routeBuilders) use ($reflectionController) {
                         $this->registerRouteBuilders($reflectionController, $routeBuilders);
-                    }
+                    },
                 );
             }
         }
@@ -102,7 +102,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                 $middlewareBindings[] = new MiddlewareBinding(
                     $middlewareAttributeInstance->className,
-                    $middlewareAttributeInstance->parameters
+                    $middlewareAttributeInstance->parameters,
                 );
             }
         }
@@ -121,7 +121,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $controllerAttributeInstance->isHttpsOnly,
                 $routeConstraints,
                 $middlewareBindings,
-                $controllerAttributeInstance->parameters
+                $controllerAttributeInstance->parameters,
             );
         }
 
@@ -157,7 +157,7 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $middlewareAttributeInstance = $middlewareAttribute->newInstance();
                     $middlewareBindings[] = new MiddlewareBinding(
                         $middlewareAttributeInstance->className,
-                        $middlewareAttributeInstance->parameters
+                        $middlewareAttributeInstance->parameters,
                     );
                 }
             }
@@ -186,8 +186,8 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $routeBuilder->withManyConstraints($routeConstraints);
                 }
 
-                if (!empty((string)$routeAttributeInstance->name)) {
-                    $routeBuilder->withName((string)$routeAttributeInstance->name);
+                if (!empty((string) $routeAttributeInstance->name)) {
+                    $routeBuilder->withName((string) $routeAttributeInstance->name);
                 }
 
                 if (!empty($routeAttributeInstance->parameters)) {

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -44,7 +44,7 @@ final class AuthorizationContext
     public function __construct(
         public readonly IPrincipal $user,
         public readonly array $requirements,
-        public readonly ?object $resource
+        public readonly ?object $resource,
     ) {
         $this->pendingRequirements = new HashSet($this->requirements);
     }

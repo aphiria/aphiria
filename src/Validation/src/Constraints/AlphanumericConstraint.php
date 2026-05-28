@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -33,6 +33,6 @@ final class AlphanumericConstraint extends Constraint
      */
     public function passes(mixed $value): bool
     {
-        return \ctype_alnum((string)$value) && !\str_contains((string)$value, ' ');
+        return \ctype_alnum((string) $value) && !\str_contains((string) $value, ' ');
     }
 }

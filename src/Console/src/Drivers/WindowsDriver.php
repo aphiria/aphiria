@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -62,7 +62,7 @@ class WindowsDriver extends Driver
             return null;
         }
 
-        return [(int)$matches[2], (int)$matches[1]];
+        return [(int) $matches[2], (int) $matches[1]];
     }
 
     /**
@@ -75,7 +75,7 @@ class WindowsDriver extends Driver
             \is_string($ansicon = \getenv('ANSICON'))
             && \preg_match('/^(\d+)x(\d+)(?: \((\d+)x(\d+)\))?$/', \trim($ansicon), $matches)
         ) {
-            return [(int)$matches[1], (int)($matches[4] ?? $matches[2])];
+            return [(int) $matches[1], (int) ($matches[4] ?? $matches[2])];
         }
 
         // This is too difficult to test with mocks

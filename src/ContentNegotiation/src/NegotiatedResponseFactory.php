@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -46,7 +46,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
         IRequest $request,
         HttpStatusCode|int $statusCode,
         ?Headers $headers = null,
-        object|string|int|float|array|null $rawBody = null
+        object|string|int|float|array|null $rawBody = null,
     ): IResponse {
         $headers = $headers ?? new Headers();
 
@@ -59,7 +59,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
                 HttpStatusCode::InternalServerError,
                 'Failed to create response body',
                 0,
-                $ex
+                $ex,
             );
         }
 
@@ -97,7 +97,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
     private function createBody(
         IRequest $request,
         object|string|int|float|array|null $rawBody = null,
-        ?ContentNegotiationResult &$contentNegotiationResult = null
+        ?ContentNegotiationResult &$contentNegotiationResult = null,
     ): ?IBody {
         if ($rawBody === null || $rawBody instanceof IBody) {
             return $rawBody;
@@ -108,7 +108,7 @@ final class NegotiatedResponseFactory implements IResponseFactory
         }
 
         if (\is_scalar($rawBody)) {
-            return new StringBody((string)$rawBody);
+            return new StringBody((string) $rawBody);
         }
 
         if ((!\is_object($rawBody) && !\is_array($rawBody)) || \is_callable($rawBody)) {
@@ -129,14 +129,14 @@ final class NegotiatedResponseFactory implements IResponseFactory
             $mediaTypeFormatter->writeToStream(
                 $rawBody,
                 $bodyStream,
-                $contentNegotiationResult->encoding
+                $contentNegotiationResult->encoding,
             );
         } catch (SerializationException $ex) {
             throw new HttpException(
                 HttpStatusCode::InternalServerError,
                 'Failed to serialize response body',
                 0,
-                $ex
+                $ex,
             );
         }
 

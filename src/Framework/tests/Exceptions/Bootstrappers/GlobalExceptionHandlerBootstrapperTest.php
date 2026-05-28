@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -117,7 +117,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->container
             ->method('resolve')
             ->willReturnMap([
-                [$customApiExceptionRendererType, $customApiExceptionRenderer]
+                [$customApiExceptionRendererType, $customApiExceptionRenderer],
             ]);
         $this->bootstrapper->isRunningInConsole = false;
         $this->bootstrapper->bootstrap();
@@ -196,7 +196,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $config['aphiria']['logging']['handlers'][] = [
             'type' => StreamHandler::class,
             'path' => '/path',
-            'level' => LogLevel::DEBUG
+            'level' => LogLevel::DEBUG,
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->bootstrapper->bootstrap();
@@ -212,7 +212,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $config['aphiria']['logging']['handlers'][] = [
             'type' => SyslogHandler::class,
             'ident' => 'app',
-            'level' => LogLevel::DEBUG
+            'level' => LogLevel::DEBUG,
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->bootstrapper->bootstrap();
@@ -227,7 +227,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         $this->expectExceptionMessage('Unsupported logging handler type foo');
         $config = self::getBaseConfig();
         $config['aphiria']['logging']['handlers'][] = [
-            'type' => 'foo'
+            'type' => 'foo',
         ];
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->bootstrapper->bootstrap();
@@ -253,13 +253,13 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
         return [
             'aphiria' => [
                 'exceptions' => [
-                    'apiExceptionRenderer' => ProblemDetailsExceptionRenderer::class
+                    'apiExceptionRenderer' => ProblemDetailsExceptionRenderer::class,
                 ],
                 'logging' => [
                     'handlers' => [],
-                    'name' => 'app'
-                ]
-            ]
+                    'name' => 'app',
+                ],
+            ],
         ];
     }
 
@@ -269,7 +269,7 @@ class GlobalExceptionHandlerBootstrapperTest extends TestCase
      * @param class-string<IExceptionRenderer> $expectedExceptionRendererType The type of exception renderer to mock
      */
     private function addBootstrapAssertions(
-        string $expectedExceptionRendererType = ProblemDetailsExceptionRenderer::class
+        string $expectedExceptionRendererType = ProblemDetailsExceptionRenderer::class,
     ): void {
         /**
          * Hack alert

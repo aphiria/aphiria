@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -32,7 +32,7 @@ interface IContainer extends IServiceResolver
         string|array $interfaces,
         string $concreteClass,
         array $primitives = [],
-        bool $resolveAsSingleton = false
+        bool $resolveAsSingleton = false,
     ): void;
 
     /**
@@ -78,7 +78,7 @@ interface IContainer extends IServiceResolver
         object|string $instance,
         string $methodName,
         array $primitives = [],
-        bool $ignoreMissingMethod = false
+        bool $ignoreMissingMethod = false,
     ): mixed;
 
     /**

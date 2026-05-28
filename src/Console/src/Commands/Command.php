@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -32,6 +32,6 @@ class Command
         public readonly array $arguments = [],
         public readonly array $options = [],
         public readonly ?string $description = null,
-        public readonly ?string $helpText = null
+        public readonly ?string $helpText = null,
     ) {}
 }

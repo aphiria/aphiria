@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -57,7 +57,7 @@ class AuthenticationResultTest extends TestCase
     public function testFailSetsSchemeNames(array|string $schemeNames): void
     {
         $result = AuthenticationResult::fail(new RuntimeException('foo'), $schemeNames);
-        $this->assertSame((array)$schemeNames, $result->schemeNames);
+        $this->assertSame((array) $schemeNames, $result->schemeNames);
     }
 
     public function testPassingWithoutUserSetThrowsException(): void
@@ -80,6 +80,6 @@ class AuthenticationResultTest extends TestCase
     public function testPassSetsSchemeNames(string|array $schemeNames): void
     {
         $result = AuthenticationResult::pass($this->createMock(IPrincipal::class), $schemeNames);
-        $this->assertSame((array)$schemeNames, $result->schemeNames);
+        $this->assertSame((array) $schemeNames, $result->schemeNames);
     }
 }

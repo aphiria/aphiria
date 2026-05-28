@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -42,7 +42,7 @@ class NegotiatedRequestBuilderTest extends TestCase
             ['string[]', ['foo', 'bar']],
             ['string', 'foo'],
             [$object::class, $object],
-            [$object::class . '[]', [$object, $object]]
+            [$object::class . '[]', [$object, $object]],
         ];
     }
 
@@ -107,12 +107,12 @@ class NegotiatedRequestBuilderTest extends TestCase
 
                     return true;
                 }),
-                'UTF-8'
+                'UTF-8',
             );
         $expectedMediaTypeFormatterMatch = new MediaTypeFormatterMatch(
             $mediaTypeFormatter,
             'application/json',
-            new ContentTypeHeaderValue('application/json')
+            new ContentTypeHeaderValue('application/json'),
         );
         $mediaTypeFormatterMatcher = $this->createMock(IMediaTypeFormatterMatcher::class);
         $mediaTypeFormatterMatcher

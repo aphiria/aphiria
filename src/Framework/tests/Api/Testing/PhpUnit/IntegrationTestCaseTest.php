@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -77,7 +77,7 @@ class IntegrationTestCaseTest extends TestCase
                 private IRequestHandler $apiGateway,
                 private IBodyDeserializer $bodyDeserializer,
                 // This has to be set by reference so we can override it when testing mock authentication
-                protected IAuthenticator|IMockAuthenticator|null &$authenticator
+                protected IAuthenticator|IMockAuthenticator|null &$authenticator,
             ) {
                 /** @psalm-suppress InternalMethod We need to call this internal method */
                 parent::__construct('foo');
@@ -86,7 +86,7 @@ class IntegrationTestCaseTest extends TestCase
                     new JsonMediaTypeFormatter(),
                     new XmlMediaTypeFormatter(),
                     new HtmlMediaTypeFormatter(),
-                    new PlainTextMediaTypeFormatter()
+                    new PlainTextMediaTypeFormatter(),
                 ]);
             }
 
@@ -270,7 +270,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertCookieEquals('bar', $response, 'foo');
         $this->assertSame(
             'Failed to assert that cookie foo has expected value',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -286,7 +286,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertCookieIsUnset($response, 'foo');
         $this->assertSame(
             'Failed to assert that cookie foo is unset',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -302,7 +302,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertHasCookie($response, 'foo');
         $this->assertSame(
             'Failed to assert that cookie foo is set',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -318,7 +318,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertHasHeader($response, 'Foo');
         $this->assertSame(
             'Failed to assert that header Foo is set',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -334,7 +334,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertHeaderEquals(['bar'], $response, 'Foo');
         $this->assertSame(
             'No header value for Foo is set',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -350,7 +350,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertHeaderMatchesRegex('/^bar$/', $response, 'Foo');
         $this->assertSame(
             'No header value for Foo is set',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -359,12 +359,12 @@ class IntegrationTestCaseTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('http://localhost'),
-            new Headers([new KeyValuePair('Accept', 'application/json')])
+            new Headers([new KeyValuePair('Accept', 'application/json')]),
         );
         $response = new Response(
             200,
             new Headers([new KeyValuePair('Foo', 'bar')]),
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $this->apiGateway
             ->expects($this->once())
@@ -391,7 +391,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyEquals($this, $response);
         $this->assertSame(
             'Failed to assert that the response body matches the expected value',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -407,12 +407,12 @@ class IntegrationTestCaseTest extends TestCase
         $request = new Request(
             'GET',
             new Uri('http://localhost'),
-            new Headers([new KeyValuePair('Accept', 'application/json')])
+            new Headers([new KeyValuePair('Accept', 'application/json')]),
         );
         $response = new Response(
             200,
             new Headers([new KeyValuePair('Foo', 'bar')]),
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $expectedParsedBody = new class () {
             public string $foo = 'bar';
@@ -426,7 +426,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             $expectedParsedBody::class,
-            fn(mixed $parsedBody): bool => true
+            fn(mixed $parsedBody): bool => true,
         );
     }
 
@@ -443,11 +443,11 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertParsedBodyPassesCallback(
             $response,
             self::class,
-            fn(mixed $parsedBody): bool => false
+            fn(mixed $parsedBody): bool => false,
         );
         $this->assertSame(
             'Failed to assert that the response body passes the callback',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -470,7 +470,7 @@ class IntegrationTestCaseTest extends TestCase
         $this->integrationTests->assertStatusCodeEquals(HttpStatusCode::InternalServerError, $response);
         $this->assertSame(
             'Expected status code 500, got 200',
-            $this->integrationTests->getFailMessage()
+            $this->integrationTests->getFailMessage(),
         );
     }
 
@@ -482,15 +482,15 @@ class IntegrationTestCaseTest extends TestCase
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'DELETE'
-                    && (string)$request->uri === 'http://localhost'
+                    && (string) $request->uri === 'http://localhost'
                     && $request->headers->get('Foo') === ['bar']
-                    && (string)$request->body === '{"foo":"bar"}';
+                    && (string) $request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->delete(
             'http://localhost',
             ['Foo' => ['bar']],
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -503,13 +503,13 @@ class IntegrationTestCaseTest extends TestCase
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'GET'
-                    && (string)$request->uri === 'http://localhost'
+                    && (string) $request->uri === 'http://localhost'
                     && $request->headers->get('Foo') === ['bar'];
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->get(
             'http://localhost',
-            ['Foo' => ['bar']]
+            ['Foo' => ['bar']],
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -558,15 +558,15 @@ class IntegrationTestCaseTest extends TestCase
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'OPTIONS'
-                    && (string)$request->uri === 'http://localhost'
+                    && (string) $request->uri === 'http://localhost'
                     && $request->headers->get('Foo') === ['bar']
-                    && (string)$request->body === '{"foo":"bar"}';
+                    && (string) $request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->options(
             'http://localhost',
             ['Foo' => ['bar']],
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -579,15 +579,15 @@ class IntegrationTestCaseTest extends TestCase
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'PATCH'
-                    && (string)$request->uri === 'http://localhost'
+                    && (string) $request->uri === 'http://localhost'
                     && $request->headers->get('Foo') === ['bar']
-                    && (string)$request->body === '{"foo":"bar"}';
+                    && (string) $request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->patch(
             'http://localhost',
             ['Foo' => ['bar']],
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -600,15 +600,15 @@ class IntegrationTestCaseTest extends TestCase
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'POST'
-                    && (string)$request->uri === 'http://localhost'
+                    && (string) $request->uri === 'http://localhost'
                     && $request->headers->get('Foo') === ['bar']
-                    && (string)$request->body === '{"foo":"bar"}';
+                    && (string) $request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->post(
             'http://localhost',
             ['Foo' => ['bar']],
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -621,15 +621,15 @@ class IntegrationTestCaseTest extends TestCase
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
                 return $request->method === 'PUT'
-                    && (string)$request->uri === 'http://localhost'
+                    && (string) $request->uri === 'http://localhost'
                     && $request->headers->get('Foo') === ['bar']
-                    && (string)$request->body === '{"foo":"bar"}';
+                    && (string) $request->body === '{"foo":"bar"}';
             }))
             ->willReturn($expectedResponse);
         $actualResponse = $this->integrationTests->put(
             'http://localhost',
             ['Foo' => ['bar']],
-            new StringBody('{"foo":"bar"}')
+            new StringBody('{"foo":"bar"}'),
         );
         $this->assertSame($expectedResponse, $actualResponse);
     }
@@ -644,7 +644,7 @@ class IntegrationTestCaseTest extends TestCase
             ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) use ($expectedUri) {
-                return (string)$request->uri === $expectedUri;
+                return (string) $request->uri === $expectedUri;
             }));
         $this->integrationTests->get($expectedUri);
     }
@@ -664,7 +664,7 @@ class IntegrationTestCaseTest extends TestCase
             ->expects($this->once())
             ->method('handle')
             ->with($this->callback(function (IRequest $request) {
-                return (string)$request->uri === 'http://localhost/path';
+                return (string) $request->uri === 'http://localhost/path';
             }));
         $this->integrationTests->get($path);
     }

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -17,8 +17,8 @@ namespace Aphiria\Console\Output\Parsers;
  */
 abstract class AstNode
 {
-    /** @var bool Whether or not this is a tag node */
-    abstract public bool $isTag { get; }
+    /** @var list<AstNode> The child nodes */
+    public array $children = [];
     /** @var bool Whether or not this is a leaf node */
     public bool $isLeaf {
         get => \count($this->children) === 0;
@@ -27,8 +27,8 @@ abstract class AstNode
     public bool $isRoot {
         get => $this->parent === null;
     }
-    /** @var list<AstNode> The child nodes */
-    public array $children = [];
+    /** @var bool Whether or not this is a tag node */
+    abstract public bool $isTag { get; }
     /** @var AstNode|null The parent node */
     public ?AstNode $parent = null;
 

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -76,7 +76,7 @@ final class TrieRouteMatcher implements IRouteMatcher
         int $segmentCount,
         int $segmentIter,
         array $hostSegments,
-        array $routeVariables
+        array $routeVariables,
     ): Generator {
         // Base case.  We iterate to 1 past the past segments because there are n + 1 levels of nodes due to the root node.
         if ($segmentIter === $segmentCount) {
@@ -113,7 +113,7 @@ final class TrieRouteMatcher implements IRouteMatcher
                     $segmentCount,
                     $segmentIter + 1,
                     $hostSegments,
-                    $routeVariablesCopy
+                    $routeVariablesCopy,
                 );
             }
         }

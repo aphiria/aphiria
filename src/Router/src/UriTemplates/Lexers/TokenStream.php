@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -17,12 +17,12 @@ namespace Aphiria\Routing\UriTemplates\Lexers;
  */
 final class TokenStream
 {
+    /** @var int The length of the stream */
+    public readonly int $length;
     /** @var Token|null The current token, or null if the cursor does not point to a token */
     public ?Token $current {
         get => \count($this->tokens) > $this->cursor ? $this->tokens[$this->cursor] : null;
     }
-    /** @var int The length of the stream */
-    public readonly int $length;
     /** @var int The current cursor */
     private int $cursor = 0;
 
@@ -57,7 +57,7 @@ final class TokenStream
             $formattedMessage = \sprintf(
                 'Expected token type %s%s',
                 $type->name,
-                $value === null ? '' : " with value \"$value\""
+                $value === null ? '' : " with value \"$value\"",
             );
 
             if ($currentToken === null) {
@@ -66,14 +66,14 @@ final class TokenStream
                 $formattedMessage .= \sprintf(
                     ', got %s with value \"%s\"',
                     $currentToken->type->name,
-                    (string)$currentToken->value
+                    (string) $currentToken->value,
                 );
             }
         } else {
             $formattedMessage = \sprintf(
                 $message,
                 $currentToken === null ? TokenType::Eof->name : $currentToken->type->name,
-                (string)($currentToken === null ? 'end of stream' : $currentToken->value)
+                (string) ($currentToken === null ? 'end of stream' : $currentToken->value),
             );
         }
 

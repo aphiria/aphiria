@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -27,7 +27,7 @@ readonly class PaddingFormatterOptions
     public function __construct(
         public string $paddingString = ' ',
         public bool $padAfter = true,
-        public string $eolChar = PHP_EOL
+        public string $eolChar = PHP_EOL,
     ) {
         if (empty($this->eolChar)) {
             throw new InvalidArgumentException('EOL character cannot be empty');

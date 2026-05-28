@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -60,14 +60,14 @@ class FileTrieCacheTest extends TestCase
             new UriTemplate('foo'),
             new RouteAction($controller::class, 'bar'),
             [$this->createMock(IRouteConstraint::class)],
-            [new MiddlewareBinding($middleware::class)]
+            [new MiddlewareBinding($middleware::class)],
         );
         $trie = new RootTrieNode([
             new LiteralTrieNode(
                 'foo',
                 [],
-                $route
-            )
+                $route,
+            ),
         ]);
         $this->cache->set($trie);
         $this->assertEquals($trie, $this->cache->get());

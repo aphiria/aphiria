@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -37,7 +37,7 @@ EOF;
      */
     public function __construct(
         private readonly CommandRegistry $commands,
-        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter()
+        private readonly PaddingFormatter $paddingFormatter = new PaddingFormatter(),
     ) {}
 
     /**
@@ -51,7 +51,7 @@ EOF;
         $compiledTemplate = \str_replace(
             ['{{commands}}', '{{hr}}'],
             [$this->getCommandText(), \str_repeat('-', $output->driver->cliWidth)],
-            self::$template
+            self::$template,
         );
 
         $output->writeln($compiledTemplate);
@@ -121,10 +121,10 @@ EOF;
 
                 // If this is the first command of its category, display the category
                 if (
-                    isset($firstCommandNamesToCategories[\trim((string)$row[0])])
-                    && \in_array(\trim((string)$row[0]), $categorizedCommandNames, true)
+                    isset($firstCommandNamesToCategories[\trim((string) $row[0])])
+                    && \in_array(\trim((string) $row[0]), $categorizedCommandNames, true)
                 ) {
-                    $output .= "<comment>{$firstCommandNamesToCategories[\trim((string)$row[0])]}</comment>" . PHP_EOL;
+                    $output .= "<comment>{$firstCommandNamesToCategories[\trim((string) $row[0])]}</comment>" . PHP_EOL;
                 }
 
                 $output .= "  <info>{$row[0]}</info>";
@@ -135,7 +135,7 @@ EOF;
                 }
 
                 return $output;
-            }
+            },
         );
     }
 }

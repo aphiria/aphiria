@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -46,7 +46,7 @@ abstract class TextMediaTypeFormatter extends MediaTypeFormatter
             throw new InvalidArgumentException(static::class . ' can only read strings');
         }
 
-        return (string)$stream;
+        return (string) $stream;
     }
 
     /**

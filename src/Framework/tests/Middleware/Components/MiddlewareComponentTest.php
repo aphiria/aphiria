@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -58,7 +58,7 @@ class MiddlewareComponentTest extends TestCase
             ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
-                [$expectedMiddleware::class, $expectedMiddleware]
+                [$expectedMiddleware::class, $expectedMiddleware],
             ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware::class, ['bar' => 'baz']));
         $this->middlewareComponent->build();
@@ -74,7 +74,7 @@ class MiddlewareComponentTest extends TestCase
             ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, new MiddlewareCollection()],
-                [$invalidMiddleware::class, $invalidMiddleware]
+                [$invalidMiddleware::class, $invalidMiddleware],
             ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($invalidMiddleware::class));
         $this->middlewareComponent->build();
@@ -90,7 +90,7 @@ class MiddlewareComponentTest extends TestCase
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
                 [$expectedMiddleware1::class, $expectedMiddleware1],
-                [$expectedMiddleware2::class, $expectedMiddleware2]
+                [$expectedMiddleware2::class, $expectedMiddleware2],
             ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware1::class));
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware2::class));
@@ -108,10 +108,10 @@ class MiddlewareComponentTest extends TestCase
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
                 [$expectedMiddleware1::class, $expectedMiddleware1],
-                [$expectedMiddleware2::class, $expectedMiddleware2]
+                [$expectedMiddleware2::class, $expectedMiddleware2],
             ]);
         $this->middlewareComponent->withGlobalMiddleware([
-            new MiddlewareBinding($expectedMiddleware1::class), new MiddlewareBinding($expectedMiddleware2::class)
+            new MiddlewareBinding($expectedMiddleware1::class), new MiddlewareBinding($expectedMiddleware2::class),
         ]);
         $this->middlewareComponent->build();
         $this->assertEquals([$expectedMiddleware1, $expectedMiddleware2], $middlewareCollection->values);
@@ -125,7 +125,7 @@ class MiddlewareComponentTest extends TestCase
             ->method('resolve')
             ->willReturnMap([
                 [MiddlewareCollection::class, $middlewareCollection],
-                [$expectedMiddleware::class, $expectedMiddleware]
+                [$expectedMiddleware::class, $expectedMiddleware],
             ]);
         $this->middlewareComponent->withGlobalMiddleware(new MiddlewareBinding($expectedMiddleware::class));
         $this->middlewareComponent->build();

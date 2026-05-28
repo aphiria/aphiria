@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -35,11 +35,11 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
     public function authenticate(IRequest $request, AuthenticationScheme $scheme): AuthenticationResult
     {
         try {
-            $authorizationHeaderValue = (string)$request->headers->getFirst('Authorization');
+            $authorizationHeaderValue = (string) $request->headers->getFirst('Authorization');
         } catch (OutOfBoundsException $ex) {
             return AuthenticationResult::fail(
                 new MissingAuthenticationDataException('Missing authorization header', previous: $ex),
-                $scheme->name
+                $scheme->name,
             );
         }
 
@@ -48,7 +48,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
         if (\count($explodedAuthorizationHeaderValue) !== 2) {
             return AuthenticationResult::fail(
                 new InvalidArgumentException('Authorization header value was invalid'),
-                $scheme->name
+                $scheme->name,
             );
         }
 
@@ -57,7 +57,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
         if (\strtolower($authType) !== 'basic') {
             return AuthenticationResult::fail(
                 new MissingAuthenticationDataException('Request did not use basic authentication'),
-                $scheme->name
+                $scheme->name,
             );
         }
 
@@ -66,7 +66,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
         if ($base64DecodedCredentials === false) {
             return AuthenticationResult::fail(
                 new InvalidArgumentException('Authorization header did not contain valid base64-encoded value'),
-                $scheme->name
+                $scheme->name,
             );
         }
 
@@ -75,7 +75,7 @@ abstract class BasicAuthenticationHandler implements IAuthenticationSchemeHandle
         if (\count($explodedCredentials) !== 2) {
             return AuthenticationResult::fail(
                 new InvalidArgumentException('Authorization header did not contain a base64-encoded username:password value'),
-                $scheme->name
+                $scheme->name,
             );
         }
 

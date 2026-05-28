@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Net\Tests\Http\Headers;
 
-use Aphiria\Collections\IImmutableDictionary;
 use Aphiria\Collections\ImmutableHashTable;
 use Aphiria\Collections\KeyValuePair;
 use Aphiria\Net\Http\Headers\AcceptLanguageHeaderValue;

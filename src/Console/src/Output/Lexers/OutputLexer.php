@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -44,8 +44,8 @@ final class OutputLexer implements IOutputLexer
                             \sprintf(
                                 'Invalid tags near "%s", character #%d',
                                 self::getSurroundingText($charArray, $charIter),
-                                $charIter
-                            )
+                                $charIter,
+                            ),
                         );
                     } else {
                         // Check if this is a closing tag
@@ -62,7 +62,7 @@ final class OutputLexer implements IOutputLexer
                             $tokens[] = new OutputToken(
                                 OutputTokenType::Word,
                                 $wordBuffer,
-                                $charIter - \mb_strlen($wordBuffer)
+                                $charIter - \mb_strlen($wordBuffer),
                             );
                             $wordBuffer = '';
                         }
@@ -76,14 +76,14 @@ final class OutputLexer implements IOutputLexer
                                 OutputTokenType::TagOpen,
                                 $elementNameBuffer,
                                 // Need to get the position of the beginning of the open tag
-                                $charIter - \mb_strlen($elementNameBuffer) - 1
+                                $charIter - \mb_strlen($elementNameBuffer) - 1,
                             );
                         } else {
                             $tokens[] = new OutputToken(
                                 OutputTokenType::TagClose,
                                 $elementNameBuffer,
                                 // Need to get the position of the beginning of the close tag
-                                $charIter - \mb_strlen($elementNameBuffer) - 2
+                                $charIter - \mb_strlen($elementNameBuffer) - 2,
                             );
                         }
 
@@ -115,7 +115,7 @@ final class OutputLexer implements IOutputLexer
             $tokens[] = new OutputToken(
                 OutputTokenType::Word,
                 $wordBuffer,
-                $textLength - \mb_strlen($wordBuffer)
+                $textLength - \mb_strlen($wordBuffer),
             );
         }
 

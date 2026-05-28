@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -46,7 +46,7 @@ trait IntegrationTest
     /** @var string|null The app URI if one was set, otherwise null */
     protected ?string $appUri {
         get {
-            $appUrl = (string)\getenv('APP_URL');
+            $appUrl = (string) \getenv('APP_URL');
 
             if (empty($appUrl)) {
                 return null;

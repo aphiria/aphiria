@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -103,7 +103,7 @@ class ExceptionHandlerComponentTest extends TestCase
             'detail',
             400,
             'instance',
-            ['foo' => 'bar']
+            ['foo' => 'bar'],
         );
         $this->exceptionHandlerComponent->build();
         $apiExceptionRenderer->createResponse(new Exception());

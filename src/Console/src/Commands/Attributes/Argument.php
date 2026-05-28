@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -34,7 +34,7 @@ final readonly class Argument
         public string $name,
         array|ArgumentType $type,
         public ?string $description = null,
-        public mixed $defaultValue = null
+        public mixed $defaultValue = null,
     ) {
         $this->type = \is_array($type) ? $type : [$type];
     }

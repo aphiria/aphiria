@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -272,7 +272,7 @@ class ControllerTest extends TestCase
             fn(): IResponse => $this->controller->notFound(),
             fn(): IResponse => $this->controller->ok(),
             fn(): mixed => $this->controller->readRequestBodyAs('foo'),
-            fn(): IResponse => $this->controller->unauthorized()
+            fn(): IResponse => $this->controller->unauthorized(),
         ];
 
         foreach ($helperCallbacks as $helperCallback) {

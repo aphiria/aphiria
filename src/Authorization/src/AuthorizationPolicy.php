@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -33,7 +33,7 @@ readonly class AuthorizationPolicy
     public function __construct(
         public string $name,
         array|object $requirements,
-        array|string|null $authenticationSchemeNames = null
+        array|string|null $authenticationSchemeNames = null,
     ) {
         if (!\is_array($requirements)) {
             $requirements = [$requirements];

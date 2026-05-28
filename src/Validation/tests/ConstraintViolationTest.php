@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -25,7 +25,7 @@ class ConstraintViolationTest extends TestCase
             'error',
             $expectedConstraint,
             'foo',
-            'bar'
+            'bar',
         );
         $this->assertSame($expectedConstraint, $violation->constraint);
     }
@@ -36,7 +36,7 @@ class ConstraintViolationTest extends TestCase
             'error',
             $this->createMock(IConstraint::class),
             'foo',
-            'bar'
+            'bar',
         );
         $this->assertSame('foo', $violation->invalidValue);
     }
@@ -49,7 +49,7 @@ class ConstraintViolationTest extends TestCase
             'foo',
             'bar',
             null,
-            'method'
+            'method',
         );
         $this->assertSame('method', $violation->methodName);
     }
@@ -61,7 +61,7 @@ class ConstraintViolationTest extends TestCase
             $this->createMock(IConstraint::class),
             'foo',
             'bar',
-            'prop'
+            'prop',
         );
         $this->assertSame('prop', $violation->propertyName);
     }
@@ -72,7 +72,7 @@ class ConstraintViolationTest extends TestCase
             'error',
             $this->createMock(IConstraint::class),
             'foo',
-            'bar'
+            'bar',
         );
         $this->assertSame('bar', $violation->rootValue);
     }

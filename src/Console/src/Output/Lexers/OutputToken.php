@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -25,6 +25,6 @@ final readonly class OutputToken
     public function __construct(
         public OutputTokenType $type,
         public mixed $value,
-        public int $position
+        public int $position,
     ) {}
 }

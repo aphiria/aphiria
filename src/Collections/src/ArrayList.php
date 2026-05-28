@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -116,7 +116,7 @@ class ArrayList implements IList
             return null;
         }
 
-        return (int)$index;
+        return (int) $index;
     }
 
     /**
@@ -130,9 +130,9 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function intersect(array $values): static
+    public function intersect(iterable $values): static
     {
-        return new static(\array_values(\array_intersect($this->values, $values)));
+        return new static(\array_values(\array_intersect($this->values, \is_array($values) ? $values : \iterator_to_array($values))));
     }
 
     /**
@@ -156,7 +156,7 @@ class ArrayList implements IList
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->get((int)$offset);
+        return $this->get((int) $offset);
     }
 
     /**
@@ -164,7 +164,7 @@ class ArrayList implements IList
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->insert((int)$offset, $value);
+        $this->insert((int) $offset, $value);
     }
 
     /**
@@ -172,7 +172,7 @@ class ArrayList implements IList
      */
     public function offsetUnset(mixed $offset): void
     {
-        $this->removeIndex((int)$offset);
+        $this->removeIndex((int) $offset);
     }
 
     /**
@@ -226,7 +226,7 @@ class ArrayList implements IList
     /**
      * @inheritdoc
      */
-    public function union(array $values): static
+    public function union(iterable $values): static
     {
         $unionedValues = [...$this->values, ...$values];
 

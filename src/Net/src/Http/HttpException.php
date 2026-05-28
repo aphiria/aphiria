@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,7 @@ class HttpException extends Exception
         HttpStatusCode|int|IResponse $statusCodeOrResponse,
         string $message = '',
         int $code = 0,
-        ?Exception $previous = null
+        ?Exception $previous = null,
     ) {
         parent::__construct($message, $code, $previous);
 

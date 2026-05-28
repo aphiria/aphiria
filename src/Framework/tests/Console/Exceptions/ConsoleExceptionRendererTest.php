@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -45,7 +45,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 $output->writeln('bar');
 
                 return 1;
-            }
+            },
         ]);
         $this->output
             ->method('writeln')
@@ -79,7 +79,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 $output->writeln('foo');
 
                 return 1;
-            }
+            },
         );
         $this->output
             ->expects($this->once())
@@ -116,7 +116,7 @@ class ConsoleExceptionRendererTest extends TestCase
                 $output->writeln('foo');
 
                 return 0;
-            }
+            },
         );
         $this->exceptionRenderer->render(new Exception());
     }

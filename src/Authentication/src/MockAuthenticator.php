@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -55,7 +55,7 @@ class MockAuthenticator extends Authenticator implements IMockAuthenticator
     protected function authenticateWithScheme(
         IRequest $request,
         AuthenticationScheme $scheme,
-        IAuthenticationSchemeHandler $schemeHandler
+        IAuthenticationSchemeHandler $schemeHandler,
     ): AuthenticationResult {
         if ($this->actor !== null) {
             // Since we aren't actually calling the scheme handler, be sure to set the scheme name for any identities without one

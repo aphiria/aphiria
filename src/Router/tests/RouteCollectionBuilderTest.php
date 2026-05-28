@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -276,7 +276,7 @@ class RouteCollectionBuilderTest extends TestCase
             null,
             false,
             $outerConstraints,
-            [$outerGroupMiddlewareBinding]
+            [$outerGroupMiddlewareBinding],
         );
         $this->builder->group(
             $outerGroupOptions,
@@ -290,7 +290,7 @@ class RouteCollectionBuilderTest extends TestCase
                     null,
                     false,
                     $innerConstraints,
-                    [$innerGroupMiddlewareBinding]
+                    [$innerGroupMiddlewareBinding],
                 );
                 $registry->group(
                     $innerGroupOptions,
@@ -303,9 +303,9 @@ class RouteCollectionBuilderTest extends TestCase
                             ->route('GET', 'rp')
                             ->mapsToMethod($controller::class, 'bar')
                             ->withManyMiddleware([$routeMiddlewareBinding]);
-                    }
+                    },
                 );
-            }
+            },
         );
         $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
@@ -315,7 +315,7 @@ class RouteCollectionBuilderTest extends TestCase
         $expectedMiddlewareBindings = [
             $outerGroupMiddlewareBinding,
             $innerGroupMiddlewareBinding,
-            $routeMiddlewareBinding
+            $routeMiddlewareBinding,
         ];
         $this->assertEquals($expectedMiddlewareBindings, $routes[0]->middlewareBindings);
     }

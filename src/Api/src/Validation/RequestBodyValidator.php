@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -34,7 +34,7 @@ final class RequestBodyValidator implements IRequestBodyValidator
     public function __construct(
         private readonly IValidator $validator,
         private readonly ?IErrorMessageInterpolator $errorMessageInterpolator = null,
-        private readonly ?ILanguageMatcher $languageMatcher = null
+        private readonly ?ILanguageMatcher $languageMatcher = null,
     ) {}
 
     /**

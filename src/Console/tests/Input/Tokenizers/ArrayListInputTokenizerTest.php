@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,7 @@ class ArrayListInputTokenizerTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->tokenizer->tokenize([
-            'foo' => 'bar'
+            'foo' => 'bar',
         ]);
     }
 
@@ -39,7 +39,7 @@ class ArrayListInputTokenizerTest extends TestCase
         $tokens = $this->tokenizer->tokenize([
             'name' => 'foo',
             'arguments' => ['bar'],
-            'options' => ['--name=dave', '-r']
+            'options' => ['--name=dave', '-r'],
         ]);
         $this->assertEquals(['foo', 'bar', '--name=dave', '-r'], $tokens);
     }

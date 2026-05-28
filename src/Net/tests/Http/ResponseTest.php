@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -86,27 +86,27 @@ class ResponseTest extends TestCase
         $response = new Response();
         $response->headers->add('Foo', 'bar');
         $response->headers->add('Foo', 'baz', true);
-        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar, baz\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar, baz\r\n\r\n", (string) $response);
     }
 
     public function testResponseWithHeadersAndBodyEndsWithBody(): void
     {
         $response = new Response(200, new Headers(), new StringBody('foo'));
         $response->headers->add('Foo', 'bar');
-        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\nfoo", (string) $response);
     }
 
     public function testResponseWithHeadersButNoBodyEndsWithBlankLine(): void
     {
         $response = new Response();
         $response->headers->add('Foo', 'bar');
-        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\nFoo: bar\r\n\r\n", (string) $response);
     }
 
     public function testResponseWithNoHeadersOrBodyEndsWithBlankLine(): void
     {
         $response = new Response();
-        $this->assertSame("HTTP/1.1 200 OK\r\n\r\n", (string)$response);
+        $this->assertSame("HTTP/1.1 200 OK\r\n\r\n", (string) $response);
     }
 
     public function testSettingInvalidStatusCodeThrowsException(): void

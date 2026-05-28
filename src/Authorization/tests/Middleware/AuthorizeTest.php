@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -135,7 +135,7 @@ class AuthorizeTest extends TestCase
 
         return [
             [$userWithNoIdentity],
-            [$userWithUnauthenticatedIdentity]
+            [$userWithUnauthenticatedIdentity],
         ];
     }
 
@@ -304,7 +304,7 @@ class AuthorizeTest extends TestCase
     public function testInvalidParametersThrowsException(
         ?string $policyName,
         ?AuthorizationPolicy $policy,
-        string $expectedExceptionMessage
+        string $expectedExceptionMessage,
     ): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);

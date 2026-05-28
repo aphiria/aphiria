@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -178,7 +178,7 @@ class BodyParserTest extends TestCase
         $this->assertCount(1, $bodyParts);
         $this->assertSame(
             'multipart/mixed; boundary="boundary2"',
-            $bodyParts[0]->headers->getFirst('Content-Type')
+            $bodyParts[0]->headers->getFirst('Content-Type'),
         );
         $expectedBodyString = 'body1' .
             "\r\n" .

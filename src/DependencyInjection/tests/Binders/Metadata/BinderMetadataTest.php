@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -46,7 +46,7 @@ class BinderMetadataTest extends TestCase
         $boundInterface2 = new class () {};
         $expectedBoundInterfaces = [
             new BoundInterface($boundInterface1::class, new UniversalContext()),
-            new BoundInterface($boundInterface2::class, new UniversalContext())
+            new BoundInterface($boundInterface2::class, new UniversalContext()),
         ];
         $binderMetadata = new BinderMetadata($binder, $expectedBoundInterfaces, []);
         $this->assertSame($expectedBoundInterfaces, $binderMetadata->boundInterfaces);
@@ -64,7 +64,7 @@ class BinderMetadataTest extends TestCase
         $resolvedInterface2 = new class () {};
         $expectedResolvedInterfaces = [
             new ResolvedInterface($resolvedInterface1::class, new UniversalContext()),
-            new ResolvedInterface($resolvedInterface2::class, new UniversalContext())
+            new ResolvedInterface($resolvedInterface2::class, new UniversalContext()),
         ];
         $binderMetadata = new BinderMetadata($binder, [], $expectedResolvedInterfaces);
         $this->assertSame($expectedResolvedInterfaces, $binderMetadata->resolvedInterfaces);

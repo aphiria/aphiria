@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -44,12 +44,12 @@ interface IDictionary extends ArrayAccess, Countable, IteratorAggregate
     public function add(mixed $key, mixed $value): void;
 
     /**
-     * Adds multiple values
+     * Adds multiple key-value pairs
      *
-     * @param list<KeyValuePair<TKey, TValue>> $values The values to add
-     * @throws RuntimeException Thrown if the values' keys could not be calculated
+     * @param list<KeyValuePair<TKey, TValue>>|array<TKey, TValue> $kvps The key-value pairs to add
+     * @throws RuntimeException Thrown if the value's keys could not be calculated
      */
-    public function addRange(array $values): void;
+    public function addRange(array $kvps): void;
 
     /**
      * Clears all values from the dictionary

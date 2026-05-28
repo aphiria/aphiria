@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -33,7 +33,7 @@ final class Between extends ConstraintAttribute
         public readonly int|float $max,
         public readonly bool $minIsInclusive = true,
         public readonly bool $maxIsInclusive = true,
-        ?string $errorMessageId = null
+        ?string $errorMessageId = null,
     ) {
         parent::__construct($errorMessageId);
     }
@@ -49,7 +49,7 @@ final class Between extends ConstraintAttribute
                 $this->max,
                 $this->minIsInclusive,
                 $this->maxIsInclusive,
-                $this->errorMessageId
+                $this->errorMessageId,
             );
         }
 

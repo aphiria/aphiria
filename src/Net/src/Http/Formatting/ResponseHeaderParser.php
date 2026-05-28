@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -51,13 +51,13 @@ class ResponseHeaderParser extends HeaderParser
             foreach ($this->parseParameters($headers, 'Set-Cookie', $i) as $key => $value) {
                 switch ($key) {
                     case 'Max-Age':
-                        $maxAge = (int)$value;
+                        $maxAge = (int) $value;
                         break;
                     case 'Path':
-                        $path = (string)$value;
+                        $path = (string) $value;
                         break;
                     case 'Domain':
-                        $domain = (string)$value;
+                        $domain = (string) $value;
                         break;
                     case 'Secure':
                         $isSecure = true;
@@ -66,11 +66,11 @@ class ResponseHeaderParser extends HeaderParser
                         $isHttpOnly = true;
                         break;
                     case 'SameSite':
-                        $sameSite = SameSiteMode::tryFrom((string)$value);
+                        $sameSite = SameSiteMode::tryFrom((string) $value);
                         break;
                     default:
                         // Treat the default value as the cookie name
-                        $name = (string)$key;
+                        $name = (string) $key;
                         $cookieValue = $value;
                         break;
                 }
@@ -90,8 +90,8 @@ class ResponseHeaderParser extends HeaderParser
                     $domain,
                     $isSecure,
                     $isHttpOnly,
-                    $sameSite
-                )
+                    $sameSite,
+                ),
             );
         }
 

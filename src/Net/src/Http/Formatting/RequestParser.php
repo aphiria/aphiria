@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -41,7 +41,7 @@ class RequestParser
     public function __construct(
         private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),
         private readonly BodyParser $bodyParser = new BodyParser(),
-        private readonly UriParser $uriParser = new UriParser()
+        private readonly UriParser $uriParser = new UriParser(),
     ) {}
 
     /**
@@ -83,7 +83,7 @@ class RequestParser
         $clientMimeType = null;
 
         if ($bodyPart->headers->tryGetFirst('Content-Type', $clientMimeType)) {
-            return (string)$clientMimeType;
+            return (string) $clientMimeType;
         }
 
         return null;
@@ -183,7 +183,7 @@ class RequestParser
     public function parseParameters(
         IRequest $request,
         string $headerName,
-        int $index = 0
+        int $index = 0,
     ): IImmutableDictionary {
         return $this->headerParser->parseParameters($request->headers, $headerName, $index);
     }
@@ -244,7 +244,7 @@ class RequestParser
 
         if (!$this->headerParser->parseParameters($headers, 'Content-Type')->tryGet(
             'boundary',
-            $boundary
+            $boundary,
         )) {
             throw new InvalidArgumentException('"boundary" is missing in Content-Type header');
         }

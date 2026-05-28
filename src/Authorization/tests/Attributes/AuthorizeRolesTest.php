@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -35,7 +35,7 @@ class AuthorizeRolesTest extends TestCase
         if ($authenticationSchemeNames === null) {
             $this->assertNull($policy?->authenticationSchemeNames);
         } else {
-            $this->assertSame((array)$authenticationSchemeNames, $policy?->authenticationSchemeNames);
+            $this->assertSame((array) $authenticationSchemeNames, $policy?->authenticationSchemeNames);
         }
     }
 

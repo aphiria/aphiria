@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -25,7 +25,7 @@ final class RequestHeaderParser
         'PHP_AUTH_DIGEST' => true,
         'PHP_AUTH_PW' => true,
         'PHP_AUTH_TYPE' => true,
-        'PHP_AUTH_USER' => true
+        'PHP_AUTH_USER' => true,
     ];
 
     /**
@@ -43,7 +43,7 @@ final class RequestHeaderParser
             $uppercasedKey = \strtoupper($key);
 
             if (isset(self::$specialCaseHeaders[$uppercasedKey]) || \str_starts_with($uppercasedKey, 'HTTP_')) {
-                $value = (array)$value;
+                $value = (array) $value;
                 $headers[self::normalizeName($key)] = $value;
             }
         }

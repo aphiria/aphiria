@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,7 @@ class BinderMetadataCollectionTest extends TestCase
         $boundInterface = new class () {};
         $target = new class () {};
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))]),
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
         $this->assertEmpty($collection->getBinderMetadataThatResolveInterface(new BoundInterface($boundInterface::class, new TargetedContext($target::class))));
@@ -41,11 +41,11 @@ class BinderMetadataCollectionTest extends TestCase
         $resolvedInterface = new class () {};
         $target = new class () {};
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))]),
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
         $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(
-            new BoundInterface($resolvedInterface::class, new TargetedContext($target::class))
+            new BoundInterface($resolvedInterface::class, new TargetedContext($target::class)),
         );
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
@@ -56,7 +56,7 @@ class BinderMetadataCollectionTest extends TestCase
         $resolvedInterface = new class () {};
         $target = new class () {};
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new TargetedContext($target::class))]),
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
         $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(new BoundInterface($resolvedInterface::class, new UniversalContext()));
@@ -69,11 +69,11 @@ class BinderMetadataCollectionTest extends TestCase
         $resolvedInterface = new class () {};
         $target = new class () {};
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())]),
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
         $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(
-            new BoundInterface($resolvedInterface::class, new TargetedContext($target::class))
+            new BoundInterface($resolvedInterface::class, new TargetedContext($target::class)),
         );
         $this->assertEmpty($actualBinderMetadatas);
     }
@@ -83,11 +83,11 @@ class BinderMetadataCollectionTest extends TestCase
         $resolvedInterface = new class () {};
         $boundInterface = new class () {};
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())]),
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
         $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(
-            new BoundInterface($boundInterface::class, new UniversalContext())
+            new BoundInterface($boundInterface::class, new UniversalContext()),
         );
         $this->assertEmpty($actualBinderMetadatas);
     }
@@ -96,11 +96,11 @@ class BinderMetadataCollectionTest extends TestCase
     {
         $resolvedInterface = new class () {};
         $binderMetadatas = [
-            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())])
+            new BinderMetadata($this->createMockBinder(), [], [new ResolvedInterface($resolvedInterface::class, new UniversalContext())]),
         ];
         $collection = new BinderMetadataCollection($binderMetadatas);
         $actualBinderMetadatas = $collection->getBinderMetadataThatResolveInterface(
-            new BoundInterface($resolvedInterface::class, new UniversalContext())
+            new BoundInterface($resolvedInterface::class, new UniversalContext()),
         );
         $this->assertCount(1, $actualBinderMetadatas);
         $this->assertSame($binderMetadatas[0], $actualBinderMetadatas[0]);
@@ -110,7 +110,7 @@ class BinderMetadataCollectionTest extends TestCase
     {
         $expectedBinderMetadatas = [
             new BinderMetadata($this->createMockBinder(), [], []),
-            new BinderMetadata($this->createMockBinder(), [], [])
+            new BinderMetadata($this->createMockBinder(), [], []),
         ];
         $collection = new BinderMetadataCollection($expectedBinderMetadatas);
         $this->assertSame($expectedBinderMetadatas, $collection->binderMetadatas);

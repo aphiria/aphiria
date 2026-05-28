@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -27,6 +27,6 @@ final readonly class BinderMetadata
     public function __construct(
         public Binder $binder,
         public array $boundInterfaces,
-        public array $resolvedInterfaces
+        public array $resolvedInterfaces,
     ) {}
 }

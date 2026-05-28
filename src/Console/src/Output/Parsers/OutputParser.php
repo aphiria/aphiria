@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -47,9 +47,9 @@ final class OutputParser implements IOutputParser
                         throw new RuntimeException(
                             \sprintf(
                                 'Improperly nested tag "%s" near character #%d',
-                                (string)$token->value,
-                                $token->position
-                            )
+                                (string) $token->value,
+                                $token->position,
+                            ),
                         );
                     }
 
@@ -63,8 +63,8 @@ final class OutputParser implements IOutputParser
                             \sprintf(
                                 'Unclosed %s "%s"',
                                 $currNode?->isTag ? 'tag' : 'node',
-                                (string)($currNode?->value ?? 'null')
-                            )
+                                (string) ($currNode?->value ?? 'null'),
+                            ),
                         );
                     }
 

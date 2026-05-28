@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -56,13 +56,13 @@ class UriTemplateTest extends TestCase
     public function testToStringIgnoresHostIfItIsNull(): void
     {
         $uriTemplate = new UriTemplate('/foo');
-        $this->assertSame('/foo', (string)$uriTemplate);
+        $this->assertSame('/foo', (string) $uriTemplate);
     }
 
     public function testToStringIncludesHostIfItIsDefined(): void
     {
         $uriTemplate = new UriTemplate('/foo', 'example.com');
-        $this->assertSame('example.com/foo', (string)$uriTemplate);
+        $this->assertSame('example.com/foo', (string) $uriTemplate);
     }
 
     public function testTrailingSlashIsStrippedFromHost(): void

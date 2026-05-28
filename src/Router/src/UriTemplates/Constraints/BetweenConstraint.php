@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -29,7 +29,7 @@ final class BetweenConstraint implements IRouteVariableConstraint
         private readonly int|float $min,
         private readonly int|float $max,
         private readonly bool $minIsInclusive = true,
-        private readonly bool $maxIsInclusive = true
+        private readonly bool $maxIsInclusive = true,
     ) {}
 
     /**

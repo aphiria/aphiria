@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -24,11 +24,9 @@ use Aphiria\Console\Output\IOutput;
 /**
  * Mocks a command handler with all properties set
  */
-#[
-    Command('foo', 'command description', 'command help text'),
+#[Command('foo', 'command description', 'command help text'),
     Argument('arg1', ArgumentType::Required, 'arg1 description', 'arg1 value'),
-    Option('opt1', OptionType::RequiredValue, 'o', 'opt1 description', 'opt1 value')
-]
+    Option('opt1', OptionType::RequiredValue, 'o', 'opt1 description', 'opt1 value')]
 final class CommandHandlerWithAllPropertiesSet implements ICommandHandler
 {
     /**
