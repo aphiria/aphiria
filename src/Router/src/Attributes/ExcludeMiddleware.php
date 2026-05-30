@@ -17,7 +17,7 @@ use Attribute;
 use InvalidArgumentException;
 
 /**
- * Defines the attribute for excluding middleware from route bindings
+ * Defines the exclude middleware attribute
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
 class ExcludeMiddleware
