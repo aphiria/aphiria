@@ -34,6 +34,34 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertEmpty($this->builder->build()->values);
     }
 
+    public function testExcludedMiddlewareAreRemovedFromGroup(): void
+    {
+        $middleware1 = new class () {};
+        $middleware2 = new class () {};
+        $groupMiddlewareBinding1 = new MiddlewareBinding($middleware1::class);
+        $groupMiddlewareBinding2 = new MiddlewareBinding($middleware2::class);
+        $groupOptions = new RouteGroupOptions(
+            '',
+            null,
+            false,
+            [],
+            [$groupMiddlewareBinding1, $groupMiddlewareBinding2],
+            [],
+            [$middleware1::class],
+        );
+        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
+            $controller = new class () {
+                public function bar(): void {}
+            };
+            $registry
+                ->route('GET', '')
+                ->mapsToMethod($controller::class, 'bar');
+        });
+        $routes = $this->builder->build()->values;
+        $this->assertCount(1, $routes);
+        $this->assertEquals([$groupMiddlewareBinding2], $routes[0]->middlewareBindings);
+    }
+
     public function testGroupConstraintsAreMergedWithRouteParameters(): void
     {
         $groupConstraints = [$this->createMock(IRouteConstraint::class)];
@@ -158,77 +186,6 @@ class RouteCollectionBuilderTest extends TestCase
         $this->assertEquals([$groupMiddlewareBinding, $routeMiddlewareBinding], $routes[0]->middlewareBindings);
     }
 
-    public function testExcludedMiddlewareAreRemovedFromGroup(): void
-    {
-        $middleware1 = new class () {};
-        $middleware2 = new class () {};
-        $groupMiddlewareBinding1 = new MiddlewareBinding($middleware1::class);
-        $groupMiddlewareBinding2 = new MiddlewareBinding($middleware2::class);
-        $groupOptions = new RouteGroupOptions(
-            '',
-            null,
-            false,
-            [],
-            [$groupMiddlewareBinding1, $groupMiddlewareBinding2],
-            [],
-            [$middleware1::class]
-        );
-        $this->builder->group($groupOptions, function (RouteCollectionBuilder $registry) {
-            $controller = new class () {
-                public function bar(): void {}
-            };
-            $registry
-                ->route('GET', '')
-                ->mapsToMethod($controller::class, 'bar');
-        });
-        $routes = $this->builder->build()->values;
-        $this->assertCount(1, $routes);
-        $this->assertEquals([$groupMiddlewareBinding2], $routes[0]->middlewareBindings);
-    }
-
-    public function testNestedGroupCanExcludeOuterGroupMiddleware(): void
-    {
-        $middleware1 = new class () {};
-        $middleware2 = new class () {};
-        $outerGroupMiddlewareBinding = new MiddlewareBinding($middleware1::class);
-        $innerGroupMiddlewareBinding = new MiddlewareBinding($middleware2::class);
-        $outerGroupOptions = new RouteGroupOptions(
-            'outer',
-            null,
-            false,
-            [],
-            [$outerGroupMiddlewareBinding]
-        );
-        $this->builder->group(
-            $outerGroupOptions,
-            function (RouteCollectionBuilder $registry) use ($middleware1, $innerGroupMiddlewareBinding) {
-                $innerGroupOptions = new RouteGroupOptions(
-                    'inner',
-                    null,
-                    false,
-                    [],
-                    [$innerGroupMiddlewareBinding],
-                    [],
-                    [$middleware1::class]
-                );
-                $registry->group(
-                    $innerGroupOptions,
-                    function (RouteCollectionBuilder $registry) {
-                        $controller = new class () {
-                            public function bar(): void {}
-                        };
-                        $registry
-                            ->route('GET', 'route')
-                            ->mapsToMethod($controller::class, 'bar');
-                    }
-                );
-            }
-        );
-        $routes = $this->builder->build()->values;
-        $this->assertCount(1, $routes);
-        $this->assertEquals([$innerGroupMiddlewareBinding], $routes[0]->middlewareBindings);
-    }
-
     public function testGroupOptionsDoNotApplyToRoutesAddedOutsideGroup(): void
     {
         $groupOptions = new RouteGroupOptions('gp');
@@ -330,6 +287,49 @@ class RouteCollectionBuilderTest extends TestCase
         $routes = $this->builder->build()->values;
         $this->assertCount(1, $routes);
         $this->assertTrue($routes[0]->uriTemplate->isHttpsOnly);
+    }
+
+    public function testNestedGroupCanExcludeOuterGroupMiddleware(): void
+    {
+        $middleware1 = new class () {};
+        $middleware2 = new class () {};
+        $outerGroupMiddlewareBinding = new MiddlewareBinding($middleware1::class);
+        $innerGroupMiddlewareBinding = new MiddlewareBinding($middleware2::class);
+        $outerGroupOptions = new RouteGroupOptions(
+            'outer',
+            null,
+            false,
+            [],
+            [$outerGroupMiddlewareBinding],
+        );
+        $this->builder->group(
+            $outerGroupOptions,
+            function (RouteCollectionBuilder $registry) use ($middleware1, $innerGroupMiddlewareBinding) {
+                $innerGroupOptions = new RouteGroupOptions(
+                    'inner',
+                    null,
+                    false,
+                    [],
+                    [$innerGroupMiddlewareBinding],
+                    [],
+                    [$middleware1::class],
+                );
+                $registry->group(
+                    $innerGroupOptions,
+                    function (RouteCollectionBuilder $registry) {
+                        $controller = new class () {
+                            public function bar(): void {}
+                        };
+                        $registry
+                            ->route('GET', 'route')
+                            ->mapsToMethod($controller::class, 'bar');
+                    },
+                );
+            },
+        );
+        $routes = $this->builder->build()->values;
+        $this->assertCount(1, $routes);
+        $this->assertEquals([$innerGroupMiddlewareBinding], $routes[0]->middlewareBindings);
     }
 
     public function testNestedGroupOptionsAreAddedCorrectlyToRoute(): void

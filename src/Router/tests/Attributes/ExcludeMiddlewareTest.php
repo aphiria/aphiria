@@ -29,11 +29,10 @@ class ExcludeMiddlewareTest extends TestCase
         new ExcludeMiddleware('');
     }
 
-    public function testPropertiesAreSetInConstructor(): void
+    public function testClassNameIsSetInConstructor(): void
     {
         $middleware = new class () {};
-        $excludeMiddlewareAttribute = new ExcludeMiddleware($middleware::class, ['foo' => 'bar']);
+        $excludeMiddlewareAttribute = new ExcludeMiddleware($middleware::class);
         $this->assertSame($middleware::class, $excludeMiddlewareAttribute->className);
-        $this->assertSame(['foo' => 'bar'], $excludeMiddlewareAttribute->parameters);
     }
 }

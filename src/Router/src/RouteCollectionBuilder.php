@@ -195,8 +195,8 @@ final class RouteCollectionBuilder
         $groupMiddlewareBindings = \array_values(
             \array_filter(
                 $groupMiddlewareBindings,
-                static fn (MiddlewareBinding $binding): bool => !\in_array($binding->className, $excludedMiddlewareClassNames, true)
-            )
+                static fn(MiddlewareBinding $binding): bool => !\in_array($binding->className, $excludedMiddlewareClassNames, true),
+            ),
         );
 
         $routeBuilder->withManyMiddleware($groupMiddlewareBindings);
