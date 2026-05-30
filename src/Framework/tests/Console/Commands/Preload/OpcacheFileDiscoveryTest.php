@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Aphiria\Framework\Tests\Console\Commands\Preload;
 
 use Aphiria\Framework\Console\Commands\Preload\OpcacheFileDiscovery;
-use Aphiria\Framework\Console\Commands\Preload\PreloadException;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
@@ -27,10 +26,8 @@ class OpcacheFileDiscoveryTest extends TestCase
     }
 
     #[RequiresPhpExtension('Zend OPcache')]
-    public function testDiscoverFilesReturnsFilesFromOpcache(): void
+    public function testDiscoverFilesAppliesCustomExcludePatterns(): void
     {
-        // This test requires OPcache to be enabled
-        // It serves as a basic smoke test when OPcache is available
         if (!\function_exists('opcache_get_status')) {
             $this->markTestSkipped('OPcache extension is not available');
         }
@@ -41,9 +38,13 @@ class OpcacheFileDiscoveryTest extends TestCase
             $this->markTestSkipped('OPcache is disabled');
         }
 
-        // Just verify no exception is thrown and an array is returned
-        $files = $this->discovery->discoverFiles();
-        $this->assertIsArray($files);
+        $excludePatterns = ['/vendor/'];
+        $files = $this->discovery->discoverFiles($excludePatterns);
+
+        // Verify excluded patterns are not included
+        foreach ($files as $file) {
+            $this->assertStringNotContainsString('/vendor/', $file);
+        }
     }
 
     #[RequiresPhpExtension('Zend OPcache')]
@@ -71,8 +72,10 @@ class OpcacheFileDiscoveryTest extends TestCase
     }
 
     #[RequiresPhpExtension('Zend OPcache')]
-    public function testDiscoverFilesAppliesCustomExcludePatterns(): void
+    public function testDiscoverFilesReturnsFilesFromOpcache(): void
     {
+        // This test requires OPcache to be enabled
+        // It serves as a basic smoke test when OPcache is available
         if (!\function_exists('opcache_get_status')) {
             $this->markTestSkipped('OPcache extension is not available');
         }
@@ -83,13 +86,9 @@ class OpcacheFileDiscoveryTest extends TestCase
             $this->markTestSkipped('OPcache is disabled');
         }
 
-        $excludePatterns = ['/vendor/'];
-        $files = $this->discovery->discoverFiles($excludePatterns);
-
-        // Verify excluded patterns are not included
-        foreach ($files as $file) {
-            $this->assertStringNotContainsString('/vendor/', $file);
-        }
+        // Just verify no exception is thrown and an array is returned
+        $files = $this->discovery->discoverFiles();
+        $this->assertIsArray($files);
     }
 
     #[RequiresPhpExtension('Zend OPcache')]

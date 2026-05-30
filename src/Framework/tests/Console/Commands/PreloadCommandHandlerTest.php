@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -28,8 +28,8 @@ class PreloadCommandHandlerTest extends TestCase
 {
     private IFileDiscovery&MockObject $fileDiscovery;
     private IPreloadScriptGenerator&MockObject $generator;
-    private IOutput&MockObject $output;
     private PreloadCommandHandler $handler;
+    private IOutput&MockObject $output;
 
     protected function setUp(): void
     {
@@ -74,6 +74,35 @@ class PreloadCommandHandlerTest extends TestCase
         $this->assertSame(StatusCode::Ok, $result);
     }
 
+    public function testHandleWithCustomOutputPath(): void
+    {
+        $this->fileDiscovery
+            ->method('discoverFiles')
+            ->willReturn(['/path/to/file.php']);
+
+        $this->generator
+            ->expects($this->once())
+            ->method('generate')
+            ->with(['/path/to/file.php'], '/custom/path/preload.php');
+
+        $input = new Input('app:preload', [], ['output' => '/custom/path/preload.php']);
+        $result = $this->handler->handle($input, $this->output);
+
+        $this->assertSame(StatusCode::Ok, $result);
+    }
+
+    public function testHandleWithDiscoveryExceptionReturnsError(): void
+    {
+        $this->fileDiscovery
+            ->method('discoverFiles')
+            ->willThrowException(new PreloadException('OPcache is not available'));
+
+        $input = new Input('app:preload', [], []);
+        $result = $this->handler->handle($input, $this->output);
+
+        $this->assertSame(StatusCode::Error, $result);
+    }
+
     public function testHandleWithDryRunDoesNotGenerateScript(): void
     {
         $files = ['/path/to/file1.php', '/path/to/file2.php'];
@@ -112,6 +141,22 @@ class PreloadCommandHandlerTest extends TestCase
         $this->assertSame(StatusCode::Ok, $result);
     }
 
+    public function testHandleWithGeneratorExceptionReturnsError(): void
+    {
+        $this->fileDiscovery
+            ->method('discoverFiles')
+            ->willReturn(['/path/to/file.php']);
+
+        $this->generator
+            ->method('generate')
+            ->willThrowException(new PreloadException('Failed to write preload script'));
+
+        $input = new Input('app:preload', [], []);
+        $result = $this->handler->handle($input, $this->output);
+
+        $this->assertSame(StatusCode::Error, $result);
+    }
+
     public function testHandleWithMinHitsPassesToDiscovery(): void
     {
         $this->fileDiscovery
@@ -124,23 +169,6 @@ class PreloadCommandHandlerTest extends TestCase
             ->method('generate');
 
         $input = new Input('app:preload', [], ['min-hits' => '5']);
-        $result = $this->handler->handle($input, $this->output);
-
-        $this->assertSame(StatusCode::Ok, $result);
-    }
-
-    public function testHandleWithCustomOutputPath(): void
-    {
-        $this->fileDiscovery
-            ->method('discoverFiles')
-            ->willReturn(['/path/to/file.php']);
-
-        $this->generator
-            ->expects($this->once())
-            ->method('generate')
-            ->with(['/path/to/file.php'], '/custom/path/preload.php');
-
-        $input = new Input('app:preload', [], ['output' => '/custom/path/preload.php']);
         $result = $this->handler->handle($input, $this->output);
 
         $this->assertSame(StatusCode::Ok, $result);
@@ -160,33 +188,5 @@ class PreloadCommandHandlerTest extends TestCase
         $result = $this->handler->handle($input, $this->output);
 
         $this->assertSame(StatusCode::Ok, $result);
-    }
-
-    public function testHandleWithDiscoveryExceptionReturnsError(): void
-    {
-        $this->fileDiscovery
-            ->method('discoverFiles')
-            ->willThrowException(new PreloadException('OPcache is not available'));
-
-        $input = new Input('app:preload', [], []);
-        $result = $this->handler->handle($input, $this->output);
-
-        $this->assertSame(StatusCode::Error, $result);
-    }
-
-    public function testHandleWithGeneratorExceptionReturnsError(): void
-    {
-        $this->fileDiscovery
-            ->method('discoverFiles')
-            ->willReturn(['/path/to/file.php']);
-
-        $this->generator
-            ->method('generate')
-            ->willThrowException(new PreloadException('Failed to write preload script'));
-
-        $input = new Input('app:preload', [], []);
-        $result = $this->handler->handle($input, $this->output);
-
-        $this->assertSame(StatusCode::Error, $result);
     }
 }

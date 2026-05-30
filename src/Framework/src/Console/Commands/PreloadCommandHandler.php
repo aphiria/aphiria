@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -31,9 +31,8 @@ final class PreloadCommandHandler implements ICommandHandler
      */
     public function __construct(
         private readonly IFileDiscovery $fileDiscovery,
-        private readonly IPreloadScriptGenerator $generator
-    ) {
-    }
+        private readonly IPreloadScriptGenerator $generator,
+    ) {}
 
     /**
      * @inheritdoc
@@ -53,8 +52,8 @@ final class PreloadCommandHandler implements ICommandHandler
         // Get options
         /** @var list<string> $excludePatterns */
         $excludePatterns = $input->options['exclude'] ?? [];
-        $minHits = (int)($input->options['min-hits'] ?? 1);
-        $outputPath = (string)($input->options['output'] ?? 'preload.php');
+        $minHits = (int) ($input->options['min-hits'] ?? 1);
+        $outputPath = (string) ($input->options['output'] ?? 'preload.php');
         $isDryRun = \array_key_exists('dry-run', $input->options);
 
         try {

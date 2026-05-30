@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Console\Commands;
 
-use Aphiria\Console\Input\ArgumentType;
-use Aphiria\Console\Input\OptionType;
 use Aphiria\Framework\Console\Commands\PreloadCommand;
 use PHPUnit\Framework\TestCase;
 
@@ -36,22 +34,11 @@ class PreloadCommandTest extends TestCase
         $this->assertSame('Generates a PHP preload script from OPcache', $this->command->description);
     }
 
-    public function testUrlsArgumentIsOptionalArray(): void
+    public function testDryRunOptionIsFlag(): void
     {
-        $this->assertCount(1, $this->command->arguments);
-        $urlsArgument = $this->command->arguments[0];
-        $this->assertSame('urls', $urlsArgument->name);
-        $this->assertTrue($urlsArgument->isOptional);
-        $this->assertTrue($urlsArgument->isArray);
-    }
-
-    public function testOutputOptionHasCorrectConfiguration(): void
-    {
-        $outputOption = $this->findOption('output');
-        $this->assertNotNull($outputOption);
-        $this->assertSame('o', $outputOption->shortName);
-        $this->assertTrue($outputOption->valueIsRequired);
-        $this->assertSame('preload.php', $outputOption->defaultValue);
+        $dryRunOption = $this->findOption('dry-run');
+        $this->assertNotNull($dryRunOption);
+        $this->assertFalse($dryRunOption->valueIsPermitted);
     }
 
     public function testExcludeOptionIsArray(): void
@@ -71,11 +58,22 @@ class PreloadCommandTest extends TestCase
         $this->assertSame('1', $minHitsOption->defaultValue);
     }
 
-    public function testDryRunOptionIsFlag(): void
+    public function testOutputOptionHasCorrectConfiguration(): void
     {
-        $dryRunOption = $this->findOption('dry-run');
-        $this->assertNotNull($dryRunOption);
-        $this->assertFalse($dryRunOption->valueIsPermitted);
+        $outputOption = $this->findOption('output');
+        $this->assertNotNull($outputOption);
+        $this->assertSame('o', $outputOption->shortName);
+        $this->assertTrue($outputOption->valueIsRequired);
+        $this->assertSame('preload.php', $outputOption->defaultValue);
+    }
+
+    public function testUrlsArgumentIsOptionalArray(): void
+    {
+        $this->assertCount(1, $this->command->arguments);
+        $urlsArgument = $this->command->arguments[0];
+        $this->assertSame('urls', $urlsArgument->name);
+        $this->assertTrue($urlsArgument->isOptional);
+        $this->assertTrue($urlsArgument->isArray);
     }
 
     /**

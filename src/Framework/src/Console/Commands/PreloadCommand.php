@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -31,8 +31,8 @@ final class PreloadCommand extends Command
                 new Argument(
                     'urls',
                     [ArgumentType::Optional, ArgumentType::IsArray],
-                    'URLs to warm up before generating the preload script'
-                )
+                    'URLs to warm up before generating the preload script',
+                ),
             ],
             [
                 new Option(
@@ -40,29 +40,29 @@ final class PreloadCommand extends Command
                     OptionType::RequiredValue,
                     'o',
                     'Output path for the preload script',
-                    'preload.php'
+                    'preload.php',
                 ),
                 new Option(
                     'exclude',
                     [OptionType::IsArray, OptionType::OptionalValue],
                     'e',
-                    'Patterns to exclude from the preload script'
+                    'Patterns to exclude from the preload script',
                 ),
                 new Option(
                     'min-hits',
                     OptionType::RequiredValue,
                     null,
                     'Minimum OPcache hits required to include a file',
-                    '1'
+                    '1',
                 ),
                 new Option(
                     'dry-run',
                     OptionType::NoValue,
                     null,
-                    'Show files that would be included without generating the script'
-                )
+                    'Show files that would be included without generating the script',
+                ),
             ],
-            'Generates a PHP preload script from OPcache'
+            'Generates a PHP preload script from OPcache',
         );
     }
 }

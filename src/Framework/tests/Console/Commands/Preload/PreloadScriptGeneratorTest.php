@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -58,60 +58,6 @@ class PreloadScriptGeneratorTest extends TestCase
         $this->assertStringContainsString('opcache_compile_file', $content);
     }
 
-    public function testGenerateIncludesFileExistsCheck(): void
-    {
-        $files = ['/path/to/file.php'];
-        $outputPath = $this->tempDir . '/preload.php';
-
-        $this->generator->generate($files, $outputPath);
-
-        $content = \file_get_contents($outputPath);
-        $this->assertStringContainsString('file_exists', $content);
-    }
-
-    public function testGenerateIncludesFileCount(): void
-    {
-        $files = ['/path/to/file1.php', '/path/to/file2.php', '/path/to/file3.php'];
-        $outputPath = $this->tempDir . '/preload.php';
-
-        $this->generator->generate($files, $outputPath);
-
-        $content = \file_get_contents($outputPath);
-        $this->assertStringContainsString('Files: 3', $content);
-    }
-
-    public function testGenerateThrowsExceptionWithEmptyFiles(): void
-    {
-        $this->expectException(PreloadException::class);
-        $this->expectExceptionMessage('No files to preload');
-
-        $this->generator->generate([], $this->tempDir . '/preload.php');
-    }
-
-    public function testGenerateEscapesFilePaths(): void
-    {
-        $files = ["/path/to/file's.php"];
-        $outputPath = $this->tempDir . '/preload.php';
-
-        $this->generator->generate($files, $outputPath);
-
-        $content = \file_get_contents($outputPath);
-        // Check that the single quote is escaped
-        $this->assertStringContainsString("\\'", $content);
-    }
-
-    public function testGenerateIncludesPhpIniInstructions(): void
-    {
-        $files = ['/path/to/file.php'];
-        $outputPath = $this->tempDir . '/preload.php';
-
-        $this->generator->generate($files, $outputPath);
-
-        $content = \file_get_contents($outputPath);
-        $this->assertStringContainsString('opcache.preload=', $content);
-        $this->assertStringContainsString('opcache.preload_user=www-data', $content);
-    }
-
     public function testGenerateCreatesValidPhpSyntax(): void
     {
         $files = ['/path/to/file.php'];
@@ -126,6 +72,52 @@ class PreloadScriptGeneratorTest extends TestCase
         $this->assertSame(0, $returnCode, 'Generated PHP file has syntax errors: ' . \implode("\n", $output));
     }
 
+    public function testGenerateEscapesFilePaths(): void
+    {
+        $files = ["/path/to/file's.php"];
+        $outputPath = $this->tempDir . '/preload.php';
+
+        $this->generator->generate($files, $outputPath);
+
+        $content = \file_get_contents($outputPath);
+        // Check that the single quote is escaped
+        $this->assertStringContainsString("\\'", $content);
+    }
+
+    public function testGenerateIncludesFileCount(): void
+    {
+        $files = ['/path/to/file1.php', '/path/to/file2.php', '/path/to/file3.php'];
+        $outputPath = $this->tempDir . '/preload.php';
+
+        $this->generator->generate($files, $outputPath);
+
+        $content = \file_get_contents($outputPath);
+        $this->assertStringContainsString('Files: 3', $content);
+    }
+
+    public function testGenerateIncludesFileExistsCheck(): void
+    {
+        $files = ['/path/to/file.php'];
+        $outputPath = $this->tempDir . '/preload.php';
+
+        $this->generator->generate($files, $outputPath);
+
+        $content = \file_get_contents($outputPath);
+        $this->assertStringContainsString('file_exists', $content);
+    }
+
+    public function testGenerateIncludesPhpIniInstructions(): void
+    {
+        $files = ['/path/to/file.php'];
+        $outputPath = $this->tempDir . '/preload.php';
+
+        $this->generator->generate($files, $outputPath);
+
+        $content = \file_get_contents($outputPath);
+        $this->assertStringContainsString('opcache.preload=', $content);
+        $this->assertStringContainsString('opcache.preload_user=www-data', $content);
+    }
+
     public function testGenerateThrowsExceptionWhenCannotWriteFile(): void
     {
         $this->expectException(PreloadException::class);
@@ -136,5 +128,13 @@ class PreloadScriptGeneratorTest extends TestCase
         $outputPath = '/nonexistent/directory/preload.php';
 
         $this->generator->generate($files, $outputPath);
+    }
+
+    public function testGenerateThrowsExceptionWithEmptyFiles(): void
+    {
+        $this->expectException(PreloadException::class);
+        $this->expectExceptionMessage('No files to preload');
+
+        $this->generator->generate([], $this->tempDir . '/preload.php');
     }
 }
