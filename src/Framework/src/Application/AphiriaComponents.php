@@ -35,6 +35,8 @@ use Aphiria\Framework\Authentication\Components\AuthenticationComponent;
 use Aphiria\Framework\Authorization\Components\AuthorizationComponent;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommand;
 use Aphiria\Framework\Console\Commands\FlushFrameworkCachesCommandHandler;
+use Aphiria\Framework\Console\Commands\PreloadCommand;
+use Aphiria\Framework\Console\Commands\PreloadCommandHandler;
 use Aphiria\Framework\Console\Commands\ServeCommand;
 use Aphiria\Framework\Console\Commands\ServeCommandHandler;
 use Aphiria\Framework\Console\Components\CommandComponent;
@@ -393,6 +395,7 @@ trait AphiriaComponents
             ->withCommands(static function (CommandRegistry $commands) use ($commandNamesToExclude) {
                 $commandBindings = [
                     new CommandBinding(new FlushFrameworkCachesCommand(), FlushFrameworkCachesCommandHandler::class),
+                    new CommandBinding(new PreloadCommand(), PreloadCommandHandler::class),
                     new CommandBinding(new ServeCommand(), ServeCommandHandler::class),
                     new CommandBinding(new RouteListCommand(), RouteListCommandHandler::class),
                 ];
