@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -29,7 +29,7 @@ final class Max extends ConstraintAttribute
     public function __construct(
         public readonly int|float $max,
         public bool $isInclusive = true,
-        ?string $errorMessageId = null
+        ?string $errorMessageId = null,
     ) {
         parent::__construct($errorMessageId);
     }

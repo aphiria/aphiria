@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -35,7 +35,7 @@ class Authenticate extends ParameterizedMiddleware
      */
     public function __construct(
         protected readonly IAuthenticator $authenticator,
-        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        protected readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor(),
     ) {}
 
     /**

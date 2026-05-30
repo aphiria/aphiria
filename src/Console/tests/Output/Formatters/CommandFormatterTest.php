@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -36,10 +36,10 @@ class CommandFormatterTest extends TestCase
             [
                 new Argument('bar', ArgumentType::Required, 'Bar argument'),
                 new Argument('baz', ArgumentType::Optional, 'Baz argument'),
-                new Argument('blah', ArgumentType::IsArray, 'Blah argument')
+                new Argument('blah', ArgumentType::IsArray, 'Blah argument'),
             ],
             [],
-            ''
+            '',
         );
         $this->assertSame('foo bar [baz] blah1...blahN', $this->formatter->format($command));
     }
@@ -50,10 +50,10 @@ class CommandFormatterTest extends TestCase
             'foo',
             [
                 new Argument('bar', ArgumentType::Required, 'Bar argument'),
-                new Argument('baz', ArgumentType::Required, 'Baz argument')
+                new Argument('baz', ArgumentType::Required, 'Baz argument'),
             ],
             [],
-            ''
+            '',
         );
         $this->assertSame('foo bar baz', $this->formatter->format($command));
     }
@@ -64,7 +64,7 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo', $this->formatter->format($command));
     }
@@ -74,10 +74,10 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('bar', ArgumentType::Required, 'Bar argument')
+                new Argument('bar', ArgumentType::Required, 'Bar argument'),
             ],
             [],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo bar', $this->formatter->format($command));
     }
@@ -87,10 +87,10 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('bar', ArgumentType::Optional, 'Bar argument')
+                new Argument('bar', ArgumentType::Optional, 'Bar argument'),
             ],
             [],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo [bar]', $this->formatter->format($command));
     }
@@ -101,9 +101,9 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', OptionType::OptionalValue, 'b', 'Bar option', 'yes')
+                new Option('bar', OptionType::OptionalValue, 'b', 'Bar option', 'yes'),
             ],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo [--bar=yes|-b]', $this->formatter->format($command));
     }
@@ -114,9 +114,9 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', OptionType::OptionalValue, null, 'Bar option', 'yes')
+                new Option('bar', OptionType::OptionalValue, null, 'Bar option', 'yes'),
             ],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo [--bar=yes]', $this->formatter->format($command));
     }
@@ -127,9 +127,9 @@ class CommandFormatterTest extends TestCase
             'foo',
             [],
             [
-                new Option('bar', OptionType::NoValue, null, 'Bar option')
+                new Option('bar', OptionType::NoValue, null, 'Bar option'),
             ],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo [--bar]', $this->formatter->format($command));
     }
@@ -139,10 +139,10 @@ class CommandFormatterTest extends TestCase
         $command = new Command(
             'foo',
             [
-                new Argument('blah', [ArgumentType::IsArray, ArgumentType::Optional], 'Blah argument')
+                new Argument('blah', [ArgumentType::IsArray, ArgumentType::Optional], 'Blah argument'),
             ],
             [],
-            'Foo command'
+            'Foo command',
         );
         $this->assertSame('foo [blah1]...[blahN]', $this->formatter->format($command));
     }

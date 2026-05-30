@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -36,7 +36,7 @@ final class Headers extends HashTable
         $headerString = '';
 
         foreach ($this->hashKeysToKvps as $kvp) {
-            $headerString .= "{$kvp->key}: " . \implode(', ', \array_map(static fn(mixed $value): string => (string)$value, (array)$kvp->value)) . "\r\n";
+            $headerString .= "{$kvp->key}: " . \implode(', ', \array_map(static fn(mixed $value): string => (string) $value, (array) $kvp->value)) . "\r\n";
         }
 
         return \rtrim($headerString);
@@ -53,14 +53,14 @@ final class Headers extends HashTable
     {
         self::validateHeaderValue($value);
         /** @var string|int|float|list<string|int|float> $value At this point, we know the value is one of these types */
-        $normalizedName = self::normalizeHeaderName((string)$key);
+        $normalizedName = self::normalizeHeaderName((string) $key);
 
         if (!$append || !$this->containsKey($normalizedName)) {
-            parent::add($normalizedName, (array)$value);
+            parent::add($normalizedName, (array) $value);
         } else {
             $currentValues = [];
             $this->tryGet($normalizedName, $currentValues);
-            parent::add($normalizedName, [...(array)$currentValues, ...(array)$value]);
+            parent::add($normalizedName, [...(array) $currentValues, ...(array) $value]);
         }
     }
 
@@ -68,15 +68,21 @@ final class Headers extends HashTable
      * @inheritdoc
      * @throws InvalidArgumentException Thrown if the header value is not a valid type
      */
-    public function addRange(array $values): void
+    public function addRange(array $kvps): void
     {
-        foreach ($values as $kvp) {
-            /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
-            if (!$kvp instanceof KeyValuePair) {
-                throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
-            }
+        if (\array_is_list($kvps)) {
+            foreach ($kvps as $kvp) {
+                /** @psalm-suppress DocblockTypeContradiction We do not want to rely solely on Psalm's type checks */
+                if (!$kvp instanceof KeyValuePair) {
+                    throw new InvalidArgumentException('Value must be instance of ' . KeyValuePair::class);
+                }
 
-            $this->add($kvp->key, $kvp->value);
+                $this->add($kvp->key, $kvp->value);
+            }
+        } else {
+            foreach ($kvps as $key => $value) {
+                $this->add($key, $value);
+            }
         }
     }
 
@@ -85,7 +91,7 @@ final class Headers extends HashTable
      */
     public function containsKey(mixed $key): bool
     {
-        return parent::containsKey(self::normalizeHeaderName((string)$key));
+        return parent::containsKey(self::normalizeHeaderName((string) $key));
     }
 
     /**
@@ -93,7 +99,7 @@ final class Headers extends HashTable
      */
     public function get(mixed $key): string|int|float|array
     {
-        return parent::get(self::normalizeHeaderName((string)$key));
+        return parent::get(self::normalizeHeaderName((string) $key));
     }
 
     /**
@@ -110,7 +116,7 @@ final class Headers extends HashTable
             throw new OutOfBoundsException("Header \"$name\" does not exist");
         }
 
-        return ((array)$this->get($name))[0];
+        return ((array) $this->get($name))[0];
     }
 
     /**
@@ -118,7 +124,7 @@ final class Headers extends HashTable
      */
     public function removeKey(mixed $key): void
     {
-        parent::removeKey(self::normalizeHeaderName((string)$key));
+        parent::removeKey(self::normalizeHeaderName((string) $key));
     }
 
     /**
@@ -133,7 +139,7 @@ final class Headers extends HashTable
     public function tryGetFirst(mixed $name, mixed &$value): bool
     {
         try {
-            $value = ((array)$this->get($name))[0];
+            $value = ((array) $this->get($name))[0];
 
             return true;
         } catch (OutOfBoundsException) {

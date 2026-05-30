@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -29,7 +29,7 @@ class RequestHeaderParserTest extends TestCase
         'HTTP_CONNECTION' => 'connection',
         'HTTP_HOST' => 'host',
         'HTTP_REFERER' => 'referer',
-        'HTTP_USER_AGENT' => 'user_agent'
+        'HTTP_USER_AGENT' => 'user_agent',
     ];
     /** @var RequestHeaderParser The header parser */
     private RequestHeaderParser $headerParser;

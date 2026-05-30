@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -72,7 +72,7 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
         $globalExceptionHandler->registerWithPhp();
         $this->container->bindInstance(
             [IGlobalExceptionHandler::class, GlobalExceptionHandler::class],
-            $globalExceptionHandler
+            $globalExceptionHandler,
         );
     }
 
@@ -93,11 +93,11 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 $exceptionRenderer = new ProblemDetailsExceptionRenderer();
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     HttpException::class,
-                    status: fn(HttpException $ex): HttpStatusCode => $ex->response->statusCode
+                    status: fn(HttpException $ex): HttpStatusCode => $ex->response->statusCode,
                 );
                 $exceptionRenderer->mapExceptionToProblemDetails(
                     InvalidRequestBodyException::class,
-                    status: HttpStatusCode::BadRequest
+                    status: HttpStatusCode::BadRequest,
                 );
                 break;
             default:
@@ -146,14 +146,14 @@ class GlobalExceptionHandlerBootstrapper implements IBootstrapper
                 case StreamHandler::class:
                     $logger->pushHandler(new StreamHandler(
                         $handlerConfiguration['path'],
-                        $handlerConfiguration['level']
+                        $handlerConfiguration['level'],
                     ));
                     break;
                 case SyslogHandler::class:
                     $logger->pushHandler(new SyslogHandler(
                         $handlerConfiguration['ident'] ?? 'app',
                         LOG_USER,
-                        $handlerConfiguration['level']
+                        $handlerConfiguration['level'],
                     ));
                     break;
                 default:

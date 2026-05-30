@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,7 @@ final class ValidationProblemDetails extends ProblemDetails
         string $title = 'One or more validation errors occurred',
         ?string $detail = null,
         HttpStatusCode|int $status = HttpStatusCode::BadRequest,
-        ?string $instance = null
+        ?string $instance = null,
     ) {
         parent::__construct($type, $title, $detail, $status, $instance);
     }

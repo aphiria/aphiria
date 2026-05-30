@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -47,7 +47,7 @@ final class Style
     public function __construct(
         public ?Color $foregroundColor = null,
         public ?Color $backgroundColor = null,
-        public array $textStyles = []
+        public array $textStyles = [],
     ) {
         $this->supportedForegroundColors = [
             Color::Black->value => [30, 39],
@@ -57,7 +57,7 @@ final class Style
             Color::Blue->value => [34, 39],
             Color::Magenta->value => [35, 39],
             Color::Cyan->value => [36, 39],
-            Color::White->value => [37, 39]
+            Color::White->value => [37, 39],
         ];
         $this->supportedBackgroundColors = [
             Color::Black->value => [40, 49],
@@ -67,12 +67,12 @@ final class Style
             Color::Blue->value => [44, 49],
             Color::Magenta->value => [45, 49],
             Color::Cyan->value => [46, 49],
-            Color::White->value => [47, 49]
+            Color::White->value => [47, 49],
         ];
         $this->supportedTextStyles = [
             TextStyle::Bold->value => [1, 22],
             TextStyle::Underline->value => [4, 24],
-            TextStyle::Blink->value => [5, 25]
+            TextStyle::Blink->value => [5, 25],
         ];
 
         $this->addTextStyles($this->textStyles);
@@ -142,7 +142,7 @@ final class Style
             "\033[%sm%s\033[%sm",
             \implode(';', $startCodes),
             $text,
-            \implode(';', $endCodes)
+            \implode(';', $endCodes),
         );
     }
 

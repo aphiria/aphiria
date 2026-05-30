@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -57,7 +57,7 @@ class Router implements IRequestHandler
         private readonly IServiceResolver $serviceResolver,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         ?IRouteActionInvoker $routeActionInvoker = null,
-        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor(),
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
@@ -83,11 +83,11 @@ class Router implements IRequestHandler
             $matchingResult->routeVariables,
             $this->contentNegotiator,
             $this->routeActionInvoker,
-            $this->userAccessor
+            $this->userAccessor,
         );
         $middlewarePipeline = new MiddlewarePipelineFactory()->createPipeline(
             $this->createMiddlewareFromBindings($matchingResult->route->middlewareBindings),
-            $controllerRequestHandler
+            $controllerRequestHandler,
         );
 
         return $middlewarePipeline->handle($request);
@@ -104,14 +104,14 @@ class Router implements IRequestHandler
     private function createController(
         RouteAction $routeAction,
         ?Controller &$controller,
-        ?Closure &$routeActionDelegate
+        ?Closure &$routeActionDelegate,
     ): void {
         $controller = $this->serviceResolver->resolve($routeAction->className);
         $routeActionDelegate = Closure::fromCallable([$controller, $routeAction->methodName]);
 
         if (!$controller instanceof Controller) {
             throw new InvalidArgumentException(
-                \sprintf('Controller %s does not extend %s', $controller::class, Controller::class)
+                \sprintf('Controller %s does not extend %s', $controller::class, Controller::class),
             );
         }
     }
@@ -132,7 +132,7 @@ class Router implements IRequestHandler
 
             if (!$middleware instanceof IMiddleware) {
                 throw new InvalidArgumentException(
-                    \sprintf('Middleware %s does not implement %s', $middleware::class, IMiddleware::class)
+                    \sprintf('Middleware %s does not implement %s', $middleware::class, IMiddleware::class),
                 );
             }
 

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -96,7 +96,7 @@ class BodyParser
 
         /** @psalm-suppress MixedAssignment Value here really could be mixed */
         foreach ($formInputArray as $key => $value) {
-            $kvps[] = new KeyValuePair((string)$key, $value);
+            $kvps[] = new KeyValuePair((string) $key, $value);
         }
 
         // Cache this for next time

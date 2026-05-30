@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -44,7 +44,7 @@ final class ControllerRequestHandler implements IRequestHandler
         private readonly array $routeVariables,
         private readonly IContentNegotiator $contentNegotiator = new ContentNegotiator(),
         ?IRouteActionInvoker $routeActionInvoker = null,
-        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor()
+        private readonly IUserAccessor $userAccessor = new RequestPropertyUserAccessor(),
     ) {
         $this->routeActionInvoker = $routeActionInvoker ?? new RouteActionInvoker($this->contentNegotiator);
     }
@@ -64,7 +64,7 @@ final class ControllerRequestHandler implements IRequestHandler
         return $this->routeActionInvoker->invokeRouteAction(
             $this->routeActionDelegate,
             $request,
-            $this->routeVariables
+            $this->routeVariables,
         );
     }
 }

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -35,7 +35,7 @@ class HeadersTest extends TestCase
         return [
             ['foo', $object],
             ['foo', [$object]],
-            ['foo', ['bar', $object]]
+            ['foo', ['bar', $object]],
         ];
     }
 
@@ -57,6 +57,13 @@ class HeadersTest extends TestCase
         $this->expectExceptionMessage('Header values can only be strings, numbers, or lists of strings or numbers');
         /** @psalm-suppress InvalidArgument Purposely testing invalid values */
         $this->headers->addRange([new KeyValuePair('foo', $this)]);
+    }
+
+    public function testAddingRangeWithAssociativeArrayWorks(): void
+    {
+        $this->headers->addRange(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $this->headers->getFirst('foo'));
+        $this->assertSame('blah', $this->headers->getFirst('baz'));
     }
 
     public function testAddingStringValue(): void
@@ -158,14 +165,14 @@ class HeadersTest extends TestCase
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Foo', 'baz', true);
-        $this->assertSame('Foo: bar, baz', (string)$this->headers);
+        $this->assertSame('Foo: bar, baz', (string) $this->headers);
     }
 
     public function testSerializingSplitsHeadersIntoLines(): void
     {
         $this->headers->add('Foo', 'bar');
         $this->headers->add('Baz', 'blah');
-        $this->assertSame("Foo: bar\r\nBaz: blah", (string)$this->headers);
+        $this->assertSame("Foo: bar\r\nBaz: blah", (string) $this->headers);
     }
 
     public function testSettingHeaderAndAppendingItAppendsIt(): void

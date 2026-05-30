@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -26,11 +26,9 @@ class Session implements ISession
     /** @const The key for stale flash keys */
     public const string STALE_FLASH_KEYS_KEY = '__APHIRIA_STALE_FLASH_KEYS';
     /** @inheritdoc */
-    public private(set) array $variables = [];
-    /** @inheritdoc */
-    public int|string $id  {
+    public int|string $id {
         get => $this->id;
-        set (mixed $value) {
+        set(mixed $value) {
             if ($this->idGenerator->idIsValid($value)) {
                 $this->id = $value;
             } else {
@@ -38,6 +36,8 @@ class Session implements ISession
             }
         }
     }
+    /** @inheritdoc */
+    public private(set) array $variables = [];
     /** @var list<string> The list of new flash keys */
     protected array $newFlashKeys {
         get => $this->getVariable(self::NEW_FLASH_KEYS_KEY, []);
@@ -53,7 +53,7 @@ class Session implements ISession
      */
     public function __construct(
         int|string|null $id = null,
-        private readonly IIdGenerator $idGenerator = new UuidV4IdGenerator()
+        private readonly IIdGenerator $idGenerator = new UuidV4IdGenerator(),
     ) {
         $this->id = $id;
     }
@@ -135,7 +135,7 @@ class Session implements ISession
      */
     public function offsetExists(mixed $offset): bool
     {
-        return $this->containsVariable((string)$offset);
+        return $this->containsVariable((string) $offset);
     }
 
     /**
@@ -143,7 +143,7 @@ class Session implements ISession
      */
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->getVariable((string)$offset);
+        return $this->getVariable((string) $offset);
     }
 
     /**
@@ -155,7 +155,7 @@ class Session implements ISession
             throw new InvalidArgumentException('Key cannot be empty');
         }
 
-        $this->setVariable((string)$offset, $value);
+        $this->setVariable((string) $offset, $value);
     }
 
     /**
@@ -163,7 +163,7 @@ class Session implements ISession
      */
     public function offsetUnset(mixed $offset): void
     {
-        unset($this->variables[(string)$offset]);
+        unset($this->variables[(string) $offset]);
     }
 
     /**

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -70,12 +70,12 @@ final class RoutingBinder extends Binder
                 $trieFactory = new TrieFactory(
                     $routes,
                     \getenv('APP_ENV') === 'production' ? $trieCache : null,
-                    new TrieCompiler($routeVariableConstraintFactory)
+                    new TrieCompiler($routeVariableConstraintFactory),
                 );
 
                 return new TrieRouteMatcher(($trieFactory)->createTrie());
             },
-            true
+            true,
         );
 
         $container->bindInstance(IRouteUriFactory::class, $routeUriFactory = new AstRouteUriFactory($routes));

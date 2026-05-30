@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -14,7 +14,6 @@ namespace Aphiria\Api\Tests\Controllers\Mocks;
 
 use Aphiria\Api\Controllers\Controller as BaseController;
 use Aphiria\Net\Http\HttpStatusCode;
-use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponse;
 use Aphiria\Net\Http\Response;
 use Aphiria\Net\Http\StringBody;

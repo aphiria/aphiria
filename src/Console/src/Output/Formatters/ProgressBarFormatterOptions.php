@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -33,6 +33,6 @@ class ProgressBarFormatterOptions
         public readonly string $outputFormat = '%bar% %progress%/%maxSteps%' . PHP_EOL . 'Time remaining: %timeRemaining%',
         public readonly string $completedProgressChar = '=',
         public readonly string $remainingProgressChar = '-',
-        public readonly int $redrawFrequency = 1
+        public readonly int $redrawFrequency = 1,
     ) {}
 }

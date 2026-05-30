@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -77,7 +77,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration.json')
+            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration.json'),
         );
         $this->builder->build();
         $this->assertSame('bar', GlobalConfiguration::getString('foo'));
@@ -104,7 +104,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.json', ':')
+            $this->builder->withJsonFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.json', ':'),
         );
         $this->builder->build();
         $this->assertSame('baz', GlobalConfiguration::getString('foo:bar'));
@@ -114,7 +114,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration.php')
+            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration.php'),
         );
         $this->builder->build();
         $this->assertSame('bar', GlobalConfiguration::getString('foo'));
@@ -154,7 +154,7 @@ class GlobalConfigurationBuilderTest extends TestCase
     {
         $this->assertSame(
             $this->builder,
-            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.php', ':')
+            $this->builder->withPhpFileConfigurationSource(__DIR__ . '/files/configuration-delimiter.php', ':'),
         );
         $this->builder->build();
         $this->assertSame('baz', GlobalConfiguration::getString('foo:bar'));

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -59,8 +59,8 @@ class FileRouteCacheTest extends TestCase
                 new UriTemplate('foo'),
                 new RouteAction($controller::class, 'bar'),
                 [$this->createMock(IRouteConstraint::class)],
-                [new MiddlewareBinding($middleware::class)]
-            )
+                [new MiddlewareBinding($middleware::class)],
+            ),
         ]);
         $this->cache->set($routes);
         $this->assertEquals($routes, $this->cache->get());

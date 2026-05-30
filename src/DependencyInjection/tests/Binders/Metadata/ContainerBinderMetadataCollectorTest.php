@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -96,7 +96,7 @@ class ContainerBinderMetadataCollectorTest extends TestCase
             [$binder3, IFoo::class, false, null],
             [$binder4, IFoo::class, true, $target::class],
             [$binder5, IFoo::class, true, $target::class],
-            [$binder6, IFoo::class, true, $target::class]
+            [$binder6, IFoo::class, true, $target::class],
         ];
     }
 

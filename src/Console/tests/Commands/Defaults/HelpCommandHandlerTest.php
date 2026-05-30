@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -73,9 +73,9 @@ class HelpCommandHandlerTest extends TestCase
                 [],
                 [],
                 'The description',
-                'The help text'
+                'The help text',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -94,9 +94,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -115,9 +115,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [],
                 [],
-                ''
+                '',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -136,9 +136,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [new Argument('arg1', ArgumentType::Required, 'Arg1 description')],
                 [],
-                'The description'
+                'The description',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -157,9 +157,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [],
                 [],
-                'The description'
+                'The description',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -178,9 +178,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [],
                 [],
-                'The description'
+                'The description',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -199,9 +199,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [],
                 [new Option('opt1', OptionType::RequiredValue, null, 'Opt1 description')],
-                'The description'
+                'The description',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -220,9 +220,9 @@ class HelpCommandHandlerTest extends TestCase
                 'foo',
                 [],
                 [new Option('opt1', OptionType::RequiredValue, 'o', 'Opt1 description')],
-                'The description'
+                'The description',
             ),
-            $commandHandler::class
+            $commandHandler::class,
         );
         $this->output
             ->expects($this->once())
@@ -285,7 +285,7 @@ EOF;
         return \str_replace(
             ['{{name}}', '{{command}}', '{{description}}', '{{arguments}}', '{{options}}', '{{helpText}}'],
             [$commandName, $parsedCommand, $description, $arguments, $options, self::compileHelpText($helpText)],
-            $template
+            $template,
         );
     }
 }

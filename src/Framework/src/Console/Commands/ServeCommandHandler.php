@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -28,16 +28,16 @@ class ServeCommandHandler implements ICommandHandler
      */
     public function handle(Input $input, IOutput $output)
     {
-        $domain = (string)$input->options['domain'];
-        $port = (int)$input->options['port'];
+        $domain = (string) $input->options['domain'];
+        $port = (int) $input->options['port'];
         $output->writeln("<info>Running at http://$domain:$port</info>");
         $command = \sprintf(
             '%s -S %s:%d -t %s %s',
             '"' . PHP_BINARY . '"',
             $domain,
             $port,
-            '"' . (string)$input->options['docroot'] . '"',
-            '"' . (string)$input->options['router'] . '"'
+            '"' . (string) $input->options['docroot'] . '"',
+            '"' . (string) $input->options['router'] . '"',
         );
         $this->runPhpCommand($command);
     }

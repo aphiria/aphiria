@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -50,7 +50,7 @@ class ResponseFormatter
         ?string $domain = null,
         bool $isSecure = false,
         bool $isHttpOnly = true,
-        ?SameSiteMode $sameSite = null
+        ?SameSiteMode $sameSite = null,
     ): void {
         $this->headerFormatter->deleteCookie(
             $response->headers,
@@ -59,7 +59,7 @@ class ResponseFormatter
             $domain,
             $isSecure,
             $isHttpOnly,
-            $sameSite
+            $sameSite,
         );
     }
 
@@ -76,7 +76,7 @@ class ResponseFormatter
         if (\is_string($uri)) {
             $uriString = $uri;
         } else {
-            $uriString = (string)$uri;
+            $uriString = (string) $uri;
         }
 
         $response->statusCode = $statusCode instanceof HttpStatusCode ? $statusCode : HttpStatusCode::tryFrom($statusCode);

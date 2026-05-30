@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -95,8 +95,8 @@ class UnixLikeDriverTest extends TestCase
             $this->fail('Dimensions could not be read from STTY output');
         }
 
-        $this->assertSame((int)$matches[2], $this->driver->cliWidth);
-        $this->assertSame((int)$matches[1], $this->driver->cliHeight);
+        $this->assertSame((int) $matches[2], $this->driver->cliWidth);
+        $this->assertSame((int) $matches[1], $this->driver->cliHeight);
     }
 
     public function testCliHeightIsMemoized(): void

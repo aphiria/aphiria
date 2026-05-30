@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -32,7 +32,7 @@ final readonly class UriTemplate
     public function __construct(
         string $pathTemplate,
         ?string $hostTemplate = null,
-        public bool $isHttpsOnly = true
+        public bool $isHttpsOnly = true,
     ) {
         $this->pathTemplate = '/' . \ltrim($pathTemplate, '/');
         $this->hostTemplate = $hostTemplate === null ? null : \rtrim($hostTemplate, '/');

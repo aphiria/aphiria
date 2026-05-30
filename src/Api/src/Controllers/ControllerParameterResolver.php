@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -37,7 +37,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     public function __construct(
         private readonly IBodyDeserializer $bodyDeserializer = new NegotiatedBodyDeserializer(),
         private readonly IRequestParameterDeserializer $routeActionParameterDeserializer = new RequestParameterDeserializer(),
-        private readonly UriParser $uriParser = new UriParser()
+        private readonly UriParser $uriParser = new UriParser(),
     ) {}
 
     /**
@@ -46,7 +46,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     public function resolveParameter(
         ReflectionParameter $reflectionParameter,
         IRequest $request,
-        array $routeVariables
+        array $routeVariables,
     ): mixed {
         $queryStringVars = $this->uriParser->parseQueryString($request->uri);
         $reflectionParameterType = $reflectionParameter->getType();
@@ -56,7 +56,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return $this->resolveRequestBody(
                 $reflectionParameter,
                 $reflectionParameterType,
-                $request
+                $request,
             );
         }
 
@@ -67,7 +67,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return $this->resolveRequestParameters(
                 fn(): bool => isset($routeVariables[$parameterName]),
                 fn(): mixed => $routeVariables[$parameterName],
-                $reflectionParameter
+                $reflectionParameter,
             );
         }
 
@@ -78,7 +78,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return $this->resolveRequestParameters(
                 fn(): bool => isset($queryStringVars[$parameterName]),
                 fn(): mixed => $queryStringVars[$parameterName],
-                $reflectionParameter
+                $reflectionParameter,
             );
         }
 
@@ -89,7 +89,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return $this->resolveRequestParameters(
                 fn(): bool => isset($request->headers[$parameterName]),
                 fn(): mixed => $request->headers->getFirst($parameterName),
-                $reflectionParameter
+                $reflectionParameter,
             );
         }
 
@@ -98,7 +98,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return $this->resolveRequestParameters(
                 fn(): bool => isset($routeVariables[$reflectionParameter->getName()]),
                 fn(): mixed => $routeVariables[$reflectionParameter->getName()],
-                $reflectionParameter
+                $reflectionParameter,
             );
         }
 
@@ -107,7 +107,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             return $this->resolveRequestParameters(
                 fn(): bool => isset($queryStringVars[$reflectionParameter->getName()]),
                 fn(): mixed => $queryStringVars[$reflectionParameter->getName()],
-                $reflectionParameter
+                $reflectionParameter,
             );
         }
 
@@ -115,7 +115,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         return $this->resolveRequestParameters(
             fn(): bool => false,
             fn(): null => null,
-            $reflectionParameter
+            $reflectionParameter,
         );
     }
 
@@ -135,14 +135,14 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     private function resolveRequestBody(
         ReflectionParameter $reflectionParameter,
         ReflectionNamedType $type,
-        IRequest $request
+        IRequest $request,
     ): ?object {
         try {
             $deserializedBody = $this->bodyDeserializer->readRequestBodyAs($type->getName(), $request);
 
             if ($deserializedBody === null && !$reflectionParameter->allowsNull()) {
                 throw new MissingControllerParameterValueException(
-                    "Body is null when resolving parameter {$reflectionParameter->getName()}"
+                    "Body is null when resolving parameter {$reflectionParameter->getName()}",
                 );
             }
 
@@ -155,7 +155,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             throw new FailedRequestContentNegotiationException(
                 "Failed to negotiate request content with type $type",
                 0,
-                $ex
+                $ex,
             );
         } catch (SerializationException $ex) {
             if ($reflectionParameter->allowsNull()) {
@@ -165,7 +165,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
             throw new RequestBodyDeserializationException(
                 "Failed to deserialize request body when resolving parameter {$reflectionParameter->getName()}",
                 0,
-                $ex
+                $ex,
             );
         }
     }
@@ -183,7 +183,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
     private function resolveRequestParameters(
         Closure $issetClosure,
         Closure $getClosure,
-        ReflectionParameter $reflectionParameter
+        ReflectionParameter $reflectionParameter,
     ): mixed {
         if ($issetClosure()) {
             $rawValue = $getClosure();
@@ -211,7 +211,7 @@ final class ControllerParameterResolver implements IControllerParameterResolver
         }
 
         throw new MissingControllerParameterValueException(
-            "No valid value for parameter {$reflectionParameter->getName()}"
+            "No valid value for parameter {$reflectionParameter->getName()}",
         );
     }
 }

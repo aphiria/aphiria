@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -227,8 +227,8 @@ class GlobalConfigurationTest extends TestCase
             GlobalConfiguration::tryGetObject(
                 'foo',
                 fn(mixed $options): ConfigObject => new ConfigObject($options),
-                $object
-            )
+                $object,
+            ),
         );
         $this->assertEquals(new ConfigObject('bar'), $object);
     }
@@ -242,8 +242,8 @@ class GlobalConfigurationTest extends TestCase
             GlobalConfiguration::tryGetObject(
                 'baz',
                 fn(mixed $options): ConfigObject => new ConfigObject($options),
-                $object
-            )
+                $object,
+            ),
         );
         /** @psalm-suppress DocblockTypeContradiction This should be perfectly valid - bug */
         $this->assertNull($object);

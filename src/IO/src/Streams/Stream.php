@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -20,45 +20,6 @@ use RuntimeException;
  */
 final class Stream implements IStream
 {
-    /** @var list<string> The list of readable stream modes */
-    private static array $readStreamModes = [
-        'a+',
-        'c+',
-        'c+b',
-        'c+t',
-        'r',
-        'rb',
-        'rt',
-        'r+',
-        'r+b',
-        'r+t',
-        'w+',
-        'w+b',
-        'w+t',
-        'x+',
-        'x+b',
-        'x+t'
-    ];
-    /** @var list<string> The list of writable stream modes */
-    private static array $writeStreamModes = [
-        'a',
-        'a+',
-        'c+',
-        'c+b',
-        'c+t',
-        'rw',
-        'r+',
-        'r+b',
-        'r+t',
-        'w',
-        'wb',
-        'w+',
-        'w+b',
-        'w+t',
-        'x+',
-        'x+b',
-        'x+t'
-    ];
     /** @inheritdoc */
     public bool $isEof {
         get {
@@ -110,6 +71,45 @@ final class Stream implements IStream
             return $position;
         }
     }
+    /** @var list<string> The list of readable stream modes */
+    private static array $readStreamModes = [
+        'a+',
+        'c+',
+        'c+b',
+        'c+t',
+        'r',
+        'rb',
+        'rt',
+        'r+',
+        'r+b',
+        'r+t',
+        'w+',
+        'w+b',
+        'w+t',
+        'x+',
+        'x+b',
+        'x+t',
+    ];
+    /** @var list<string> The list of writable stream modes */
+    private static array $writeStreamModes = [
+        'a',
+        'a+',
+        'c+',
+        'c+b',
+        'c+t',
+        'rw',
+        'r+',
+        'r+b',
+        'r+t',
+        'w',
+        'wb',
+        'w+',
+        'w+b',
+        'w+t',
+        'x+',
+        'x+b',
+        'x+t',
+    ];
     /** @var resource|null The underlying stream handle */
     private $handle;
 

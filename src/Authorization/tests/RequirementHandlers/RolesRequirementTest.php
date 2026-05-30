@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -26,6 +26,6 @@ class RolesRequirementTest extends TestCase
     public function testRolesAreConvertedToList(array|string $roles): void
     {
         $requirement = new RolesRequirement($roles);
-        $this->assertSame((array)$roles, $requirement->requiredRoles);
+        $this->assertSame((array) $roles, $requirement->requiredRoles);
     }
 }

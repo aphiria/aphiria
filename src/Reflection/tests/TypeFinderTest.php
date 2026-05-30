@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -37,12 +37,12 @@ class TypeFinderTest extends TestCase
             ClassA::class,
             ClassB::class,
             ClassC::class,
-            AbstractClass::class
+            AbstractClass::class,
         ];
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedClasses,
-            $this->finder->findAllClasses(self::DIRECTORY, true, true)
+            $this->finder->findAllClasses(self::DIRECTORY, true, true),
         );
     }
 
@@ -51,12 +51,12 @@ class TypeFinderTest extends TestCase
         $expectedClasses = [
             ClassA::class,
             ClassB::class,
-            ClassC::class
+            ClassC::class,
         ];
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedClasses,
-            $this->finder->findAllClasses(self::DIRECTORY, true)
+            $this->finder->findAllClasses(self::DIRECTORY, true),
         );
     }
 
@@ -66,7 +66,7 @@ class TypeFinderTest extends TestCase
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedInterfaces,
-            $this->finder->findAllInterfaces(self::DIRECTORY, true)
+            $this->finder->findAllInterfaces(self::DIRECTORY, true),
         );
     }
 
@@ -76,7 +76,7 @@ class TypeFinderTest extends TestCase
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedSubTypes,
-            $this->finder->findAllSubtypesOfType(ClassA::class, self::DIRECTORY, true)
+            $this->finder->findAllSubtypesOfType(ClassA::class, self::DIRECTORY, true),
         );
     }
 
@@ -85,7 +85,7 @@ class TypeFinderTest extends TestCase
         $expectedClasses = [ClassC::class];
         $this->assertEquals(
             $expectedClasses,
-            $this->finder->findAllTypes(self::DIRECTORY . '/Subdirectory')
+            $this->finder->findAllTypes(self::DIRECTORY . '/Subdirectory'),
         );
     }
 
@@ -96,12 +96,12 @@ class TypeFinderTest extends TestCase
             ClassB::class,
             ClassC::class,
             AbstractClass::class,
-            IInterface::class
+            IInterface::class,
         ];
         // We don't care so much about the ordering
         $this->assertEqualsCanonicalizing(
             $expectedClasses,
-            $this->finder->findAllTypes(self::DIRECTORY, true)
+            $this->finder->findAllTypes(self::DIRECTORY, true),
         );
     }
 

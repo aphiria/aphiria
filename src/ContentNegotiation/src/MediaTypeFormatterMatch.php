@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -28,6 +28,6 @@ final readonly class MediaTypeFormatterMatch
     public function __construct(
         public IMediaTypeFormatter $formatter,
         public string $mediaType,
-        public MediaTypeHeaderValue $mediaTypeHeaderValue
+        public MediaTypeHeaderValue $mediaTypeHeaderValue,
     ) {}
 }

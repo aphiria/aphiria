@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,7 @@ final class DateConstraint extends Constraint
      */
     public function __construct(
         private readonly array $acceptableFormats,
-        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID
+        string $errorMessageId = self::DEFAULT_ERROR_MESSAGE_ID,
     ) {
         parent::__construct($errorMessageId);
 
@@ -45,7 +45,7 @@ final class DateConstraint extends Constraint
     public function passes(mixed $value): bool
     {
         foreach ($this->acceptableFormats as $format) {
-            $dateTime = DateTime::createFromFormat($format, (string)$value);
+            $dateTime = DateTime::createFromFormat($format, (string) $value);
 
             if ($dateTime !== false && $value === $dateTime->format($format)) {
                 return true;

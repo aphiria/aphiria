@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -19,6 +19,10 @@ use Aphiria\Console\StatusCode;
  */
 abstract class Driver implements IDriver
 {
+    /** @var int The default height */
+    protected const int DEFAULT_HEIGHT = 60;
+    /** @var int The default width */
+    protected const int DEFAULT_WIDTH = 80;
     /** @inheritdoc */
     public int $cliHeight {
         get {
@@ -27,13 +31,13 @@ abstract class Driver implements IDriver
             }
 
             if (($height = \getenv('LINES')) !== false) {
-                return $this->height = (int)$height;
+                return $this->height = (int) $height;
             }
 
             if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
                 // @codeCoverageIgnoreStart
-                $this->width = (int)$cliDimensions[0];
-                $this->height = (int)$cliDimensions[1];
+                $this->width = (int) $cliDimensions[0];
+                $this->height = (int) $cliDimensions[1];
 
                 return $this->height;
                 // @codeCoverageIgnoreEnd
@@ -50,12 +54,12 @@ abstract class Driver implements IDriver
             }
 
             if (($width = \getenv('COLUMNS')) !== false) {
-                return $this->width = (int)$width;
+                return $this->width = (int) $width;
             }
 
             if (($cliDimensions = $this->getCliDimensionsFromOS()) !== null) {
-                $this->width = (int)$cliDimensions[0];
-                $this->height = (int)$cliDimensions[1];
+                $this->width = (int) $cliDimensions[0];
+                $this->height = (int) $cliDimensions[1];
 
                 return $this->width;
             }
@@ -63,10 +67,6 @@ abstract class Driver implements IDriver
             return $this->width = self::DEFAULT_WIDTH;
         }
     }
-    /** @var int The default height */
-    protected const int DEFAULT_HEIGHT = 60;
-    /** @var int The default width */
-    protected const int DEFAULT_WIDTH = 80;
     /** @var int|null The determined height of the CLI */
     protected ?int $height = null;
     /** @var bool|null Whether or not the CLI support STTY, or null if we haven't checked */
@@ -99,7 +99,7 @@ abstract class Driver implements IDriver
             \preg_match('/rows.(\d+);.columns.(\d+);/i', $sttyOutput, $matches)
             || \preg_match('/;.(\d+).rows;.(\d+).columns/i', $sttyOutput, $matches)
         ) {
-            return [(int)$matches[2], (int)$matches[1]];
+            return [(int) $matches[2], (int) $matches[1]];
         }
 
         return null;
@@ -120,7 +120,7 @@ abstract class Driver implements IDriver
             $pipes,
             null,
             null,
-            ['suppress_errors' => true]
+            ['suppress_errors' => true],
         );
 
         if (!\is_resource($process)) {

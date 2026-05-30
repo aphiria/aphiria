@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -34,7 +34,7 @@ class ConsoleApplication implements IApplication
     public function __construct(
         private readonly ICommandHandler $consoleGateway,
         private readonly Input $input,
-        private readonly IOutput $output = new ConsoleOutput()
+        private readonly IOutput $output = new ConsoleOutput(),
     ) {}
 
     /**

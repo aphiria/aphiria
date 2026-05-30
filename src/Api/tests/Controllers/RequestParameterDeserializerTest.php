@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -33,7 +33,7 @@ class RequestParameterDeserializerTest extends TestCase
             ['yes', true],
             ['no', false],
             ['y', true],
-            ['n', false]
+            ['n', false],
         ];
     }
 
@@ -65,7 +65,7 @@ class RequestParameterDeserializerTest extends TestCase
     public function testRegisteringDeserializerForTypeWithBuiltInDeserializerOverwritesIt(): void
     {
         $deserializer = new RequestParameterDeserializer();
-        $deserializer->registerDeserializer('int', fn(mixed $value): int => (int)$value + 1);
+        $deserializer->registerDeserializer('int', fn(mixed $value): int => (int) $value + 1);
         $this->assertSame(2, $deserializer->deserializeRouteActionParameter('int', 1));
     }
 

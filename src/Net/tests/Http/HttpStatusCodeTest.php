@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -60,7 +60,7 @@ class HttpStatusCodeTest extends TestCase
             [HttpStatusCode::BadGateway, 'Bad Gateway'],
             [HttpStatusCode::ServiceUnavailable, 'Service Unavailable'],
             [HttpStatusCode::GatewayTimeout, 'Gateway Timeout'],
-            [HttpStatusCode::HttpVersionNotSupported, 'HTTP Version Not Supported']
+            [HttpStatusCode::HttpVersionNotSupported, 'HTTP Version Not Supported'],
         ];
     }
 

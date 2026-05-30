@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -12,15 +12,12 @@ declare(strict_types=1);
 
 namespace Aphiria\Framework\Tests\Exceptions\Binders;
 
-use Aphiria\ContentNegotiation\NegotiatedResponseFactory;
 use Aphiria\DependencyInjection\IContainer;
 use Aphiria\Framework\Api\Exceptions\IApiExceptionRenderer;
 use Aphiria\Framework\Api\Exceptions\ProblemDetailsExceptionRenderer;
 use Aphiria\Framework\Exceptions\Binders\ExceptionHandlerBinder;
 use Aphiria\Net\Http\IRequest;
 use Aphiria\Net\Http\IResponseFactory;
-use Aphiria\Net\Http\Request;
-use Aphiria\Net\Uri;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 

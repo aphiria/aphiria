@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -132,6 +132,14 @@ class ArrayListTest extends TestCase
         $this->assertEquals(['foo', 'bar'], $this->arrayList->toArray());
     }
 
+    public function testIntersectingIntersectsValuesOfSetAndAnotherList(): void
+    {
+        $this->arrayList->addRange(['foo', 'bar']);
+        $otherArrayList = new ArrayList(['bar', 'blah']);
+        $newList = $this->arrayList->intersect($otherArrayList);
+        $this->assertEquals(['bar'], $newList->toArray());
+    }
+
     public function testIntersectingIntersectsValuesOfSetAndArray(): void
     {
         $this->arrayList->addRange(['foo', 'bar']);
@@ -233,6 +241,14 @@ class ArrayListTest extends TestCase
         $this->arrayList->add('foo');
         $this->arrayList->union(['bar']);
         $this->assertEquals(['foo'], $this->arrayList->toArray());
+    }
+
+    public function testUnionUnionsValuesOfSetAndAnotherList(): void
+    {
+        $this->arrayList->add('foo');
+        $otherList = new ArrayList(['bar', 'baz']);
+        $newList = $this->arrayList->union($otherList);
+        $this->assertEquals(['foo', 'bar', 'baz'], $newList->toArray());
     }
 
     public function testUnionUnionsValuesOfSetAndArray(): void

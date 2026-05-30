@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -38,7 +38,7 @@ class OutputCompilerTest extends TestCase
         $expectedOutput = "\033[32;47mbaz\033[39;49m\033[36mblah\033[39m";
         $this->assertSame(
             $expectedOutput,
-            $this->compiler->compile('<foo>baz</foo><bar>blah</bar>')
+            $this->compiler->compile('<foo>baz</foo><bar>blah</bar>'),
         );
     }
 
@@ -49,7 +49,7 @@ class OutputCompilerTest extends TestCase
         $expectedOutput = '';
         $this->assertSame(
             $expectedOutput,
-            $this->compiler->compile('<foo></foo>')
+            $this->compiler->compile('<foo></foo>'),
         );
     }
 
@@ -87,7 +87,7 @@ class OutputCompilerTest extends TestCase
         $expectedOutput = "\033[32;47m\033[36mbaz\033[39m\033[39;49m";
         $this->assertSame(
             $expectedOutput,
-            $this->compiler->compile('<foo><bar>baz</bar></foo>')
+            $this->compiler->compile('<foo><bar>baz</bar></foo>'),
         );
     }
 
@@ -98,7 +98,7 @@ class OutputCompilerTest extends TestCase
         $expectedOutput = '';
         $this->assertSame(
             $expectedOutput,
-            $this->compiler->compile('<foo><bar></bar></foo>')
+            $this->compiler->compile('<foo><bar></bar></foo>'),
         );
     }
 
@@ -109,7 +109,7 @@ class OutputCompilerTest extends TestCase
         $expectedOutput = "\033[32;47mbar\033[39;49m\033[32;47m\033[36mblah\033[39m\033[39;49m\033[32;47mbaz\033[39;49m";
         $this->assertSame(
             $expectedOutput,
-            $this->compiler->compile('<foo>bar<bar>blah</bar>baz</foo>')
+            $this->compiler->compile('<foo>bar<bar>blah</bar>baz</foo>'),
         );
     }
 
@@ -118,7 +118,7 @@ class OutputCompilerTest extends TestCase
         $expectedOutput = 'foobar';
         $this->assertSame(
             $expectedOutput,
-            $this->compiler->compile('foobar')
+            $this->compiler->compile('foobar'),
         );
     }
 

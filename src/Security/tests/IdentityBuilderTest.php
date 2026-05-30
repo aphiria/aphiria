@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -56,7 +56,7 @@ class IdentityBuilderTest extends TestCase
             [fn(IdentityBuilder $identityBuilder): IdentityBuilder => $identityBuilder->withThumbprint('foo'), ClaimType::Thumbprint, 'foo'],
             [fn(IdentityBuilder $identityBuilder): IdentityBuilder => $identityBuilder->withUpn('foo'), ClaimType::Upn, 'foo'],
             [fn(IdentityBuilder $identityBuilder): IdentityBuilder => $identityBuilder->withUri('https://example.com'), ClaimType::Uri, 'https://example.com'],
-            [fn(IdentityBuilder $identityBuilder): IdentityBuilder => $identityBuilder->withX500DistinguishedName('foo'), ClaimType::X500DistinguishedName, 'foo']
+            [fn(IdentityBuilder $identityBuilder): IdentityBuilder => $identityBuilder->withX500DistinguishedName('foo'), ClaimType::X500DistinguishedName, 'foo'],
         ];
     }
 
@@ -64,7 +64,7 @@ class IdentityBuilderTest extends TestCase
     public function testAddingClaimsAddsThemToIdentity(
         Closure $claimsCall,
         ClaimType $type,
-        mixed $value
+        mixed $value,
     ): void {
         $identityBuilder = new IdentityBuilder('example.com');
         $claimsCall($identityBuilder);
@@ -77,7 +77,7 @@ class IdentityBuilderTest extends TestCase
     {
         $claims = [
             new Claim(ClaimType::Name, 'Dave', 'example.com'),
-            new Claim(ClaimType::Surname, 'Young', 'example.com')
+            new Claim(ClaimType::Surname, 'Young', 'example.com'),
         ];
         $identity = new IdentityBuilder()
             ->withClaims($claims)
@@ -117,7 +117,7 @@ class IdentityBuilderTest extends TestCase
     public function testNotSpecifyingDefaultClaimsIssuerOrIssuerForClaimThrowsException(
         Closure $claimsCall,
         ClaimType $type,
-        mixed $value
+        mixed $value,
     ): void {
         try {
             $identityBuilder = new IdentityBuilder();

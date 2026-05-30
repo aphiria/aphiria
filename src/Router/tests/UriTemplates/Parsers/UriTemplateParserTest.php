@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -34,7 +34,7 @@ class UriTemplateParserTest extends TestCase
     {
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Punctuation, ']')
+            new Token(TokenType::Punctuation, ']'),
         ]);
         $pathNode = new AstNode(AstNodeType::Path);
         $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
@@ -73,7 +73,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '.'),
             new Token(TokenType::Text, 'com'),
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Text, 'foo')
+            new Token(TokenType::Text, 'foo'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $hostNode = new AstNode(AstNodeType::Host, null);
@@ -112,7 +112,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '.'),
             new Token(TokenType::Text, 'com'),
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Text, 'foo')
+            new Token(TokenType::Text, 'foo'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -128,7 +128,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '/'),
             new Token(TokenType::Text, 'bar'),
             new Token(TokenType::Punctuation, ']'),
-            new Token(TokenType::Punctuation, ']')
+            new Token(TokenType::Punctuation, ']'),
         ]);
         $innerOptionalRoutePartNode = new AstNode(AstNodeType::OptionalRoutePart, '[');
         $innerOptionalRoutePartNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
@@ -149,7 +149,7 @@ class UriTemplateParserTest extends TestCase
     {
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Punctuation, '!')
+            new Token(TokenType::Punctuation, '!'),
         ]);
         $pathNode = new AstNode(AstNodeType::Path);
         $pathNode->addChild(new AstNode(AstNodeType::SegmentDelimiter, '/'));
@@ -163,7 +163,7 @@ class UriTemplateParserTest extends TestCase
     {
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Number, 12345)
+            new Token(TokenType::Number, 12345),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -185,7 +185,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '.'),
             new Token(TokenType::Text, 'com'),
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Text, 'foo')
+            new Token(TokenType::Text, 'foo'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -198,7 +198,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '['),
             new Token(TokenType::Punctuation, '/'),
             new Token(TokenType::Text, 'bar'),
-            new Token(TokenType::Punctuation, ']')
+            new Token(TokenType::Punctuation, ']'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -221,7 +221,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Text, 'foo'),
             new Token(TokenType::Punctuation, '['),
             new Token(TokenType::Text, 'bar'),
-            new Token(TokenType::Punctuation, ']')
+            new Token(TokenType::Punctuation, ']'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -256,7 +256,7 @@ class UriTemplateParserTest extends TestCase
     {
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::QuotedString, '"12345"')
+            new Token(TokenType::QuotedString, '"12345"'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -273,7 +273,7 @@ class UriTemplateParserTest extends TestCase
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
             new Token(TokenType::Variable, 'foo'),
-            new Token(TokenType::Variable, 'foo')
+            new Token(TokenType::Variable, 'foo'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -282,7 +282,7 @@ class UriTemplateParserTest extends TestCase
     {
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Text, 'foo')
+            new Token(TokenType::Text, 'foo'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -309,7 +309,7 @@ class UriTemplateParserTest extends TestCase
     {
         $tokens = new TokenStream([
             new Token(TokenType::Punctuation, '/'),
-            new Token(TokenType::Variable, 'foo')
+            new Token(TokenType::Variable, 'foo'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -327,7 +327,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '/'),
             new Token(TokenType::Variable, 'foo'),
             new Token(TokenType::Punctuation, '('),
-            new Token(TokenType::Punctuation, ')')
+            new Token(TokenType::Punctuation, ')'),
         ]);
         $this->parser->parse($tokens);
     }
@@ -344,7 +344,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, ','),
             new Token(TokenType::Text, 'blah'),
             new Token(TokenType::Punctuation, ')'),
-            new Token(TokenType::Punctuation, ')')
+            new Token(TokenType::Punctuation, ')'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -365,7 +365,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Variable, 'foo'),
             new Token(TokenType::Punctuation, '('),
             new Token(TokenType::Text, 'bar'),
-            new Token(TokenType::Punctuation, ')')
+            new Token(TokenType::Punctuation, ')'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -388,7 +388,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::Punctuation, '('),
             new Token(TokenType::QuotedString, 'baz'),
             new Token(TokenType::Punctuation, ')'),
-            new Token(TokenType::Punctuation, ')')
+            new Token(TokenType::Punctuation, ')'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);
@@ -413,7 +413,7 @@ class UriTemplateParserTest extends TestCase
             new Token(TokenType::QuotedString, 'baz'),
             new Token(TokenType::Punctuation, ','),
             new Token(TokenType::Punctuation, ')'),
-            new Token(TokenType::Punctuation, ')')
+            new Token(TokenType::Punctuation, ')'),
         ]);
         $expectedAst = new AstNode(AstNodeType::Root, null);
         $pathNode = new AstNode(AstNodeType::Path, null);

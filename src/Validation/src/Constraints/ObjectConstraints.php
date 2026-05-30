@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,7 @@ final class ObjectConstraints
     public function __construct(
         public readonly string $className,
         array $propertyConstraints = [],
-        array $methodConstraints = []
+        array $methodConstraints = [],
     ) {
         foreach ($propertyConstraints as $propertyName => $propertyConstraint) {
             $this->addPropertyConstraint($propertyName, $propertyConstraint);

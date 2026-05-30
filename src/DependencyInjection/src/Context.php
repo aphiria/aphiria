@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -25,6 +25,6 @@ abstract class Context
     protected function __construct(
         public readonly ?string $targetClass,
         public readonly bool $isTargeted,
-        public readonly bool $isUniversal
+        public readonly bool $isUniversal,
     ) {}
 }

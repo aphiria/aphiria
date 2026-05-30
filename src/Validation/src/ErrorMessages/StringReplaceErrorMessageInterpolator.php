@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -35,7 +35,7 @@ final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterp
      * @param IErrorMessageTemplateRegistry $errorMessageTemplates The error message template registry to use
      */
     public function __construct(
-        private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry()
+        private readonly IErrorMessageTemplateRegistry $errorMessageTemplates = new DefaultErrorMessageTemplateRegistry(),
     ) {}
 
     /**
@@ -44,12 +44,12 @@ final class StringReplaceErrorMessageInterpolator implements IErrorMessageInterp
     public function interpolate(
         string $errorMessageId,
         array $errorMessagePlaceholders = [],
-        ?string $locale = null
+        ?string $locale = null,
     ): string {
         $interpolatedErrorMessage = $this->errorMessageTemplates->getErrorMessageTemplate($errorMessageId, $locale);
 
         foreach ($errorMessagePlaceholders as $key => $value) {
-            $interpolatedErrorMessage = \str_replace('{' . $key . '}', (string)$value, $interpolatedErrorMessage);
+            $interpolatedErrorMessage = \str_replace('{' . $key . '}', (string) $value, $interpolatedErrorMessage);
         }
 
         // Remove any unused placeholders from the message

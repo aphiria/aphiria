@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -70,7 +70,7 @@ class RouterComponent implements IComponent
         $routeRegistrants->registerRoutes($this->container->resolve(RouteCollection::class));
         $this->container->for(
             new TargetedContext(ApiGateway::class),
-            fn(IContainer $container) => $container->bindFactory(IRequestHandler::class, fn(): IRequestHandler => $this->container->resolve(Router::class))
+            fn(IContainer $container) => $container->bindFactory(IRequestHandler::class, fn(): IRequestHandler => $this->container->resolve(Router::class)),
         );
 
         $routeVariableConstraintFactory = $this->container->resolve(RouteVariableConstraintFactory::class);

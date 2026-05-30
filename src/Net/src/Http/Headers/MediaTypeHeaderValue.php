@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -73,7 +73,7 @@ class MediaTypeHeaderValue
         $charset = null;
 
         if ($this->parameters->tryGet('charset', $charset)) {
-            $this->charset = (string)$charset;
+            $this->charset = (string) $charset;
         } else {
             $this->charset = null;
         }

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -38,7 +38,7 @@ final class AcceptLanguageHeaderValue implements IHeaderValueWithQualityScore
         $quality = null;
         $this->parameters->tryGet('q', $quality);
         // Specifically cast to float for type safety
-        $this->quality = $quality === null ? 1.0 : (float)$quality;
+        $this->quality = $quality === null ? 1.0 : (float) $quality;
 
         if ($this->quality < 0 || $this->quality > 1) {
             throw new InvalidArgumentException('Quality score must be between 0 and 1, inclusive');

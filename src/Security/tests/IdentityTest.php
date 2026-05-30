@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -25,7 +25,7 @@ class IdentityTest extends TestCase
         $claims = [
             new Claim('foo', 'bar', 'http://example.com'),
             new Claim('foo', 'baz', 'http://example.com'),
-            new Claim('baz', 'quz', 'http://example.com')
+            new Claim('baz', 'quz', 'http://example.com'),
         ];
         $identity = new Identity($claims);
         $this->assertSame([$claims[0], $claims[1]], $identity->filterClaims('foo'));
@@ -46,7 +46,7 @@ class IdentityTest extends TestCase
         $claims = [
             new Claim('foo', 'bar', 'http://example.com'),
             new Claim('foo', 'baz', 'http://example.com'),
-            new Claim('baz', 'quz', 'http://example.com')
+            new Claim('baz', 'quz', 'http://example.com'),
         ];
         $identity = new Identity($claims);
         $this->assertSame($claims, $identity->claims);

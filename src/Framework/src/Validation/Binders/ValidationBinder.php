@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -85,7 +85,7 @@ final class ValidationBinder extends Binder
             case IcuFormatErrorMessageInterpolator::class:
                 $errorMessageInterpolator = new IcuFormatErrorMessageInterpolator(
                     $errorMessageTemplates,
-                    (string)($errorMessageInterpolatorConfiguration['defaultLocale'] ?? 'en')
+                    (string) ($errorMessageInterpolatorConfiguration['defaultLocale'] ?? 'en'),
                 );
                 break;
             default:
@@ -97,7 +97,7 @@ final class ValidationBinder extends Binder
         // Register some constraint attribute dependencies
         /** @psalm-suppress ArgumentTypeCoercion We will assume this contains an array of strings */
         $constraintAttributeRegistrant = new AttributeObjectConstraintsRegistrant(
-            GlobalConfiguration::getArray('aphiria.validation.attributePaths')
+            GlobalConfiguration::getArray('aphiria.validation.attributePaths'),
         );
         $container->bindInstance(AttributeObjectConstraintsRegistrant::class, $constraintAttributeRegistrant);
     }

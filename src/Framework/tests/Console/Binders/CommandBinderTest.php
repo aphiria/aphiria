@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -90,9 +90,9 @@ class CommandBinderTest extends TestCase
             'aphiria' => [
                 'console' => [
                     'attributePaths' => ['/src'],
-                    'commandCachePath' => '/commandCache.txt'
-                ]
-            ]
+                    'commandCachePath' => '/commandCache.txt',
+                ],
+            ],
         ];
     }
 
@@ -107,7 +107,7 @@ class CommandBinderTest extends TestCase
     {
         $parameters = [
             [Input::class, Input::class],
-            [IOutput::class, ConsoleOutput::class]
+            [IOutput::class, ConsoleOutput::class],
         ];
 
         foreach ($parameters as $parameter) {
@@ -129,7 +129,7 @@ class CommandBinderTest extends TestCase
             [CommandRegistrantCollection::class, CommandRegistrantCollection::class],
             [AttributeCommandRegistrant::class, AttributeCommandRegistrant::class],
             [ElementRegistry::class, ElementRegistry::class],
-            [IOutputCompiler::class, OutputCompiler::class]
+            [IOutputCompiler::class, OutputCompiler::class],
         ];
 
         foreach ($parameters as $parameter) {

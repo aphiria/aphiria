@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -64,13 +64,13 @@ interface ISet extends Countable, IteratorAggregate
     public function filter(Closure $callback): static;
 
     /**
-     * Intersects the values of the input array with the values already in the set
+     * Intersects the values of the input iterable with the values already in the set
      *
-     * @param list<T> $values The values to intersect with
+     * @param iterable<T> $values The values to intersect with
      * @return static The intersected set
      * @throws RuntimeException Thrown if the values' keys could not be calculated
      */
-    public function intersect(array $values): static;
+    public function intersect(iterable $values): static;
 
     /**
      * Applies a mapping to each value in the set

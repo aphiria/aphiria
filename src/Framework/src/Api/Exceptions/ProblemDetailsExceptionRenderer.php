@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -44,12 +44,12 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
             $this->_responseFactory = $value;
         }
     }
-    /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
-    protected array $exceptionTypesToProblemDetailsFactories = [];
     /** @var IRequest|null The current request, if one is set, otherwise null */
     protected ?IRequest $_request = null;
     /** @var IResponseFactory|null The optional response factory */
     protected ?IResponseFactory $_responseFactory = null;
+    /** @var array<class-string<Exception>, Closure(Exception): ProblemDetails> The mapping of exception types to problem details factories */
+    protected array $exceptionTypesToProblemDetailsFactories = [];
 
     /**
      * @param IResponseFactory|null $responseFactory The optional response factory
@@ -57,7 +57,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
      */
     public function __construct(
         ?IResponseFactory $responseFactory = null,
-        protected readonly IResponseWriter $responseWriter = new StreamResponseWriter()
+        protected readonly IResponseWriter $responseWriter = new StreamResponseWriter(),
     ) {
         $this->_responseFactory = $responseFactory;
     }
@@ -87,7 +87,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
                 $this->_request,
                 $problemDetails->status,
                 null,
-                $problemDetails
+                $problemDetails,
             );
 
             return new ProblemDetailsResponseMutator()->mutateResponse($response);
@@ -115,7 +115,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
         string|Closure|null $detail = null,
         HttpStatusCode|int|Closure $status = HttpStatusCode::InternalServerError,
         string|Closure|null $instance = null,
-        array|Closure|null $extensions = null
+        array|Closure|null $extensions = null,
     ): void {
         /** @psalm-suppress InvalidArgument PHPDoc doesn't allow us to (easily) specify param types in closures when setting a variable to that closure */
         $this->exceptionTypesToProblemDetailsFactories[$exceptionType] = function (Exception $ex) use ($type, $title, $detail, $status, $instance, $extensions): ProblemDetails {
@@ -199,7 +199,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
             $this->getTitleFromException($ex),
             $this->getDetailFromException($ex),
             HttpStatusCode::InternalServerError,
-            $this->getInstanceFromException($ex)
+            $this->getInstanceFromException($ex),
         );
     }
 
@@ -285,7 +285,7 @@ class ProblemDetailsExceptionRenderer implements IApiExceptionRenderer
             HttpStatusCode::ServiceUnavailable->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.4',
             HttpStatusCode::GatewayTimeout->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.5',
             HttpStatusCode::HttpVersionNotSupported->value => 'https://tools.ietf.org/html/rfc7231#section-6.6.6',
-            default => null
+            default => null,
         };
     }
 }

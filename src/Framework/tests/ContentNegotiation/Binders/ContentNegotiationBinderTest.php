@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -60,7 +60,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
             [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
-            [IResponseFactory::class, NegotiatedResponseFactory::class]
+            [IResponseFactory::class, NegotiatedResponseFactory::class],
         ]);
         $this->setUpContainerMockResolve();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -77,7 +77,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
             [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
-            [IResponseFactory::class, NegotiatedResponseFactory::class]
+            [IResponseFactory::class, NegotiatedResponseFactory::class],
         ]);
         $this->setUpContainerMockResolve();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -94,7 +94,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
             [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
-            [IResponseFactory::class, NegotiatedResponseFactory::class]
+            [IResponseFactory::class, NegotiatedResponseFactory::class],
         ]);
         $this->setUpContainerMockResolve();
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration(self::getBaseConfig()));
@@ -111,7 +111,7 @@ class ContentNegotiationBinderTest extends TestCase
         $config['aphiria']['contentNegotiation']['encodingMatcher'] = self::class;
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMockBindInstance([
-            [IMediaTypeFormatterMatcher::class, MediaTypeFormatterMatcher::class]
+            [IMediaTypeFormatterMatcher::class, MediaTypeFormatterMatcher::class],
         ]);
         $this->setUpContainerMockResolve([self::class, $this]);
         $this->binder->bind($this->container);
@@ -126,7 +126,7 @@ class ContentNegotiationBinderTest extends TestCase
         GlobalConfiguration::addConfigurationSource(new HashTableConfiguration($config));
         $this->setUpContainerMockBindInstance([
             [IMediaTypeFormatterMatcher::class, MediaTypeFormatterMatcher::class],
-            [IEncodingMatcher::class, AcceptCharsetEncodingMatcher::class]
+            [IEncodingMatcher::class, AcceptCharsetEncodingMatcher::class],
         ]);
         $this->setUpContainerMockResolve([self::class, $this]);
         $this->binder->bind($this->container);
@@ -158,7 +158,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, AcceptLanguageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
             [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
-            [IResponseFactory::class, NegotiatedResponseFactory::class]
+            [IResponseFactory::class, NegotiatedResponseFactory::class],
         ]);
         $this->setUpContainerMockResolve([$encodingMatcher::class, $encodingMatcher]);
         $this->binder->bind($this->container);
@@ -178,7 +178,7 @@ class ContentNegotiationBinderTest extends TestCase
             [ILanguageMatcher::class, $languageMatcher::class],
             [IContentNegotiator::class, ContentNegotiator::class],
             [IBodyDeserializer::class, NegotiatedBodyDeserializer::class],
-            [IResponseFactory::class, NegotiatedResponseFactory::class]
+            [IResponseFactory::class, NegotiatedResponseFactory::class],
         ]);
         $this->setUpContainerMockResolve([$languageMatcher::class, $languageMatcher]);
         $this->binder->bind($this->container);
@@ -199,11 +199,11 @@ class ContentNegotiationBinderTest extends TestCase
                     'encodingMatcher' => AcceptCharsetEncodingMatcher::class,
                     'languageMatcher' => AcceptLanguageMatcher::class,
                     'mediaTypeFormatters' => [
-                        JsonMediaTypeFormatter::class
+                        JsonMediaTypeFormatter::class,
                     ],
-                    'supportedLanguages' => ['en']
-                ]
-            ]
+                    'supportedLanguages' => ['en'],
+                ],
+            ],
         ];
     }
 
@@ -229,7 +229,7 @@ class ContentNegotiationBinderTest extends TestCase
     private function setUpContainerMockResolve(?array $additionalParameters = null): void
     {
         $parameters = [
-            [JsonMediaTypeFormatter::class, new JsonMediaTypeFormatter()]
+            [JsonMediaTypeFormatter::class, new JsonMediaTypeFormatter()],
         ];
 
         if ($additionalParameters !== null) {

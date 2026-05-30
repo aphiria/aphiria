@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -28,7 +28,7 @@ final class AcceptLanguageMatcher implements ILanguageMatcher
      */
     public function __construct(
         private readonly array $supportedLanguages,
-        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser()
+        private readonly RequestHeaderParser $headerParser = new RequestHeaderParser(),
     ) {}
 
     /**

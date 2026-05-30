@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -67,15 +67,15 @@ class StreamResponseWriter implements IResponseWriter
         $this->header($startLine);
 
         foreach ($response->headers as $key => $value) {
-            $headerName = (string)$key;
+            $headerName = (string) $key;
 
             if (isset(self::$headersToNotConcatenate[$headerName])) {
                 /** @var string $headerValue */
-                foreach ((array)$value as $headerValue) {
+                foreach ((array) $value as $headerValue) {
                     $this->header("$headerName: $headerValue", false);
                 }
             } else {
-                $this->header("$headerName: " . \implode(', ', \array_map(static fn(mixed $value): string => (string)$value, (array)$value)));
+                $this->header("$headerName: " . \implode(', ', \array_map(static fn(mixed $value): string => (string) $value, (array) $value)));
             }
         }
 

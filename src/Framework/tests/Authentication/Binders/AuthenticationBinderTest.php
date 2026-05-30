@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -75,7 +75,7 @@ class AuthenticationBinderTest extends TestCase
         $parameters = [
             [AuthenticationSchemeRegistry::class, AuthenticationSchemeRegistry::class],
             [IAuthenticationSchemeHandlerResolver::class, ContainerAuthenticationSchemeHandlerResolver::class],
-            [IUserAccessor::class, RequestPropertyUserAccessor::class]
+            [IUserAccessor::class, RequestPropertyUserAccessor::class],
         ];
 
         if ($inTestingEnvironment) {

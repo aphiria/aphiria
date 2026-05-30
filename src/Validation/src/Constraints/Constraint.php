@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -34,10 +34,10 @@ abstract class Constraint implements IConstraint
     public function getErrorMessagePlaceholders($value): array
     {
         if (\is_scalar($value)) {
-            $serializedValue = (string)$value;
+            $serializedValue = (string) $value;
         } elseif (\is_object($value)) {
             if (\method_exists($value, '__toString')) {
-                $serializedValue = (string)$value;
+                $serializedValue = (string) $value;
             } else {
                 $serializedValue = $value::class . ' object';
             }

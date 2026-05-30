@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -26,6 +26,13 @@ class ImmutableHashTableTest extends TestCase
     {
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar')]);
         $this->assertSame('bar', $hashTable['foo']);
+    }
+
+    public function testConstructingWithAssociativeArrayWorks(): void
+    {
+        $hashTable = new ImmutableHashTable(['foo' => 'bar', 'baz' => 'blah']);
+        $this->assertSame('bar', $hashTable->get('foo'));
+        $this->assertSame('blah', $hashTable->get('baz'));
     }
 
     public function testContainsKey(): void
@@ -105,7 +112,7 @@ class ImmutableHashTableTest extends TestCase
     {
         $expectedArray = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'blah')
+            new KeyValuePair('baz', 'blah'),
         ];
         $hashTable = new ImmutableHashTable($expectedArray);
         /** @var list<array{0: string, 1: string}> $expectedValues */
@@ -131,7 +138,7 @@ class ImmutableHashTableTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         /** @psalm-suppress ArgumentTypeCoercion Purposely testing passing invalid values */
-        new ImmutableHashTable(['foo' => 'bar']);
+        new ImmutableHashTable(['foo']);
     }
 
     public function testSettingValueThrowsException(): void
@@ -146,7 +153,7 @@ class ImmutableHashTableTest extends TestCase
         $hashTable = new ImmutableHashTable([new KeyValuePair('foo', 'bar'), new KeyValuePair('baz', 'blah')]);
         $expectedArray = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'blah')
+            new KeyValuePair('baz', 'blah'),
         ];
         $this->assertEquals($expectedArray, $hashTable->toArray());
     }

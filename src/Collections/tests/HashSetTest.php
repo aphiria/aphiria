@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -115,6 +115,17 @@ class HashSetTest extends TestCase
         $this->assertEquals(['foo', 'bar'], $this->set->toArray());
     }
 
+    public function testIntersectingIntersectsValuesOfSetAndAnotherSet(): void
+    {
+        $object1 = new FakeObject();
+        $object2 = new FakeObject();
+        $this->set->add($object1);
+        $this->set->add($object2);
+        $otherSet = new HashSet([$object2]);
+        $newSet = $this->set->intersect($otherSet);
+        $this->assertEquals([$object2], $newSet->toArray());
+    }
+
     public function testIntersectingIntersectsValuesOfSetAndArray(): void
     {
         $object1 = new FakeObject();
@@ -129,7 +140,7 @@ class HashSetTest extends TestCase
     {
         $expectedValues = [
             new FakeObject(),
-            new FakeObject()
+            new FakeObject(),
         ];
         $this->set->addRange($expectedValues);
         $actualValues = [];
@@ -181,6 +192,15 @@ class HashSetTest extends TestCase
         $this->set->add('foo');
         $this->set->union(['bar']);
         $this->assertEquals(['foo'], $this->set->toArray());
+    }
+
+    public function testUnionUnionsValuesOfSetAndAnotherSet(): void
+    {
+        $object = new FakeObject();
+        $this->set->add($object);
+        $otherSet = new HashSet(['bar', 'baz']);
+        $newSet = $this->set->union($otherSet);
+        $this->assertEquals([$object, 'bar', 'baz'], $newSet->toArray());
     }
 
     public function testUnionUnionsValuesOfSetAndArray(): void

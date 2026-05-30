@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -57,7 +57,7 @@ class ContainerTest extends TestCase
     {
         $this->container->for(
             new TargetedContext(ConstructorWithInterface::class),
-            fn(IContainer $container) => $container->bindFactory(IFoo::class, fn() => new Bar())
+            fn(IContainer $container) => $container->bindFactory(IFoo::class, fn() => new Bar()),
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
@@ -71,7 +71,7 @@ class ContainerTest extends TestCase
     {
         $this->container->for(
             new TargetedContext(ConstructorWithInterface::class),
-            fn(IContainer $container) => $container->bindFactory(IFoo::class, fn() => new Bar(), true)
+            fn(IContainer $container) => $container->bindFactory(IFoo::class, fn() => new Bar(), true),
         );
         $instance1 = $this->container->resolve(ConstructorWithInterface::class);
         $instance2 = $this->container->resolve(ConstructorWithInterface::class);
@@ -137,7 +137,7 @@ class ContainerTest extends TestCase
         $response = $this->container->callClosure(
             /** @psalm-suppress MissingClosureParamType Purposely testing without a param type */
             fn(IFoo $interface, $primitive): string => $interface::class . ":$primitive",
-            ['foo']
+            ['foo'],
         );
         $this->assertSame(Bar::class . ':foo', $response);
     }
@@ -249,7 +249,7 @@ class ContainerTest extends TestCase
         $this->assertFalse(
             $this->container->for(new TargetedContext(ConstructorWithInterface::class), function (IContainer $container) {
                 return $container->hasBinding(IFoo::class);
-            })
+            }),
         );
     }
 
@@ -289,7 +289,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
-            $this->container->resolve(ConstructorWithPrimitives::class)
+            $this->container->resolve(ConstructorWithPrimitives::class),
         );
     }
 
@@ -304,13 +304,13 @@ class ContainerTest extends TestCase
         $this->container->bindClass(
             ConstructorWithDefaultValuePrimitives::class,
             ConstructorWithDefaultValuePrimitives::class,
-            ['foo']
+            ['foo'],
         );
         $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
         $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertNotSame(
             $instance,
-            $this->container->resolve(ConstructorWithDefaultValuePrimitives::class)
+            $this->container->resolve(ConstructorWithDefaultValuePrimitives::class),
         );
     }
 
@@ -327,7 +327,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf(ConstructorWithPrimitives::class, $instance);
         $this->assertSame(
             $instance,
-            $this->container->resolve(ConstructorWithPrimitives::class)
+            $this->container->resolve(ConstructorWithPrimitives::class),
         );
     }
 
@@ -337,13 +337,13 @@ class ContainerTest extends TestCase
             ConstructorWithDefaultValuePrimitives::class,
             ConstructorWithDefaultValuePrimitives::class,
             ['foo'],
-            true
+            true,
         );
         $instance = $this->container->resolve(ConstructorWithDefaultValuePrimitives::class);
         $this->assertInstanceOf(ConstructorWithDefaultValuePrimitives::class, $instance);
         $this->assertSame(
             $instance,
-            $this->container->resolve(ConstructorWithDefaultValuePrimitives::class)
+            $this->container->resolve(ConstructorWithDefaultValuePrimitives::class),
         );
     }
 
@@ -352,7 +352,7 @@ class ContainerTest extends TestCase
         $tests = function (): void {
             $this->assertInstanceOf(
                 Foo::class,
-                $this->container->resolve(IFoo::class)
+                $this->container->resolve(IFoo::class),
             );
         };
         $this->container->bindClass(IFoo::class, Foo::class);
@@ -380,7 +380,7 @@ class ContainerTest extends TestCase
         $this->container->bindClass(
             ConstructorWithMixOfInterfacesAndPrimitives::class,
             ConstructorWithMixOfInterfacesAndPrimitives::class,
-            [23]
+            [23],
         );
         $this->container->bindFactory(IFoo::class, function () {
             return new Bar();
@@ -400,7 +400,7 @@ class ContainerTest extends TestCase
             ConstructorWithMixOfInterfacesAndPrimitives::class,
             ConstructorWithMixOfInterfacesAndPrimitives::class,
             [23],
-            true
+            true,
         );
         $this->container->bindFactory(IFoo::class, function () {
             return new Bar();
@@ -450,7 +450,7 @@ class ContainerTest extends TestCase
         $this->container->bindClass(
             ConstructorWithMixOfConcreteClassesAndPrimitives::class,
             ConstructorWithMixOfConcreteClassesAndPrimitives::class,
-            [23]
+            [23],
         );
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
         $this->assertInstanceOf(ConstructorWithMixOfConcreteClassesAndPrimitives::class, $instance);
@@ -465,7 +465,7 @@ class ContainerTest extends TestCase
             ConstructorWithMixOfConcreteClassesAndPrimitives::class,
             ConstructorWithMixOfConcreteClassesAndPrimitives::class,
             [23],
-            true
+            true,
         );
         $instance = $this->container->resolve(ConstructorWithMixOfConcreteClassesAndPrimitives::class);
         /** @var ConstructorWithMixOfConcreteClassesAndPrimitives $newInstance */
@@ -618,7 +618,7 @@ class ContainerTest extends TestCase
         $this->container->bindClass(
             ConstructorWithMixOfInterfacesAndPrimitives::class,
             ConstructorWithMixOfInterfacesAndPrimitives::class,
-            [23]
+            [23],
         );
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
         $this->container->bindClass(IPerson::class, Dave::class, [], true);
@@ -635,7 +635,7 @@ class ContainerTest extends TestCase
             ConstructorWithMixOfInterfacesAndPrimitives::class,
             ConstructorWithMixOfInterfacesAndPrimitives::class,
             [23],
-            true
+            true,
         );
         $this->container->bindClass(IFoo::class, Bar::class, [], true);
         $this->container->bindClass(IPerson::class, Dave::class, [], true);

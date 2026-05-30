@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -22,7 +22,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertSame('bar', $iterator->current());
@@ -33,7 +33,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertSame('foo', $iterator->key());
@@ -45,7 +45,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertSame('foo', $iterator->key());
@@ -65,7 +65,7 @@ class KeyValuePairIteratorTest extends TestCase
     {
         $kvps = [
             new KeyValuePair('foo', 'bar'),
-            new KeyValuePair('baz', 'quz')
+            new KeyValuePair('baz', 'quz'),
         ];
         $iterator = new KeyValuePairIterator($kvps);
         $this->assertTrue($iterator->valid());

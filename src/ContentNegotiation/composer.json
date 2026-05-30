@@ -16,7 +16,7 @@
     "homepage": "https://www.aphiria.com",
     "license": "MIT",
     "support": {
-        "docs": "https://www.aphiria.com/docs/1.x/introduction.html",
+        "docs": "https://www.aphiria.com/docs/1.x/introduction",
         "forum": "https://github.com/aphiria/aphiria/discussions",
         "issues": "https://github.com/aphiria/aphiria/issues",
         "source": "https://github.com/aphiria/aphiria"
@@ -45,8 +45,8 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "php": "^8.4",
-        "symfony/property-access": "^7.0",
-        "symfony/serializer": "^7.0"
+        "symfony/property-access": "^8.0",
+        "symfony/serializer": "^8.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.5",
@@ -60,11 +60,6 @@
             "@phpunit",
             "@phpcs-test"
         ]
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.x-dev"
-        }
     },
     "config": {
         "optimize-autoloader": true,

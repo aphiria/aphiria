@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -30,7 +30,6 @@ use Aphiria\Validation\ErrorMessages\IErrorMessageInterpolator;
 use Aphiria\Validation\IValidator;
 use DateTime;
 use DateTimeImmutable;
-use DateTimeInterface;
 
 /**
  * Defines the binder for controllers
@@ -45,14 +44,14 @@ final class ControllerBinder extends Binder
     {
         $requestBodyValidator = new RequestBodyValidator(
             $container->resolve(IValidator::class),
-            $container->resolve(IErrorMessageInterpolator::class)
+            $container->resolve(IErrorMessageInterpolator::class),
         );
         $controllerParameterResolver = new ControllerParameterResolver($container->resolve(IBodyDeserializer::class));
         $routeActionInvoker = new RouteActionInvoker(
             $container->resolve(IContentNegotiator::class),
             $requestBodyValidator,
             $container->resolve(IResponseFactory::class),
-            $controllerParameterResolver
+            $controllerParameterResolver,
         );
         $container->bindInstance(IRouteActionInvoker::class, $routeActionInvoker);
         $container->bindInstance(IRequestParameterDeserializer::class, $this->getRequestParameterDeserializer($container));
@@ -82,7 +81,7 @@ final class ControllerBinder extends Binder
                 }
 
                 throw new FailedRequestParameterConversionException("Could not convert \"$value\" to " . DateTime::class);
-            }
+            },
         );
         $deserializer->registerDeserializer(
             DateTimeImmutable::class,
@@ -96,7 +95,7 @@ final class ControllerBinder extends Binder
                 }
 
                 throw new FailedRequestParameterConversionException("Could not convert \"$value\" to " . DateTimeImmutable::class);
-            }
+            },
         );
 
         return $deserializer;

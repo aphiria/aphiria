@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -38,7 +38,7 @@ final class VariableTrieNode extends TrieNode
         string|RouteVariable|array $parts,
         array $children,
         Route|array $routes = [],
-        ?TrieNode $hostTrie = null
+        ?TrieNode $hostTrie = null,
     ) {
         parent::__construct($children, $routes, $hostTrie);
 
@@ -108,7 +108,7 @@ final class VariableTrieNode extends TrieNode
                     }
                 }
 
-                $routeVariablesCopy[$part->name] = (string)$matches[$part->name];
+                $routeVariablesCopy[$part->name] = (string) $matches[$part->name];
             }
         }
 

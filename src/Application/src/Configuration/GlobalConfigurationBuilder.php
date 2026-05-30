@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -29,7 +29,7 @@ class GlobalConfigurationBuilder
      */
     public function __construct(
         private readonly IConfigurationFileReader $phpConfigurationFileReader = new PhpConfigurationFileReader(),
-        private readonly IConfigurationFileReader $jsonConfigurationFileReader = new JsonConfigurationFileReader()
+        private readonly IConfigurationFileReader $jsonConfigurationFileReader = new JsonConfigurationFileReader(),
     ) {}
 
     /**
@@ -97,7 +97,7 @@ class GlobalConfigurationBuilder
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
-            'value' => fn(): IConfiguration => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+            'value' => fn(): IConfiguration => $this->jsonConfigurationFileReader->readConfiguration($path, $pathDelimiter),
         ];
 
         return $this;
@@ -115,7 +115,7 @@ class GlobalConfigurationBuilder
     {
         $this->configurationSourceStructs[] = [
             'type' => 'factory',
-            'value' => fn(): IConfiguration => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter)
+            'value' => fn(): IConfiguration => $this->phpConfigurationFileReader->readConfiguration($path, $pathDelimiter),
         ];
 
         return $this;

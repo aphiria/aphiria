@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -36,7 +36,7 @@ final class RolesRequirementHandler implements IAuthorizationRequirementHandler
             throw new InvalidArgumentException('Requirement must be of type ' . RolesRequirement::class . ', ' . $requirement::class . ' given');
         }
 
-        $userRoles = \array_map(static fn(Claim $claim): string => (string)$claim->value, $user->filterClaims(ClaimType::Role));
+        $userRoles = \array_map(static fn(Claim $claim): string => (string) $claim->value, $user->filterClaims(ClaimType::Role));
 
         foreach ($requirement->requiredRoles as $requiredRole) {
             if (\in_array($requiredRole, $userRoles, true)) {

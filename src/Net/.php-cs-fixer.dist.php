@@ -10,7 +10,7 @@ EOT;
 
 return new PhpCsFixer\Config()
     ->setRules([
-        '@PER-CS2.0' => true,
+        '@PER-CS2x0' => true,
         'array_syntax' => ['syntax' => 'short'],
         'blank_line_after_opening_tag' => true,
         'compact_nullable_type_declaration' => true,
@@ -21,12 +21,12 @@ return new PhpCsFixer\Config()
         'header_comment' => [
             'header' => $header,
             'comment_type' => 'PHPDoc',
-            'location' => 'after_open'
+            'location' => 'after_open',
         ],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         // A very tiny micro-optimization to reduce the number of opcodes for native function calls
         'native_function_invocation' => ['include' => ['@all']],
-        'new_with_parentheses ' => true,
+        'new_with_parentheses' => true,
         'no_empty_comment' => true,
         'no_empty_statement' => true,
         'no_leading_import_slash' => true,
@@ -40,8 +40,8 @@ return new PhpCsFixer\Config()
                 'return',
                 'switch_case',
                 'yield',
-                'yield_from'
-            ]
+                'yield_from',
+            ],
         ],
         'no_unused_imports' => true,
         'no_whitespace_in_blank_line' => true,
@@ -72,15 +72,15 @@ return new PhpCsFixer\Config()
                 'method_protected_abstract',
                 'method_protected',
                 'method_private_static',
-                'method_private'
+                'method_private',
             ],
-            'sort_algorithm' => 'alpha'
+            'sort_algorithm' => 'alpha',
         ],
         'ordered_imports' => true,
         'return_type_declaration' => ['space_before' => 'none'],
         'single_quote' => true,
         'single_trait_insert_per_statement' => true,
-        'standardize_not_equals' => true
+        'standardize_not_equals' => true,
     ])
     ->setRiskyAllowed(true)
     ->setFinder(

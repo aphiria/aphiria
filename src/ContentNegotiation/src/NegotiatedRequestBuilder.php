@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -41,10 +41,10 @@ class NegotiatedRequestBuilder extends RequestBuilder
             new JsonMediaTypeFormatter(),
             new XmlMediaTypeFormatter(),
             new HtmlMediaTypeFormatter(),
-            new PlainTextMediaTypeFormatter()
+            new PlainTextMediaTypeFormatter(),
         ]),
         private readonly string $defaultContentType = 'application/json',
-        string $defaultAccept = '*/*'
+        string $defaultAccept = '*/*',
     ) {
         parent::__construct();
 
@@ -74,7 +74,7 @@ class NegotiatedRequestBuilder extends RequestBuilder
             // Grab the media type formatter from a dummy request that has the same headers
             $mediaTypeFormatterMatch = $new->mediaTypeFormatterMatcher->getBestRequestMediaTypeFormatterMatch(
                 $type,
-                new Request($new->method ?? 'GET', $new->uri ?? new Uri('http://localhost'), $new->headers)
+                new Request($new->method ?? 'GET', $new->uri ?? new Uri('http://localhost'), $new->headers),
             );
 
             if ($mediaTypeFormatterMatch === null) {

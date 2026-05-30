@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -61,9 +61,9 @@ class AuthorizationBinderTest extends TestCase
         return [
             'aphiria' => [
                 'authorization' => [
-                    'continueOnFailure' => true
-                ]
-            ]
+                    'continueOnFailure' => true,
+                ],
+            ],
         ];
     }
 
@@ -76,7 +76,7 @@ class AuthorizationBinderTest extends TestCase
             [AuthorizationPolicyRegistry::class, AuthorizationPolicyRegistry::class],
             [AuthorizationRequirementHandlerRegistry::class, AuthorizationRequirementHandlerRegistry::class],
             [IUserAccessor::class, RequestPropertyUserAccessor::class],
-            [IAuthority::class, Authority::class]
+            [IAuthority::class, Authority::class],
         ];
 
         foreach ($parameters as $parameter) {

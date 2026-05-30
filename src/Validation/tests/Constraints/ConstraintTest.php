@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -63,7 +63,7 @@ class ConstraintTest extends TestCase
         $value = new class () {};
         $this->assertEquals(
             ['value' => $value::class . ' object'],
-            $this->constraint->getErrorMessagePlaceholders($value)
+            $this->constraint->getErrorMessagePlaceholders($value),
         );
     }
 }

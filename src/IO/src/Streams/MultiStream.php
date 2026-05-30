@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -187,7 +187,7 @@ final class MultiStream implements IStream
         foreach ($this->streams as $streamIndex => $stream) {
             $buffer .= $stream->readToEnd();
             /** @psalm-suppress RedundantCast We do not want to rely on PHPDoc alone */
-            $this->streamIndex = (int)$streamIndex;
+            $this->streamIndex = (int) $streamIndex;
         }
 
         $this->position = $this->length ?? 0;
@@ -236,7 +236,7 @@ final class MultiStream implements IStream
         // We don't use a for loop because it complicates $this->streamIndex on the last iteration
         foreach ($this->streams as $streamIndex => $stream) {
             /** @psalm-suppress RedundantCast We do not want to rely on PHPDoc alone */
-            $this->streamIndex = (int)$streamIndex;
+            $this->streamIndex = (int) $streamIndex;
             $currStreamLength = $stream->length ?? 0;
 
             // Check if this is the stream that contains the desired offset

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -21,10 +21,10 @@ use ArrayAccess;
  */
 interface ISession extends ArrayAccess
 {
-    /** @var array<string, mixed> The mapping of all session variable names to values */
-    public array $variables { get; }
     /** @var int|string The session Id */
     public int|string $id { get; set; }
+    /** @var array<string, mixed> The mapping of all session variable names to values */
+    public array $variables { get; }
 
     /**
      * Adds many variables

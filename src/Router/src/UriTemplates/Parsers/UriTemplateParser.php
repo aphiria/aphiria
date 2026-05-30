@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -99,7 +99,7 @@ final class UriTemplateParser implements IUriTemplateParser
                     $tokens->expect(
                         TokenType::Punctuation,
                         '/',
-                        'Expected optional path part to start with \'/\', got %s'
+                        'Expected optional path part to start with \'/\', got %s',
                     );
                 }
 
@@ -264,7 +264,7 @@ final class UriTemplateParser implements IUriTemplateParser
             $tokens->expect(
                 TokenType::Punctuation,
                 ')',
-                'Expected closing parenthesis after constraint parameters, got %s'
+                'Expected closing parenthesis after constraint parameters, got %s',
             );
             $tokens->next();
         }

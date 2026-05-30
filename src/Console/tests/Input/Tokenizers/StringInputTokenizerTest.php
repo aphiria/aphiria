@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -32,7 +32,7 @@ class StringInputTokenizerTest extends TestCase
         $this->assertEquals([
             'foo',
             "' dave '",
-            "--last=' young '"
+            "--last=' young '",
         ], $tokens);
     }
 
@@ -60,7 +60,7 @@ class StringInputTokenizerTest extends TestCase
         $this->assertEquals([
             'foo',
             '--name',
-            "'dave young'"
+            "'dave young'",
         ], $tokens);
     }
 
@@ -71,7 +71,7 @@ class StringInputTokenizerTest extends TestCase
             'foo',
             "\"'foo bar'\"",
             '--quote',
-            "\"'Dave is cool'\""
+            "\"'Dave is cool'\"",
         ], $tokens);
     }
 
@@ -94,7 +94,7 @@ class StringInputTokenizerTest extends TestCase
             'foo',
             'bar',
             "--name='dave   young'",
-            '-r'
+            '-r',
         ], $tokens);
     }
 }

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -46,7 +46,7 @@ class RequestHeaderParser extends HeaderParser
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Charset', $i);
             // The first value should always be the charset
-            $charset = (string)$parsedHeaderParameters->keys[0];
+            $charset = (string) $parsedHeaderParameters->keys[0];
             $parsedHeaderValues[] = new AcceptCharsetHeaderValue($charset, $parsedHeaderParameters);
         }
 
@@ -75,7 +75,7 @@ class RequestHeaderParser extends HeaderParser
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept', $i);
             // The first value should always be the media type
-            $mediaType = (string)$parsedHeaderParameters->keys[0];
+            $mediaType = (string) $parsedHeaderParameters->keys[0];
             $parsedHeaderValues[] = new AcceptMediaTypeHeaderValue($mediaType, $parsedHeaderParameters);
         }
 
@@ -104,7 +104,7 @@ class RequestHeaderParser extends HeaderParser
         for ($i = 0;$i < $numHeaderValues;$i++) {
             $parsedHeaderParameters = $this->parseParameters($headers, 'Accept-Language', $i);
             // The first value should always be the language
-            $language = (string)$parsedHeaderParameters->keys[0];
+            $language = (string) $parsedHeaderParameters->keys[0];
             $parsedHeaderValues[] = new AcceptLanguageHeaderValue($language, $parsedHeaderParameters);
         }
 

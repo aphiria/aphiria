@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -40,7 +40,7 @@ final class AttributeCommandRegistrant implements ICommandRegistrant
      */
     public function __construct(
         string|array $paths,
-        private readonly ITypeFinder $typeFinder = new TypeFinder()
+        private readonly ITypeFinder $typeFinder = new TypeFinder(),
     ) {
         $this->paths = \is_array($paths) ? $paths : [$paths];
     }
@@ -69,7 +69,7 @@ final class AttributeCommandRegistrant implements ICommandRegistrant
                     $argumentAttributeInstance->name,
                     $argumentAttributeInstance->type,
                     $argumentAttributeInstance->description,
-                    $argumentAttributeInstance->defaultValue
+                    $argumentAttributeInstance->defaultValue,
                 );
             }
 
@@ -80,7 +80,7 @@ final class AttributeCommandRegistrant implements ICommandRegistrant
                     $optionAttributeInstance->type,
                     $optionAttributeInstance->shortName,
                     $optionAttributeInstance->description,
-                    $optionAttributeInstance->defaultValue
+                    $optionAttributeInstance->defaultValue,
                 );
             }
 
@@ -90,7 +90,7 @@ final class AttributeCommandRegistrant implements ICommandRegistrant
                 $arguments,
                 $options,
                 $commandAttributeInstance->description,
-                $commandAttributeInstance->helpText
+                $commandAttributeInstance->helpText,
             );
             $commands->registerCommand($command, $commandHandler);
         }

@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -21,7 +21,7 @@ class StringBodyTest extends TestCase
     public function testCastingToStringReturnsContents(): void
     {
         $body = new StringBody('foo');
-        $this->assertSame('foo', (string)$body);
+        $this->assertSame('foo', (string) $body);
     }
 
     public function testGettingLengthReturnsStringLength(): void

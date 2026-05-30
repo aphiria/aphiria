@@ -4,7 +4,7 @@
  * Aphiria
  *
  * @link      https://www.aphiria.com
- * @copyright Copyright (C) 2025 David Young
+ * @copyright Copyright (C) 2026 David Young
  * @license   https://github.com/aphiria/aphiria/blob/1.x/LICENSE.md
  */
 
@@ -35,8 +35,6 @@ class Request implements IRequest
     public private(set) string $protocolVersion;
     /** @inheritdoc */
     public private(set) Uri $uri;
-    /** @var RequestTargetType $requestTargetType The type of request target URI this request uses */
-    protected RequestTargetType $requestTargetType;
     /** @var string The request target */
     protected string $requestTarget {
         get {
@@ -60,10 +58,12 @@ class Request implements IRequest
                     return '*';
                 default:
                     // Includes the absolute form
-                    return (string)$this->uri;
+                    return (string) $this->uri;
             }
         }
     }
+    /** @var RequestTargetType $requestTargetType The type of request target URI this request uses */
+    protected RequestTargetType $requestTargetType;
     /** @var array<string, bool> The list of valid HTTP methods */
     private static array $validMethods = [
         'CONNECT' => true,
@@ -75,7 +75,7 @@ class Request implements IRequest
         'POST' => true,
         'PURGE' => true,
         'PUT' => true,
-        'TRACE' => true
+        'TRACE' => true,
     ];
 
     /**
@@ -96,7 +96,7 @@ class Request implements IRequest
         ?IBody $body = null,
         IDictionary $properties = new HashTable(),
         string $protocolVersion = '1.1',
-        RequestTargetType $requestTargetType = RequestTargetType::OriginForm
+        RequestTargetType $requestTargetType = RequestTargetType::OriginForm,
     ) {
         $this->method = \strtoupper($method);
         $this->uri = $uri;
@@ -139,7 +139,7 @@ class Request implements IRequest
     {
         $requiresHostHeader = match ($this->requestTargetType) {
             RequestTargetType::OriginForm, RequestTargetType::AsteriskForm, RequestTargetType::AbsoluteForm => true,
-            default => false
+            default => false,
         };
 
         if ($requiresHostHeader && !$this->headers->containsKey('Host')) {
