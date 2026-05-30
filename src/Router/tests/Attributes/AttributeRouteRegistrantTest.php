@@ -17,6 +17,7 @@ use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddlewareAttri
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Routing\Attributes\AttributeRouteRegistrant;
 use Aphiria\Routing\Attributes\Controller as ControllerAttribute;
+use Aphiria\Routing\Attributes\ExcludeMiddleware;
 use Aphiria\Routing\Attributes\Get;
 use Aphiria\Routing\Attributes\Middleware;
 use Aphiria\Routing\Attributes\RouteConstraint;
@@ -25,6 +26,7 @@ use Aphiria\Routing\RouteCollection;
 use Aphiria\Routing\Tests\Attributes\Mocks\CustomMiddleware;
 use Aphiria\Routing\Tests\Attributes\Mocks\DummyConstraint;
 use Aphiria\Routing\Tests\Attributes\Mocks\DummyMiddleware;
+use Aphiria\Routing\Tests\Attributes\Mocks\DummyMiddleware2;
 use Aphiria\Routing\Tests\Attributes\Mocks\MiddlewareLibraryMiddleware;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -39,6 +41,94 @@ class AttributeRouteRegistrantTest extends TestCase
     {
         $this->typeFinder = $this->createMock(ITypeFinder::class);
         $this->registrant = new AttributeRouteRegistrant(self::PATH, $this->typeFinder);
+    }
+
+    public function testExcludeMiddlewareOnControllerExcludesMiddlewareFromAllRoutes(): void
+    {
+        $controller = new #[ ControllerAttribute(''), Middleware(DummyMiddleware::class), Middleware(DummyMiddleware2::class), ExcludeMiddleware(DummyMiddleware::class) ] class () extends Controller {
+            #[Get('')]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder
+            ->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->values;
+        $this->assertCount(1, $routeArr);
+        $this->assertCount(1, $routeArr[0]->middlewareBindings);
+        $this->assertSame(DummyMiddleware2::class, $routeArr[0]->middlewareBindings[0]->className);
+    }
+
+    public function testExcludeMiddlewareOnMethodExcludesMethodLevelMiddleware(): void
+    {
+        $controller = new class () extends Controller {
+            #[
+                Get(''),
+                Middleware(DummyMiddleware::class),
+                Middleware(DummyMiddleware2::class),
+                ExcludeMiddleware(DummyMiddleware::class)
+            ]
+            public function route(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder
+            ->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->values;
+        $this->assertCount(1, $routeArr);
+        $this->assertCount(1, $routeArr[0]->middlewareBindings);
+        $this->assertSame(DummyMiddleware2::class, $routeArr[0]->middlewareBindings[0]->className);
+    }
+
+    public function testExcludeMiddlewareOnMethodExcludesMiddlewareFromThatRoute(): void
+    {
+        $controller = new #[ControllerAttribute(''), Middleware(DummyMiddleware::class)] class () extends Controller {
+            #[Get('with-exclusion'), ExcludeMiddleware(DummyMiddleware::class)]
+            public function routeWithExclusion(): void
+            {
+                // Empty
+            }
+
+            #[Get('without-exclusion')]
+            public function routeWithoutExclusion(): void
+            {
+                // Empty
+            }
+        };
+        $this->typeFinder
+            ->expects($this->once())
+            ->method('findAllClasses')
+            ->with([self::PATH])
+            ->willReturn([$controller::class]);
+        $routes = new RouteCollection();
+        $this->registrant->registerRoutes($routes);
+        $routeArr = $routes->values;
+        $this->assertCount(2, $routeArr);
+        // Route with exclusion should have no middleware
+        $routeWithExclusion = \array_values(\array_filter(
+            $routeArr,
+            static fn($route) => $route->uriTemplate->pathTemplate === '/with-exclusion',
+        ))[0];
+        $this->assertCount(0, $routeWithExclusion->middlewareBindings);
+        // Route without exclusion should have the middleware
+        $routeWithoutExclusion = \array_values(\array_filter(
+            $routeArr,
+            static fn($route) => $route->uriTemplate->pathTemplate === '/without-exclusion',
+        ))[0];
+        $this->assertCount(1, $routeWithoutExclusion->middlewareBindings);
+        $this->assertSame(DummyMiddleware::class, $routeWithoutExclusion->middlewareBindings[0]->className);
     }
 
     public function testRegisteringControllerWithMiddlewareLibraryMiddlewareIsAddedToRouteGroup(): void

@@ -45,6 +45,16 @@ class RouteGroupOptionsTest extends TestCase
         $this->assertEquals($this->constraints, $this->routeGroupOptions->constraints);
     }
 
+    public function testCorrectExcludedMiddlewareClassNamesAreReturned(): void
+    {
+        $excludedMiddlewareClassName = 'SomeMiddleware';
+        $routeGroupOptions = new RouteGroupOptions(
+            'path',
+            excludedMiddlewareClassNames: [$excludedMiddlewareClassName],
+        );
+        $this->assertSame([$excludedMiddlewareClassName], $routeGroupOptions->excludedMiddlewareClassNames);
+    }
+
     public function testCorrectHostIsReturned(): void
     {
         $this->assertSame('host', $this->routeGroupOptions->host);
@@ -68,5 +78,10 @@ class RouteGroupOptionsTest extends TestCase
     public function testCorrectPathIsReturned(): void
     {
         $this->assertSame('path', $this->routeGroupOptions->path);
+    }
+
+    public function testExcludedMiddlewareClassNamesDefaultsToEmptyArray(): void
+    {
+        $this->assertSame([], $this->routeGroupOptions->excludedMiddlewareClassNames);
     }
 }

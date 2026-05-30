@@ -27,6 +27,7 @@ class RouteGroupOptions
      * @param list<IRouteConstraint> $constraints The list of route constraints that applies to the entire group
      * @param list<MiddlewareBinding> $middlewareBindings The list of middleware bindings that applies to the entire group
      * @param array<string, mixed> $parameters The mapping of custom parameter names => values to match on for the entire group
+     * @param list<class-string> $excludedMiddlewareClassNames The list of middleware class names to exclude from the group
      */
     public function __construct(
         public readonly string $path,
@@ -35,5 +36,6 @@ class RouteGroupOptions
         public array $constraints = [],
         public array $middlewareBindings = [],
         public readonly array $parameters = [],
+        public readonly array $excludedMiddlewareClassNames = [],
     ) {}
 }

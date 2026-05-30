@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Aphiria\Routing\Attributes;
 
 use Aphiria\Api\Controllers\Controller;
+use Aphiria\Middleware\Attributes\ExcludeMiddleware as MiddlewareLibraryExcludeMiddleware;
 use Aphiria\Middleware\Attributes\Middleware as MiddlewareLibraryMiddleware;
 use Aphiria\Reflection\ITypeFinder;
 use Aphiria\Reflection\TypeFinder;
@@ -94,7 +95,10 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
         $middlewareBindings = [];
         /** @var list<IRouteConstraint> $routeConstraints */
         $routeConstraints = [];
+        /** @var list<class-string> $excludedMiddlewareClassNames */
+        $excludedMiddlewareClassNames = [];
         $middlewareAttributeClasses = [Middleware::class, MiddlewareLibraryMiddleware::class];
+        $excludeMiddlewareAttributeClasses = [ExcludeMiddleware::class, MiddlewareLibraryExcludeMiddleware::class];
 
         foreach ($middlewareAttributeClasses as $middlewareAttributeClass) {
             foreach ($controller->getAttributes($middlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $middlewareAttribute) {
@@ -104,6 +108,14 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                     $middlewareAttributeInstance->className,
                     $middlewareAttributeInstance->parameters,
                 );
+            }
+        }
+
+        foreach ($excludeMiddlewareAttributeClasses as $excludeMiddlewareAttributeClass) {
+            foreach ($controller->getAttributes($excludeMiddlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $excludeMiddlewareAttribute) {
+                /** @var ExcludeMiddleware|MiddlewareLibraryExcludeMiddleware $excludeMiddlewareAttributeInstance */
+                $excludeMiddlewareAttributeInstance = $excludeMiddlewareAttribute->newInstance();
+                $excludedMiddlewareClassNames[] = $excludeMiddlewareAttributeInstance->className;
             }
         }
 
@@ -122,14 +134,21 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                 $routeConstraints,
                 $middlewareBindings,
                 $controllerAttributeInstance->parameters,
+                $excludedMiddlewareClassNames,
             );
         }
 
-        // If there was no controller attributes, but there were constraints or middleware, then create some route group options and add them
-        if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings))) {
-            $routeGroupOptions = new RouteGroupOptions('');
-            $routeGroupOptions->constraints = [...$routeGroupOptions->constraints, ...$routeConstraints];
-            $routeGroupOptions->middlewareBindings = [...$routeGroupOptions->middlewareBindings, ...$middlewareBindings];
+        // If there was no controller attributes, but there were constraints middleware, then create some route group options and add them
+        if ($routeGroupOptions === null && (!empty($routeConstraints) || !empty($middlewareBindings) || !empty($excludedMiddlewareClassNames))) {
+            $routeGroupOptions = new RouteGroupOptions(
+                '',
+                null,
+                false,
+                $routeConstraints,
+                $middlewareBindings,
+                [],
+                $excludedMiddlewareClassNames,
+            );
         }
 
         return $routeGroupOptions;
@@ -143,12 +162,16 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
      */
     private function registerRouteBuilders(ReflectionClass $controller, RouteCollectionBuilder $routeBuilders): void
     {
+        $excludeMiddlewareAttributeClasses = [ExcludeMiddleware::class, MiddlewareLibraryExcludeMiddleware::class];
+
         foreach ($controller->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
             $routeBuilder = null;
             /** @var list<MiddlewareBinding> $middlewareBindings */
             $middlewareBindings = [];
             /** @var list<IRouteConstraint> $routeConstraints */
             $routeConstraints = [];
+            /** @var list<class-string> $excludedMiddlewareClassNames */
+            $excludedMiddlewareClassNames = [];
             $middlewareAttributeClasses = [Middleware::class, MiddlewareLibraryMiddleware::class];
 
             foreach ($middlewareAttributeClasses as $middlewareAttributeClass) {
@@ -159,6 +182,14 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
                         $middlewareAttributeInstance->className,
                         $middlewareAttributeInstance->parameters,
                     );
+                }
+            }
+
+            foreach ($excludeMiddlewareAttributeClasses as $excludeMiddlewareAttributeClass) {
+                foreach ($method->getAttributes($excludeMiddlewareAttributeClass, ReflectionAttribute::IS_INSTANCEOF) as $excludeMiddlewareAttribute) {
+                    /** @var ExcludeMiddleware|MiddlewareLibraryExcludeMiddleware $excludeMiddlewareAttributeInstance */
+                    $excludeMiddlewareAttributeInstance = $excludeMiddlewareAttribute->newInstance();
+                    $excludedMiddlewareClassNames[] = $excludeMiddlewareAttributeInstance->className;
                 }
             }
 
@@ -180,6 +211,11 @@ final class AttributeRouteRegistrant implements IRouteRegistrant
 
                 if (!empty($middlewareBindings)) {
                     $routeBuilder->withManyMiddleware($middlewareBindings);
+                }
+
+                // Exclude middleware from both group and method-level bindings
+                foreach ($excludedMiddlewareClassNames as $excludedMiddlewareClassName) {
+                    $routeBuilder->withoutMiddleware($excludedMiddlewareClassName);
                 }
 
                 if (!empty($routeConstraints)) {
